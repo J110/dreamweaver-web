@@ -44,6 +44,7 @@ function ExploreContent() {
           type: filterType === 'all' ? undefined : filterType,
           theme: theme || undefined,
           search: search || undefined,
+          lang: lang,
         };
         const result = await contentApi.getContent(filters);
         const items = result.content || [];

@@ -107,6 +107,7 @@ export const contentApi = {
     // Backend uses content_type (not type) and category (not theme)
     if (filters.type) params.append('content_type', filters.type);
     if (filters.theme) params.append('category', filters.theme);
+    if (filters.lang) params.append('lang', filters.lang);
     if (filters.page) params.append('page', filters.page);
     if (filters.limit) params.append('page_size', filters.limit);
 
@@ -188,8 +189,10 @@ export const contentApi = {
 // Backend: /api/v1/trending
 
 export const trendingApi = {
-  getTrending: async (limit = 10) => {
-    const res = await fetchApi(`/api/v1/trending?limit=${limit}`, {
+  getTrending: async (limit = 10, lang = null) => {
+    const params = new URLSearchParams({ limit: limit.toString() });
+    if (lang) params.append('lang', lang);
+    const res = await fetchApi(`/api/v1/trending?${params.toString()}`, {
       method: 'GET',
     });
     // Transform: pages expect { content: [...] }

@@ -46,7 +46,7 @@ export default function Home() {
   const loadStories = async () => {
     setLoading(true);
     try {
-      const data = await trendingApi.getTrending(20);
+      const data = await trendingApi.getTrending(20, lang);
       const items = data.content || [];
       setStories(items.length > 0 ? items : getStories(lang));
     } catch (err) {

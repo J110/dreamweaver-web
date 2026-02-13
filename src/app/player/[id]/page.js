@@ -30,6 +30,7 @@ export default function PlayerPage() {
   const [musicVolume, setMusicVolume] = useState(30);
   const [musicMuted, setMusicMuted] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
+  const [voiceGender, setVoiceGender] = useState('female');
   const audioRef = useRef(null);
   const progressIntervalRef = useRef(null);
   const musicRef = useRef(null);
@@ -107,11 +108,11 @@ export default function PlayerPage() {
     const queryParams = new URLSearchParams({
       text: truncated,
       lang: lang,
-      voice: 'female',
+      voice: voiceGender,
       rate: '-15%',
     });
     return `${API_URL}/api/v1/audio/tts?${queryParams.toString()}`;
-  }, [lang]);
+  }, [lang, voiceGender]);
 
   // Start progress tracking
   const startProgressTracking = useCallback(() => {
@@ -214,6 +215,23 @@ export default function PlayerPage() {
       setAudioError(lang === 'hi' ? 'Audio mein error aa gaya' : 'Audio error occurred');
     }
   }, [content, isPlaying, lang, getTtsUrl, startProgressTracking, stopProgressTracking]);
+
+  // Handle voice gender toggle
+  const handleVoiceToggle = useCallback(() => {
+    // Stop current audio when switching voice
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = '';
+      audioRef.current = null;
+    }
+    setIsPlaying(false);
+    setProgress(0);
+    setCurrentTime(0);
+    setDuration(0);
+    setAudioError(null);
+    stopProgressTracking();
+    setVoiceGender(prev => prev === 'female' ? 'male' : 'female');
+  }, [stopProgressTracking]);
 
   // Handle music volume changes
   const handleMusicVolumeChange = useCallback((e) => {
@@ -444,6 +462,25 @@ export default function PlayerPage() {
           <span className={styles.controlLabel}>
             {lang === 'hi' ? 'Kahaani' : 'Narration'}
           </span>
+        </div>
+
+        <div className={styles.voiceToggle}>
+          <button
+            onClick={handleVoiceToggle}
+            className={`${styles.voiceBtn} ${voiceGender === 'female' ? styles.voiceBtnActive : ''}`}
+            disabled={audioLoading}
+          >
+            <span className={styles.voiceIcon}>👩</span>
+            <span>{lang === 'hi' ? 'Mahila' : 'Female'}</span>
+          </button>
+          <button
+            onClick={handleVoiceToggle}
+            className={`${styles.voiceBtn} ${voiceGender === 'male' ? styles.voiceBtnActive : ''}`}
+            disabled={audioLoading}
+          >
+            <span className={styles.voiceIcon}>👨</span>
+            <span>{lang === 'hi' ? 'Purush' : 'Male'}</span>
+          </button>
         </div>
 
         {audioError && (

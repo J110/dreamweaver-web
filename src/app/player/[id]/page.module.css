@@ -215,6 +215,49 @@
   justify-content: center;
 }
 
+.voiceToggle {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.voiceBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  background: rgba(107, 76, 230, 0.1);
+  border: 1px solid rgba(107, 76, 230, 0.2);
+  border-radius: 20px;
+  color: var(--color-text-muted);
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.voiceBtn:active {
+  transform: scale(0.96);
+}
+
+.voiceBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.voiceBtnActive {
+  background: linear-gradient(135deg, rgba(107, 76, 230, 0.3), rgba(255, 107, 157, 0.2));
+  border-color: rgba(107, 76, 230, 0.5);
+  color: var(--color-text-light);
+  box-shadow: 0 0 12px rgba(107, 76, 230, 0.15);
+}
+
+.voiceIcon {
+  font-size: 16px;
+}
+
 .progressContainer {
   margin-bottom: 16px;
 }
