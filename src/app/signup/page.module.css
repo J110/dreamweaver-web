@@ -1,0 +1,213 @@
+.pageWrapper {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+}
+
+.card {
+  width: 100%;
+  max-width: 450px;
+  background: var(--color-card-dark);
+  border: 1px solid rgba(107, 76, 230, 0.3);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: 0 8px 32px rgba(107, 76, 230, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+.cardHeader {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--color-text-light);
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.formGroup label {
+  color: var(--color-text-light);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.formGroup input[type='text'],
+.formGroup input[type='password'] {
+  padding: var(--spacing-md);
+  background: rgba(255, 243, 205, 0.05);
+  border: 1px solid rgba(107, 76, 230, 0.3);
+  border-radius: var(--radius-md);
+  color: var(--color-text-light);
+  font-family: 'Quicksand', sans-serif;
+  font-size: 16px;
+  transition: all var(--transition-normal);
+}
+
+.formGroup input[type='text']::placeholder,
+.formGroup input[type='password']::placeholder {
+  color: var(--color-text-muted);
+}
+
+.formGroup input[type='text']:focus,
+.formGroup input[type='password']:focus {
+  outline: none;
+  border-color: var(--color-primary-purple);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 0 10px rgba(107, 76, 230, 0.3);
+  background: rgba(255, 243, 205, 0.08);
+}
+
+.ageGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.ageLabel {
+  color: var(--color-text-light);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.ageControl {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.ageSlider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, rgba(107, 76, 230, 0.3), rgba(78, 205, 196, 0.3));
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.ageSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary-purple), var(--color-primary-pink));
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(107, 76, 230, 0.4);
+  transition: all var(--transition-normal);
+}
+
+.ageSlider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 20px rgba(107, 76, 230, 0.6);
+}
+
+.ageSlider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary-purple), var(--color-primary-pink));
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 10px rgba(107, 76, 230, 0.4);
+  transition: all var(--transition-normal);
+}
+
+.ageSlider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 20px rgba(107, 76, 230, 0.6);
+}
+
+.ageDisplay {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: rgba(107, 76, 230, 0.1);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(107, 76, 230, 0.2);
+}
+
+.ageEmoji {
+  font-size: 32px;
+}
+
+.ageText {
+  color: var(--color-text-light);
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.errorMessage {
+  background: rgba(255, 107, 157, 0.15);
+  border: 1px solid rgba(255, 107, 157, 0.3);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  color: #FFB3D4;
+  font-size: 14px;
+  text-align: center;
+}
+
+.footer {
+  text-align: center;
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid rgba(107, 76, 230, 0.1);
+}
+
+.footer p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.link {
+  color: var(--color-primary-purple);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all var(--transition-normal);
+}
+
+.link:hover {
+  color: var(--color-primary-pink);
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: var(--spacing-md);
+  }
+
+  .title {
+    font-size: 24px;
+  }
+}

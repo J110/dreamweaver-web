@@ -1,0 +1,204 @@
+.app {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  padding: 0 16px;
+}
+
+/* App Header - compact, app-like */
+.appHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(13, 11, 46, 0.85);
+  backdrop-filter: blur(12px);
+  margin: 0 -16px;
+  padding: 12px 16px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.headerLogo {
+  height: 32px;
+  width: auto;
+  border-radius: 6px;
+}
+
+.headerTitle {
+  font-size: 20px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--color-primary-purple), var(--color-primary-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+}
+
+.greeting {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+/* Announcement Banner */
+.banner {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(107, 76, 230, 0.2), rgba(255, 107, 157, 0.15));
+  border: 1px solid rgba(107, 76, 230, 0.25);
+  border-radius: 16px;
+  margin: 8px 0 16px;
+}
+
+.bannerIcon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.bannerContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.bannerTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-light);
+  margin: 0 0 2px 0;
+}
+
+.bannerText {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Theme Filter Pills */
+.themeFilter {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0 16px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.themeFilter::-webkit-scrollbar {
+  display: none;
+}
+
+.themePill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--color-card-dark);
+  border: 1px solid rgba(107, 76, 230, 0.15);
+  border-radius: 20px;
+  color: var(--color-text-muted);
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.themePill:active {
+  transform: scale(0.95);
+}
+
+.themePillActive {
+  background: linear-gradient(135deg, rgba(107, 76, 230, 0.3), rgba(255, 107, 157, 0.2));
+  border-color: var(--color-primary-purple);
+  color: var(--color-text-light);
+  box-shadow: 0 2px 8px rgba(107, 76, 230, 0.2);
+}
+
+/* Content Sections */
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-bottom: 16px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text-light);
+  margin: 0;
+  padding-left: 2px;
+}
+
+/* Horizontal Scroll for Cards */
+.horizontalScroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 4px 0;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.horizontalScroll::-webkit-scrollbar {
+  display: none;
+}
+
+.cardWrapper {
+  flex-shrink: 0;
+  width: 160px;
+}
+
+.cardWrapper :global(.card) {
+  width: 100%;
+  margin: 0;
+}
+
+/* Loading & Empty */
+.loadingMsg {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--color-text-muted);
+  font-size: 15px;
+}
+
+.emptyMsg {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--color-text-muted);
+  font-size: 15px;
+}
+
+@media (min-width: 768px) {
+  .app {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .cardWrapper {
+    width: 180px;
+  }
+}

@@ -1,0 +1,112 @@
+.app {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  padding: 0 16px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.header {
+  padding: 16px 0 8px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-light);
+  margin: 0;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--color-card-dark);
+  border: 1px solid rgba(107, 76, 230, 0.2);
+  border-radius: 14px;
+  color: var(--color-text-light);
+  font-family: 'Quicksand', sans-serif;
+  font-size: 15px;
+  margin-bottom: 12px;
+  transition: all var(--transition-normal);
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--color-primary-purple);
+  box-shadow: 0 0 12px rgba(107, 76, 230, 0.15);
+}
+
+.filterRow {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 4px 0 12px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.filterRow::-webkit-scrollbar {
+  display: none;
+}
+
+.pill {
+  padding: 6px 12px;
+  background: var(--color-card-dark);
+  border: 1px solid rgba(107, 76, 230, 0.15);
+  border-radius: 16px;
+  color: var(--color-text-muted);
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.pill:active {
+  transform: scale(0.95);
+}
+
+.pillActive {
+  background: linear-gradient(135deg, rgba(107, 76, 230, 0.3), rgba(255, 107, 157, 0.2));
+  border-color: var(--color-primary-purple);
+  color: var(--color-text-light);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding-bottom: 16px;
+}
+
+.loadingMsg {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--color-text-muted);
+  font-size: 15px;
+}
+
+.emptyMsg {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--color-text-muted);
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+@media (min-width: 480px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

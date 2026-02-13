@@ -1,0 +1,472 @@
+.app {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  padding: 0 16px 100px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 0;
+  color: var(--color-primary-purple);
+  background: none;
+  border: none;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.backButton:active {
+  color: var(--color-primary-pink);
+}
+
+.albumArt {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 12px 40px rgba(107, 76, 230, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.artStoryGradient {
+  background: linear-gradient(135deg, rgba(107, 76, 230, 0.5), rgba(255, 107, 157, 0.4));
+}
+
+.artPoemGradient {
+  background: linear-gradient(135deg, rgba(255, 107, 157, 0.5), rgba(255, 217, 61, 0.4));
+}
+
+.artSongGradient {
+  background: linear-gradient(135deg, rgba(78, 205, 196, 0.5), rgba(107, 76, 230, 0.4));
+}
+
+.albumIcon {
+  font-size: 72px;
+  filter: drop-shadow(0 0 20px rgba(255, 217, 61, 0.4));
+}
+
+.artWithImage {
+  background: var(--color-card-dark);
+}
+
+.coverImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.playingWaves {
+  position: absolute;
+  bottom: 16px;
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 30px;
+}
+
+.playingWaves span {
+  display: block;
+  width: 4px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 2px;
+  animation: wave 1.2s ease-in-out infinite;
+}
+
+.playingWaves span:nth-child(1) { height: 8px; animation-delay: 0s; }
+.playingWaves span:nth-child(2) { height: 16px; animation-delay: 0.15s; }
+.playingWaves span:nth-child(3) { height: 24px; animation-delay: 0.3s; }
+.playingWaves span:nth-child(4) { height: 16px; animation-delay: 0.45s; }
+.playingWaves span:nth-child(5) { height: 8px; animation-delay: 0.6s; }
+
+@keyframes wave {
+  0%, 100% { transform: scaleY(0.4); }
+  50% { transform: scaleY(1); }
+}
+
+.ttsWarning {
+  text-align: center;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin: 0 0 8px;
+  opacity: 0.7;
+}
+
+.playButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.playButtonLoading {
+  background: linear-gradient(135deg, rgba(107, 76, 230, 0.5), rgba(255, 107, 157, 0.3));
+}
+
+.spinner {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.audioError {
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-primary-pink);
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  background: rgba(255, 107, 157, 0.1);
+  border-radius: 8px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: rgba(107, 76, 230, 0.3);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #B8A9FF;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  color: var(--color-text-light);
+  line-height: 1.3;
+}
+
+.duration {
+  margin: 0 0 16px 0;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+.controlLabel {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.playButton {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary-purple), var(--color-primary-pink));
+  border: none;
+  color: white;
+  font-size: 26px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(107, 76, 230, 0.3);
+  transition: transform var(--transition-fast);
+}
+
+.playButton:active {
+  transform: scale(0.93);
+}
+
+.controlButton {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(107, 76, 230, 0.2);
+  border: 1px solid rgba(107, 76, 230, 0.3);
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progressContainer {
+  margin-bottom: 16px;
+}
+
+.progressBar {
+  width: 100%;
+  height: 4px;
+  background: rgba(107, 76, 230, 0.15);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary-purple), var(--color-primary-pink));
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.timeDisplay {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-top: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progressBar {
+  cursor: pointer;
+}
+
+.musicControls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(107, 76, 230, 0.08);
+  border: 1px solid rgba(107, 76, 230, 0.15);
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.musicPlayBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(107, 76, 230, 0.25);
+  border: 1px solid rgba(107, 76, 230, 0.35);
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.musicPlayBtn:active {
+  transform: scale(0.9);
+}
+
+.musicPlayBtnActive {
+  background: linear-gradient(135deg, rgba(107, 76, 230, 0.5), rgba(255, 107, 157, 0.4));
+  border-color: rgba(107, 76, 230, 0.5);
+  box-shadow: 0 0 12px rgba(107, 76, 230, 0.25);
+}
+
+.musicLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.musicIcon {
+  font-size: 16px;
+}
+
+.musicSliderWrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.musicSlider {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(107, 76, 230, 0.2);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.musicSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary-purple), var(--color-primary-pink));
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(107, 76, 230, 0.3);
+}
+
+.musicSlider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary-purple), var(--color-primary-pink));
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 8px rgba(107, 76, 230, 0.3);
+}
+
+.musicSlider:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.musicMuteBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(107, 76, 230, 0.15);
+  border: 1px solid rgba(107, 76, 230, 0.2);
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.musicMuteBtn:active {
+  transform: scale(0.9);
+}
+
+.musicMuteBtnActive {
+  background: rgba(255, 107, 157, 0.2);
+  border-color: rgba(255, 107, 157, 0.3);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.actionButton {
+  flex: 1;
+  padding: 10px 8px;
+  background: rgba(107, 76, 230, 0.1);
+  border: 1px solid rgba(107, 76, 230, 0.2);
+  border-radius: 12px;
+  color: var(--color-text-light);
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--transition-fast);
+}
+
+.actionButton:active {
+  transform: scale(0.96);
+}
+
+.actionButtonActive {
+  border-color: var(--color-primary-pink);
+  background: rgba(255, 107, 157, 0.2);
+  color: #FFB3D4;
+}
+
+.storySection {
+  background: var(--color-card-dark);
+  border: 1px solid rgba(107, 76, 230, 0.15);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: var(--color-text-light);
+}
+
+.storyText {
+  color: var(--color-text-light);
+  line-height: 1.8;
+  font-size: 15px;
+  white-space: pre-line;
+}
+
+.extraSection {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(107, 76, 230, 0.1);
+}
+
+.extraTitle {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: var(--color-text-light);
+}
+
+.extraText {
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  font-size: 14px;
+  white-space: pre-line;
+}
+
+.loadingMessage {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--color-text-muted);
+  font-size: 15px;
+}
+
+.errorMessage {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--color-primary-pink);
+  background: rgba(255, 107, 157, 0.1);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 107, 157, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  margin-top: 32px;
+}
+
+.exploreBtn {
+  padding: 10px 24px;
+  background: linear-gradient(135deg, var(--color-primary-purple), var(--color-primary-pink));
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+}

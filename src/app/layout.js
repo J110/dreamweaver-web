@@ -1,0 +1,43 @@
+import { Quicksand } from 'next/font/google';
+import './globals.css';
+import AppShell from '@/components/AppShell';
+
+const quicksand = Quicksand({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  display: 'swap',
+});
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
+};
+
+export const metadata = {
+  title: 'Dream Valley - Magical Bedtime Stories for Kids',
+  description: 'Personalized AI-generated bedtime stories, poems, and songs for children.',
+  keywords: 'bedtime stories, children stories, AI stories, dream stories, lullabies, dream valley',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Dream Valley',
+  },
+  openGraph: {
+    title: 'Dream Valley - Magical Bedtime Stories',
+    description: 'Personalized AI-generated bedtime stories, poems, and songs for children.',
+    type: 'website',
+  },
+};
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body className={quicksand.className}>
+        <AppShell>{children}</AppShell>
+      </body>
+    </html>
+  );
+}

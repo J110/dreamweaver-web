@@ -1,0 +1,548 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background Gradients -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d3a2e;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#1a5a3f;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2d6a4a;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Firefly Glow Gradient -->
+    <radialGradient id="fireflySGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ffd700;stop-opacity:0.8" />
+      <stop offset="70%" style="stop-color:#ffaa00;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#ff8800;stop-opacity:0" />
+    </radialGradient>
+
+    <!-- Firefly Body Gradient -->
+    <linearGradient id="fireflySBody" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3d2817;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a0f08;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Wing Gradient -->
+    <linearGradient id="wingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a8d5ff;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#5ab4ff;stop-opacity:0.3" />
+    </linearGradient>
+
+    <!-- Tree Bark Gradient -->
+    <linearGradient id="treeBarks" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2a1810;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3d2817;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2a1810;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Foliage Gradients -->
+    <radialGradient id="foliage1" cx="40%" cy="40%" r="60%">
+      <stop offset="0%" style="stop-color:#4a8f5a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2d5a3f;stop-opacity:0.8" />
+    </radialGradient>
+
+    <radialGradient id="foliage2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#5aa66a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3d6a4a;stop-opacity:0.8" />
+    </radialGradient>
+
+    <radialGradient id="foliage3" cx="45%" cy="45%" r="55%">
+      <stop offset="0%" style="stop-color:#3f7a50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2a5a3f;stop-opacity:0.8" />
+    </radialGradient>
+
+    <!-- Rabbit Brown Gradient -->
+    <radialGradient id="rabbitBrown" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" style="stop-color:#8b5a3c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#5a3d28;stop-opacity:1" />
+    </radialGradient>
+
+    <!-- Rock/Moss Gradient -->
+    <radialGradient id="mossyRock" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" style="stop-color:#4a6a4f;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2d4a35;stop-opacity:1" />
+    </radialGradient>
+
+    <!-- Mushroom Cap Gradient -->
+    <radialGradient id="mushroomRed" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" style="stop-color:#d63a3a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a02020;stop-opacity:1" />
+    </radialGradient>
+
+    <!-- Water Reflection -->
+    <linearGradient id="waterReflection" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a8f5a;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#2d5a3f;stop-opacity:0.2" />
+    </linearGradient>
+
+    <!-- Glow Filter -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+      <feMerge>
+        <feMergeNode in="coloredBlur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="strongGlow">
+      <feGaussianBlur stdDeviation="6" result="coloredBlur" />
+      <feMerge>
+        <feMergeNode in="coloredBlur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+      <feMerge>
+        <feMergeNode in="coloredBlur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- CSS Animations -->
+  <style>
+    @keyframes fireflyBob {
+      0%, 100% { transform: translateY(0px); }
+      25% { transform: translateY(-8px); }
+      50% { transform: translateY(-12px); }
+      75% { transform: translateY(-5px); }
+    }
+
+    @keyframes abdomenGlowPulse {
+      0%, 100% { opacity: 0.6; filter: brightness(1); }
+      50% { opacity: 1; filter: brightness(1.3); }
+    }
+
+    @keyframes wingFlutter {
+      0%, 100% { transform: scaleX(1) rotateZ(0deg); }
+      25% { transform: scaleX(0.6) rotateZ(-8deg); }
+      50% { transform: scaleX(0.5) rotateZ(0deg); }
+      75% { transform: scaleX(0.65) rotateZ(8deg); }
+    }
+
+    @keyframes lightTrailTwinkle1 {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 0.3; }
+    }
+
+    @keyframes lightTrailTwinkle2 {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 0.2; }
+    }
+
+    @keyframes lightTrailTwinkle3 {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 0.15; }
+    }
+
+    @keyframes lightTrailTwinkle4 {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.1; }
+    }
+
+    @keyframes distantGlowPulse1 {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.9; }
+    }
+
+    @keyframes distantGlowPulse2 {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.85; }
+    }
+
+    @keyframes distantGlowPulse3 {
+      0%, 100% { opacity: 0.35; }
+      50% { opacity: 0.8; }
+    }
+
+    @keyframes distantGlowPulse4 {
+      0%, 100% { opacity: 0.45; }
+      50% { opacity: 0.88; }
+    }
+
+    @keyframes distantGlowPulse5 {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.82; }
+    }
+
+    @keyframes distantGlowPulse6 {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.9; }
+    }
+
+    @keyframes distantGlowPulse7 {
+      0%, 100% { opacity: 0.38; }
+      50% { opacity: 0.85; }
+    }
+
+    @keyframes distantGlowPulse8 {
+      0%, 100% { opacity: 0.42; }
+      50% { opacity: 0.87; }
+    }
+
+    @keyframes rabbitEarTwitch {
+      0%, 100% { transform: rotateZ(0deg); }
+      25% { transform: rotateZ(-3deg); }
+      50% { transform: rotateZ(3deg); }
+      75% { transform: rotateZ(-2deg); }
+    }
+
+    @keyframes mushroomGlow {
+      0%, 100% { opacity: 0.9; filter: drop-shadow(0 0 4px rgba(214, 58, 58, 0.4)); }
+      50% { opacity: 1; filter: drop-shadow(0 0 8px rgba(214, 58, 58, 0.6)); }
+    }
+
+    @keyframes fernSway {
+      0%, 100% { transform: rotateZ(0deg); }
+      25% { transform: rotateZ(-2deg); }
+      50% { transform: rotateZ(2deg); }
+      75% { transform: rotateZ(-1deg); }
+    }
+
+    @keyframes pondShimmer {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
+
+    /* Animation Application */
+    .firefly-main {
+      animation: fireflyBob 3s ease-in-out infinite;
+    }
+
+    .firefly-abdomen {
+      animation: abdomenGlowPulse 2s ease-in-out infinite;
+    }
+
+    .firefly-wing-left,
+    .firefly-wing-right {
+      animation: wingFlutter 0.4s ease-in-out infinite;
+      transform-origin: 50% 30%;
+    }
+
+    .light-trail-dot1 {
+      animation: lightTrailTwinkle1 1.5s ease-in-out infinite;
+    }
+
+    .light-trail-dot2 {
+      animation: lightTrailTwinkle2 1.5s ease-in-out infinite;
+      animation-delay: 0.15s;
+    }
+
+    .light-trail-dot3 {
+      animation: lightTrailTwinkle3 1.5s ease-in-out infinite;
+      animation-delay: 0.3s;
+    }
+
+    .light-trail-dot4 {
+      animation: lightTrailTwinkle4 1.5s ease-in-out infinite;
+      animation-delay: 0.45s;
+    }
+
+    .distant-firefly1 {
+      animation: distantGlowPulse1 2.5s ease-in-out infinite;
+    }
+
+    .distant-firefly2 {
+      animation: distantGlowPulse2 3s ease-in-out infinite;
+    }
+
+    .distant-firefly3 {
+      animation: distantGlowPulse3 2.2s ease-in-out infinite;
+    }
+
+    .distant-firefly4 {
+      animation: distantGlowPulse4 3.5s ease-in-out infinite;
+    }
+
+    .distant-firefly5 {
+      animation: distantGlowPulse5 2.8s ease-in-out infinite;
+    }
+
+    .distant-firefly6 {
+      animation: distantGlowPulse6 3.2s ease-in-out infinite;
+    }
+
+    .distant-firefly7 {
+      animation: distantGlowPulse7 2.6s ease-in-out infinite;
+    }
+
+    .distant-firefly8 {
+      animation: distantGlowPulse8 3.4s ease-in-out infinite;
+    }
+
+    .rabbit-ear-left,
+    .rabbit-ear-right {
+      animation: rabbitEarTwitch 5s ease-in-out infinite;
+      transform-origin: 50% 0%;
+    }
+
+    .mushroom-cap1,
+    .mushroom-cap2,
+    .mushroom-cap3 {
+      animation: mushroomGlow 3s ease-in-out infinite;
+    }
+
+    .mushroom-cap2 {
+      animation-delay: 0.5s;
+    }
+
+    .mushroom-cap3 {
+      animation-delay: 1s;
+    }
+
+    .fern1,
+    .fern2,
+    .fern3 {
+      animation: fernSway 4.5s ease-in-out infinite;
+      transform-origin: 50% 95%;
+    }
+
+    .fern2 {
+      animation-delay: 0.8s;
+    }
+
+    .fern3 {
+      animation-delay: 1.6s;
+    }
+
+    .pond-reflection {
+      animation: pondShimmer 2.5s ease-in-out infinite;
+    }
+  </style>
+
+  <!-- Background -->
+  <rect width="512" height="512" fill="url(#bgGradient)" />
+
+  <!-- Back Layer Trees (Dark Silhouettes for Depth) -->
+  <g opacity="0.3">
+    <ellipse cx="80" cy="180" rx="45" ry="90" fill="url(#foliage1)" />
+    <ellipse cx="50" cy="150" rx="35" ry="70" fill="url(#foliage2)" />
+    <ellipse cx="440" cy="200" rx="50" ry="95" fill="url(#foliage1)" />
+    <ellipse cx="470" cy="165" rx="38" ry="75" fill="url(#foliage2)" />
+  </g>
+
+  <!-- Middle Layer Trees -->
+  <g opacity="0.6">
+    <rect x="90" y="200" width="25" height="180" fill="url(#treeBarks)" />
+    <ellipse cx="102" cy="170" rx="55" ry="85" fill="url(#foliage1)" />
+    <ellipse cx="75" cy="190" rx="45" ry="70" fill="url(#foliage3)" />
+    <ellipse cx="130" cy="185" rx="48" ry="75" fill="url(#foliage2)" />
+
+    <rect x="395" y="210" width="28" height="170" fill="url(#treeBarks)" />
+    <ellipse cx="409" cy="175" rx="58" ry="88" fill="url(#foliage2)" />
+    <ellipse cx="380" cy="200" rx="48" ry="72" fill="url(#foliage3)" />
+    <ellipse cx="440" cy="195" rx="52" ry="78" fill="url(#foliage1)" />
+  </g>
+
+  <!-- Far background distant trees -->
+  <g opacity="0.2">
+    <ellipse cx="150" cy="100" rx="40" ry="70" fill="#2d5a3f" />
+    <ellipse cx="370" cy="120" rx="42" ry="72" fill="#2d5a3f" />
+    <ellipse cx="256" cy="60" rx="35" ry="65" fill="#3f7a50" />
+  </g>
+
+  <!-- Distant Fireflies (Background Layer) -->
+  <g class="distant-firefly1">
+    <circle cx="140" cy="120" r="5" fill="#ffd700" filter="url(#strongGlow)" />
+    <circle cx="140" cy="120" r="10" fill="url(#fireflySGlow)" opacity="0.4" />
+  </g>
+
+  <g class="distant-firefly2">
+    <circle cx="380" cy="100" r="4" fill="#ffaa00" filter="url(#strongGlow)" />
+    <circle cx="380" cy="100" r="9" fill="url(#fireflySGlow)" opacity="0.35" />
+  </g>
+
+  <g class="distant-firefly3">
+    <circle cx="200" cy="85" r="4.5" fill="#ffd700" filter="url(#strongGlow)" />
+    <circle cx="200" cy="85" r="11" fill="url(#fireflySGlow)" opacity="0.4" />
+  </g>
+
+  <g class="distant-firefly4">
+    <circle cx="320" cy="75" r="4" fill="#ffb700" filter="url(#strongGlow)" />
+    <circle cx="320" cy="75" r="9" fill="url(#fireflySGlow)" opacity="0.35" />
+  </g>
+
+  <g class="distant-firefly5">
+    <circle cx="110" cy="145" r="4" fill="#ffc700" filter="url(#strongGlow)" />
+    <circle cx="110" cy="145" r="9.5" fill="url(#fireflySGlow)" opacity="0.38" />
+  </g>
+
+  <g class="distant-firefly6">
+    <circle cx="410" cy="140" r="4.5" fill="#ffd700" filter="url(#strongGlow)" />
+    <circle cx="410" cy="140" r="10.5" fill="url(#fireflySGlow)" opacity="0.42" />
+  </g>
+
+  <g class="distant-firefly7">
+    <circle cx="240" cy="95" r="4" fill="#ffaa00" filter="url(#strongGlow)" />
+    <circle cx="240" cy="95" r="9" fill="url(#fireflySGlow)" opacity="0.36" />
+  </g>
+
+  <g class="distant-firefly8">
+    <circle cx="350" cy="130" r="4" fill="#ffc700" filter="url(#strongGlow)" />
+    <circle cx="350" cy="130" r="9.5" fill="url(#fireflySGlow)" opacity="0.4" />
+  </g>
+
+  <!-- Pond/Water Reflection Area -->
+  <ellipse cx="320" cy="430" rx="95" ry="35" fill="url(#waterReflection)" />
+  <ellipse class="pond-reflection" cx="320" cy="430" rx="90" ry="32" fill="#5ab4ff" opacity="0.2" filter="url(#glow)" />
+
+  <!-- Pond Firefly Reflection -->
+  <circle cx="310" cy="425" r="3" fill="#ffaa00" opacity="0.4" />
+  <circle cx="310" cy="425" r="7" fill="url(#fireflySGlow)" opacity="0.15" />
+
+  <!-- Mossy Ground Base -->
+  <ellipse cx="256" cy="480" rx="200" ry="50" fill="#3d6a4a" opacity="0.8" />
+  <ellipse cx="200" cy="485" rx="150" ry="40" fill="#2d5a3f" opacity="0.6" />
+  <ellipse cx="330" cy="490" rx="140" ry="35" fill="#3d6a4a" opacity="0.5" />
+
+  <!-- Ferns (Left side) -->
+  <g class="fern1" transform="translate(80, 420)">
+    <path d="M 0 0 Q 5 -8 3 -16 M 0 0 Q -5 -9 -4 -18 M 0 0 Q 7 -5 8 -14" stroke="#4a8f5a" stroke-width="2" fill="none" stroke-linecap="round" />
+    <ellipse cx="2" cy="-10" rx="3" ry="5" fill="#5aa66a" />
+    <ellipse cx="-3" cy="-12" rx="3" ry="5" fill="#4a8f5a" />
+    <ellipse cx="5" cy="-15" rx="2.5" ry="4" fill="#5aa66a" />
+  </g>
+
+  <!-- Ferns (Center-left) -->
+  <g class="fern2" transform="translate(150, 430)">
+    <path d="M 0 0 Q 6 -10 4 -18 M 0 0 Q -4 -8 -3 -16 M 0 0 Q 5 -6 7 -15" stroke="#4a8f5a" stroke-width="2" fill="none" stroke-linecap="round" />
+    <ellipse cx="3" cy="-11" rx="3" ry="5" fill="#5aa66a" />
+    <ellipse cx="-2" cy="-13" rx="3" ry="5" fill="#4a8f5a" />
+    <ellipse cx="6" cy="-17" rx="2.5" ry="4" fill="#5aa66a" />
+  </g>
+
+  <!-- Ferns (Right side) -->
+  <g class="fern3" transform="translate(380, 425)">
+    <path d="M 0 0 Q 5 -9 2 -17 M 0 0 Q -6 -10 -5 -19 M 0 0 Q 6 -7 8 -16" stroke="#4a8f5a" stroke-width="2" fill="none" stroke-linecap="round" />
+    <ellipse cx="1" cy="-11" rx="3" ry="5" fill="#5aa66a" />
+    <ellipse cx="-4" cy="-14" rx="3" ry="5" fill="#4a8f5a" />
+    <ellipse cx="5" cy="-16" rx="2.5" ry="4" fill="#5aa66a" />
+  </g>
+
+  <!-- Mushrooms -->
+  <g transform="translate(110, 400)">
+    <ellipse cx="0" cy="8" rx="14" ry="6" fill="#5a4a3f" />
+    <ellipse class="mushroom-cap1" cx="0" cy="-2" rx="18" ry="14" fill="url(#mushroomRed)" />
+    <circle cx="-8" cy="-6" r="2.5" fill="white" />
+    <circle cx="3" cy="-8" r="2" fill="white" />
+    <circle cx="10" cy="-4" r="2.5" fill="white" />
+    <circle cx="-2" cy="2" r="1.5" fill="white" />
+  </g>
+
+  <g transform="translate(160, 415)">
+    <ellipse cx="0" cy="7" rx="12" ry="5" fill="#5a4a3f" />
+    <ellipse class="mushroom-cap2" cx="0" cy="-1" rx="16" ry="12" fill="url(#mushroomRed)" />
+    <circle cx="-7" cy="-5" r="2" fill="white" />
+    <circle cx="6" cy="-6" r="2.5" fill="white" />
+    <circle cx="0" cy="1" r="1.5" fill="white" />
+  </g>
+
+  <g transform="translate(370, 410)">
+    <ellipse cx="0" cy="8.5" rx="15" ry="6" fill="#5a4a3f" />
+    <ellipse class="mushroom-cap3" cx="0" cy="-2.5" rx="19" ry="15" fill="url(#mushroomRed)" />
+    <circle cx="-9" cy="-7" r="2.5" fill="white" />
+    <circle cx="4" cy="-9" r="2" fill="white" />
+    <circle cx="11" cy="-5" r="2" fill="white" />
+    <circle cx="-3" cy="2.5" r="1.5" fill="white" />
+    <circle cx="8" cy="1" r="1.5" fill="white" />
+  </g>
+
+  <!-- Small Wildflowers -->
+  <g opacity="0.8">
+    <circle cx="200" cy="440" r="2" fill="#8b5a3c" />
+    <circle cx="200" cy="430" r="2.5" fill="#ff6b9d" />
+    <circle cx="210" cy="435" r="2.5" fill="#ff6b9d" />
+    <circle cx="190" cy="435" r="2.5" fill="#ff6b9d" />
+    <circle cx="200" cy="440" r="1.5" fill="#ffc700" />
+
+    <circle cx="250" cy="445" r="2" fill="#8b5a3c" />
+    <circle cx="250" cy="435" r="2.5" fill="#ff9fad" />
+    <circle cx="260" cy="440" r="2.5" fill="#ff9fad" />
+    <circle cx="240" cy="440" r="2.5" fill="#ff9fad" />
+    <circle cx="250" cy="445" r="1.5" fill="#ffc700" />
+
+    <circle cx="320" cy="450" r="2" fill="#8b5a3c" />
+    <circle cx="320" cy="440" r="2.5" fill="#ffb6d9" />
+    <circle cx="330" cy="445" r="2.5" fill="#ffb6d9" />
+    <circle cx="310" cy="445" r="2.5" fill="#ffb6d9" />
+    <circle cx="320" cy="450" r="1.5" fill="#ffc700" />
+  </g>
+
+  <!-- Mossy Rock where rabbit sits -->
+  <ellipse cx="380" cy="385" rx="60" ry="45" fill="url(#mossyRock)" />
+  <ellipse cx="370" cy="375" rx="50" ry="35" fill="#5a7a5a" opacity="0.6" />
+  <ellipse cx="360" cy="390" rx="15" ry="8" fill="#4a8f5a" opacity="0.5" />
+  <ellipse cx="390" cy="395" rx="18" ry="10" fill="#4a8f5a" opacity="0.5" />
+  <ellipse cx="375" cy="410" rx="12" ry="7" fill="#5aa66a" opacity="0.6" />
+
+  <!-- Rabbit Character -->
+  <g transform="translate(380, 350)">
+    <ellipse cx="-18" cy="28" rx="10" ry="14" fill="url(#rabbitBrown)" />
+    <ellipse cx="-10" cy="30" rx="8" ry="16" fill="url(#rabbitBrown)" />
+    <ellipse cx="0" cy="0" rx="22" ry="28" fill="url(#rabbitBrown)" />
+    <ellipse cx="0" cy="8" rx="15" ry="20" fill="#a8744a" opacity="0.7" />
+    <ellipse cx="18" cy="28" rx="10" ry="14" fill="url(#rabbitBrown)" />
+    <ellipse cx="10" cy="30" rx="8" ry="16" fill="url(#rabbitBrown)" />
+    <ellipse cx="0" cy="-20" rx="16" ry="18" fill="url(#rabbitBrown)" />
+    <ellipse cx="0" cy="-10" rx="10" ry="8" fill="#9a6a4a" />
+    <ellipse class="rabbit-ear-left" cx="-8" cy="-35" rx="6" ry="20" fill="url(#rabbitBrown)" />
+    <ellipse class="rabbit-ear-right" cx="8" cy="-35" rx="6" ry="20" fill="url(#rabbitBrown)" />
+    <ellipse cx="-8" cy="-32" rx="3" ry="15" fill="#d4a574" />
+    <ellipse cx="8" cy="-32" rx="3" ry="15" fill="#d4a574" />
+    <circle cx="-6" cy="-22" r="5" fill="black" />
+    <circle cx="6" cy="-22" r="5" fill="black" />
+    <circle cx="-5" cy="-23" r="2" fill="white" />
+    <circle cx="7" cy="-23" r="2" fill="white" />
+    <circle cx="0" cy="-8" r="3" fill="#ff9db5" />
+    <line x1="-8" y1="-5" x2="-16" y2="-4" stroke="#5a3d28" stroke-width="1" />
+    <line x1="-8" y1="0" x2="-16" y2="2" stroke="#5a3d28" stroke-width="1" />
+    <line x1="8" y1="-5" x2="16" y2="-4" stroke="#5a3d28" stroke-width="1" />
+    <line x1="8" y1="0" x2="16" y2="2" stroke="#5a3d28" stroke-width="1" />
+    <circle cx="0" cy="30" r="8" fill="#a8744a" />
+  </g>
+
+  <!-- Main Firefly (Center-top with animations) -->
+  <g class="firefly-main" transform="translate(150, 100)">
+    <circle cx="0" cy="0" r="30" fill="url(#fireflySGlow)" opacity="0.3" class="firefly-abdomen" />
+    <circle cx="0" cy="0" r="20" fill="url(#fireflySGlow)" opacity="0.4" class="firefly-abdomen" />
+
+    <circle class="light-trail-dot1" cx="-15" cy="0" r="5" fill="#ffd700" filter="url(#glow)" />
+    <circle class="light-trail-dot2" cx="-30" cy="3" r="4.2" fill="#ffaa00" filter="url(#glow)" />
+    <circle class="light-trail-dot3" cx="-45" cy="6" r="3.4" fill="#ff8800" filter="url(#glow)" />
+    <circle class="light-trail-dot4" cx="-58" cy="8" r="2.6" fill="#ff6600" filter="url(#glow)" />
+
+    <ellipse class="firefly-wing-left" cx="-6" cy="2" rx="8" ry="16" fill="url(#wingGradient)" stroke="#7ab4e8" stroke-width="0.5" />
+    <ellipse class="firefly-wing-right" cx="6" cy="2" rx="8" ry="16" fill="url(#wingGradient)" stroke="#7ab4e8" stroke-width="0.5" />
+
+    <ellipse cx="0" cy="-3" rx="6" ry="7" fill="url(#fireflySBody)" />
+    <ellipse class="firefly-abdomen" cx="0" cy="10" rx="8" ry="12" fill="#ffd700" filter="url(#strongGlow)" />
+    <ellipse class="firefly-abdomen" cx="0" cy="10" rx="6" ry="10" fill="#ffff00" opacity="0.8" />
+
+    <ellipse cx="0" cy="-10" rx="5" ry="6" fill="url(#fireflySBody)" />
+
+    <circle cx="-2.5" cy="-11" r="2" fill="black" />
+    <circle cx="2.5" cy="-11" r="2" fill="black" />
+    <circle cx="-2" cy="-12" r="0.8" fill="white" />
+    <circle cx="3" cy="-12" r="0.8" fill="white" />
+
+    <line x1="0" y1="-15" x2="-3" y2="-22" stroke="#3d2817" stroke-width="1" stroke-linecap="round" />
+    <line x1="0" y1="-15" x2="3" y2="-22" stroke="#3d2817" stroke-width="1" stroke-linecap="round" />
+    <circle cx="-3" cy="-23" r="1.2" fill="#1a0f08" />
+    <circle cx="3" cy="-23" r="1.2" fill="#1a0f08" />
+  </g>
+
+  <!-- Front Layer Trees (Darkest, closest to camera) -->
+  <g opacity="0.9">
+    <rect x="20" y="240" width="35" height="160" fill="url(#treeBarks)" />
+    <ellipse cx="37.5" cy="200" rx="70" ry="100" fill="url(#foliage1)" />
+    <ellipse cx="15" cy="220" rx="55" ry="85" fill="url(#foliage3)" />
+    <ellipse cx="65" cy="215" rx="60" ry="90" fill="url(#foliage2)" />
+    <ellipse cx="40" cy="240" rx="50" ry="75" fill="url(#foliage1)" />
+
+    <rect x="455" y="250" width="32" height="150" fill="url(#treeBarks)" />
+    <ellipse cx="471" cy="210" rx="68" ry="98" fill="url(#foliage2)" />
+    <ellipse cx="450" cy="235" rx="52" ry="80" fill="url(#foliage3)" />
+    <ellipse cx="500" cy="230" rx="58" ry="88" fill="url(#foliage1)" />
+    <ellipse cx="475" cy="260" rx="55" ry="82" fill="url(#foliage2)" />
+  </g>
+</svg>

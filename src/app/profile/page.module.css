@@ -1,0 +1,119 @@
+.app {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  padding: 0 16px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.header {
+  padding: 16px 0 8px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-light);
+  margin: 0;
+}
+
+.avatarSection {
+  text-align: center;
+  padding: 32px 0;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary-purple), var(--color-primary-pink));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 700;
+  color: white;
+  margin: 0 auto 12px;
+  box-shadow: 0 4px 20px rgba(107, 76, 230, 0.3);
+}
+
+.username {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text-light);
+  margin: 0 0 4px 0;
+}
+
+.appLabel {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.settingCard {
+  background: var(--color-card-dark);
+  border: 1px solid rgba(107, 76, 230, 0.15);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.settingLabel {
+  color: var(--color-text-light);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.langSwitch {
+  display: flex;
+  gap: 6px;
+  background: rgba(13, 11, 46, 0.5);
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.langBtn {
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all var(--transition-fast);
+}
+
+.langBtnActive {
+  background: var(--color-primary-purple);
+  color: white;
+}
+
+.logoutBtn {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid rgba(255, 107, 157, 0.3);
+  background: rgba(255, 107, 157, 0.1);
+  border-radius: 16px;
+  color: var(--color-primary-pink);
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  margin-top: 16px;
+}
+
+.logoutBtn:hover {
+  background: rgba(255, 107, 157, 0.2);
+}

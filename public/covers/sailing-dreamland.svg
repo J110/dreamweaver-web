@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- GRADIENTS -->
+    <!-- Sky gradient: dark navy/black top to deep purple to midnight blue -->
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a1a;stop-opacity:1" />
+      <stop offset="35%" style="stop-color:#1a0a3e;stop-opacity:1" />
+      <stop offset="65%" style="stop-color:#1a2a5e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2a4a8e;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Aurora glow gradient -->
+    <radialGradient id="auroraGradient" cx="50%" cy="0%" r="100%">
+      <stop offset="0%" style="stop-color:#4a7a6a;stop-opacity:0.4" />
+      <stop offset="50%" style="stop-color:#6a5aaa;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#1a2a5e;stop-opacity:0" />
+    </radialGradient>
+
+    <!-- Moon gradient: warm white-gold -->
+    <radialGradient id="moonGradient" cx="40%" cy="40%" r="65%">
+      <stop offset="0%" style="stop-color:#fffef0;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#fef8d8;stop-opacity:1" />
+      <stop offset="80%" style="stop-color:#f5e8b0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e8d890;stop-opacity:1" />
+    </radialGradient>
+
+    <!-- Moon glow aura -->
+    <radialGradient id="moonGlowOuter" cx="50%" cy="50%" r="100%">
+      <stop offset="0%" style="stop-color:#fef8d8;stop-opacity:0.6" />
+      <stop offset="40%" style="stop-color:#f5d890;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#d8a850;stop-opacity:0" />
+    </radialGradient>
+
+    <!-- Ocean gradient: navy to teal -->
+    <linearGradient id="oceanGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a3a5e;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1a4a6e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0a3a4e;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Sail gradient: white with moonlight tint -->
+    <linearGradient id="sailGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fefef8;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#f8f4e8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ede5d0;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Hull gradient: warm brown -->
+    <linearGradient id="hullGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b6f47;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#6b5437;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4a3a27;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Moon reflection shimmer gradient -->
+    <linearGradient id="reflectionGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fef8d8;stop-opacity:0.6" />
+      <stop offset="50%" style="stop-color:#d8a850;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#a8704a;stop-opacity:0" />
+    </linearGradient>
+
+    <!-- Soft glow filter -->
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Moon crater filter (subtle shadow) -->
+    <filter id="craterFilter">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+    </filter>
+  </defs>
+
+  <style>
+    @keyframes skyPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.98; }
+    }
+
+    @keyframes auroraGlow {
+      0%, 100% { opacity: 0.05; }
+      50% { opacity: 0.2; }
+    }
+
+    @keyframes boatRock {
+      0% { transform: rotate(-4deg); }
+      50% { transform: rotate(4deg); }
+      100% { transform: rotate(-4deg); }
+    }
+
+    @keyframes waveUndulate1 {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(3px); }
+    }
+
+    @keyframes waveUndulate2 {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-2.5px); }
+    }
+
+    @keyframes waveUndulate3 {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(2px); }
+    }
+
+    @keyframes waveUndulate4 {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-3px); }
+    }
+
+    @keyframes waveUndulate5 {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(2.5px); }
+    }
+
+    @keyframes cloudDrift1 {
+      0%, 100% { transform: translateX(0px); }
+      50% { transform: translateX(40px); }
+    }
+
+    @keyframes cloudDrift2 {
+      0%, 100% { transform: translateX(0px); }
+      50% { transform: translateX(-35px); }
+    }
+
+    @keyframes cloudDrift3 {
+      0%, 100% { transform: translateX(0px); }
+      50% { transform: translateX(30px); }
+    }
+
+    @keyframes cloudDrift4 {
+      0%, 100% { transform: translateX(0px); }
+      50% { transform: translateX(-40px); }
+    }
+
+    @keyframes cloudDrift5 {
+      0%, 100% { transform: translateX(0px); }
+      50% { transform: translateX(25px); }
+    }
+
+    @keyframes cloudDrift6 {
+      0%, 100% { transform: translateX(0px); }
+      50% { transform: translateX(-30px); }
+    }
+
+    @keyframes sailBillow {
+      0%, 100% { transform: scaleX(1) skewX(0deg); }
+      50% { transform: scaleX(1.03) skewX(1deg); }
+    }
+
+    @keyframes reflectionShimmer1 {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.7; }
+    }
+
+    @keyframes reflectionShimmer2 {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.65; }
+    }
+
+    @keyframes reflectionShimmer3 {
+      0%, 100% { opacity: 0.35; }
+      50% { opacity: 0.68; }
+    }
+
+    @keyframes reflectionShimmer4 {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.7; }
+    }
+
+    @keyframes starTwinkle1 {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes starTwinkle2 {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.9; }
+    }
+
+    @keyframes starTwinkle3 {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.8; }
+    }
+
+    @keyframes childBreathing {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    @keyframes flagFlutter {
+      0%, 100% { transform: rotate(-8deg) skewX(-3deg); }
+      50% { transform: rotate(8deg) skewX(3deg); }
+    }
+
+    @keyframes cabinWindowGlow {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes birdDrift1 {
+      0% { transform: translateX(0px); }
+      100% { transform: translateX(80px); }
+    }
+
+    @keyframes birdDrift2 {
+      0% { transform: translateX(0px); }
+      100% { transform: translateX(-70px); }
+    }
+
+    /* Animation assignments */
+    #sky {
+      animation: skyPulse 8s ease-in-out infinite;
+    }
+
+    #auroraGlow {
+      animation: auroraGlow 8s ease-in-out infinite;
+    }
+
+    #boatGroup {
+      transform-origin: 256px 350px;
+      animation: boatRock 5s ease-in-out infinite;
+    }
+
+    #wave1 {
+      animation: waveUndulate1 3s ease-in-out infinite;
+    }
+
+    #wave2 {
+      animation: waveUndulate2 3.5s ease-in-out infinite 0.3s;
+    }
+
+    #wave3 {
+      animation: waveUndulate3 3.2s ease-in-out infinite 0.6s;
+    }
+
+    #wave4 {
+      animation: waveUndulate4 3.8s ease-in-out infinite 0.9s;
+    }
+
+    #wave5 {
+      animation: waveUndulate5 3.3s ease-in-out infinite 0.4s;
+    }
+
+    #cloud1 {
+      animation: cloudDrift1 14s ease-in-out infinite;
+    }
+
+    #cloud2 {
+      animation: cloudDrift2 16s ease-in-out infinite;
+    }
+
+    #cloud3 {
+      animation: cloudDrift3 15s ease-in-out infinite;
+    }
+
+    #cloud4 {
+      animation: cloudDrift4 18s ease-in-out infinite;
+    }
+
+    #cloud5 {
+      animation: cloudDrift5 13s ease-in-out infinite;
+    }
+
+    #cloud6 {
+      animation: cloudDrift6 17s ease-in-out infinite;
+    }
+
+    #mainSail {
+      animation: sailBillow 4s ease-in-out infinite;
+      transform-origin: 256px 220px;
+    }
+
+    #reflection1 {
+      animation: reflectionShimmer1 3s ease-in-out infinite;
+    }
+
+    #reflection2 {
+      animation: reflectionShimmer2 3s ease-in-out infinite 0.5s;
+    }
+
+    #reflection3 {
+      animation: reflectionShimmer3 3s ease-in-out infinite 1s;
+    }
+
+    #reflection4 {
+      animation: reflectionShimmer4 3s ease-in-out infinite 1.5s;
+    }
+
+    #star1 { animation: starTwinkle1 4s ease-in-out infinite; }
+    #star2 { animation: starTwinkle2 3.5s ease-in-out infinite 0.5s; }
+    #star3 { animation: starTwinkle1 4.5s ease-in-out infinite 1s; }
+    #star4 { animation: starTwinkle3 3s ease-in-out infinite 1.5s; }
+    #star5 { animation: starTwinkle2 4.2s ease-in-out infinite 0.3s; }
+    #star6 { animation: starTwinkle1 3.8s ease-in-out infinite 1.2s; }
+    #star7 { animation: starTwinkle3 4.4s ease-in-out infinite 0.7s; }
+    #star8 { animation: starTwinkle2 3.6s ease-in-out infinite 1.8s; }
+    #star9 { animation: starTwinkle1 4.1s ease-in-out infinite 0.2s; }
+    #star10 { animation: starTwinkle3 3.9s ease-in-out infinite 1.4s; }
+    #star11 { animation: starTwinkle2 4.3s ease-in-out infinite 0.9s; }
+    #star12 { animation: starTwinkle1 3.7s ease-in-out infinite 1.6s; }
+    #star13 { animation: starTwinkle3 4.5s ease-in-out infinite 0.4s; }
+    #star14 { animation: starTwinkle2 3.8s ease-in-out infinite 1.1s; }
+    #star15 { animation: starTwinkle1 4.2s ease-in-out infinite 1.9s; }
+
+    #child {
+      animation: childBreathing 5s ease-in-out infinite;
+      transform-origin: 256px 320px;
+    }
+
+    #flag {
+      animation: flagFlutter 2s ease-in-out infinite;
+      transform-origin: 256px 180px;
+    }
+
+    #cabinWindow {
+      animation: cabinWindowGlow 2.5s ease-in-out infinite;
+    }
+
+    #bird1 {
+      animation: birdDrift1 20s linear infinite;
+    }
+
+    #bird2 {
+      animation: birdDrift2 22s linear infinite;
+    }
+  </style>
+
+  <!-- BACKGROUND: SKY -->
+  <rect id="sky" width="512" height="512" fill="url(#skyGradient)"/>
+
+  <!-- AURORA GLOW LAYER (near horizon) -->
+  <ellipse id="auroraGlow" cx="256" cy="280" rx="280" ry="120" fill="url(#auroraGradient)"/>
+
+  <!-- STARS (20 varying sizes) -->
+  <circle id="star1" cx="80" cy="60" r="1.2" fill="#ffffff"/>
+  <circle id="star2" cx="120" cy="40" r="0.8" fill="#ffffff"/>
+  <circle id="star3" cx="150" cy="80" r="1" fill="#ffffff"/>
+  <circle id="star4" cx="200" cy="50" r="0.6" fill="#ffffff"/>
+  <circle id="star5" cx="250" cy="30" r="1.3" fill="#ffffff"/>
+  <circle id="star6" cx="300" cy="70" r="0.7" fill="#ffffff"/>
+  <circle id="star7" cx="350" cy="45" r="1.1" fill="#ffffff"/>
+  <circle id="star8" cx="400" cy="80" r="0.9" fill="#ffffff"/>
+  <circle id="star9" cx="440" cy="50" r="1.4" fill="#ffffff"/>
+  <circle id="star10" cx="480" cy="90" r="0.8" fill="#ffffff"/>
+
+  <!-- 4-pointed sparkles -->
+  <g id="star11" opacity="0.5">
+    <line x1="110" y1="100" x2="115" y2="105" stroke="#ffffff" stroke-width="0.6"/>
+    <line x1="112.5" y1="100" x2="112.5" y2="110" stroke="#ffffff" stroke-width="0.6"/>
+  </g>
+  <g id="star12" opacity="0.5">
+    <line x1="320" y1="110" x2="325" y2="115" stroke="#ffffff" stroke-width="0.6"/>
+    <line x1="322.5" y1="110" x2="322.5" y2="120" stroke="#ffffff" stroke-width="0.6"/>
+  </g>
+  <g id="star13" opacity="0.5">
+    <line x1="420" y1="120" x2="425" y2="125" stroke="#ffffff" stroke-width="0.6"/>
+    <line x1="422.5" y1="120" x2="422.5" y2="130" stroke="#ffffff" stroke-width="0.6"/>
+  </g>
+  <g id="star14" opacity="0.5">
+    <line x1="160" y1="150" x2="165" y2="155" stroke="#ffffff" stroke-width="0.6"/>
+    <line x1="162.5" y1="150" x2="162.5" y2="160" stroke="#ffffff" stroke-width="0.6"/>
+  </g>
+  <g id="star15" opacity="0.5">
+    <line x1="380" y1="140" x2="385" y2="145" stroke="#ffffff" stroke-width="0.6"/>
+    <line x1="382.5" y1="140" x2="382.5" y2="150" stroke="#ffffff" stroke-width="0.6"/>
+  </g>
+
+  <!-- BIRDS (silhouettes far in background) -->
+  <g id="bird1" opacity="0.4">
+    <path d="M 80 140 L 85 145 L 90 140 Q 87 143 85 143 Q 83 143 80 140" fill="#1a2a5e" stroke="none"/>
+  </g>
+  <g id="bird2" opacity="0.35">
+    <path d="M 450 160 L 455 165 L 460 160 Q 457 163 455 163 Q 453 163 450 160" fill="#1a2a5e" stroke="none"/>
+  </g>
+
+  <!-- DREAMY CLOUDS (5-6 wispy clouds, lavender/purple tinted, semi-transparent) -->
+  <g id="cloud1" opacity="0.6">
+    <circle cx="80" cy="100" r="18" fill="#c8a8d8"/>
+    <circle cx="100" cy="95" r="22" fill="#d8b8e8"/>
+    <circle cx="120" cy="105" r="20" fill="#c8a8d8"/>
+    <circle cx="95" cy="120" r="16" fill="#d8b8e8"/>
+  </g>
+
+  <g id="cloud2" opacity="0.55">
+    <circle cx="380" cy="80" r="20" fill="#b898c8"/>
+    <circle cx="405" cy="75" r="24" fill="#c8a8d8"/>
+    <circle cx="425" cy="90" r="18" fill="#b898c8"/>
+    <circle cx="400" cy="105" r="17" fill="#d8b8e8"/>
+  </g>
+
+  <g id="cloud3" opacity="0.6">
+    <circle cx="180" cy="130" r="16" fill="#d8b8e8"/>
+    <circle cx="200" cy="125" r="20" fill="#c8a8d8"/>
+    <circle cx="220" cy="135" r="18" fill="#d8b8e8"/>
+    <circle cx="200" cy="150" r="14" fill="#b898c8"/>
+  </g>
+
+  <g id="cloud4" opacity="0.5">
+    <circle cx="310" cy="140" r="19" fill="#c8a8d8"/>
+    <circle cx="335" cy="135" r="23" fill="#d8b8e8"/>
+    <circle cx="355" cy="148" r="17" fill="#c8a8d8"/>
+    <circle cx="330" cy="160" r="15" fill="#b898c8"/>
+  </g>
+
+  <g id="cloud5" opacity="0.55">
+    <circle cx="50" cy="180" r="17" fill="#b898c8"/>
+    <circle cx="70" cy="175" r="21" fill="#c8a8d8"/>
+    <circle cx="90" cy="185" r="19" fill="#d8b8e8"/>
+    <circle cx="70" cy="200" r="13" fill="#c8a8d8"/>
+  </g>
+
+  <g id="cloud6" opacity="0.6">
+    <circle cx="440" cy="160" r="18" fill="#d8b8e8"/>
+    <circle cx="465" cy="155" r="22" fill="#c8a8d8"/>
+    <circle cx="485" cy="170" r="16" fill="#b898c8"/>
+    <circle cx="460" cy="180" r="14" fill="#d8b8e8"/>
+  </g>
+
+  <!-- MOON (large, right side, partially near horizon) -->
+  <!-- Outer glow auras -->
+  <circle cx="420" cy="260" r="110" fill="url(#moonGlowOuter)" opacity="0.5"/>
+  <circle cx="420" cy="260" r="95" fill="url(#moonGlowOuter)" opacity="0.4"/>
+  <circle cx="420" cy="260" r="80" fill="url(#moonGlowOuter)" opacity="0.3"/>
+
+  <!-- Moon face -->
+  <circle cx="420" cy="260" r="65" fill="url(#moonGradient)"/>
+
+  <!-- Moon craters (subtle darker circles) -->
+  <circle cx="405" cy="245" r="8" fill="#d8c890" opacity="0.4" filter="url(#craterFilter)"/>
+  <circle cx="430" cy="250" r="6" fill="#d8c890" opacity="0.35" filter="url(#craterFilter)"/>
+  <circle cx="418" cy="270" r="7" fill="#d8c890" opacity="0.38" filter="url(#craterFilter)"/>
+  <circle cx="440" cy="280" r="5" fill="#d8c890" opacity="0.32" filter="url(#craterFilter)"/>
+  <circle cx="410" cy="290" r="6" fill="#d8c890" opacity="0.36" filter="url(#craterFilter)"/>
+
+  <!-- OCEAN -->
+  <rect x="0" y="305" width="512" height="207" fill="url(#oceanGradient)"/>
+
+  <!-- MOON REFLECTION ON WATER (vertical shimmer, broken by waves) -->
+  <rect id="reflection1" x="410" y="305" width="20" height="35" fill="url(#reflectionGradient)" opacity="0.4"/>
+  <rect id="reflection2" x="410" y="345" width="20" height="40" fill="url(#reflectionGradient)" opacity="0.4"/>
+  <rect id="reflection3" x="410" y="390" width="20" height="35" fill="url(#reflectionGradient)" opacity="0.4"/>
+  <rect id="reflection4" x="410" y="430" width="20" height="35" fill="url(#reflectionGradient)" opacity="0.4"/>
+
+  <!-- WAVE PATTERNS (4-5 undulating waves) -->
+  <path id="wave1" d="M 0 330 Q 64 325 128 330 T 256 330 T 384 330 T 512 330 L 512 340 Q 384 345 256 340 Q 128 335 0 340 Z" fill="none" stroke="#1a5a8e" stroke-width="2" opacity="0.7"/>
+
+  <path id="wave2" d="M 0 360 Q 80 350 160 360 T 320 360 T 480 360 L 512 365 Q 400 370 280 365 Q 160 360 0 370 Z" fill="none" stroke="#2a6a9e" stroke-width="2" opacity="0.6"/>
+
+  <path id="wave3" d="M 0 390 Q 70 380 140 390 T 280 390 T 420 390 T 512 390 L 512 400 Q 370 410 220 400 Q 70 390 0 405 Z" fill="none" stroke="#1a5a8e" stroke-width="1.5" opacity="0.5"/>
+
+  <path id="wave4" d="M 0 420 Q 85 410 170 420 T 340 420 T 510 420 L 512 430 Q 340 435 170 430 Q 0 425 0 435 Z" fill="none" stroke="#2a6a9e" stroke-width="1.5" opacity="0.55"/>
+
+  <path id="wave5" d="M 0 450 Q 75 445 150 450 T 300 450 T 450 450 T 512 450 L 512 460 Q 360 465 210 460 Q 60 455 0 465 Z" fill="none" stroke="#1a5a8e" stroke-width="1" opacity="0.5"/>
+
+  <!-- Wave foam highlights (white strokes with low opacity) -->
+  <path d="M 0 330 Q 64 325 128 330 T 256 330 T 384 330 T 512 330" fill="none" stroke="#ffffff" stroke-width="0.8" opacity="0.2"/>
+  <path d="M 0 360 Q 80 350 160 360 T 320 360 T 480 360" fill="none" stroke="#ffffff" stroke-width="0.8" opacity="0.15"/>
+  <path d="M 0 390 Q 70 380 140 390 T 280 390 T 420 390" fill="none" stroke="#ffffff" stroke-width="0.6" opacity="0.1"/>
+
+  <!-- SAILBOAT GROUP (animated as unit) -->
+  <g id="boatGroup">
+    <!-- Wooden hull -->
+    <path d="M 220 350 L 240 380 L 272 380 L 292 350 Z" fill="url(#hullGradient)" stroke="#5a4a37" stroke-width="1.5"/>
+
+    <!-- Hull plank details -->
+    <line x1="220" y1="358" x2="292" y2="358" stroke="#4a3a27" stroke-width="0.8" opacity="0.5"/>
+    <line x1="218" y1="365" x2="294" y2="365" stroke="#4a3a27" stroke-width="0.6" opacity="0.4"/>
+    <line x1="220" y1="372" x2="292" y2="372" stroke="#4a3a27" stroke-width="0.6" opacity="0.4"/>
+
+    <!-- Mast -->
+    <line x1="256" y1="200" x2="256" y2="380" stroke="#3a3a2a" stroke-width="3"/>
+
+    <!-- Main sail (large triangle) -->
+    <path id="mainSail" d="M 256 210 L 320 380 L 256 370 Z" fill="url(#sailGradient)" stroke="#e0d8c8" stroke-width="1" opacity="0.95"/>
+
+    <!-- Jib sail (smaller front sail) -->
+    <path d="M 256 220 L 200 380 L 256 375 Z" fill="#f5f1e8" stroke="#d8d0c8" stroke-width="0.8" opacity="0.85"/>
+
+    <!-- Cabin -->
+    <rect x="240" y="340" width="32" height="20" fill="#8b6f47" stroke="#5a4a37" stroke-width="1"/>
+
+    <!-- Cabin window (warm yellow glow) -->
+    <rect id="cabinWindow" x="248" y="345" width="8" height="8" fill="#ffd800" opacity="0.8"/>
+    <rect x="248" y="345" width="8" height="8" fill="none" stroke="#ff9800" stroke-width="0.5" opacity="0.6"/>
+
+    <!-- Flag/pennant at mast top -->
+    <g id="flag">
+      <path d="M 256 190 L 270 185 L 268 200 Z" fill="#ff6b9d" stroke="#ff3366" stroke-width="0.5"/>
+    </g>
+
+    <!-- Small deck details -->
+    <rect x="235" y="365" width="4" height="8" fill="#5a4a37" opacity="0.6"/>
+    <rect x="273" y="365" width="4" height="8" fill="#5a4a37" opacity="0.6"/>
+
+  </g>
+
+  <!-- SLEEPING CHILD ON BOAT DECK -->
+  <g id="child">
+    <!-- Pillow -->
+    <ellipse cx="250" cy="368" rx="12" ry="8" fill="#f8e8d8" stroke="#e8d8c8" stroke-width="0.8"/>
+
+    <!-- Star-patterned blanket -->
+    <ellipse cx="256" cy="378" rx="16" ry="10" fill="#4a3a8e" stroke="#3a2a7e" stroke-width="1"/>
+    <circle cx="250" cy="375" r="1.5" fill="#ffd800" opacity="0.8"/>
+    <circle cx="260" cy="377" r="1.2" fill="#ffd800" opacity="0.8"/>
+    <circle cx="256" cy="382" r="1" fill="#ffd800" opacity="0.7"/>
+
+    <!-- Child body (small, curled up) -->
+    <ellipse cx="256" cy="372" rx="8" ry="12" fill="#f5d8c8"/>
+
+    <!-- Child head -->
+    <circle cx="252" cy="360" r="7" fill="#f5d8c8" stroke="#e8c8b8" stroke-width="0.5"/>
+
+    <!-- Face details -->
+    <!-- Closed eyes with lashes -->
+    <path d="M 250 358 Q 251 356 252 358" stroke="#3a2a1a" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+    <path d="M 250 358 L 249.5 357" stroke="#3a2a1a" stroke-width="0.4" opacity="0.6"/>
+    <path d="M 250 358 L 250.5 357" stroke="#3a2a1a" stroke-width="0.4" opacity="0.6"/>
+
+    <path d="M 254 358 Q 255 356 256 358" stroke="#3a2a1a" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+    <path d="M 254 358 L 253.5 357" stroke="#3a2a1a" stroke-width="0.4" opacity="0.6"/>
+    <path d="M 254 358 L 254.5 357" stroke="#3a2a1a" stroke-width="0.4" opacity="0.6"/>
+
+    <!-- Gentle smile -->
+    <path d="M 250 362 Q 252 363 254 362" stroke="#3a2a1a" stroke-width="0.5" fill="none" stroke-linecap="round"/>
+
+    <!-- Rosy cheeks -->
+    <circle cx="247" cy="361" r="2.5" fill="#ff9bb5" opacity="0.5"/>
+    <circle cx="257" cy="361" r="2.5" fill="#ff9bb5" opacity="0.5"/>
+
+    <!-- Protective dreamlight aura (soft warm glow) -->
+    <circle cx="256" cy="370" r="22" fill="#fffacd" opacity="0.15"/>
+    <circle cx="256" cy="370" r="18" fill="#ffd700" opacity="0.08"/>
+  </g>
+
+</svg>
