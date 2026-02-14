@@ -34,9 +34,9 @@ export const SEED_STORIES = {
       theme: "dreamy",
       musicProfile: "dreamy-clouds",
       audio_variants: [
-        { voice: "female_1", url: "/audio/pre-gen/7fe248e1_female_1.mp3", duration_seconds: 58.68 },
-        { voice: "female_2", url: "/audio/pre-gen/7fe248e1_female_2.mp3", duration_seconds: 63.84 },
-        { voice: "male_1", url: "/audio/pre-gen/7fe248e1_male_1.mp3", duration_seconds: 53.08 },
+        { voice: "female_1", url: "/audio/pre-gen/7fe248e1_female_1.mp3", duration_seconds: 73.34 },
+        { voice: "female_2", url: "/audio/pre-gen/7fe248e1_female_2.mp3", duration_seconds: 79.79 },
+        { voice: "male_1", url: "/audio/pre-gen/7fe248e1_male_1.mp3", duration_seconds: 66.34 },
       ],
     },
     {
@@ -55,9 +55,9 @@ export const SEED_STORIES = {
       theme: "adventure",
       musicProfile: "forest-night",
       audio_variants: [
-        { voice: "female_1", url: "/audio/pre-gen/8e516449_female_1.mp3", duration_seconds: 77.92 },
-        { voice: "female_2", url: "/audio/pre-gen/8e516449_female_2.mp3", duration_seconds: 84.2 },
-        { voice: "male_1", url: "/audio/pre-gen/8e516449_male_1.mp3", duration_seconds: 71.16 },
+        { voice: "female_1", url: "/audio/pre-gen/8e516449_female_1.mp3", duration_seconds: 97.39 },
+        { voice: "female_2", url: "/audio/pre-gen/8e516449_female_2.mp3", duration_seconds: 105.24 },
+        { voice: "male_1", url: "/audio/pre-gen/8e516449_male_1.mp3", duration_seconds: 88.94 },
       ],
     },
     {
@@ -76,9 +76,9 @@ export const SEED_STORIES = {
       theme: "fairy_tale",
       musicProfile: "moonlit-meadow",
       audio_variants: [
-        { voice: "female_1", url: "/audio/pre-gen/30dec3e8_female_1.mp3", duration_seconds: 72.04 },
-        { voice: "female_2", url: "/audio/pre-gen/30dec3e8_female_2.mp3", duration_seconds: 77.48 },
-        { voice: "male_1", url: "/audio/pre-gen/30dec3e8_male_1.mp3", duration_seconds: 65.48 },
+        { voice: "female_1", url: "/audio/pre-gen/30dec3e8_female_1.mp3", duration_seconds: 90.04 },
+        { voice: "female_2", url: "/audio/pre-gen/30dec3e8_female_2.mp3", duration_seconds: 96.84 },
+        { voice: "male_1", url: "/audio/pre-gen/30dec3e8_male_1.mp3", duration_seconds: 81.85 },
       ],
     },
     {
@@ -97,9 +97,9 @@ export const SEED_STORIES = {
       theme: "space",
       musicProfile: "cosmic-voyage",
       audio_variants: [
-        { voice: "female_1", url: "/audio/pre-gen/d73e9530_female_1.mp3", duration_seconds: 91.96 },
-        { voice: "male_1", url: "/audio/pre-gen/d73e9530_male_1.mp3", duration_seconds: 85.12 },
-        { voice: "female_2", url: "/audio/pre-gen/d73e9530_female_2.mp3", duration_seconds: 99.2 },
+        { voice: "female_1", url: "/audio/pre-gen/d73e9530_female_1.mp3", duration_seconds: 114.94 },
+        { voice: "male_1", url: "/audio/pre-gen/d73e9530_male_1.mp3", duration_seconds: 106.39 },
+        { voice: "female_2", url: "/audio/pre-gen/d73e9530_female_2.mp3", duration_seconds: 123.99 },
       ],
     },
     {
@@ -118,9 +118,9 @@ export const SEED_STORIES = {
       theme: "fantasy",
       musicProfile: "enchanted-garden",
       audio_variants: [
-        { voice: "female_1", url: "/audio/pre-gen/9fba7605_female_1.mp3", duration_seconds: 97.4 },
-        { voice: "female_2", url: "/audio/pre-gen/9fba7605_female_2.mp3", duration_seconds: 104.2 },
-        { voice: "male_1", url: "/audio/pre-gen/9fba7605_male_1.mp3", duration_seconds: 90.52 },
+        { voice: "female_1", url: "/audio/pre-gen/9fba7605_female_1.mp3", duration_seconds: 121.74 },
+        { voice: "female_2", url: "/audio/pre-gen/9fba7605_female_2.mp3", duration_seconds: 130.24 },
+        { voice: "male_1", url: "/audio/pre-gen/9fba7605_male_1.mp3", duration_seconds: 113.14 },
       ],
     },
     {
@@ -139,9 +139,9 @@ export const SEED_STORIES = {
       theme: "dreamy",
       musicProfile: "starlight-lullaby",
       audio_variants: [
-        { voice: "female_1", url: "/audio/pre-gen/c8796852_female_1.mp3", duration_seconds: 30.88 },
-        { voice: "female_2", url: "/audio/pre-gen/c8796852_female_2.mp3", duration_seconds: 31.8 },
-        { voice: "male_1", url: "/audio/pre-gen/c8796852_male_1.mp3", duration_seconds: 29.56 },
+        { voice: "female_1", url: "/audio/pre-gen/c8796852_female_1.mp3", duration_seconds: 38.59 },
+        { voice: "female_2", url: "/audio/pre-gen/c8796852_female_2.mp3", duration_seconds: 39.73 },
+        { voice: "male_1", url: "/audio/pre-gen/c8796852_male_1.mp3", duration_seconds: 36.94 },
       ],
     },
     {
@@ -160,9 +160,9 @@ export const SEED_STORIES = {
       theme: "animals",
       musicProfile: "autumn-forest",
       audio_variants: [
-        { voice: "female_1", url: "/audio/pre-gen/e32eaee0_female_1.mp3", duration_seconds: 25.88 },
-        { voice: "female_2", url: "/audio/pre-gen/e32eaee0_female_2.mp3", duration_seconds: 26.48 },
-        { voice: "male_1", url: "/audio/pre-gen/e32eaee0_male_1.mp3", duration_seconds: 24.52 },
+        { voice: "female_1", url: "/audio/pre-gen/e32eaee0_female_1.mp3", duration_seconds: 32.34 },
+        { voice: "female_2", url: "/audio/pre-gen/e32eaee0_female_2.mp3", duration_seconds: 33.1 },
+        { voice: "male_1", url: "/audio/pre-gen/e32eaee0_male_1.mp3", duration_seconds: 30.65 },
       ],
     },
     {
@@ -181,9 +181,9 @@ export const SEED_STORIES = {
       theme: "dreamy",
       musicProfile: "ocean-drift",
       audio_variants: [
-        { voice: "female_1", url: "/audio/pre-gen/a3945b7b_female_1.mp3", duration_seconds: 38.44 },
-        { voice: "male_1", url: "/audio/pre-gen/a3945b7b_male_1.mp3", duration_seconds: 35.24 },
-        { voice: "female_2", url: "/audio/pre-gen/a3945b7b_female_2.mp3", duration_seconds: 45.64 },
+        { voice: "female_1", url: "/audio/pre-gen/a3945b7b_female_1.mp3", duration_seconds: 48.04 },
+        { voice: "male_1", url: "/audio/pre-gen/a3945b7b_male_1.mp3", duration_seconds: 44.04 },
+        { voice: "female_2", url: "/audio/pre-gen/a3945b7b_female_2.mp3", duration_seconds: 57.04 },
       ],
     },
   ],
@@ -204,9 +204,9 @@ export const SEED_STORIES = {
       theme: "dreamy",
       musicProfile: "dreamy-clouds",
       audio_variants: [
-        { voice: "male_1_hi", url: "/audio/pre-gen/hi-neend_male_1_hi.mp3", duration_seconds: 76.0 },
-        { voice: "female_2_hi", url: "/audio/pre-gen/hi-neend_female_2_hi.mp3", duration_seconds: 75.12 },
-        { voice: "female_1_hi", url: "/audio/pre-gen/hi-neend_female_1_hi.mp3", duration_seconds: 84.24 },
+        { voice: "male_1_hi", url: "/audio/pre-gen/hi-neend_male_1_hi.mp3", duration_seconds: 94.99 },
+        { voice: "female_2_hi", url: "/audio/pre-gen/hi-neend_female_2_hi.mp3", duration_seconds: 93.89 },
+        { voice: "female_1_hi", url: "/audio/pre-gen/hi-neend_female_1_hi.mp3", duration_seconds: 105.29 },
       ],
     },
     {
@@ -225,9 +225,9 @@ export const SEED_STORIES = {
       theme: "adventure",
       musicProfile: "forest-night",
       audio_variants: [
-        { voice: "male_1_hi", url: "/audio/pre-gen/hi-bahad_male_1_hi.mp3", duration_seconds: 72.48 },
-        { voice: "female_2_hi", url: "/audio/pre-gen/hi-bahad_female_2_hi.mp3", duration_seconds: 69.24 },
-        { voice: "female_1_hi", url: "/audio/pre-gen/hi-bahad_female_1_hi.mp3", duration_seconds: 79.08 },
+        { voice: "male_1_hi", url: "/audio/pre-gen/hi-bahad_male_1_hi.mp3", duration_seconds: 90.59 },
+        { voice: "female_2_hi", url: "/audio/pre-gen/hi-bahad_female_2_hi.mp3", duration_seconds: 86.54 },
+        { voice: "female_1_hi", url: "/audio/pre-gen/hi-bahad_female_1_hi.mp3", duration_seconds: 98.85 },
       ],
     },
     {
@@ -246,9 +246,9 @@ export const SEED_STORIES = {
       theme: "fairy_tale",
       musicProfile: "moonlit-meadow",
       audio_variants: [
-        { voice: "male_1_hi", url: "/audio/pre-gen/hi-chaan_male_1_hi.mp3", duration_seconds: 54.6 },
-        { voice: "female_2_hi", url: "/audio/pre-gen/hi-chaan_female_2_hi.mp3", duration_seconds: 51.64 },
-        { voice: "female_1_hi", url: "/audio/pre-gen/hi-chaan_female_1_hi.mp3", duration_seconds: 60.04 },
+        { voice: "male_1_hi", url: "/audio/pre-gen/hi-chaan_male_1_hi.mp3", duration_seconds: 68.23 },
+        { voice: "female_2_hi", url: "/audio/pre-gen/hi-chaan_female_2_hi.mp3", duration_seconds: 64.54 },
+        { voice: "female_1_hi", url: "/audio/pre-gen/hi-chaan_female_1_hi.mp3", duration_seconds: 75.04 },
       ],
     },
     {
@@ -267,9 +267,9 @@ export const SEED_STORIES = {
       theme: "space",
       musicProfile: "cosmic-voyage",
       audio_variants: [
-        { voice: "male_1_hi", url: "/audio/pre-gen/hi-capta_male_1_hi.mp3", duration_seconds: 62.6 },
-        { voice: "female_2_hi", url: "/audio/pre-gen/hi-capta_female_2_hi.mp3", duration_seconds: 61.76 },
-        { voice: "female_1_hi", url: "/audio/pre-gen/hi-capta_female_1_hi.mp3", duration_seconds: 67.48 },
+        { voice: "male_1_hi", url: "/audio/pre-gen/hi-capta_male_1_hi.mp3", duration_seconds: 78.24 },
+        { voice: "female_2_hi", url: "/audio/pre-gen/hi-capta_female_2_hi.mp3", duration_seconds: 77.19 },
+        { voice: "female_1_hi", url: "/audio/pre-gen/hi-capta_female_1_hi.mp3", duration_seconds: 84.34 },
       ],
     },
     {
@@ -288,9 +288,9 @@ export const SEED_STORIES = {
       theme: "fantasy",
       musicProfile: "enchanted-garden",
       audio_variants: [
-        { voice: "male_1_hi", url: "/audio/pre-gen/hi-gungu_male_1_hi.mp3", duration_seconds: 47.16 },
-        { voice: "female_2_hi", url: "/audio/pre-gen/hi-gungu_female_2_hi.mp3", duration_seconds: 47.28 },
-        { voice: "female_1_hi", url: "/audio/pre-gen/hi-gungu_female_1_hi.mp3", duration_seconds: 50.08 },
+        { voice: "male_1_hi", url: "/audio/pre-gen/hi-gungu_male_1_hi.mp3", duration_seconds: 58.93 },
+        { voice: "female_2_hi", url: "/audio/pre-gen/hi-gungu_female_2_hi.mp3", duration_seconds: 59.09 },
+        { voice: "female_1_hi", url: "/audio/pre-gen/hi-gungu_female_1_hi.mp3", duration_seconds: 62.59 },
       ],
     },
     {
@@ -309,9 +309,9 @@ export const SEED_STORIES = {
       theme: "dreamy",
       musicProfile: "starlight-lullaby",
       audio_variants: [
-        { voice: "male_1_hi", url: "/audio/pre-gen/hi-chama_male_1_hi.mp3", duration_seconds: 28.4 },
-        { voice: "female_2_hi", url: "/audio/pre-gen/hi-chama_female_2_hi.mp3", duration_seconds: 27.48 },
-        { voice: "female_1_hi", url: "/audio/pre-gen/hi-chama_female_1_hi.mp3", duration_seconds: 30.28 },
+        { voice: "male_1_hi", url: "/audio/pre-gen/hi-chama_male_1_hi.mp3", duration_seconds: 35.49 },
+        { voice: "female_2_hi", url: "/audio/pre-gen/hi-chama_female_2_hi.mp3", duration_seconds: 34.34 },
+        { voice: "female_1_hi", url: "/audio/pre-gen/hi-chama_female_1_hi.mp3", duration_seconds: 37.83 },
       ],
     },
     {
@@ -330,9 +330,9 @@ export const SEED_STORIES = {
       theme: "animals",
       musicProfile: "autumn-forest",
       audio_variants: [
-        { voice: "male_1_hi", url: "/audio/pre-gen/hi-ullu-_male_1_hi.mp3", duration_seconds: 30.92 },
-        { voice: "female_2_hi", url: "/audio/pre-gen/hi-ullu-_female_2_hi.mp3", duration_seconds: 31.76 },
-        { voice: "female_1_hi", url: "/audio/pre-gen/hi-ullu-_female_1_hi.mp3", duration_seconds: 41.52 },
+        { voice: "male_1_hi", url: "/audio/pre-gen/hi-ullu-_male_1_hi.mp3", duration_seconds: 38.63 },
+        { voice: "female_2_hi", url: "/audio/pre-gen/hi-ullu-_female_2_hi.mp3", duration_seconds: 39.69 },
+        { voice: "female_1_hi", url: "/audio/pre-gen/hi-ullu-_female_1_hi.mp3", duration_seconds: 51.89 },
       ],
     },
     {
@@ -351,9 +351,9 @@ export const SEED_STORIES = {
       theme: "dreamy",
       musicProfile: "ocean-drift",
       audio_variants: [
-        { voice: "male_1_hi", url: "/audio/pre-gen/hi-sapno_male_1_hi.mp3", duration_seconds: 22.0 },
-        { voice: "female_2_hi", url: "/audio/pre-gen/hi-sapno_female_2_hi.mp3", duration_seconds: 23.76 },
-        { voice: "female_1_hi", url: "/audio/pre-gen/hi-sapno_female_1_hi.mp3", duration_seconds: 26.6 },
+        { voice: "male_1_hi", url: "/audio/pre-gen/hi-sapno_male_1_hi.mp3", duration_seconds: 27.49 },
+        { voice: "female_2_hi", url: "/audio/pre-gen/hi-sapno_female_2_hi.mp3", duration_seconds: 29.69 },
+        { voice: "female_1_hi", url: "/audio/pre-gen/hi-sapno_female_1_hi.mp3", duration_seconds: 33.23 },
       ],
     },
   ],

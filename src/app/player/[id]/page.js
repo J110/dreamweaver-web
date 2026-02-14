@@ -14,14 +14,6 @@ import styles from './page.module.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-// Speed control options
-const SPEED_OPTIONS = [
-  { label: '0.75×', value: 0.75 },
-  { label: '1×',    value: 1.0 },
-  { label: '1.25×', value: 1.25 },
-  { label: '1.5×',  value: 1.5 },
-];
-
 export default function PlayerPage() {
   const params = useParams();
   const router = useRouter();
@@ -42,9 +34,8 @@ export default function PlayerPage() {
   const [musicMuted, setMusicMuted] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState(null);
-  const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
   const audioRef = useRef(null);
-  const audioDisposingRef = useRef(false); // flag to suppress error events during disposal
+  const audioDisposingRef = useRef(false);
   const progressIntervalRef = useRef(null);
   const musicRef = useRef(null);
   const musicStartedRef = useRef(false);
@@ -53,7 +44,6 @@ export default function PlayerPage() {
   useEffect(() => {
     musicRef.current = getAmbientMusic();
     return () => {
-      // Clean up audio on unmount
       if (audioRef.current) {
         audioDisposingRef.current = true;
         audioRef.current.pause();
@@ -76,28 +66,14 @@ export default function PlayerPage() {
     const preferredDefault = getDefaultVoice(lang);
 
     if (variants.length > 0) {
-      // Try to match preferred voice from preferences
       const match = variants.find(v => v.voice === preferredDefault);
       setSelectedVoice(match ? match.voice : variants[0].voice);
     } else {
-      // No pre-gen audio — use preference or fallback
       setSelectedVoice(preferredDefault);
     }
   }, [content, selectedVoice, lang, getDefaultVoice]);
 
-  // Auto-start ambient music when story page loads.
-  //
-  // play() is now async — it waits for AudioContext to reach 'running' state
-  // before building the soundscape. This handles the race condition where the
-  // context is suspended during SPA navigation.
-  //
-  // Strategy:
-  // 1. Try immediately — works if AudioContext was pre-unlocked (card click)
-  //    or the browser is permissive (e.g. user has interacted recently)
-  // 2. If AudioContext is still suspended after the immediate try, register
-  //    gesture listeners so the very first tap/click starts music instantly.
-  // 3. Also retry on a short interval — some browsers auto-resume context
-  //    after the navigation settles (especially mobile Safari).
+  // Auto-start ambient music
   useEffect(() => {
     if (!content?.musicProfile) return;
 
@@ -111,7 +87,7 @@ export default function PlayerPage() {
       if (!profile || !musicRef.current) return false;
       try {
         musicRef.current.setVolume(musicVolume / 100);
-        await musicRef.current.play(profile); // async — waits for AudioContext
+        await musicRef.current.play(profile);
         if (!cancelled) {
           setMusicPlaying(true);
           musicStartedRef.current = true;
@@ -122,22 +98,18 @@ export default function PlayerPage() {
       }
     };
 
-    // Attempt 1: Try immediately (async)
     startMusic().then((ok) => {
       if (ok || cancelled) return;
-
-      // Attempt 2: Retry a few times with delay (handles context resuming after navigation)
       const retry = () => {
         if (musicStartedRef.current || cancelled) return;
         retryCount++;
-        if (retryCount > 5) return; // give up on auto-retry
+        if (retryCount > 5) return;
         startMusic();
         retryTimer = setTimeout(retry, 500);
       };
       retryTimer = setTimeout(retry, 300);
     });
 
-    // Attempt 3: On first user gesture (guaranteed to work)
     const onGesture = () => {
       if (musicStartedRef.current) {
         removeGestureListeners();
@@ -165,12 +137,11 @@ export default function PlayerPage() {
     };
   }, [content?.musicProfile, musicVolume]);
 
-  // Resolve audio source: pre-generated file or live TTS fallback
+  // Resolve audio source
   const getAudioSource = useCallback(() => {
     if (!content) return null;
     const variants = content.audio_variants || [];
 
-    // Try to find pre-generated audio for selected voice
     const match = variants.find(v => v.voice === selectedVoice);
     if (match) {
       return {
@@ -180,7 +151,6 @@ export default function PlayerPage() {
       };
     }
 
-    // Fallback to live edge-tts
     const text = (content.text || '').substring(0, 5000);
     const baseId = selectedVoice?.replace(/_hi$/, '') || '';
     const voiceMeta = VOICES[baseId];
@@ -198,7 +168,6 @@ export default function PlayerPage() {
     };
   }, [content, selectedVoice, lang]);
 
-  // Start progress tracking
   const startProgressTracking = useCallback(() => {
     if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
     progressIntervalRef.current = setInterval(() => {
@@ -221,16 +190,13 @@ export default function PlayerPage() {
   const handlePlayPause = useCallback(async () => {
     if (!content) return;
 
-    // If we have an active audio element with a source
     if (audioRef.current && audioRef.current.src) {
       if (isPlaying) {
-        // PAUSE narration only
         audioRef.current.pause();
         setIsPlaying(false);
         stopProgressTracking();
         return;
       } else if (audioRef.current.currentTime > 0 && !audioRef.current.ended) {
-        // RESUME narration only
         try {
           await audioRef.current.play();
           setIsPlaying(true);
@@ -242,7 +208,6 @@ export default function PlayerPage() {
       }
     }
 
-    // START FRESH - create new audio
     const audioSource = getAudioSource();
     if (!audioSource) return;
 
@@ -251,18 +216,13 @@ export default function PlayerPage() {
     setProgress(0);
     setCurrentTime(0);
 
-    // If pre-gen, we know duration upfront
     if (audioSource.isPregen && audioSource.duration) {
       setDuration(audioSource.duration);
     }
 
     try {
-      // Create audio element
       const audio = new Audio();
       audioRef.current = audio;
-
-      // Apply playback speed
-      audio.playbackRate = playbackSpeed;
 
       audio.addEventListener('loadedmetadata', () => {
         if (audio.duration && !isNaN(audio.duration)) {
@@ -290,7 +250,6 @@ export default function PlayerPage() {
       });
 
       audio.addEventListener('error', () => {
-        // Ignore error events fired during intentional disposal (voice change / unmount)
         if (audioDisposingRef.current) return;
         setAudioLoading(false);
         setAudioError(lang === 'hi' ? 'Audio load nahi ho paya. Baad mein try karein.' : 'Could not load audio. Try again later.');
@@ -298,7 +257,6 @@ export default function PlayerPage() {
         stopProgressTracking();
       });
 
-      // Start loading
       audio.src = audioSource.url;
       audio.load();
     } catch (e) {
@@ -306,18 +264,16 @@ export default function PlayerPage() {
       setAudioLoading(false);
       setAudioError(lang === 'hi' ? 'Audio mein error aa gaya' : 'Audio error occurred');
     }
-  }, [content, isPlaying, lang, playbackSpeed, getAudioSource, startProgressTracking, stopProgressTracking]);
+  }, [content, isPlaying, lang, getAudioSource, startProgressTracking, stopProgressTracking]);
 
   // Handle voice character change
   const handleVoiceChange = useCallback((voiceId) => {
     if (voiceId === selectedVoice) return;
-    // Stop current audio when switching voice
     if (audioRef.current) {
-      audioDisposingRef.current = true; // suppress error events during disposal
+      audioDisposingRef.current = true;
       audioRef.current.pause();
       audioRef.current.src = '';
       audioRef.current = null;
-      // Reset flag after a tick so future audio elements work normally
       setTimeout(() => { audioDisposingRef.current = false; }, 50);
     }
     setIsPlaying(false);
@@ -329,14 +285,6 @@ export default function PlayerPage() {
     setSelectedVoice(voiceId);
   }, [selectedVoice, stopProgressTracking]);
 
-  // Handle playback speed change
-  const handleSpeedChange = useCallback((speed) => {
-    setPlaybackSpeed(speed);
-    if (audioRef.current) {
-      audioRef.current.playbackRate = speed;
-    }
-  }, []);
-
   // Handle music volume changes
   const handleMusicVolumeChange = useCallback((e) => {
     const vol = parseInt(e.target.value, 10);
@@ -346,7 +294,6 @@ export default function PlayerPage() {
     }
   }, []);
 
-  // Toggle music play/pause (independent of narration)
   const handleMusicPlayPause = useCallback(async () => {
     if (!musicRef.current || !content?.musicProfile) return;
     if (musicPlaying) {
@@ -365,7 +312,6 @@ export default function PlayerPage() {
     }
   }, [musicPlaying, content?.musicProfile, musicVolume]);
 
-  // Mute/unmute music (keeps playing but silences)
   const handleMusicMuteToggle = useCallback(() => {
     setMusicMuted(prev => {
       const newMuted = !prev;
@@ -497,6 +443,36 @@ export default function PlayerPage() {
     }
   };
 
+  // Build voice switch buttons — show only non-active preferred voices as "Switch to X" options
+  const getVoiceSwitchOptions = () => {
+    if (!content || !hasVoicePrefs || !selectedVoice) return [];
+    const allVariants = content.audio_variants || [];
+    const prefVoiceIds = getStoryVoices(lang);
+    if (!prefVoiceIds || prefVoiceIds.length === 0) return [];
+
+    return prefVoiceIds
+      .filter(vid => vid !== selectedVoice)
+      .map(vid => {
+        const variant = allVariants.find(v => v.voice === vid);
+        if (!variant) return null;
+        const baseId = vid.replace(/_hi$/, '');
+        const meta = VOICES[baseId];
+        if (!meta) return null;
+        const label = getVoiceLabel(baseId, lang);
+        const genderLabel = lang === 'hi'
+          ? (meta.gender === 'female' ? 'महिला' : 'पुरुष')
+          : (meta.gender === 'female' ? 'Female' : 'Male');
+        return {
+          voiceId: vid,
+          icon: meta.icon,
+          switchLabel: lang === 'hi'
+            ? `${label} ${genderLabel}`
+            : `${label} ${genderLabel}`,
+        };
+      })
+      .filter(Boolean);
+  };
+
   if (loading) {
     return (
       <>
@@ -523,6 +499,8 @@ export default function PlayerPage() {
       </>
     );
   }
+
+  const voiceSwitchOptions = getVoiceSwitchOptions();
 
   return (
     <>
@@ -570,76 +548,50 @@ export default function PlayerPage() {
           </span>
         </div>
 
-        {/* Voice tone picker */}
-        {(content?.audio_variants || []).length > 0 && (() => {
-          // If user has voice preferences, show only their 3 chosen voices
-          // Otherwise show all available variants
-          const allVariants = content.audio_variants || [];
-          const prefVoiceIds = hasVoicePrefs ? getStoryVoices(lang) : null;
-          const displayVariants = prefVoiceIds
-            ? prefVoiceIds
-                .map(vid => allVariants.find(v => v.voice === vid))
-                .filter(Boolean)
-            : allVariants;
-
-          if (displayVariants.length === 0) return null;
-
-          return (
-            <div className={styles.voiceSelector}>
-              <div className={styles.voiceChips}>
-                {displayVariants.map((variant, idx) => {
-                  // Extract base voice ID (strip _hi suffix) for metadata lookup
-                  const baseId = variant.voice.replace(/_hi$/, '');
-                  const meta = VOICES[baseId] || { label: variant.voice, labelHi: variant.voice, icon: '🎤', gender: 'female' };
-                  const isActive = selectedVoice === variant.voice;
-                  const displayLabel = getVoiceLabel(baseId, lang);
-
-                  // Badge: if prefs set, show Primary/Secondary/Alt
-                  let badge = null;
-                  if (hasVoicePrefs && prefVoiceIds) {
-                    const prefIdx = prefVoiceIds.indexOf(variant.voice);
-                    if (prefIdx === 0) badge = lang === 'hi' ? 'प्राथमिक' : 'Primary';
-                    else if (prefIdx === 1) badge = lang === 'hi' ? 'द्वितीय' : 'Secondary';
-                    else if (prefIdx === 2) badge = lang === 'hi' ? 'वैकल्पिक' : 'Alternate';
-                  }
-
-                  return (
-                    <button
-                      key={variant.voice}
-                      onClick={() => handleVoiceChange(variant.voice)}
-                      className={`${styles.voiceChip} ${isActive ? styles.voiceChipActive : ''}`}
-                      disabled={audioLoading}
-                    >
-                      <span className={styles.voiceChipIcon}>{meta.icon}</span>
-                      <span className={styles.voiceChipName}>{displayLabel}</span>
-                      {badge && !isActive && (
-                        <span className={styles.voiceChipBadge}>{badge}</span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })()}
-
-        {/* Speed control */}
-        <div className={styles.speedControl}>
-          <span className={styles.speedLabel}>
-            {lang === 'hi' ? 'गति' : 'Speed'}
-          </span>
-          <div className={styles.speedBtnGroup}>
-            {SPEED_OPTIONS.map(opt => (
+        {/* Voice switch buttons — "Switch to Calm Female" / "Switch to Warm Male" */}
+        {voiceSwitchOptions.length > 0 && (
+          <div className={styles.voiceSwitchRow}>
+            {voiceSwitchOptions.map(opt => (
               <button
-                key={opt.value}
-                onClick={() => handleSpeedChange(opt.value)}
-                className={`${styles.speedBtn} ${playbackSpeed === opt.value ? styles.speedBtnActive : ''}`}
+                key={opt.voiceId}
+                onClick={() => handleVoiceChange(opt.voiceId)}
+                className={styles.voiceSwitchBtn}
+                disabled={audioLoading}
               >
-                {opt.label}
+                <span className={styles.voiceSwitchIcon}>{opt.icon}</span>
+                <span className={styles.voiceSwitchLabel}>
+                  {lang === 'hi' ? `${opt.switchLabel} पर सुनें` : `Switch to ${opt.switchLabel}`}
+                </span>
               </button>
             ))}
           </div>
-        </div>
+        )}
+
+        {/* Fallback: if no prefs, show all voice chips */}
+        {!hasVoicePrefs && (content?.audio_variants || []).length > 1 && (
+          <div className={styles.voiceSelector}>
+            <div className={styles.voiceChips}>
+              {(content.audio_variants || []).map((variant) => {
+                const baseId = variant.voice.replace(/_hi$/, '');
+                const meta = VOICES[baseId] || { label: variant.voice, labelHi: variant.voice, icon: '🎤', gender: 'female' };
+                const isActive = selectedVoice === variant.voice;
+                const displayLabel = getVoiceLabel(baseId, lang);
+
+                return (
+                  <button
+                    key={variant.voice}
+                    onClick={() => handleVoiceChange(variant.voice)}
+                    className={`${styles.voiceChip} ${isActive ? styles.voiceChipActive : ''}`}
+                    disabled={audioLoading}
+                  >
+                    <span className={styles.voiceChipIcon}>{meta.icon}</span>
+                    <span className={styles.voiceChipName}>{displayLabel}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {audioError && (
           <p className={styles.audioError}>{audioError}</p>

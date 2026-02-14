@@ -2,7 +2,7 @@
   position: relative;
   z-index: 1;
   min-height: 100vh;
-  padding: 0 16px;
+  padding: 0 16px 100px;
   max-width: 480px;
   margin: 0 auto;
 }
@@ -98,6 +98,193 @@
   background: var(--color-primary-purple);
   color: white;
 }
+
+/* ── Voice Settings (inline collapsible) ────────── */
+
+.voiceSettingsCard {
+  background: var(--color-card-dark);
+  border: 1px solid rgba(107, 76, 230, 0.15);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.voiceSettingsHeader {
+  width: 100%;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.voiceChevron {
+  color: var(--color-text-muted);
+  font-size: 18px;
+  transition: transform var(--transition-fast);
+}
+
+.voiceChevronOpen {
+  transform: rotate(180deg);
+}
+
+.voiceSettingsBody {
+  padding: 0 16px 16px;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; max-height: 0; }
+  to { opacity: 1; max-height: 1000px; }
+}
+
+.voiceDesc {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin: 0 0 16px 0;
+}
+
+.voiceSection {
+  margin-bottom: 16px;
+}
+
+.voiceSectionTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin: 0 0 8px 0;
+}
+
+.genderRow {
+  display: flex;
+  gap: 8px;
+}
+
+.genderBtn {
+  flex: 1;
+  padding: 10px;
+  background: rgba(13, 11, 46, 0.5);
+  border: 2px solid rgba(107, 76, 230, 0.15);
+  border-radius: 12px;
+  color: var(--color-text-light);
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.genderBtn:hover {
+  border-color: var(--color-primary-purple);
+}
+
+.genderBtnActive {
+  border-color: var(--color-primary-purple);
+  background: linear-gradient(135deg, rgba(107, 76, 230, 0.15), rgba(255, 107, 157, 0.1));
+  box-shadow: 0 0 12px rgba(107, 76, 230, 0.2);
+}
+
+.voiceGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.voiceCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 6px;
+  background: rgba(13, 11, 46, 0.5);
+  border: 2px solid rgba(107, 76, 230, 0.15);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  font-family: 'Quicksand', sans-serif;
+  color: var(--color-text-light);
+}
+
+.voiceCard:hover {
+  border-color: var(--color-primary-purple);
+  transform: translateY(-1px);
+}
+
+.voiceCardActive {
+  border-color: var(--color-primary-purple);
+  background: linear-gradient(135deg, rgba(107, 76, 230, 0.15), rgba(255, 107, 157, 0.1));
+  box-shadow: 0 0 10px rgba(107, 76, 230, 0.2);
+}
+
+.voiceCardPlaying {
+  border-color: var(--color-magic-teal);
+  box-shadow: 0 0 12px rgba(76, 230, 200, 0.2);
+}
+
+.voiceIcon {
+  font-size: 24px;
+}
+
+.voiceName {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.voiceBadge,
+.voiceBadgeSecondary,
+.voiceBadgeAlt {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 800;
+  color: white;
+}
+
+.voiceBadge {
+  background: var(--color-primary-purple);
+}
+
+.voiceBadgeSecondary {
+  background: var(--color-primary-pink);
+}
+
+.voiceBadgeAlt {
+  background: var(--color-magic-teal);
+  color: var(--color-bg-dark);
+}
+
+.saveVoiceBtn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--color-primary-purple), var(--color-primary-pink));
+  color: white;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: 0 4px 16px rgba(107, 76, 230, 0.3);
+  margin-top: 4px;
+}
+
+.saveVoiceBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(107, 76, 230, 0.4);
+}
+
+/* ── Logout ─────────────────────────────────────── */
 
 .logoutBtn {
   width: 100%;

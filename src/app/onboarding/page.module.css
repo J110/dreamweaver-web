@@ -40,6 +40,18 @@
   animation: slideUp 0.4s ease-out;
 }
 
+.slideWide {
+  max-width: 420px;
+  max-height: calc(100dvh - 80px);
+  overflow-y: auto;
+  padding-bottom: var(--spacing-lg);
+  scrollbar-width: none;
+}
+
+.slideWide::-webkit-scrollbar {
+  display: none;
+}
+
 .iconLarge {
   font-size: 80px;
   margin-bottom: var(--spacing-lg);
@@ -186,76 +198,7 @@
   cursor: not-allowed;
 }
 
-/* ── Voice Preview (Step 3) ─────────────────────────── */
-
-.voicePreviewSections {
-  width: 100%;
-  margin: var(--spacing-lg) 0;
-}
-
-.voiceSection {
-  margin-bottom: var(--spacing-lg);
-}
-
-.voiceSectionLabel {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: var(--spacing-sm);
-  text-align: left;
-}
-
-.voiceGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: var(--spacing-sm);
-}
-
-.voiceCard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: var(--spacing-sm) var(--spacing-xs, 4px);
-  background: var(--color-card-dark);
-  border: 2px solid rgba(107, 76, 230, 0.15);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all var(--transition-normal);
-  font-family: 'Quicksand', sans-serif;
-  color: var(--color-text-light);
-}
-
-.voiceCard:hover {
-  border-color: var(--color-primary-purple);
-  transform: translateY(-1px);
-}
-
-.voiceCardPlaying {
-  border-color: var(--color-magic-teal);
-  background: linear-gradient(135deg, rgba(76, 230, 200, 0.1), rgba(107, 76, 230, 0.1));
-  box-shadow: 0 0 16px rgba(76, 230, 200, 0.2);
-  animation: voicePulse 1.5s ease-in-out infinite;
-}
-
-.voiceCardIcon {
-  font-size: 28px;
-}
-
-.voiceCardName {
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.voiceCardAction {
-  font-size: 14px;
-  opacity: 0.7;
-}
-
-/* ── Voice Selection (Step 4) ────────────────────────── */
+/* ── Gender Selection ─────────────────────────────── */
 
 .subStepLabel {
   font-size: 15px;
@@ -277,8 +220,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-lg) var(--spacing-md);
+  gap: 4px;
+  padding: var(--spacing-md) var(--spacing-sm);
   background: var(--color-card-dark);
   border: 2px solid rgba(107, 76, 230, 0.2);
   border-radius: var(--radius-lg);
@@ -300,28 +243,30 @@
 }
 
 .genderIcon {
-  font-size: 48px;
+  font-size: 36px;
 }
 
 .genderName {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
 }
 
-.voicePickGrid {
+/* ── Voice Cards ───────────────────────────────────── */
+
+.voiceGrid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: var(--spacing-sm);
   width: 100%;
 }
 
-.voicePickCard {
+.voiceCard {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: var(--spacing-md) var(--spacing-sm);
+  gap: 4px;
+  padding: var(--spacing-sm) var(--spacing-xs, 4px);
   background: var(--color-card-dark);
   border: 2px solid rgba(107, 76, 230, 0.15);
   border-radius: var(--radius-md);
@@ -331,24 +276,36 @@
   color: var(--color-text-light);
 }
 
-.voicePickCard:hover {
+.voiceCard:hover {
   border-color: var(--color-primary-purple);
   transform: translateY(-1px);
 }
 
-.voicePickCardActive {
+.voiceCardSelected {
   border-color: var(--color-primary-purple);
   background: linear-gradient(135deg, rgba(107, 76, 230, 0.15), rgba(255, 107, 157, 0.1));
   box-shadow: 0 0 12px rgba(107, 76, 230, 0.2);
 }
 
-.voicePickIcon {
-  font-size: 32px;
+.voiceCardPlaying {
+  border-color: var(--color-magic-teal);
+  background: linear-gradient(135deg, rgba(76, 230, 200, 0.1), rgba(107, 76, 230, 0.1));
+  box-shadow: 0 0 16px rgba(76, 230, 200, 0.2);
+  animation: voicePulse 1.5s ease-in-out infinite;
 }
 
-.voicePickName {
-  font-size: 13px;
+.voiceCardIcon {
+  font-size: 28px;
+}
+
+.voiceCardName {
+  font-size: 12px;
   font-weight: 600;
+}
+
+.voiceCardAction {
+  font-size: 14px;
+  opacity: 0.7;
 }
 
 /* Rank badges */
@@ -385,6 +342,82 @@
   box-shadow: 0 2px 8px rgba(76, 230, 200, 0.5);
 }
 
+/* ── Skip Prompt Modal ─────────────────────────────── */
+
+.skipOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(5, 3, 30, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: var(--spacing-lg);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.skipModal {
+  background: var(--color-card-dark);
+  border: 1px solid rgba(107, 76, 230, 0.3);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  max-width: 360px;
+  text-align: center;
+  box-shadow: 0 8px 40px rgba(107, 76, 230, 0.3);
+}
+
+.skipText {
+  font-size: 15px;
+  color: var(--color-text-light);
+  line-height: 1.5;
+  margin: 0 0 var(--spacing-lg) 0;
+}
+
+.skipActions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.skipGoBack {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: none;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--color-primary-purple), var(--color-primary-pink));
+  color: white;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.skipGoBack:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(107, 76, 230, 0.4);
+}
+
+.skipAnyway {
+  width: 100%;
+  padding: var(--spacing-sm);
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.skipAnyway:hover {
+  color: var(--color-text-light);
+}
+
 /* ── Animations ────────────────────────────────────── */
 
 @keyframes slideUp {
@@ -396,6 +429,11 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes voicePulse {

@@ -1,17 +1,41 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import StarField from '@/components/StarField';
-import Link from 'next/link';
 import { isLoggedIn, getUser, logout } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
+import { useVoicePreferences } from '@/utils/voicePreferences';
+import { VOICES, getVoicesForGender, getSampleUrl, getVoiceLabel } from '@/utils/voiceConfig';
 import styles from './page.module.css';
 
 export default function ProfilePage() {
   const router = useRouter();
   const { t, lang, setLang } = useI18n();
+  const { voicePrefs, setVoicePrefs, hasVoicePrefs } = useVoicePreferences();
   const [user, setUser] = useState(null);
+
+  // Voice editing state
+  const [editingVoice, setEditingVoice] = useState(false);
+  const [preferredGender, setPreferredGender] = useState(voicePrefs?.preferredGender || 'female');
+  const [primaryVoice, setPrimaryVoice] = useState(voicePrefs?.primaryVoice || 'female_1');
+  const [secondaryVoice, setSecondaryVoice] = useState(voicePrefs?.secondaryVoice || 'female_2');
+  const [alternateVoice, setAlternateVoice] = useState(voicePrefs?.alternateVoice || 'male_1');
+  const [saved, setSaved] = useState(false);
+
+  // Audio preview
+  const [playingVoice, setPlayingVoice] = useState(null);
+  const audioRef = useRef(null);
+
+  // Sync editing state when prefs load
+  useEffect(() => {
+    if (voicePrefs) {
+      setPreferredGender(voicePrefs.preferredGender || 'female');
+      setPrimaryVoice(voicePrefs.primaryVoice || 'female_1');
+      setSecondaryVoice(voicePrefs.secondaryVoice || 'female_2');
+      setAlternateVoice(voicePrefs.alternateVoice || 'male_1');
+    }
+  }, [voicePrefs]);
 
   useEffect(() => {
     if (!isLoggedIn()) {
@@ -20,6 +44,30 @@ export default function ProfilePage() {
     }
     setUser(getUser());
   }, [router]);
+
+  const stopAudio = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
+    }
+    setPlayingVoice(null);
+  }, []);
+
+  const playVoiceSample = useCallback((voiceId) => {
+    if (playingVoice === voiceId) {
+      stopAudio();
+      return;
+    }
+    stopAudio();
+    const url = getSampleUrl(voiceId, lang);
+    const audio = new Audio(url);
+    audioRef.current = audio;
+    setPlayingVoice(voiceId);
+    audio.play().catch(() => setPlayingVoice(null));
+    audio.onended = () => setPlayingVoice(null);
+    audio.onerror = () => setPlayingVoice(null);
+  }, [playingVoice, lang, stopAudio]);
 
   const handleLogout = () => {
     logout();
@@ -30,7 +78,50 @@ export default function ProfilePage() {
     setLang(newLang);
   };
 
+  const handleGenderChange = (gender) => {
+    setPreferredGender(gender);
+    const voices = getVoicesForGender(gender);
+    if (voices.length >= 2) {
+      setPrimaryVoice(voices[0][0]);
+      setSecondaryVoice(voices[1][0]);
+    }
+    const otherVoices = getVoicesForGender(gender === 'female' ? 'male' : 'female');
+    if (otherVoices.length > 0) {
+      setAlternateVoice(otherVoices[0][0]);
+    }
+  };
+
+  const handlePrimarySelect = (voiceId) => {
+    if (primaryVoice === voiceId) return;
+    if (secondaryVoice === voiceId) {
+      setSecondaryVoice(primaryVoice);
+    }
+    setPrimaryVoice(voiceId);
+  };
+
+  const handleSecondarySelect = (voiceId) => {
+    if (secondaryVoice === voiceId) return;
+    if (primaryVoice === voiceId) {
+      setPrimaryVoice(secondaryVoice);
+    }
+    setSecondaryVoice(voiceId);
+  };
+
+  const handleAlternateSelect = (voiceId) => {
+    setAlternateVoice(voiceId);
+  };
+
+  const handleSaveVoice = () => {
+    stopAudio();
+    setVoicePrefs({ preferredGender, primaryVoice, secondaryVoice, alternateVoice });
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
   const appName = lang === 'hi' ? 'Sapno ki Duniya' : 'Dream Valley';
+  const otherGender = preferredGender === 'female' ? 'male' : 'female';
+  const primaryGenderVoices = getVoicesForGender(preferredGender);
+  const alternateGenderVoices = getVoicesForGender(otherGender);
 
   if (!user) return null;
 
@@ -72,13 +163,113 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Voice Settings */}
-          <Link href="/settings" className={styles.settingCard} style={{ textDecoration: 'none' }}>
-            <div className={styles.settingLabel}>
-              🎙️ {t('voiceSettings')}
-            </div>
-            <span style={{ color: 'var(--color-text-muted)', fontSize: '18px' }}>→</span>
-          </Link>
+          {/* Voice Settings — inline collapsible */}
+          <div className={styles.voiceSettingsCard}>
+            <button
+              onClick={() => setEditingVoice(!editingVoice)}
+              className={styles.voiceSettingsHeader}
+            >
+              <div className={styles.settingLabel}>
+                🎙️ {t('voiceSettings')}
+              </div>
+              <span className={`${styles.voiceChevron} ${editingVoice ? styles.voiceChevronOpen : ''}`}>
+                ▾
+              </span>
+            </button>
+
+            {editingVoice && (
+              <div className={styles.voiceSettingsBody}>
+                <p className={styles.voiceDesc}>{t('voiceSettingsDesc')}</p>
+
+                {/* Gender Preference */}
+                <div className={styles.voiceSection}>
+                  <h3 className={styles.voiceSectionTitle}>{t('genderPrefer')}</h3>
+                  <div className={styles.genderRow}>
+                    <button
+                      onClick={() => handleGenderChange('female')}
+                      className={`${styles.genderBtn} ${preferredGender === 'female' ? styles.genderBtnActive : ''}`}
+                    >
+                      👩 {t('femaleNarrators')}
+                    </button>
+                    <button
+                      onClick={() => handleGenderChange('male')}
+                      className={`${styles.genderBtn} ${preferredGender === 'male' ? styles.genderBtnActive : ''}`}
+                    >
+                      👨 {t('maleNarrators')}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Primary Voice */}
+                <div className={styles.voiceSection}>
+                  <h3 className={styles.voiceSectionTitle}>
+                    {lang === 'hi' ? 'प्राथमिक आवाज़' : 'Primary Voice'}
+                  </h3>
+                  <div className={styles.voiceGrid}>
+                    {primaryGenderVoices.map(([id, meta]) => (
+                      <button
+                        key={id}
+                        onClick={() => { handlePrimarySelect(id); playVoiceSample(id); }}
+                        className={`${styles.voiceCard} ${primaryVoice === id ? styles.voiceCardActive : ''} ${playingVoice === id ? styles.voiceCardPlaying : ''}`}
+                      >
+                        <span className={styles.voiceIcon}>{meta.icon}</span>
+                        <span className={styles.voiceName}>{getVoiceLabel(id, lang)}</span>
+                        {primaryVoice === id && <span className={styles.voiceBadge}>{t('primaryBadge')}</span>}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Secondary Voice */}
+                <div className={styles.voiceSection}>
+                  <h3 className={styles.voiceSectionTitle}>
+                    {lang === 'hi' ? 'द्वितीय आवाज़' : 'Secondary Voice'}
+                  </h3>
+                  <div className={styles.voiceGrid}>
+                    {primaryGenderVoices.map(([id, meta]) => (
+                      <button
+                        key={id}
+                        onClick={() => { handleSecondarySelect(id); playVoiceSample(id); }}
+                        className={`${styles.voiceCard} ${secondaryVoice === id ? styles.voiceCardActive : ''} ${playingVoice === id ? styles.voiceCardPlaying : ''}`}
+                      >
+                        <span className={styles.voiceIcon}>{meta.icon}</span>
+                        <span className={styles.voiceName}>{getVoiceLabel(id, lang)}</span>
+                        {secondaryVoice === id && <span className={styles.voiceBadgeSecondary}>{t('secondaryBadge')}</span>}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Alternate Voice */}
+                <div className={styles.voiceSection}>
+                  <h3 className={styles.voiceSectionTitle}>
+                    {lang === 'hi' ? 'वैकल्पिक आवाज़' : 'Alternate Voice'}
+                  </h3>
+                  <div className={styles.voiceGrid}>
+                    {alternateGenderVoices.map(([id, meta]) => (
+                      <button
+                        key={id}
+                        onClick={() => { handleAlternateSelect(id); playVoiceSample(id); }}
+                        className={`${styles.voiceCard} ${alternateVoice === id ? styles.voiceCardActive : ''} ${playingVoice === id ? styles.voiceCardPlaying : ''}`}
+                      >
+                        <span className={styles.voiceIcon}>{meta.icon}</span>
+                        <span className={styles.voiceName}>{getVoiceLabel(id, lang)}</span>
+                        {alternateVoice === id && <span className={styles.voiceBadgeAlt}>{t('alternateBadge')}</span>}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Save Button */}
+                <button onClick={handleSaveVoice} className={styles.saveVoiceBtn}>
+                  {saved
+                    ? (lang === 'hi' ? 'Save ho gaya ✓' : 'Saved ✓')
+                    : (lang === 'hi' ? 'Save Karein' : 'Save Preferences')
+                  }
+                </button>
+              </div>
+            )}
+          </div>
 
           {/* Logout */}
           <button onClick={handleLogout} className={styles.logoutBtn}>

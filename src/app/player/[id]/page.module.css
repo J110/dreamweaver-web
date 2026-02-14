@@ -290,51 +290,54 @@
   letter-spacing: 0.3px;
 }
 
-/* ─── Speed Control ─────────────────────────── */
+/* ─── Voice Switch Buttons ─────────────────────── */
 
-.speedControl {
+.voiceSwitchRow {
   display: flex;
-  align-items: center;
   gap: 8px;
   justify-content: center;
+  flex-wrap: wrap;
   margin-bottom: 12px;
 }
 
-.speedLabel {
-  font-size: 10px;
-  color: var(--color-text-muted);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  opacity: 0.6;
-}
-
-.speedBtnGroup {
+.voiceSwitchBtn {
   display: flex;
-  gap: 4px;
-}
-
-.speedBtn {
-  padding: 4px 10px;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
   background: rgba(107, 76, 230, 0.08);
-  border: 1px solid rgba(107, 76, 230, 0.15);
-  border-radius: 12px;
+  border: 1px solid rgba(107, 76, 230, 0.2);
+  border-radius: 20px;
   color: var(--color-text-muted);
   font-family: 'Quicksand', sans-serif;
   font-weight: 600;
-  font-size: 11px;
+  font-size: 12px;
   cursor: pointer;
   transition: all var(--transition-fast);
+  white-space: nowrap;
 }
 
-.speedBtn:active {
+.voiceSwitchBtn:hover {
+  border-color: rgba(107, 76, 230, 0.4);
+  color: var(--color-text-light);
+  background: rgba(107, 76, 230, 0.15);
+}
+
+.voiceSwitchBtn:active {
   transform: scale(0.96);
 }
 
-.speedBtnActive {
-  background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(107, 76, 230, 0.25));
-  border-color: rgba(78, 205, 196, 0.5);
-  color: var(--color-text-light);
+.voiceSwitchBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.voiceSwitchIcon {
+  font-size: 14px;
+}
+
+.voiceSwitchLabel {
+  font-size: 12px;
 }
 
 .progressContainer {
