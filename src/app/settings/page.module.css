@@ -1,0 +1,180 @@
+.app {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  padding: 0 16px 100px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.header {
+  padding: 16px 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.backBtn {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-family: 'Quicksand', sans-serif;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.backBtn:hover {
+  color: var(--color-text-light);
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text-light);
+  margin: 0;
+}
+
+.description {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin: 0 0 20px 0;
+}
+
+.section {
+  margin-bottom: 24px;
+}
+
+.sectionTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin: 0 0 10px 0;
+}
+
+.genderRow {
+  display: flex;
+  gap: 10px;
+}
+
+.genderBtn {
+  flex: 1;
+  padding: 14px;
+  background: var(--color-card-dark);
+  border: 2px solid rgba(107, 76, 230, 0.15);
+  border-radius: 14px;
+  color: var(--color-text-light);
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.genderBtn:hover {
+  border-color: var(--color-primary-purple);
+}
+
+.genderBtnActive {
+  border-color: var(--color-primary-purple);
+  background: linear-gradient(135deg, rgba(107, 76, 230, 0.15), rgba(255, 107, 157, 0.1));
+  box-shadow: 0 0 16px rgba(107, 76, 230, 0.2);
+}
+
+.voiceGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.voiceCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 8px;
+  background: var(--color-card-dark);
+  border: 2px solid rgba(107, 76, 230, 0.15);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  font-family: 'Quicksand', sans-serif;
+  color: var(--color-text-light);
+}
+
+.voiceCard:hover {
+  border-color: var(--color-primary-purple);
+  transform: translateY(-1px);
+}
+
+.voiceCardActive {
+  border-color: var(--color-primary-purple);
+  background: linear-gradient(135deg, rgba(107, 76, 230, 0.15), rgba(255, 107, 157, 0.1));
+  box-shadow: 0 0 12px rgba(107, 76, 230, 0.2);
+}
+
+.voiceCardPlaying {
+  border-color: var(--color-magic-teal);
+  box-shadow: 0 0 16px rgba(76, 230, 200, 0.2);
+}
+
+.voiceIcon {
+  font-size: 28px;
+}
+
+.voiceName {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.badge,
+.badgeSecondary,
+.badgeAlt {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 800;
+  color: white;
+}
+
+.badge {
+  background: var(--color-primary-purple);
+}
+
+.badgeSecondary {
+  background: var(--color-primary-pink);
+}
+
+.badgeAlt {
+  background: var(--color-magic-teal);
+  color: var(--color-bg-dark);
+}
+
+.saveBtn {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--color-primary-purple), var(--color-primary-pink));
+  color: white;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 17px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: 0 4px 20px rgba(107, 76, 230, 0.4);
+  margin-top: 8px;
+}
+
+.saveBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(107, 76, 230, 0.5);
+}

@@ -8,19 +8,11 @@ import { contentApi, interactionApi } from '@/utils/api';
 import { getStories } from '@/utils/seedData';
 import { getAmbientMusic } from '@/utils/ambientMusic';
 import { useI18n } from '@/utils/i18n';
+import { useVoicePreferences } from '@/utils/voicePreferences';
+import { VOICES, getVoiceId, getVoiceLabel } from '@/utils/voiceConfig';
 import styles from './page.module.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-
-// Voice character metadata — emotional tone labels instead of names
-const VOICE_META = {
-  luna:       { label: 'Female Calm',        labelHi: 'महिला शांत',       icon: '🌙', isDefault: true },
-  whisper:    { label: 'Female Soft',        labelHi: 'महिला कोमल',      icon: '🌿', isDefault: false },
-  atlas:      { label: 'Male Warm',          labelHi: 'पुरुष स्नेही',     icon: '🧭', isDefault: false },
-  luna_hi:    { label: 'Female Calm',        labelHi: 'महिला शांत',       icon: '🌙', isDefault: true },
-  whisper_hi: { label: 'Female Soft',        labelHi: 'महिला कोमल',      icon: '🌿', isDefault: false },
-  atlas_hi:   { label: 'Male Warm',          labelHi: 'पुरुष स्नेही',     icon: '🧭', isDefault: false },
-};
 
 // Speed control options
 const SPEED_OPTIONS = [
@@ -34,6 +26,7 @@ export default function PlayerPage() {
   const params = useParams();
   const router = useRouter();
   const { t, lang } = useI18n();
+  const { getStoryVoices, getDefaultVoice, hasVoicePrefs, voicePrefs } = useVoicePreferences();
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -51,6 +44,7 @@ export default function PlayerPage() {
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
   const audioRef = useRef(null);
+  const audioDisposingRef = useRef(false); // flag to suppress error events during disposal
   const progressIntervalRef = useRef(null);
   const musicRef = useRef(null);
   const musicStartedRef = useRef(false);
@@ -61,6 +55,7 @@ export default function PlayerPage() {
     return () => {
       // Clean up audio on unmount
       if (audioRef.current) {
+        audioDisposingRef.current = true;
         audioRef.current.pause();
         audioRef.current.src = '';
         audioRef.current = null;
@@ -74,110 +69,99 @@ export default function PlayerPage() {
     };
   }, []);
 
-  // Auto-select first available voice when content loads
+  // Auto-select voice based on preferences when content loads
   useEffect(() => {
-    if (!content) return;
+    if (!content || selectedVoice) return;
     const variants = content.audio_variants || [];
-    if (variants.length > 0 && !selectedVoice) {
-      setSelectedVoice(variants[0].voice);
-    } else if (variants.length === 0 && !selectedVoice) {
-      // No pre-gen audio, default to luna/luna_hi for fallback
-      setSelectedVoice(lang === 'hi' ? 'luna_hi' : 'luna');
+    const preferredDefault = getDefaultVoice(lang);
+
+    if (variants.length > 0) {
+      // Try to match preferred voice from preferences
+      const match = variants.find(v => v.voice === preferredDefault);
+      setSelectedVoice(match ? match.voice : variants[0].voice);
+    } else {
+      // No pre-gen audio — use preference or fallback
+      setSelectedVoice(preferredDefault);
     }
-  }, [content, selectedVoice, lang]);
+  }, [content, selectedVoice, lang, getDefaultVoice]);
 
-  // Track whether AudioContext has been unlocked by a user gesture.
-  // We register gesture listeners immediately on mount so we don't miss the
-  // initial navigation click/tap that brought the user to this page.
-  const audioUnlockedRef = useRef(false);
-
+  // Auto-start ambient music when story page loads.
+  //
+  // play() is now async — it waits for AudioContext to reach 'running' state
+  // before building the soundscape. This handles the race condition where the
+  // context is suspended during SPA navigation.
+  //
+  // Strategy:
+  // 1. Try immediately — works if AudioContext was pre-unlocked (card click)
+  //    or the browser is permissive (e.g. user has interacted recently)
+  // 2. If AudioContext is still suspended after the immediate try, register
+  //    gesture listeners so the very first tap/click starts music instantly.
+  // 3. Also retry on a short interval — some browsers auto-resume context
+  //    after the navigation settles (especially mobile Safari).
   useEffect(() => {
-    const markUnlocked = () => {
-      audioUnlockedRef.current = true;
-      document.removeEventListener('click', markUnlocked);
-      document.removeEventListener('touchstart', markUnlocked);
-      document.removeEventListener('keydown', markUnlocked);
-      document.removeEventListener('scroll', markUnlocked);
-    };
+    if (!content?.musicProfile) return;
 
-    // Check if AudioContext is already unlocked
-    try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      if (ctx.state === 'running') {
-        audioUnlockedRef.current = true;
-      }
-      ctx.close();
-    } catch { /* ignore */ }
+    let cancelled = false;
+    let retryTimer = null;
+    let retryCount = 0;
 
-    if (!audioUnlockedRef.current) {
-      document.addEventListener('click', markUnlocked);
-      document.addEventListener('touchstart', markUnlocked);
-      document.addEventListener('keydown', markUnlocked);
-      document.addEventListener('scroll', markUnlocked);
-    }
-
-    return () => {
-      document.removeEventListener('click', markUnlocked);
-      document.removeEventListener('touchstart', markUnlocked);
-      document.removeEventListener('keydown', markUnlocked);
-      document.removeEventListener('scroll', markUnlocked);
-    };
-  }, []);
-
-  // Auto-start music when content loads — music is ON by default.
-  // Uses a polling approach: once content arrives we try to start music every
-  // 300ms until the AudioContext is unlocked (usually within 1–2 attempts).
-  useEffect(() => {
-    if (!content?.musicProfile || musicStartedRef.current) return;
-
-    const tryStartMusic = () => {
-      if (musicStartedRef.current) return true;
+    const startMusic = async () => {
+      if (musicStartedRef.current || cancelled) return true;
       const profile = content.musicProfile;
-      if (profile && musicRef.current) {
-        try {
-          musicRef.current.setVolume(musicVolume / 100);
-          musicRef.current.play(profile);
+      if (!profile || !musicRef.current) return false;
+      try {
+        musicRef.current.setVolume(musicVolume / 100);
+        await musicRef.current.play(profile); // async — waits for AudioContext
+        if (!cancelled) {
           setMusicPlaying(true);
           musicStartedRef.current = true;
-          return true;
-        } catch { return false; }
+        }
+        return true;
+      } catch {
+        return false;
       }
-      return false;
     };
 
-    // Try immediately
-    if (audioUnlockedRef.current && tryStartMusic()) return;
+    // Attempt 1: Try immediately (async)
+    startMusic().then((ok) => {
+      if (ok || cancelled) return;
 
-    // Poll until unlocked (covers the gap between navigation and gesture detection)
-    const interval = setInterval(() => {
-      if (audioUnlockedRef.current || musicStartedRef.current) {
-        tryStartMusic();
-        clearInterval(interval);
-      }
-    }, 300);
+      // Attempt 2: Retry a few times with delay (handles context resuming after navigation)
+      const retry = () => {
+        if (musicStartedRef.current || cancelled) return;
+        retryCount++;
+        if (retryCount > 5) return; // give up on auto-retry
+        startMusic();
+        retryTimer = setTimeout(retry, 500);
+      };
+      retryTimer = setTimeout(retry, 300);
+    });
 
-    // Also try on any user interaction
+    // Attempt 3: On first user gesture (guaranteed to work)
     const onGesture = () => {
-      audioUnlockedRef.current = true;
-      if (tryStartMusic()) {
-        document.removeEventListener('click', onGesture);
-        document.removeEventListener('touchstart', onGesture);
-        document.removeEventListener('keydown', onGesture);
-        document.removeEventListener('scroll', onGesture);
-        clearInterval(interval);
+      if (musicStartedRef.current) {
+        removeGestureListeners();
+        return;
       }
+      startMusic().then((ok) => {
+        if (ok) removeGestureListeners();
+      });
     };
-    document.addEventListener('click', onGesture);
-    document.addEventListener('touchstart', onGesture);
-    document.addEventListener('keydown', onGesture);
-    document.addEventListener('scroll', onGesture);
+
+    const removeGestureListeners = () => {
+      document.removeEventListener('click', onGesture, true);
+      document.removeEventListener('touchstart', onGesture, true);
+      document.removeEventListener('keydown', onGesture, true);
+    };
+
+    document.addEventListener('click', onGesture, true);
+    document.addEventListener('touchstart', onGesture, true);
+    document.addEventListener('keydown', onGesture, true);
 
     return () => {
-      clearInterval(interval);
-      document.removeEventListener('click', onGesture);
-      document.removeEventListener('touchstart', onGesture);
-      document.removeEventListener('keydown', onGesture);
-      document.removeEventListener('scroll', onGesture);
+      cancelled = true;
+      if (retryTimer) clearTimeout(retryTimer);
+      removeGestureListeners();
     };
   }, [content?.musicProfile, musicVolume]);
 
@@ -198,7 +182,9 @@ export default function PlayerPage() {
 
     // Fallback to live edge-tts
     const text = (content.text || '').substring(0, 5000);
-    const voiceGender = selectedVoice?.includes('atlas') ? 'male' : 'female';
+    const baseId = selectedVoice?.replace(/_hi$/, '') || '';
+    const voiceMeta = VOICES[baseId];
+    const voiceGender = voiceMeta?.gender === 'male' ? 'male' : 'female';
     const params = new URLSearchParams({
       text,
       lang,
@@ -304,6 +290,8 @@ export default function PlayerPage() {
       });
 
       audio.addEventListener('error', () => {
+        // Ignore error events fired during intentional disposal (voice change / unmount)
+        if (audioDisposingRef.current) return;
         setAudioLoading(false);
         setAudioError(lang === 'hi' ? 'Audio load nahi ho paya. Baad mein try karein.' : 'Could not load audio. Try again later.');
         setIsPlaying(false);
@@ -325,9 +313,12 @@ export default function PlayerPage() {
     if (voiceId === selectedVoice) return;
     // Stop current audio when switching voice
     if (audioRef.current) {
+      audioDisposingRef.current = true; // suppress error events during disposal
       audioRef.current.pause();
       audioRef.current.src = '';
       audioRef.current = null;
+      // Reset flag after a tick so future audio elements work normally
+      setTimeout(() => { audioDisposingRef.current = false; }, 50);
     }
     setIsPlaying(false);
     setProgress(0);
@@ -356,7 +347,7 @@ export default function PlayerPage() {
   }, []);
 
   // Toggle music play/pause (independent of narration)
-  const handleMusicPlayPause = useCallback(() => {
+  const handleMusicPlayPause = useCallback(async () => {
     if (!musicRef.current || !content?.musicProfile) return;
     if (musicPlaying) {
       musicRef.current.pause();
@@ -367,7 +358,7 @@ export default function PlayerPage() {
       if (musicStartedRef.current) {
         musicRef.current.resume();
       } else {
-        musicRef.current.play(profile);
+        await musicRef.current.play(profile);
         musicStartedRef.current = true;
       }
       setMusicPlaying(true);
@@ -392,9 +383,11 @@ export default function PlayerPage() {
   // Stop audio when content changes
   useEffect(() => {
     if (audioRef.current) {
+      audioDisposingRef.current = true;
       audioRef.current.pause();
       audioRef.current.src = '';
       audioRef.current = null;
+      setTimeout(() => { audioDisposingRef.current = false; }, 50);
     }
     if (musicRef.current) musicRef.current.stop(false);
     musicStartedRef.current = false;
@@ -578,35 +571,57 @@ export default function PlayerPage() {
         </div>
 
         {/* Voice tone picker */}
-        {(content?.audio_variants || []).length > 0 && (
-          <div className={styles.voiceSelector}>
-            <div className={styles.voiceChips}>
-              {(content.audio_variants || []).map(variant => {
-                const meta = VOICE_META[variant.voice] || { label: variant.voice, labelHi: variant.voice, icon: '🎤', isDefault: false };
-                const isActive = selectedVoice === variant.voice;
-                const displayLabel = lang === 'hi' ? meta.labelHi : meta.label;
-                return (
-                  <button
-                    key={variant.voice}
-                    onClick={() => handleVoiceChange(variant.voice)}
-                    className={`${styles.voiceChip} ${isActive ? styles.voiceChipActive : ''} ${meta.isDefault ? styles.voiceChipDefault : ''}`}
-                    disabled={audioLoading}
-                  >
-                    <span className={styles.voiceChipIcon}>{meta.icon}</span>
-                    <span className={styles.voiceChipName}>
-                      {isActive ? displayLabel : (lang === 'hi' ? displayLabel : displayLabel)}
-                    </span>
-                    {meta.isDefault && !isActive && (
-                      <span className={styles.voiceChipBadge}>
-                        {lang === 'hi' ? 'डिफ़ॉल्ट' : 'Default'}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
+        {(content?.audio_variants || []).length > 0 && (() => {
+          // If user has voice preferences, show only their 3 chosen voices
+          // Otherwise show all available variants
+          const allVariants = content.audio_variants || [];
+          const prefVoiceIds = hasVoicePrefs ? getStoryVoices(lang) : null;
+          const displayVariants = prefVoiceIds
+            ? prefVoiceIds
+                .map(vid => allVariants.find(v => v.voice === vid))
+                .filter(Boolean)
+            : allVariants;
+
+          if (displayVariants.length === 0) return null;
+
+          return (
+            <div className={styles.voiceSelector}>
+              <div className={styles.voiceChips}>
+                {displayVariants.map((variant, idx) => {
+                  // Extract base voice ID (strip _hi suffix) for metadata lookup
+                  const baseId = variant.voice.replace(/_hi$/, '');
+                  const meta = VOICES[baseId] || { label: variant.voice, labelHi: variant.voice, icon: '🎤', gender: 'female' };
+                  const isActive = selectedVoice === variant.voice;
+                  const displayLabel = getVoiceLabel(baseId, lang);
+
+                  // Badge: if prefs set, show Primary/Secondary/Alt
+                  let badge = null;
+                  if (hasVoicePrefs && prefVoiceIds) {
+                    const prefIdx = prefVoiceIds.indexOf(variant.voice);
+                    if (prefIdx === 0) badge = lang === 'hi' ? 'प्राथमिक' : 'Primary';
+                    else if (prefIdx === 1) badge = lang === 'hi' ? 'द्वितीय' : 'Secondary';
+                    else if (prefIdx === 2) badge = lang === 'hi' ? 'वैकल्पिक' : 'Alternate';
+                  }
+
+                  return (
+                    <button
+                      key={variant.voice}
+                      onClick={() => handleVoiceChange(variant.voice)}
+                      className={`${styles.voiceChip} ${isActive ? styles.voiceChipActive : ''}`}
+                      disabled={audioLoading}
+                    >
+                      <span className={styles.voiceChipIcon}>{meta.icon}</span>
+                      <span className={styles.voiceChipName}>{displayLabel}</span>
+                      {badge && !isActive && (
+                        <span className={styles.voiceChipBadge}>{badge}</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Speed control */}
         <div className={styles.speedControl}>

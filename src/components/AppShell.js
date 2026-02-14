@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { I18nProvider, hasCompletedOnboarding } from '@/utils/i18n';
+import { VoicePreferencesProvider } from '@/utils/voicePreferences';
 import { isLoggedIn } from '@/utils/auth';
 import BottomNav from './BottomNav';
 
@@ -34,10 +35,12 @@ export default function AppShell({ children }) {
 
   return (
     <I18nProvider>
-      <div style={{ paddingBottom: showNav ? '72px' : '0' }}>
-        {children}
-      </div>
-      {showNav && <BottomNav />}
+      <VoicePreferencesProvider>
+        <div style={{ paddingBottom: showNav ? '72px' : '0' }}>
+          {children}
+        </div>
+        {showNav && <BottomNav />}
+      </VoicePreferencesProvider>
     </I18nProvider>
   );
 }

@@ -1,9 +1,23 @@
 'use client';
 
 import Link from 'next/link';
+import { getAmbientMusic } from '@/utils/ambientMusic';
 import styles from './ContentCard.module.css';
 
 export default function ContentCard({ content, onClick }) {
+  // Pre-unlock AudioContext on card click (before navigation to player page).
+  // This is called inside the user's click gesture, so AudioContext.resume()
+  // will succeed. The player page can then start music immediately.
+  const handleCardClick = async () => {
+    try {
+      const engine = getAmbientMusic();
+      engine._ensureContext();
+      // Also explicitly wait for resume to complete within the gesture
+      if (engine._ctx && engine._ctx.state === 'suspended') {
+        await engine._ctx.resume();
+      }
+    } catch { /* ignore */ }
+  };
   const getTypeColor = (type) => {
     switch (type?.toLowerCase()) {
       case 'poem':
@@ -68,7 +82,10 @@ export default function ContentCard({ content, onClick }) {
   return (
     <div
       className={`${styles.card} card card-interactive`}
-      onClick={onClick}
+      onClick={(e) => {
+        handleCardClick();
+        if (onClick) onClick(e);
+      }}
     >
       {onClick ? (
         cardContent

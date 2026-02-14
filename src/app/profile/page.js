@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import StarField from '@/components/StarField';
+import Link from 'next/link';
 import { isLoggedIn, getUser, logout } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
 import styles from './page.module.css';
@@ -70,6 +71,14 @@ export default function ProfilePage() {
               </button>
             </div>
           </div>
+
+          {/* Voice Settings */}
+          <Link href="/settings" className={styles.settingCard} style={{ textDecoration: 'none' }}>
+            <div className={styles.settingLabel}>
+              🎙️ {t('voiceSettings')}
+            </div>
+            <span style={{ color: 'var(--color-text-muted)', fontSize: '18px' }}>→</span>
+          </Link>
 
           {/* Logout */}
           <button onClick={handleLogout} className={styles.logoutBtn}>

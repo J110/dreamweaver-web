@@ -101,8 +101,35 @@ export class AmbientMusicEngine {
       this._masterGain.gain.value = 0;
       this._masterGain.connect(this._ctx.destination);
     }
-    if (this._ctx.state === 'suspended') this._ctx.resume();
+    if (this._ctx.state === 'suspended') {
+      this._ctx.resume().catch(() => {});
+    }
     return this._ctx;
+  }
+
+  /** Wait for AudioContext to be in 'running' state. Resolves immediately if already running. */
+  async _waitForContext() {
+    this._ensureContext();
+    if (this._ctx.state === 'running') return this._ctx;
+
+    // Wait for state change (up to 3 seconds)
+    return new Promise((resolve) => {
+      const onStateChange = () => {
+        if (this._ctx.state === 'running') {
+          this._ctx.removeEventListener('statechange', onStateChange);
+          clearTimeout(timeout);
+          resolve(this._ctx);
+        }
+      };
+      this._ctx.addEventListener('statechange', onStateChange);
+      // Also try resume again
+      this._ctx.resume().catch(() => {});
+      // Timeout fallback — resolve even if suspended (caller can check)
+      const timeout = setTimeout(() => {
+        this._ctx.removeEventListener('statechange', onStateChange);
+        resolve(this._ctx);
+      }, 3000);
+    });
   }
 
   // ── Helper: schedule a repeating event with jitter ──
@@ -1816,7 +1843,7 @@ export class AmbientMusicEngine {
   // PUBLIC API
   // ════════════════════════════════════════════════════════════════════════════
 
-  play(profileName) {
+  async play(profileName) {
     if (this._playing) this.stop();
 
     const builders = {
@@ -1836,7 +1863,11 @@ export class AmbientMusicEngine {
       return;
     }
 
-    this._ensureContext();
+    // Wait for AudioContext to be fully running before creating any nodes.
+    // This avoids the race condition where oscillators are created on a
+    // suspended context and never produce sound.
+    await this._waitForContext();
+
     this._playing = true;
     this._currentProfile = profileName;
 
