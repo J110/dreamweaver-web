@@ -39,7 +39,6 @@ export default function OnboardingPage() {
           <div className={styles.slide}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo-new.svg" alt="Dream Valley" className={styles.logoImage} />
-            <h1 className={styles.title}>Dream Valley</h1>
             <p className={styles.subtitle}>
               Where magical bedtime stories come alive
             </p>

@@ -1,8 +1,41 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <circle cx="16" cy="16" r="14" fill="#1a1a2e"/>
-  <path d="M20 8 Q24 12 22 18 Q20 22 16 24 Q12 22 10 18 Q8 12 12 8 Q16 10 20 8Z" fill="#e6c229"/>
-  <circle cx="11" cy="11" r="1" fill="#fff"/>
-  <circle cx="22" cy="7" r="0.8" fill="#fff"/>
-  <circle cx="8" cy="20" r="0.6" fill="#fff"/>
-  <circle cx="25" cy="22" r="0.7" fill="#fff"/>
+  <!-- Background circle -->
+  <circle cx="16" cy="16" r="15" fill="#0D0B2E"/>
+  <circle cx="16" cy="16" r="14.5" fill="none" stroke="#6B4CE6" stroke-width="0.5" opacity="0.5"/>
+
+  <!-- Open book base -->
+  <path d="M8 20 Q16 18 24 20 L24 22 Q16 20 8 22 Z" fill="#8B6CE6" opacity="0.8"/>
+  <path d="M8 20 Q16 22 24 20" fill="none" stroke="#A78BFA" stroke-width="0.3"/>
+
+  <!-- Teddy bear (simplified) -->
+  <!-- Left ear -->
+  <circle cx="12" cy="10" r="2.5" fill="#9B7DD4"/>
+  <circle cx="12" cy="10" r="1.5" fill="#B69AE8"/>
+  <!-- Right ear -->
+  <circle cx="20" cy="10" r="2.5" fill="#9B7DD4"/>
+  <circle cx="20" cy="10" r="1.5" fill="#B69AE8"/>
+  <!-- Head -->
+  <circle cx="16" cy="14" r="5" fill="#9B7DD4"/>
+  <!-- Face -->
+  <circle cx="16" cy="15" r="2.5" fill="#B69AE8"/>
+  <!-- Eyes -->
+  <circle cx="14" cy="13" r="0.7" fill="#0D0B2E"/>
+  <circle cx="18" cy="13" r="0.7" fill="#0D0B2E"/>
+  <circle cx="14.2" cy="12.8" r="0.2" fill="white"/>
+  <circle cx="18.2" cy="12.8" r="0.2" fill="white"/>
+  <!-- Nose -->
+  <circle cx="16" cy="14.5" r="0.5" fill="#FF6B9D"/>
+  <!-- Smile -->
+  <path d="M15 15.5 Q16 16.3 17 15.5" fill="none" stroke="#0D0B2E" stroke-width="0.4" stroke-linecap="round"/>
+
+  <!-- Stars -->
+  <circle cx="6" cy="6" r="0.5" fill="#FFF3CD" opacity="0.9"/>
+  <circle cx="26" cy="5" r="0.4" fill="#FFF3CD" opacity="0.7"/>
+  <circle cx="4" cy="14" r="0.3" fill="#FFF3CD" opacity="0.6"/>
+  <circle cx="28" cy="12" r="0.35" fill="#FFF3CD" opacity="0.8"/>
+  <circle cx="9" cy="4" r="0.3" fill="#FF6B9D" opacity="0.5"/>
+  <circle cx="24" cy="8" r="0.25" fill="#FF6B9D" opacity="0.4"/>
+
+  <!-- Moon crescent -->
+  <path d="M25 3 Q28 5 26 8 Q24 6 25 3 Z" fill="#FFF3CD" opacity="0.7"/>
 </svg>

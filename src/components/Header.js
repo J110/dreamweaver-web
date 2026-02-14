@@ -34,7 +34,6 @@ export default function Header() {
         <Link href="/" className={styles.logo}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={logoSrc} alt={appName} className={styles.logoImage} />
-          <span className={styles.logoText}>{appName}</span>
         </Link>
 
         <nav className={`${styles.nav} ${isOpen ? styles.navOpen : ''}`}>

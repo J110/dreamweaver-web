@@ -25,16 +25,10 @@
 }
 
 .logoImage {
-  height: 40px;
+  height: 44px;
   width: auto;
   border-radius: 6px;
-}
-
-.logoText {
-  background: linear-gradient(135deg, var(--color-primary-purple), var(--color-primary-pink));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  object-fit: contain;
 }
 
 .nav {

@@ -47,19 +47,23 @@
 }
 
 .logoImage {
-  width: 160px;
-  height: 160px;
+  width: auto;
+  height: 180px;
+  max-width: 320px;
   margin-bottom: var(--spacing-lg);
   animation: float 4s ease-in-out infinite;
   filter: drop-shadow(0 4px 20px rgba(107, 76, 230, 0.4));
+  object-fit: contain;
 }
 
 .logoImageSmall {
-  width: 100px;
-  height: 100px;
+  width: auto;
+  height: 120px;
+  max-width: 240px;
   margin-bottom: var(--spacing-md);
   filter: drop-shadow(0 4px 20px rgba(107, 76, 230, 0.4));
   transition: opacity 0.3s ease;
+  object-fit: contain;
 }
 
 .title {

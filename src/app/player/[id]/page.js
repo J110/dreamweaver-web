@@ -12,6 +12,24 @@ import styles from './page.module.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
+// Voice character metadata for display
+const VOICE_META = {
+  luna:       { name: 'Luna',    icon: '🌙', desc: 'Gentle storyteller' },
+  whisper:    { name: 'Whisper', icon: '🌿', desc: 'Soothing & calm' },
+  atlas:      { name: 'Atlas',   icon: '🧭', desc: 'Warm narrator' },
+  luna_hi:    { name: 'लूना',    icon: '🌙', desc: 'कोमल कहानीकार' },
+  whisper_hi: { name: 'फुसफुस',  icon: '🌿', desc: 'शांत आवाज़' },
+  atlas_hi:   { name: 'एटलस',   icon: '🧭', desc: 'गर्मजोशी भरी आवाज़' },
+};
+
+// Speed control options
+const SPEED_OPTIONS = [
+  { label: '0.75×', value: 0.75 },
+  { label: '1×',    value: 1.0 },
+  { label: '1.25×', value: 1.25 },
+  { label: '1.5×',  value: 1.5 },
+];
+
 export default function PlayerPage() {
   const params = useParams();
   const router = useRouter();
@@ -27,14 +45,11 @@ export default function PlayerPage() {
   const [isSaved, setIsSaved] = useState(false);
   const [audioLoading, setAudioLoading] = useState(false);
   const [audioError, setAudioError] = useState(null);
-  const [musicVolume, setMusicVolume] = useState(30);
+  const [musicVolume, setMusicVolume] = useState(100);
   const [musicMuted, setMusicMuted] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
-  const [voiceGender, setVoiceGender] = useState('female');
-  const [ttsProvider, setTtsProvider] = useState('edge-tts');
-  const [availableProviders, setAvailableProviders] = useState([
-    { id: 'edge-tts', name: 'Edge TTS', status: 'online', label: 'Fast' },
-  ]);
+  const [selectedVoice, setSelectedVoice] = useState(null);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
   const audioRef = useRef(null);
   const progressIntervalRef = useRef(null);
   const musicRef = useRef(null);
@@ -59,27 +74,21 @@ export default function PlayerPage() {
     };
   }, []);
 
-  // Fetch available TTS providers from backend
+  // Auto-select first available voice when content loads
   useEffect(() => {
-    const fetchProviders = async () => {
-      try {
-        const res = await fetch(`${API_URL}/api/v1/audio/engine`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.providers && data.providers.length > 0) {
-            setAvailableProviders(data.providers);
-            if (data.default) setTtsProvider(data.default);
-          }
-        }
-      } catch (err) {
-        console.log('Could not fetch TTS providers, using default');
-      }
-    };
-    fetchProviders();
-  }, []);
+    if (!content) return;
+    const variants = content.audio_variants || [];
+    if (variants.length > 0 && !selectedVoice) {
+      setSelectedVoice(variants[0].voice);
+    } else if (variants.length === 0 && !selectedVoice) {
+      // No pre-gen audio, default to luna/luna_hi for fallback
+      setSelectedVoice(lang === 'hi' ? 'luna_hi' : 'luna');
+    }
+  }, [content, selectedVoice, lang]);
 
-  // Auto-start music when content loads (needs user gesture for AudioContext)
-  // We start music on first user interaction with the page
+  // Auto-start music when content loads — music is ON by default
+  // Browsers require a user gesture to unlock AudioContext, so we listen for
+  // any interaction and start music immediately once unlocked.
   useEffect(() => {
     if (!content?.musicProfile || musicStartedRef.current) return;
 
@@ -96,6 +105,7 @@ export default function PlayerPage() {
       document.removeEventListener('click', startMusic);
       document.removeEventListener('touchstart', startMusic);
       document.removeEventListener('keydown', startMusic);
+      document.removeEventListener('scroll', startMusic);
     };
 
     // Try to start immediately (will work if AudioContext already unlocked)
@@ -106,37 +116,58 @@ export default function PlayerPage() {
         startMusic();
       } else {
         ctx.close();
-        // Wait for user gesture
-        document.addEventListener('click', startMusic, { once: true });
-        document.addEventListener('touchstart', startMusic, { once: true });
-        document.addEventListener('keydown', startMusic, { once: true });
+        // Wait for any user gesture to unlock AudioContext
+        document.addEventListener('click', startMusic);
+        document.addEventListener('touchstart', startMusic);
+        document.addEventListener('keydown', startMusic);
+        document.addEventListener('scroll', startMusic, { once: true });
       }
     } catch {
       // Fallback: wait for user gesture
-      document.addEventListener('click', startMusic, { once: true });
-      document.addEventListener('touchstart', startMusic, { once: true });
-      document.addEventListener('keydown', startMusic, { once: true });
+      document.addEventListener('click', startMusic);
+      document.addEventListener('touchstart', startMusic);
+      document.addEventListener('keydown', startMusic);
+      document.addEventListener('scroll', startMusic, { once: true });
     }
 
     return () => {
       document.removeEventListener('click', startMusic);
       document.removeEventListener('touchstart', startMusic);
       document.removeEventListener('keydown', startMusic);
+      document.removeEventListener('scroll', startMusic);
     };
   }, [content?.musicProfile, musicVolume]);
 
-  // Build TTS URL for the backend
-  const getTtsUrl = useCallback((text) => {
-    const truncated = text.substring(0, 5000);
-    const queryParams = new URLSearchParams({
-      text: truncated,
-      lang: lang,
+  // Resolve audio source: pre-generated file or live TTS fallback
+  const getAudioSource = useCallback(() => {
+    if (!content) return null;
+    const variants = content.audio_variants || [];
+
+    // Try to find pre-generated audio for selected voice
+    const match = variants.find(v => v.voice === selectedVoice);
+    if (match) {
+      return {
+        url: `${API_URL}${match.url}`,
+        isPregen: true,
+        duration: match.duration_seconds,
+      };
+    }
+
+    // Fallback to live edge-tts
+    const text = (content.text || '').substring(0, 5000);
+    const voiceGender = selectedVoice?.includes('atlas') ? 'male' : 'female';
+    const params = new URLSearchParams({
+      text,
+      lang,
       voice: voiceGender,
       rate: '-15%',
-      provider: ttsProvider,
+      provider: 'edge-tts',
     });
-    return `${API_URL}/api/v1/audio/tts?${queryParams.toString()}`;
-  }, [lang, voiceGender, ttsProvider]);
+    return {
+      url: `${API_URL}/api/v1/audio/tts?${params.toString()}`,
+      isPregen: false,
+    };
+  }, [content, selectedVoice, lang]);
 
   // Start progress tracking
   const startProgressTracking = useCallback(() => {
@@ -161,9 +192,6 @@ export default function PlayerPage() {
   const handlePlayPause = useCallback(async () => {
     if (!content) return;
 
-    const storyText = content.text || content.content || '';
-    if (!storyText) return;
-
     // If we have an active audio element with a source
     if (audioRef.current && audioRef.current.src) {
       if (isPlaying) {
@@ -186,17 +214,26 @@ export default function PlayerPage() {
     }
 
     // START FRESH - create new audio
+    const audioSource = getAudioSource();
+    if (!audioSource) return;
+
     setAudioLoading(true);
     setAudioError(null);
     setProgress(0);
     setCurrentTime(0);
 
-    try {
-      const ttsUrl = getTtsUrl(storyText);
+    // If pre-gen, we know duration upfront
+    if (audioSource.isPregen && audioSource.duration) {
+      setDuration(audioSource.duration);
+    }
 
+    try {
       // Create audio element
       const audio = new Audio();
       audioRef.current = audio;
+
+      // Apply playback speed
+      audio.playbackRate = playbackSpeed;
 
       audio.addEventListener('loadedmetadata', () => {
         if (audio.duration && !isNaN(audio.duration)) {
@@ -231,17 +268,18 @@ export default function PlayerPage() {
       });
 
       // Start loading
-      audio.src = ttsUrl;
+      audio.src = audioSource.url;
       audio.load();
     } catch (e) {
-      console.error('TTS error:', e);
+      console.error('Audio error:', e);
       setAudioLoading(false);
       setAudioError(lang === 'hi' ? 'Audio mein error aa gaya' : 'Audio error occurred');
     }
-  }, [content, isPlaying, lang, getTtsUrl, startProgressTracking, stopProgressTracking]);
+  }, [content, isPlaying, lang, playbackSpeed, getAudioSource, startProgressTracking, stopProgressTracking]);
 
-  // Handle voice gender toggle
-  const handleVoiceToggle = useCallback(() => {
+  // Handle voice character change
+  const handleVoiceChange = useCallback((voiceId) => {
+    if (voiceId === selectedVoice) return;
     // Stop current audio when switching voice
     if (audioRef.current) {
       audioRef.current.pause();
@@ -254,26 +292,16 @@ export default function PlayerPage() {
     setDuration(0);
     setAudioError(null);
     stopProgressTracking();
-    setVoiceGender(prev => prev === 'female' ? 'male' : 'female');
-  }, [stopProgressTracking]);
+    setSelectedVoice(voiceId);
+  }, [selectedVoice, stopProgressTracking]);
 
-  // Handle TTS provider change
-  const handleProviderChange = useCallback((providerId) => {
-    if (providerId === ttsProvider) return;
-    // Stop current audio when switching provider
+  // Handle playback speed change
+  const handleSpeedChange = useCallback((speed) => {
+    setPlaybackSpeed(speed);
     if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.src = '';
-      audioRef.current = null;
+      audioRef.current.playbackRate = speed;
     }
-    setIsPlaying(false);
-    setProgress(0);
-    setCurrentTime(0);
-    setDuration(0);
-    setAudioError(null);
-    stopProgressTracking();
-    setTtsProvider(providerId);
-  }, [ttsProvider, stopProgressTracking]);
+  }, []);
 
   // Handle music volume changes
   const handleMusicVolumeChange = useCallback((e) => {
@@ -506,49 +534,49 @@ export default function PlayerPage() {
           </span>
         </div>
 
-        <div className={styles.voiceToggle}>
-          <button
-            onClick={handleVoiceToggle}
-            className={`${styles.voiceBtn} ${voiceGender === 'female' ? styles.voiceBtnActive : ''}`}
-            disabled={audioLoading}
-          >
-            <span className={styles.voiceIcon}>👩</span>
-            <span>{lang === 'hi' ? 'Mahila' : 'Female'}</span>
-          </button>
-          <button
-            onClick={handleVoiceToggle}
-            className={`${styles.voiceBtn} ${voiceGender === 'male' ? styles.voiceBtnActive : ''}`}
-            disabled={audioLoading}
-          >
-            <span className={styles.voiceIcon}>👨</span>
-            <span>{lang === 'hi' ? 'Purush' : 'Male'}</span>
-          </button>
-        </div>
-
-        {availableProviders.length > 1 && (
-          <div className={styles.providerToggle}>
-            <span className={styles.providerLabel}>
-              {lang === 'hi' ? 'TTS Engine' : 'TTS Engine'}
+        {/* Voice character picker */}
+        {(content?.audio_variants || []).length > 0 && (
+          <div className={styles.voiceSelector}>
+            <span className={styles.voiceSelectorLabel}>
+              {lang === 'hi' ? 'कथावाचक चुनें' : 'Choose narrator'}
             </span>
-            <div className={styles.providerBtnGroup}>
-              {availableProviders.map((p) => (
-                <button
-                  key={p.id}
-                  onClick={() => handleProviderChange(p.id)}
-                  className={`${styles.providerBtn} ${ttsProvider === p.id ? styles.providerBtnActive : ''} ${p.status !== 'online' ? styles.providerBtnOffline : ''}`}
-                  disabled={audioLoading || p.status !== 'online'}
-                  title={p.description || p.name}
-                >
-                  <span className={styles.providerIcon}>
-                    {p.id === 'edge-tts' ? '🔊' : p.id === 'kokoro' ? '🤖' : p.id === 'chatterbox' ? '🎭' : '🔊'}
-                  </span>
-                  <span>{p.name}</span>
-                  {p.label && <span className={styles.providerTag}>{p.label}</span>}
-                </button>
-              ))}
+            <div className={styles.voiceChips}>
+              {(content.audio_variants || []).map(variant => {
+                const meta = VOICE_META[variant.voice] || { name: variant.voice, icon: '🎤', desc: '' };
+                return (
+                  <button
+                    key={variant.voice}
+                    onClick={() => handleVoiceChange(variant.voice)}
+                    className={`${styles.voiceChip} ${selectedVoice === variant.voice ? styles.voiceChipActive : ''}`}
+                    disabled={audioLoading}
+                    title={meta.desc}
+                  >
+                    <span className={styles.voiceChipIcon}>{meta.icon}</span>
+                    <span className={styles.voiceChipName}>{meta.name}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
+
+        {/* Speed control */}
+        <div className={styles.speedControl}>
+          <span className={styles.speedLabel}>
+            {lang === 'hi' ? 'गति' : 'Speed'}
+          </span>
+          <div className={styles.speedBtnGroup}>
+            {SPEED_OPTIONS.map(opt => (
+              <button
+                key={opt.value}
+                onClick={() => handleSpeedChange(opt.value)}
+                className={`${styles.speedBtn} ${playbackSpeed === opt.value ? styles.speedBtnActive : ''}`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {audioError && (
           <p className={styles.audioError}>{audioError}</p>

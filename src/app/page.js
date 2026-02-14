@@ -76,7 +76,6 @@ export default function Home() {
           <div className={styles.headerLeft}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={logoSrc} alt={appName} className={styles.headerLogo} />
-            <span className={styles.headerTitle}>{appName}</span>
           </div>
           {user && (
             <div className={styles.headerRight}>

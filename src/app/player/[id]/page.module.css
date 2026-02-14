@@ -215,18 +215,44 @@
   justify-content: center;
 }
 
-.voiceToggle {
+/* ─── Voice Character Picker ─────────────────────────── */
+
+.voiceSelector {
   display: flex;
+  flex-direction: column;
   gap: 8px;
-  justify-content: center;
   margin-bottom: 12px;
 }
 
-.voiceBtn {
+.voiceSelectorLabel {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  opacity: 0.6;
+}
+
+.voiceChips {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 2px 0;
+}
+
+.voiceChips::-webkit-scrollbar {
+  display: none;
+}
+
+.voiceChip {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 18px;
+  padding: 8px 16px;
   background: rgba(107, 76, 230, 0.1);
   border: 1px solid rgba(107, 76, 230, 0.2);
   border-radius: 20px;
@@ -236,26 +262,79 @@
   font-size: 13px;
   cursor: pointer;
   transition: all var(--transition-fast);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.voiceBtn:active {
+.voiceChip:active {
   transform: scale(0.96);
 }
 
-.voiceBtn:disabled {
+.voiceChip:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.voiceBtnActive {
+.voiceChipActive {
   background: linear-gradient(135deg, rgba(107, 76, 230, 0.3), rgba(255, 107, 157, 0.2));
   border-color: rgba(107, 76, 230, 0.5);
   color: var(--color-text-light);
   box-shadow: 0 0 12px rgba(107, 76, 230, 0.15);
 }
 
-.voiceIcon {
+.voiceChipIcon {
   font-size: 16px;
+}
+
+.voiceChipName {
+  font-size: 13px;
+}
+
+/* ─── Speed Control ─────────────────────────── */
+
+.speedControl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.speedLabel {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.6;
+}
+
+.speedBtnGroup {
+  display: flex;
+  gap: 4px;
+}
+
+.speedBtn {
+  padding: 4px 10px;
+  background: rgba(107, 76, 230, 0.08);
+  border: 1px solid rgba(107, 76, 230, 0.15);
+  border-radius: 12px;
+  color: var(--color-text-muted);
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.speedBtn:active {
+  transform: scale(0.96);
+}
+
+.speedBtnActive {
+  background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(107, 76, 230, 0.25));
+  border-color: rgba(78, 205, 196, 0.5);
+  color: var(--color-text-light);
 }
 
 .progressContainer {
@@ -514,79 +593,3 @@
   text-decoration: none;
 }
 
-/* ─── TTS Provider Toggle ─────────────────────────── */
-
-.providerToggle {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 12px;
-}
-
-.providerLabel {
-  font-size: 10px;
-  color: var(--color-text-muted);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-align: center;
-  opacity: 0.6;
-}
-
-.providerBtnGroup {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.providerBtn {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 6px 14px;
-  background: rgba(107, 76, 230, 0.08);
-  border: 1px solid rgba(107, 76, 230, 0.15);
-  border-radius: 16px;
-  color: var(--color-text-muted);
-  font-family: 'Quicksand', sans-serif;
-  font-weight: 600;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.providerBtn:active {
-  transform: scale(0.96);
-}
-
-.providerBtn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.providerBtnActive {
-  background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(107, 76, 230, 0.25));
-  border-color: rgba(78, 205, 196, 0.5);
-  color: var(--color-text-light);
-  box-shadow: 0 0 10px rgba(78, 205, 196, 0.15);
-}
-
-.providerBtnOffline {
-  opacity: 0.35;
-}
-
-.providerIcon {
-  font-size: 14px;
-}
-
-.providerTag {
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 1px 6px;
-  border-radius: 8px;
-  background: rgba(78, 205, 196, 0.15);
-  color: #4ECDC4;
-}
