@@ -443,19 +443,16 @@ export default function PlayerPage() {
     }
   };
 
-  // Build voice switch buttons — show only non-active preferred voices as "Switch to X" options
+  // Build voice switch buttons — show all available variants except the active one
   const getVoiceSwitchOptions = () => {
-    if (!content || !hasVoicePrefs || !selectedVoice) return [];
+    if (!content || !selectedVoice) return [];
     const allVariants = content.audio_variants || [];
-    const prefVoiceIds = getStoryVoices(lang);
-    if (!prefVoiceIds || prefVoiceIds.length === 0) return [];
+    if (allVariants.length <= 1) return [];
 
-    return prefVoiceIds
-      .filter(vid => vid !== selectedVoice)
-      .map(vid => {
-        const variant = allVariants.find(v => v.voice === vid);
-        if (!variant) return null;
-        const baseId = vid.replace(/_hi$/, '');
+    return allVariants
+      .filter(v => v.voice !== selectedVoice)
+      .map(v => {
+        const baseId = v.voice.replace(/_hi$/, '');
         const meta = VOICES[baseId];
         if (!meta) return null;
         const label = getVoiceLabel(baseId, lang);
@@ -463,11 +460,9 @@ export default function PlayerPage() {
           ? (meta.gender === 'female' ? 'महिला' : 'पुरुष')
           : (meta.gender === 'female' ? 'Female' : 'Male');
         return {
-          voiceId: vid,
+          voiceId: v.voice,
           icon: meta.icon,
-          switchLabel: lang === 'hi'
-            ? `${label} ${genderLabel}`
-            : `${label} ${genderLabel}`,
+          switchLabel: `${label} ${genderLabel}`,
         };
       })
       .filter(Boolean);
@@ -564,32 +559,6 @@ export default function PlayerPage() {
                 </span>
               </button>
             ))}
-          </div>
-        )}
-
-        {/* Fallback: if no prefs, show all voice chips */}
-        {!hasVoicePrefs && (content?.audio_variants || []).length > 1 && (
-          <div className={styles.voiceSelector}>
-            <div className={styles.voiceChips}>
-              {(content.audio_variants || []).map((variant) => {
-                const baseId = variant.voice.replace(/_hi$/, '');
-                const meta = VOICES[baseId] || { label: variant.voice, labelHi: variant.voice, icon: '🎤', gender: 'female' };
-                const isActive = selectedVoice === variant.voice;
-                const displayLabel = getVoiceLabel(baseId, lang);
-
-                return (
-                  <button
-                    key={variant.voice}
-                    onClick={() => handleVoiceChange(variant.voice)}
-                    className={`${styles.voiceChip} ${isActive ? styles.voiceChipActive : ''}`}
-                    disabled={audioLoading}
-                  >
-                    <span className={styles.voiceChipIcon}>{meta.icon}</span>
-                    <span className={styles.voiceChipName}>{displayLabel}</span>
-                  </button>
-                );
-              })}
-            </div>
           </div>
         )}
 
