@@ -12,14 +12,14 @@ import styles from './page.module.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-// Voice character metadata for display
+// Voice character metadata — emotional tone labels instead of names
 const VOICE_META = {
-  luna:       { name: 'Luna',    icon: '🌙', desc: 'Gentle storyteller' },
-  whisper:    { name: 'Whisper', icon: '🌿', desc: 'Soothing & calm' },
-  atlas:      { name: 'Atlas',   icon: '🧭', desc: 'Warm narrator' },
-  luna_hi:    { name: 'लूना',    icon: '🌙', desc: 'कोमल कहानीकार' },
-  whisper_hi: { name: 'फुसफुस',  icon: '🌿', desc: 'शांत आवाज़' },
-  atlas_hi:   { name: 'एटलस',   icon: '🧭', desc: 'गर्मजोशी भरी आवाज़' },
+  luna:       { label: 'Female Calm',        labelHi: 'महिला शांत',       icon: '🌙', isDefault: true },
+  whisper:    { label: 'Female Soft',        labelHi: 'महिला कोमल',      icon: '🌿', isDefault: false },
+  atlas:      { label: 'Male Warm',          labelHi: 'पुरुष स्नेही',     icon: '🧭', isDefault: false },
+  luna_hi:    { label: 'Female Calm',        labelHi: 'महिला शांत',       icon: '🌙', isDefault: true },
+  whisper_hi: { label: 'Female Soft',        labelHi: 'महिला कोमल',      icon: '🌿', isDefault: false },
+  atlas_hi:   { label: 'Male Warm',          labelHi: 'पुरुष स्नेही',     icon: '🧭', isDefault: false },
 };
 
 // Speed control options
@@ -86,55 +86,98 @@ export default function PlayerPage() {
     }
   }, [content, selectedVoice, lang]);
 
-  // Auto-start music when content loads — music is ON by default
-  // Browsers require a user gesture to unlock AudioContext, so we listen for
-  // any interaction and start music immediately once unlocked.
-  useEffect(() => {
-    if (!content?.musicProfile || musicStartedRef.current) return;
+  // Track whether AudioContext has been unlocked by a user gesture.
+  // We register gesture listeners immediately on mount so we don't miss the
+  // initial navigation click/tap that brought the user to this page.
+  const audioUnlockedRef = useRef(false);
 
-    const startMusic = () => {
-      if (musicStartedRef.current) return;
-      const profile = content.musicProfile;
-      if (profile && musicRef.current) {
-        musicRef.current.setVolume(musicVolume / 100);
-        musicRef.current.play(profile);
-        setMusicPlaying(true);
-        musicStartedRef.current = true;
-      }
-      // Remove listeners after first trigger
-      document.removeEventListener('click', startMusic);
-      document.removeEventListener('touchstart', startMusic);
-      document.removeEventListener('keydown', startMusic);
-      document.removeEventListener('scroll', startMusic);
+  useEffect(() => {
+    const markUnlocked = () => {
+      audioUnlockedRef.current = true;
+      document.removeEventListener('click', markUnlocked);
+      document.removeEventListener('touchstart', markUnlocked);
+      document.removeEventListener('keydown', markUnlocked);
+      document.removeEventListener('scroll', markUnlocked);
     };
 
-    // Try to start immediately (will work if AudioContext already unlocked)
+    // Check if AudioContext is already unlocked
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
       if (ctx.state === 'running') {
-        ctx.close();
-        startMusic();
-      } else {
-        ctx.close();
-        // Wait for any user gesture to unlock AudioContext
-        document.addEventListener('click', startMusic);
-        document.addEventListener('touchstart', startMusic);
-        document.addEventListener('keydown', startMusic);
-        document.addEventListener('scroll', startMusic, { once: true });
+        audioUnlockedRef.current = true;
       }
-    } catch {
-      // Fallback: wait for user gesture
-      document.addEventListener('click', startMusic);
-      document.addEventListener('touchstart', startMusic);
-      document.addEventListener('keydown', startMusic);
-      document.addEventListener('scroll', startMusic, { once: true });
+      ctx.close();
+    } catch { /* ignore */ }
+
+    if (!audioUnlockedRef.current) {
+      document.addEventListener('click', markUnlocked);
+      document.addEventListener('touchstart', markUnlocked);
+      document.addEventListener('keydown', markUnlocked);
+      document.addEventListener('scroll', markUnlocked);
     }
 
     return () => {
-      document.removeEventListener('click', startMusic);
-      document.removeEventListener('touchstart', startMusic);
-      document.removeEventListener('keydown', startMusic);
-      document.removeEventListener('scroll', startMusic);
+      document.removeEventListener('click', markUnlocked);
+      document.removeEventListener('touchstart', markUnlocked);
+      document.removeEventListener('keydown', markUnlocked);
+      document.removeEventListener('scroll', markUnlocked);
+    };
+  }, []);
+
+  // Auto-start music when content loads — music is ON by default.
+  // Uses a polling approach: once content arrives we try to start music every
+  // 300ms until the AudioContext is unlocked (usually within 1–2 attempts).
+  useEffect(() => {
+    if (!content?.musicProfile || musicStartedRef.current) return;
+
+    const tryStartMusic = () => {
+      if (musicStartedRef.current) return true;
+      const profile = content.musicProfile;
+      if (profile && musicRef.current) {
+        try {
+          musicRef.current.setVolume(musicVolume / 100);
+          musicRef.current.play(profile);
+          setMusicPlaying(true);
+          musicStartedRef.current = true;
+          return true;
+        } catch { return false; }
+      }
+      return false;
+    };
+
+    // Try immediately
+    if (audioUnlockedRef.current && tryStartMusic()) return;
+
+    // Poll until unlocked (covers the gap between navigation and gesture detection)
+    const interval = setInterval(() => {
+      if (audioUnlockedRef.current || musicStartedRef.current) {
+        tryStartMusic();
+        clearInterval(interval);
+      }
+    }, 300);
+
+    // Also try on any user interaction
+    const onGesture = () => {
+      audioUnlockedRef.current = true;
+      if (tryStartMusic()) {
+        document.removeEventListener('click', onGesture);
+        document.removeEventListener('touchstart', onGesture);
+        document.removeEventListener('keydown', onGesture);
+        document.removeEventListener('scroll', onGesture);
+        clearInterval(interval);
+      }
+    };
+    document.addEventListener('click', onGesture);
+    document.addEventListener('touchstart', onGesture);
+    document.addEventListener('keydown', onGesture);
+    document.addEventListener('scroll', onGesture);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('click', onGesture);
+      document.removeEventListener('touchstart', onGesture);
+      document.removeEventListener('keydown', onGesture);
+      document.removeEventListener('scroll', onGesture);
     };
   }, [content?.musicProfile, musicVolume]);
 
@@ -147,7 +190,7 @@ export default function PlayerPage() {
     const match = variants.find(v => v.voice === selectedVoice);
     if (match) {
       return {
-        url: `${API_URL}${match.url}`,
+        url: match.url,
         isPregen: true,
         duration: match.duration_seconds,
       };
@@ -534,25 +577,30 @@ export default function PlayerPage() {
           </span>
         </div>
 
-        {/* Voice character picker */}
+        {/* Voice tone picker */}
         {(content?.audio_variants || []).length > 0 && (
           <div className={styles.voiceSelector}>
-            <span className={styles.voiceSelectorLabel}>
-              {lang === 'hi' ? 'कथावाचक चुनें' : 'Choose narrator'}
-            </span>
             <div className={styles.voiceChips}>
               {(content.audio_variants || []).map(variant => {
-                const meta = VOICE_META[variant.voice] || { name: variant.voice, icon: '🎤', desc: '' };
+                const meta = VOICE_META[variant.voice] || { label: variant.voice, labelHi: variant.voice, icon: '🎤', isDefault: false };
+                const isActive = selectedVoice === variant.voice;
+                const displayLabel = lang === 'hi' ? meta.labelHi : meta.label;
                 return (
                   <button
                     key={variant.voice}
                     onClick={() => handleVoiceChange(variant.voice)}
-                    className={`${styles.voiceChip} ${selectedVoice === variant.voice ? styles.voiceChipActive : ''}`}
+                    className={`${styles.voiceChip} ${isActive ? styles.voiceChipActive : ''} ${meta.isDefault ? styles.voiceChipDefault : ''}`}
                     disabled={audioLoading}
-                    title={meta.desc}
                   >
                     <span className={styles.voiceChipIcon}>{meta.icon}</span>
-                    <span className={styles.voiceChipName}>{meta.name}</span>
+                    <span className={styles.voiceChipName}>
+                      {isActive ? displayLabel : (lang === 'hi' ? displayLabel : displayLabel)}
+                    </span>
+                    {meta.isDefault && !isActive && (
+                      <span className={styles.voiceChipBadge}>
+                        {lang === 'hi' ? 'डिफ़ॉल्ट' : 'Default'}
+                      </span>
+                    )}
                   </button>
                 );
               })}

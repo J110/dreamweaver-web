@@ -215,55 +215,40 @@
   justify-content: center;
 }
 
-/* ─── Voice Character Picker ─────────────────────────── */
+/* ─── Voice Tone Picker ─────────────────────────── */
 
 .voiceSelector {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   margin-bottom: 12px;
-}
-
-.voiceSelectorLabel {
-  font-size: 10px;
-  color: var(--color-text-muted);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-align: center;
-  opacity: 0.6;
 }
 
 .voiceChips {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   justify-content: center;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  flex-wrap: wrap;
   padding: 2px 0;
-}
-
-.voiceChips::-webkit-scrollbar {
-  display: none;
 }
 
 .voiceChip {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  background: rgba(107, 76, 230, 0.1);
-  border: 1px solid rgba(107, 76, 230, 0.2);
+  gap: 5px;
+  padding: 7px 14px;
+  background: rgba(107, 76, 230, 0.08);
+  border: 1px solid rgba(107, 76, 230, 0.15);
   border-radius: 20px;
   color: var(--color-text-muted);
   font-family: 'Quicksand', sans-serif;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 12px;
   cursor: pointer;
   transition: all var(--transition-fast);
   white-space: nowrap;
   flex-shrink: 0;
+  position: relative;
 }
 
 .voiceChip:active {
@@ -282,12 +267,27 @@
   box-shadow: 0 0 12px rgba(107, 76, 230, 0.15);
 }
 
+.voiceChipDefault:not(.voiceChipActive) {
+  border-color: rgba(107, 76, 230, 0.25);
+}
+
 .voiceChipIcon {
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .voiceChipName {
-  font-size: 13px;
+  font-size: 12px;
+}
+
+.voiceChipBadge {
+  font-size: 9px;
+  padding: 1px 5px;
+  background: rgba(107, 76, 230, 0.2);
+  border-radius: 8px;
+  color: #B8A9FF;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 /* ─── Speed Control ─────────────────────────── */
