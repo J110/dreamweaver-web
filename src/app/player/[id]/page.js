@@ -31,6 +31,10 @@ export default function PlayerPage() {
   const [musicMuted, setMusicMuted] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [voiceGender, setVoiceGender] = useState('female');
+  const [ttsProvider, setTtsProvider] = useState('edge-tts');
+  const [availableProviders, setAvailableProviders] = useState([
+    { id: 'edge-tts', name: 'Edge TTS', status: 'online', label: 'Fast' },
+  ]);
   const audioRef = useRef(null);
   const progressIntervalRef = useRef(null);
   const musicRef = useRef(null);
@@ -53,6 +57,25 @@ export default function PlayerPage() {
         musicRef.current.stop(true);
       }
     };
+  }, []);
+
+  // Fetch available TTS providers from backend
+  useEffect(() => {
+    const fetchProviders = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/v1/audio/engine`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.providers && data.providers.length > 0) {
+            setAvailableProviders(data.providers);
+            if (data.default) setTtsProvider(data.default);
+          }
+        }
+      } catch (err) {
+        console.log('Could not fetch TTS providers, using default');
+      }
+    };
+    fetchProviders();
   }, []);
 
   // Auto-start music when content loads (needs user gesture for AudioContext)
@@ -110,9 +133,10 @@ export default function PlayerPage() {
       lang: lang,
       voice: voiceGender,
       rate: '-15%',
+      provider: ttsProvider,
     });
     return `${API_URL}/api/v1/audio/tts?${queryParams.toString()}`;
-  }, [lang, voiceGender]);
+  }, [lang, voiceGender, ttsProvider]);
 
   // Start progress tracking
   const startProgressTracking = useCallback(() => {
@@ -232,6 +256,24 @@ export default function PlayerPage() {
     stopProgressTracking();
     setVoiceGender(prev => prev === 'female' ? 'male' : 'female');
   }, [stopProgressTracking]);
+
+  // Handle TTS provider change
+  const handleProviderChange = useCallback((providerId) => {
+    if (providerId === ttsProvider) return;
+    // Stop current audio when switching provider
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = '';
+      audioRef.current = null;
+    }
+    setIsPlaying(false);
+    setProgress(0);
+    setCurrentTime(0);
+    setDuration(0);
+    setAudioError(null);
+    stopProgressTracking();
+    setTtsProvider(providerId);
+  }, [ttsProvider, stopProgressTracking]);
 
   // Handle music volume changes
   const handleMusicVolumeChange = useCallback((e) => {
@@ -482,6 +524,31 @@ export default function PlayerPage() {
             <span>{lang === 'hi' ? 'Purush' : 'Male'}</span>
           </button>
         </div>
+
+        {availableProviders.length > 1 && (
+          <div className={styles.providerToggle}>
+            <span className={styles.providerLabel}>
+              {lang === 'hi' ? 'TTS Engine' : 'TTS Engine'}
+            </span>
+            <div className={styles.providerBtnGroup}>
+              {availableProviders.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => handleProviderChange(p.id)}
+                  className={`${styles.providerBtn} ${ttsProvider === p.id ? styles.providerBtnActive : ''} ${p.status !== 'online' ? styles.providerBtnOffline : ''}`}
+                  disabled={audioLoading || p.status !== 'online'}
+                  title={p.description || p.name}
+                >
+                  <span className={styles.providerIcon}>
+                    {p.id === 'edge-tts' ? '🔊' : p.id === 'kokoro' ? '🤖' : p.id === 'chatterbox' ? '🎭' : '🔊'}
+                  </span>
+                  <span>{p.name}</span>
+                  {p.label && <span className={styles.providerTag}>{p.label}</span>}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {audioError && (
           <p className={styles.audioError}>{audioError}</p>

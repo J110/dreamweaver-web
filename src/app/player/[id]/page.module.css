@@ -513,3 +513,80 @@
   font-size: 14px;
   text-decoration: none;
 }
+
+/* ─── TTS Provider Toggle ─────────────────────────── */
+
+.providerToggle {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.providerLabel {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  opacity: 0.6;
+}
+
+.providerBtnGroup {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.providerBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  background: rgba(107, 76, 230, 0.08);
+  border: 1px solid rgba(107, 76, 230, 0.15);
+  border-radius: 16px;
+  color: var(--color-text-muted);
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.providerBtn:active {
+  transform: scale(0.96);
+}
+
+.providerBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.providerBtnActive {
+  background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(107, 76, 230, 0.25));
+  border-color: rgba(78, 205, 196, 0.5);
+  color: var(--color-text-light);
+  box-shadow: 0 0 10px rgba(78, 205, 196, 0.15);
+}
+
+.providerBtnOffline {
+  opacity: 0.35;
+}
+
+.providerIcon {
+  font-size: 14px;
+}
+
+.providerTag {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: rgba(78, 205, 196, 0.15);
+  color: #4ECDC4;
+}
