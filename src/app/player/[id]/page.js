@@ -60,18 +60,25 @@ export default function PlayerPage() {
   }, []);
 
   // Auto-select voice based on preferences when content loads
+  const voiceInitializedRef = useRef(false);
   useEffect(() => {
-    if (!content || selectedVoice) return;
+    if (!content) return;
     const variants = content.audio_variants || [];
     const preferredDefault = getDefaultVoice(lang);
 
+    // Re-run when voice prefs load (override initial fallback)
+    if (voiceInitializedRef.current && !voicePrefs) return;
+
     if (variants.length > 0) {
-      const match = variants.find(v => v.voice === preferredDefault);
+      // Try exact match first, then try matching base ID (strip _hi suffix)
+      const match = variants.find(v => v.voice === preferredDefault)
+        || variants.find(v => v.voice.replace(/_hi$/, '') === preferredDefault.replace(/_hi$/, ''));
       setSelectedVoice(match ? match.voice : variants[0].voice);
     } else {
       setSelectedVoice(preferredDefault);
     }
-  }, [content, selectedVoice, lang, getDefaultVoice]);
+    voiceInitializedRef.current = true;
+  }, [content, lang, getDefaultVoice, voicePrefs]);
 
   // Auto-start ambient music
   useEffect(() => {
