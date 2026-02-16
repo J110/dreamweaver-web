@@ -460,7 +460,11 @@ export default function PlayerPage() {
     const options = [];
 
     // 1. Add the 2 non-active preferred voices
-    const preferredBaseIds = getStoryVoices(lang).map(v => v.replace(/_hi$/, ''));
+    const storyVoiceIds = getStoryVoices(lang);
+    const preferredBaseIds = storyVoiceIds.map(v => v.replace(/_hi$/, ''));
+    console.log('[VoiceSwitch] selectedVoice:', selectedVoice, 'lang:', lang,
+      'storyVoices:', storyVoiceIds, 'preferredBaseIds:', preferredBaseIds,
+      'allVariants:', allVariants.map(v => v.voice));
     for (const variant of allVariants) {
       const variantBaseId = variant.voice.replace(/_hi$/, '');
       const isPreferred = preferredBaseIds.includes(variantBaseId);
@@ -491,6 +495,7 @@ export default function PlayerPage() {
       });
     }
 
+    console.log('[VoiceSwitch] result:', options.length, 'options:', options.map(o => o.voiceId));
     return options;
   };
 
