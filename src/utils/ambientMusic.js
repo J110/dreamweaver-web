@@ -100,6 +100,8 @@ export class AmbientMusicEngine {
       this._masterGain = this._ctx.createGain();
       this._masterGain.gain.value = 0;
       this._masterGain.connect(this._ctx.destination);
+      // Expose context globally so Android WebView can resume it on user gesture
+      window.__ambientCtx = this._ctx;
     }
     if (this._ctx.state === 'suspended') {
       this._ctx.resume().catch(() => {});
