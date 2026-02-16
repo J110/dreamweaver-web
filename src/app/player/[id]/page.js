@@ -355,27 +355,31 @@ export default function PlayerPage() {
 
   useEffect(() => {
     const loadContent = async () => {
-      // Always look up seed data — it has the full set of audio variants
-      const seedMatch = getStories(lang).find((s) => s.id === params.id);
-
       try {
         const data = await contentApi.getContentById(params.id);
         if (data && data.title) {
-          // Merge: use API data for metadata (likes, saves, etc.)
-          // but prefer seedData's audio_variants (has all 7 voices)
+          // Merge: seed data has all 7 audio variants; API may only have 3.
+          // Match by title since API uses UUIDs but seedData uses slug IDs.
+          const seedMatch = getStories(lang).find(
+            (s) => s.title === data.title
+          );
           if (seedMatch && seedMatch.audio_variants && seedMatch.audio_variants.length > (data.audio_variants || []).length) {
             data.audio_variants = seedMatch.audio_variants;
           }
           setContent(data);
           setIsLiked(data.is_liked || false);
           setIsSaved(data.is_saved || false);
-        } else if (seedMatch) {
-          setContent(seedMatch);
         } else {
-          setError(t('playerNotFound'));
+          const seedMatch = getStories(lang).find((s) => s.id === params.id);
+          if (seedMatch) {
+            setContent(seedMatch);
+          } else {
+            setError(t('playerNotFound'));
+          }
         }
       } catch (err) {
         console.error('Error loading content:', err);
+        const seedMatch = getStories(lang).find((s) => s.id === params.id);
         if (seedMatch) {
           setContent(seedMatch);
         } else {
