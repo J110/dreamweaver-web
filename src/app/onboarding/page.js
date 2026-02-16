@@ -24,7 +24,6 @@ export default function OnboardingPage() {
   const [primaryVoice, setPrimaryVoice] = useState(null);
   const [secondaryVoice, setSecondaryVoice] = useState(null);
   const [alternateVoice, setAlternateVoice] = useState(null);
-  const [showSkipPrompt, setShowSkipPrompt] = useState(false);
 
   const voiceLang = selectedLang || 'en';
 
@@ -52,43 +51,47 @@ export default function OnboardingPage() {
     audio.onerror = () => setPlayingVoice(null);
   }, [playingVoice, voiceLang, stopAudio]);
 
-  // Check if voice selection is complete
-  const voiceSelectionComplete = primaryVoice && secondaryVoice && alternateVoice;
-
-  // Handle gender selection
+  // Handle gender selection (same as settings page)
   const handleGenderSelect = (gender) => {
     if (preferredGender === gender) return;
     setPreferredGender(gender);
-    setPrimaryVoice(null);
-    setSecondaryVoice(null);
-    setAlternateVoice(null);
-  };
-
-  // Handle tapping a voice card in preferred gender section
-  const handlePreferredVoiceTap = (voiceId) => {
-    playVoiceSample(voiceId);
-    if (!primaryVoice || primaryVoice === voiceId) {
-      if (primaryVoice === voiceId) {
-        setPrimaryVoice(secondaryVoice);
-        setSecondaryVoice(null);
-      } else {
-        setPrimaryVoice(voiceId);
-      }
-    } else if (!secondaryVoice || secondaryVoice === voiceId) {
-      if (secondaryVoice === voiceId) {
-        setSecondaryVoice(null);
-      } else {
-        setSecondaryVoice(voiceId);
-      }
-    } else {
-      setSecondaryVoice(voiceId);
+    // Reset selections for the new gender
+    const voices = getVoicesForGender(gender);
+    if (voices.length >= 2) {
+      setPrimaryVoice(voices[0][0]);
+      setSecondaryVoice(voices[1][0]);
+    }
+    // Reset alternate to first of other gender
+    const otherVoices = getVoicesForGender(gender === 'female' ? 'male' : 'female');
+    if (otherVoices.length > 0) {
+      setAlternateVoice(otherVoices[0][0]);
     }
   };
 
-  // Handle tapping a voice card in alternate gender section
-  const handleAlternateVoiceTap = (voiceId) => {
+  // Handle primary voice selection (same as settings page)
+  const handlePrimarySelect = (voiceId) => {
     playVoiceSample(voiceId);
-    setAlternateVoice(alternateVoice === voiceId ? null : voiceId);
+    if (primaryVoice === voiceId) return;
+    if (secondaryVoice === voiceId) {
+      setSecondaryVoice(primaryVoice);
+    }
+    setPrimaryVoice(voiceId);
+  };
+
+  // Handle secondary voice selection (same as settings page)
+  const handleSecondarySelect = (voiceId) => {
+    playVoiceSample(voiceId);
+    if (secondaryVoice === voiceId) return;
+    if (primaryVoice === voiceId) {
+      setPrimaryVoice(secondaryVoice);
+    }
+    setSecondaryVoice(voiceId);
+  };
+
+  // Handle alternate voice selection (same as settings page)
+  const handleAlternateSelect = (voiceId) => {
+    playVoiceSample(voiceId);
+    setAlternateVoice(voiceId);
   };
 
   const handleContinue = () => {
@@ -98,29 +101,11 @@ export default function OnboardingPage() {
       setLang(selectedLang);
       setStep(3);
     } else if (step === 3) {
-      if (voiceSelectionComplete) {
-        stopAudio();
-        setVoicePrefs({ preferredGender, primaryVoice, secondaryVoice, alternateVoice });
-        router.push('/login');
-      } else {
-        setShowSkipPrompt(true);
-      }
+      // Gender selection auto-picks defaults, so voices are always complete
+      stopAudio();
+      setVoicePrefs({ preferredGender, primaryVoice, secondaryVoice, alternateVoice });
+      router.push('/login');
     }
-  };
-
-  const handleSkipConfirm = () => {
-    stopAudio();
-    const finalGender = preferredGender || 'female';
-    const genderVoices = getVoicesForGender(finalGender).map(([id]) => id);
-    const otherVoices = getVoicesForGender(finalGender === 'female' ? 'male' : 'female').map(([id]) => id);
-
-    setVoicePrefs({
-      preferredGender: finalGender,
-      primaryVoice: primaryVoice || genderVoices[0],
-      secondaryVoice: secondaryVoice || genderVoices[1] || genderVoices[0],
-      alternateVoice: alternateVoice || otherVoices[0],
-    });
-    router.push('/login');
   };
 
   const otherGender = preferredGender === 'female' ? 'male' : 'female';
@@ -220,14 +205,14 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Step 3: Voice Preview + Selection (single combined page) */}
+        {/* Step 3: Voice Selection (matches settings page layout) */}
         {step === 3 && (
           <div className={`${styles.slide} ${styles.slideWide}`}>
             <div className={styles.iconLarge} style={{ fontSize: '48px', marginBottom: '8px' }}>🎙️</div>
             <h1 className={styles.title} style={{ fontSize: '24px' }}>{t('voicePreviewTitle')}</h1>
             <p className={styles.subtitle} style={{ marginBottom: '12px' }}>{t('voicePreviewSubtitle')}</p>
 
-            {/* Gender preference */}
+            {/* Gender Preference */}
             <p className={styles.subStepLabel}>{t('genderPrefer')}</p>
             <div className={styles.genderRow}>
               <button
@@ -246,29 +231,26 @@ export default function OnboardingPage() {
               </button>
             </div>
 
-            {/* Preferred gender voices */}
+            {/* Primary Voice */}
             {preferredGender && (
               <>
-                <p className={styles.subStepLabel}>{t('pickPrimary')}</p>
+                <p className={styles.subStepLabel}>
+                  {voiceLang === 'hi' ? 'प्राथमिक आवाज़' : 'Primary Voice'}
+                </p>
                 <div className={styles.voiceGrid}>
                   {getVoicesForGender(preferredGender).map(([id, meta]) => {
-                    const isPrimary = primaryVoice === id;
-                    const isSecondary = secondaryVoice === id;
-                    const isSelected = isPrimary || isSecondary;
+                    const isActive = primaryVoice === id;
                     const isPlaying = playingVoice === id;
                     return (
                       <button
                         key={id}
-                        onClick={() => handlePreferredVoiceTap(id)}
-                        className={`${styles.voiceCard} ${isSelected ? styles.voiceCardSelected : ''} ${isPlaying ? styles.voiceCardPlaying : ''}`}
+                        onClick={() => handlePrimarySelect(id)}
+                        className={`${styles.voiceCard} ${isActive ? styles.voiceCardSelected : ''} ${isPlaying ? styles.voiceCardPlaying : ''}`}
                       >
-                        {isPrimary && <span className={styles.voiceRank}>{t('primaryBadge')}</span>}
-                        {isSecondary && <span className={styles.voiceRankSecondary}>{t('secondaryBadge')}</span>}
+                        {isActive && <span className={styles.voiceRank}>{t('primaryBadge')}</span>}
                         <span className={styles.voiceCardIcon}>{meta.icon}</span>
                         <span className={styles.voiceCardName}>{getVoiceLabel(id, voiceLang)}</span>
-                        <span className={styles.voiceCardAction}>
-                          {isPlaying ? '⏸' : '▶'}
-                        </span>
+                        <span className={styles.voiceCardAction}>{isPlaying ? '⏸' : '▶'}</span>
                       </button>
                     );
                   })}
@@ -276,26 +258,53 @@ export default function OnboardingPage() {
               </>
             )}
 
-            {/* Alternate gender voices */}
+            {/* Secondary Voice */}
             {preferredGender && (
               <>
-                <p className={styles.subStepLabel}>{t('pickAlternate')}</p>
+                <p className={styles.subStepLabel}>
+                  {voiceLang === 'hi' ? 'द्वितीय आवाज़' : 'Secondary Voice'}
+                </p>
                 <div className={styles.voiceGrid}>
-                  {getVoicesForGender(otherGender).map(([id, meta]) => {
-                    const isAlt = alternateVoice === id;
+                  {getVoicesForGender(preferredGender).map(([id, meta]) => {
+                    const isActive = secondaryVoice === id;
                     const isPlaying = playingVoice === id;
                     return (
                       <button
                         key={id}
-                        onClick={() => handleAlternateVoiceTap(id)}
-                        className={`${styles.voiceCard} ${isAlt ? styles.voiceCardSelected : ''} ${isPlaying ? styles.voiceCardPlaying : ''}`}
+                        onClick={() => handleSecondarySelect(id)}
+                        className={`${styles.voiceCard} ${isActive ? styles.voiceCardSelected : ''} ${isPlaying ? styles.voiceCardPlaying : ''}`}
                       >
-                        {isAlt && <span className={styles.voiceRankAlt}>{t('alternateBadge')}</span>}
+                        {isActive && <span className={styles.voiceRankSecondary}>{t('secondaryBadge')}</span>}
                         <span className={styles.voiceCardIcon}>{meta.icon}</span>
                         <span className={styles.voiceCardName}>{getVoiceLabel(id, voiceLang)}</span>
-                        <span className={styles.voiceCardAction}>
-                          {isPlaying ? '⏸' : '▶'}
-                        </span>
+                        <span className={styles.voiceCardAction}>{isPlaying ? '⏸' : '▶'}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+
+            {/* Alternate Voice */}
+            {preferredGender && (
+              <>
+                <p className={styles.subStepLabel}>
+                  {voiceLang === 'hi' ? 'वैकल्पिक आवाज़' : 'Alternate Voice'}
+                </p>
+                <div className={styles.voiceGrid}>
+                  {getVoicesForGender(otherGender).map(([id, meta]) => {
+                    const isActive = alternateVoice === id;
+                    const isPlaying = playingVoice === id;
+                    return (
+                      <button
+                        key={id}
+                        onClick={() => handleAlternateSelect(id)}
+                        className={`${styles.voiceCard} ${isActive ? styles.voiceCardSelected : ''} ${isPlaying ? styles.voiceCardPlaying : ''}`}
+                      >
+                        {isActive && <span className={styles.voiceRankAlt}>{t('alternateBadge')}</span>}
+                        <span className={styles.voiceCardIcon}>{meta.icon}</span>
+                        <span className={styles.voiceCardName}>{getVoiceLabel(id, voiceLang)}</span>
+                        <span className={styles.voiceCardAction}>{isPlaying ? '⏸' : '▶'}</span>
                       </button>
                     );
                   })}
@@ -310,27 +319,6 @@ export default function OnboardingPage() {
             >
               {voiceLang === 'hi' ? 'Shuru Karein' : t('getStarted')}
             </button>
-
-            {/* Skip prompt modal */}
-            {showSkipPrompt && (
-              <div className={styles.skipOverlay} onClick={() => setShowSkipPrompt(false)}>
-                <div className={styles.skipModal} onClick={(e) => e.stopPropagation()}>
-                  <p className={styles.skipText}>
-                    {voiceLang === 'hi'
-                      ? 'Behtar anubhav ke liye, kripya apni pasandida gender se 2 awaazein aur doosri gender se 1 awaaz chunein.'
-                      : 'For the best experience, please pick 2 voices from your preferred gender and 1 from the other.'}
-                  </p>
-                  <div className={styles.skipActions}>
-                    <button onClick={() => setShowSkipPrompt(false)} className={styles.skipGoBack}>
-                      {voiceLang === 'hi' ? 'Wapas Jaayein' : 'Go Back & Choose'}
-                    </button>
-                    <button onClick={handleSkipConfirm} className={styles.skipAnyway}>
-                      {voiceLang === 'hi' ? 'Default se aage badhein' : 'Continue with defaults'}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         )}
       </div>
