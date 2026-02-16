@@ -450,14 +450,23 @@ export default function PlayerPage() {
     }
   };
 
-  // Build voice switch buttons — show all available variants except the active one
+  // Build voice switch buttons — show only the user's 2 non-active preferred voices
   const getVoiceSwitchOptions = () => {
     if (!content || !selectedVoice) return [];
     const allVariants = content.audio_variants || [];
     if (allVariants.length <= 1) return [];
 
+    // Get the user's 3 preferred voices (with language suffix)
+    const preferredVoices = getStoryVoices(lang);
+
     return allVariants
-      .filter(v => v.voice !== selectedVoice)
+      .filter(v => {
+        // Only include voices that are in the user's preferred set
+        const isPreferred = preferredVoices.includes(v.voice);
+        // Exclude the currently selected voice
+        const isActive = v.voice === selectedVoice;
+        return isPreferred && !isActive;
+      })
       .map(v => {
         const baseId = v.voice.replace(/_hi$/, '');
         const meta = VOICES[baseId];
