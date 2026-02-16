@@ -456,13 +456,14 @@ export default function PlayerPage() {
     const allVariants = content.audio_variants || [];
     if (allVariants.length <= 1) return [];
 
-    // Get the user's 3 preferred voices (with language suffix)
-    const preferredVoices = getStoryVoices(lang);
+    // Get the user's 3 preferred voice base IDs (strip _hi suffix for comparison)
+    const preferredBaseIds = getStoryVoices(lang).map(v => v.replace(/_hi$/, ''));
 
     return allVariants
       .filter(v => {
-        // Only include voices that are in the user's preferred set
-        const isPreferred = preferredVoices.includes(v.voice);
+        // Compare using base IDs so English/Hindi variants both match preferences
+        const variantBaseId = v.voice.replace(/_hi$/, '');
+        const isPreferred = preferredBaseIds.includes(variantBaseId);
         // Exclude the currently selected voice
         const isActive = v.voice === selectedVoice;
         return isPreferred && !isActive;
