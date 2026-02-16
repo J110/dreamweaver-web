@@ -1,0 +1,521 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Sky gradient: deep twilight blue -->
+    <linearGradient id="bb-skyGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a2040" stop-opacity="1"/>
+      <stop offset="40%" stop-color="#2a3060" stop-opacity="1"/>
+      <stop offset="75%" stop-color="#3a4080" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#4a5090" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- Snow ground gradient -->
+    <linearGradient id="bb-snowGround" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8f0ff" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#d0e0f0" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- Cave warm glow radial -->
+    <radialGradient id="bb-caveGlow" cx="50%" cy="60%" r="55%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.9"/>
+      <stop offset="40%" stop-color="#ffaa44" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#ff8c42" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Cave inner warmth -->
+    <radialGradient id="bb-caveInner" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.7"/>
+      <stop offset="60%" stop-color="#ffaa44" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#ff8c42" stop-opacity="0.1"/>
+    </radialGradient>
+
+    <!-- Moon glow -->
+    <radialGradient id="bb-moonGlow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.5"/>
+      <stop offset="50%" stop-color="#e8e0d0" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#c0b8a8" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Moon surface -->
+    <radialGradient id="bb-moonSurface" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#fef8e0" stop-opacity="1"/>
+      <stop offset="60%" stop-color="#f0e0b0" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#d8c890" stop-opacity="0.9"/>
+    </radialGradient>
+
+    <!-- Star glow -->
+    <radialGradient id="bb-starGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Vignette -->
+    <radialGradient id="bb-vignette">
+      <stop offset="50%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.5"/>
+    </radialGradient>
+
+    <!-- Snow hill highlight -->
+    <linearGradient id="bb-hillHighlight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Breath mist gradient -->
+    <radialGradient id="bb-breathGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#d0e0f0" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Filters -->
+    <!-- Soft glow -->
+    <filter id="bb-softGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Medium glow -->
+    <filter id="bb-mediumGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Strong glow -->
+    <filter id="bb-strongGlow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Shadow filter -->
+    <filter id="bb-shadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+      <feOffset in="blur" dy="2" result="offset"/>
+      <feMerge>
+        <feMergeNode in="offset"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    /* Snowflake falling animation */
+    @keyframes bb-snowfall {
+      0% { transform: translateY(-20px) translateX(0px); opacity: 0; }
+      10% { opacity: 0.8; }
+      50% { transform: translateY(260px) translateX(15px); opacity: 0.9; }
+      90% { opacity: 0.6; }
+      100% { transform: translateY(540px) translateX(-10px); opacity: 0; }
+    }
+
+    /* Girl walking sway */
+    @keyframes bb-girlSway {
+      0% { transform: translateY(0px) rotate(0deg); }
+      25% { transform: translateY(-2px) rotate(1.5deg); }
+      50% { transform: translateY(0px) rotate(0deg); }
+      75% { transform: translateY(-2px) rotate(-1.5deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+
+    /* Cave warm glow pulse */
+    @keyframes bb-cavePulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+
+    /* Pine tree sway */
+    @keyframes bb-treeSway {
+      0% { transform: rotate(0deg); }
+      50% { transform: rotate(1.8deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    /* Star twinkle */
+    @keyframes bb-starTwinkle {
+      0% { opacity: 0.3; }
+      50% { opacity: 1; }
+      100% { opacity: 0.3; }
+    }
+
+    /* Breath mist puff */
+    @keyframes bb-breathPuff {
+      0% { transform: translateX(0px) translateY(0px) scale(0.3); opacity: 0; }
+      15% { opacity: 0.6; }
+      50% { transform: translateX(12px) translateY(-8px) scale(1); opacity: 0.4; }
+      100% { transform: translateX(20px) translateY(-16px) scale(1.3); opacity: 0; }
+    }
+
+    /* Moon glow breathing */
+    @keyframes bb-moonGlow {
+      0% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+      100% { opacity: 0.3; }
+    }
+
+    /* Scarf flutter */
+    @keyframes bb-scarfFlutter {
+      0% { transform: rotate(0deg) translateX(0px); }
+      33% { transform: rotate(3deg) translateX(2px); }
+      66% { transform: rotate(-2deg) translateX(-1px); }
+      100% { transform: rotate(0deg) translateX(0px); }
+    }
+
+    /* Snowflake classes with staggered delays */
+    .bb-snow-1 { animation: bb-snowfall 7s ease-in-out infinite; animation-delay: 0s; }
+    .bb-snow-2 { animation: bb-snowfall 8s ease-in-out infinite; animation-delay: 0.7s; }
+    .bb-snow-3 { animation: bb-snowfall 7.5s ease-in-out infinite; animation-delay: 1.4s; }
+    .bb-snow-4 { animation: bb-snowfall 9s ease-in-out infinite; animation-delay: 2.1s; }
+    .bb-snow-5 { animation: bb-snowfall 7.2s ease-in-out infinite; animation-delay: 0.3s; }
+    .bb-snow-6 { animation: bb-snowfall 8.5s ease-in-out infinite; animation-delay: 1.8s; }
+    .bb-snow-7 { animation: bb-snowfall 7.8s ease-in-out infinite; animation-delay: 2.5s; }
+    .bb-snow-8 { animation: bb-snowfall 8.2s ease-in-out infinite; animation-delay: 3.2s; }
+    .bb-snow-9 { animation: bb-snowfall 7.6s ease-in-out infinite; animation-delay: 0.9s; }
+    .bb-snow-10 { animation: bb-snowfall 8.8s ease-in-out infinite; animation-delay: 3.8s; }
+    .bb-snow-11 { animation: bb-snowfall 7.3s ease-in-out infinite; animation-delay: 4.2s; }
+    .bb-snow-12 { animation: bb-snowfall 8.1s ease-in-out infinite; animation-delay: 1.1s; }
+
+    .bb-girl {
+      animation: bb-girlSway 4s ease-in-out infinite;
+      transform-origin: 230px 380px;
+    }
+
+    .bb-cave-glow {
+      animation: bb-cavePulse 3s ease-in-out infinite;
+    }
+
+    .bb-pine-1 {
+      animation: bb-treeSway 6s ease-in-out infinite;
+      transform-origin: 65px 430px;
+    }
+    .bb-pine-2 {
+      animation: bb-treeSway 6.5s ease-in-out infinite 0.8s;
+      transform-origin: 110px 410px;
+    }
+    .bb-pine-3 {
+      animation: bb-treeSway 5.5s ease-in-out infinite 1.5s;
+      transform-origin: 460px 400px;
+    }
+    .bb-pine-4 {
+      animation: bb-treeSway 6.2s ease-in-out infinite 0.4s;
+      transform-origin: 500px 420px;
+    }
+
+    .bb-star-1 { animation: bb-starTwinkle 2.5s ease-in-out infinite; }
+    .bb-star-2 { animation: bb-starTwinkle 2.8s ease-in-out infinite 0.4s; }
+    .bb-star-3 { animation: bb-starTwinkle 2.3s ease-in-out infinite 0.9s; }
+    .bb-star-4 { animation: bb-starTwinkle 2.6s ease-in-out infinite 1.5s; }
+    .bb-star-5 { animation: bb-starTwinkle 3s ease-in-out infinite 0.6s; }
+    .bb-star-6 { animation: bb-starTwinkle 2.4s ease-in-out infinite 1.2s; }
+    .bb-star-7 { animation: bb-starTwinkle 2.7s ease-in-out infinite 1.8s; }
+    .bb-star-8 { animation: bb-starTwinkle 2.2s ease-in-out infinite 2.1s; }
+    .bb-star-9 { animation: bb-starTwinkle 2.9s ease-in-out infinite 0.2s; }
+    .bb-star-10 { animation: bb-starTwinkle 2.5s ease-in-out infinite 1.0s; }
+
+    .bb-breath-1 {
+      animation: bb-breathPuff 3.5s ease-in-out infinite;
+    }
+    .bb-breath-2 {
+      animation: bb-breathPuff 3.5s ease-in-out infinite 1.7s;
+    }
+
+    .bb-moon-aura {
+      animation: bb-moonGlow 4s ease-in-out infinite;
+    }
+
+    .bb-scarf-end {
+      animation: bb-scarfFlutter 4.5s ease-in-out infinite;
+      transform-origin: 222px 310px;
+    }
+  </style>
+
+  <!-- ==================== LAYER 1: Background sky ==================== -->
+  <rect width="512" height="512" fill="url(#bb-skyGradient)"/>
+
+  <!-- ==================== LAYER 2: Far background (moon, stars) ==================== -->
+  <!-- Moon with glow -->
+  <g id="bb-moon">
+    <circle cx="400" cy="85" r="55" fill="url(#bb-moonGlow)" class="bb-moon-aura"/>
+    <circle cx="400" cy="85" r="38" fill="url(#bb-moonGlow)" class="bb-moon-aura" opacity="0.5"/>
+    <circle cx="400" cy="85" r="28" fill="url(#bb-moonSurface)"/>
+    <!-- Crescent shadow -->
+    <circle cx="412" cy="82" r="25" fill="#2a3060" opacity="0.85"/>
+    <!-- Moon texture -->
+    <circle cx="390" cy="78" r="1.5" fill="#d8c890" opacity="0.4"/>
+    <circle cx="396" cy="90" r="1" fill="#d8c890" opacity="0.3"/>
+    <circle cx="402" cy="76" r="0.8" fill="#d8c890" opacity="0.4"/>
+  </g>
+
+  <!-- Stars -->
+  <g id="bb-stars">
+    <circle cx="50" cy="40" r="2" fill="#FFE4B5" class="bb-star-1" filter="url(#bb-softGlow)"/>
+    <circle cx="130" cy="65" r="1.5" fill="#FFE4B5" class="bb-star-2" filter="url(#bb-softGlow)"/>
+    <g class="bb-star-3">
+      <polygon points="200,30 203,38 211,39 205,44 207,52 200,48 193,52 195,44 189,39 197,38" fill="#FFD700" filter="url(#bb-softGlow)" transform="scale(0.7)" transform-origin="200px 41px"/>
+    </g>
+    <circle cx="270" cy="55" r="1.8" fill="#FFE4B5" class="bb-star-4" filter="url(#bb-softGlow)"/>
+    <circle cx="320" cy="35" r="2.2" fill="#FFE4B5" class="bb-star-5" filter="url(#bb-softGlow)"/>
+    <g class="bb-star-6">
+      <polygon points="90,100 92,106 99,107 94,111 95,118 90,115 85,118 86,111 81,107 88,106" fill="#FFD700" filter="url(#bb-softGlow)" transform="scale(0.6)" transform-origin="90px 109px"/>
+    </g>
+    <circle cx="175" cy="95" r="1.5" fill="#FFE4B5" class="bb-star-7" filter="url(#bb-softGlow)"/>
+    <circle cx="480" cy="50" r="1.8" fill="#FFE4B5" class="bb-star-8" filter="url(#bb-softGlow)"/>
+    <g class="bb-star-9">
+      <polygon points="350,75 352,80 358,81 354,85 355,91 350,88 345,91 346,85 342,81 348,80" fill="#FFD700" filter="url(#bb-softGlow)" transform="scale(0.6)" transform-origin="350px 83px"/>
+    </g>
+    <circle cx="455" cy="140" r="1.5" fill="#FFE4B5" class="bb-star-10" filter="url(#bb-softGlow)"/>
+  </g>
+
+  <!-- ==================== LAYER 3: Mid background (distant hills, far pine trees) ==================== -->
+  <!-- Distant snowy hills -->
+  <ellipse cx="130" cy="320" rx="180" ry="80" fill="#d0e0f0" opacity="0.25"/>
+  <ellipse cx="380" cy="310" rx="200" ry="90" fill="#d0e0f0" opacity="0.2"/>
+  <ellipse cx="500" cy="340" rx="120" ry="60" fill="#c8d8e8" opacity="0.2"/>
+
+  <!-- Distant pine trees (small, low opacity) -->
+  <g opacity="0.25">
+    <polygon points="160,280 165,240 170,280" fill="#0d2a1a"/>
+    <polygon points="180,285 186,238 192,285" fill="#1a3a2a"/>
+    <polygon points="200,282 205,245 210,282" fill="#0d2a1a"/>
+    <polygon points="145,283 149,250 153,283" fill="#1a3a2a"/>
+    <polygon points="380,275 385,230 390,275" fill="#0d2a1a"/>
+    <polygon points="400,278 406,235 412,278" fill="#1a3a2a"/>
+  </g>
+
+  <!-- ==================== LAYER 4: Middle ground (snow hills, pine trees, cave) ==================== -->
+  <!-- Main snow hills -->
+  <ellipse cx="256" cy="430" rx="300" ry="130" fill="#e8f0ff"/>
+  <ellipse cx="100" cy="450" rx="160" ry="100" fill="#ffffff"/>
+  <ellipse cx="420" cy="440" rx="170" ry="110" fill="#e8f0ff"/>
+
+  <!-- Snow hill highlights -->
+  <ellipse cx="256" cy="400" rx="260" ry="80" fill="url(#bb-hillHighlight)" opacity="0.5"/>
+  <ellipse cx="120" cy="410" rx="120" ry="50" fill="url(#bb-hillHighlight)" opacity="0.4"/>
+
+  <!-- Left pine trees group -->
+  <g class="bb-pine-1">
+    <!-- Tree trunk -->
+    <rect x="62" y="370" width="6" height="60" fill="#3d2a1a" rx="2"/>
+    <!-- Tree layers -->
+    <polygon points="65,270 35,370 95,370" fill="#1a3a2a"/>
+    <polygon points="65,300 40,360 90,360" fill="#0d2a1a"/>
+    <polygon points="65,330 45,370 85,370" fill="#1a3a2a"/>
+    <!-- Snow on branches -->
+    <ellipse cx="50" cy="340" rx="12" ry="4" fill="#ffffff" opacity="0.7"/>
+    <ellipse cx="80" cy="330" rx="10" ry="3.5" fill="#ffffff" opacity="0.6"/>
+    <ellipse cx="65" cy="300" rx="8" ry="3" fill="#ffffff" opacity="0.7"/>
+  </g>
+
+  <g class="bb-pine-2">
+    <rect x="107" y="355" width="5" height="55" fill="#3d2a1a" rx="2"/>
+    <polygon points="110,260 85,355 135,355" fill="#0d2a1a"/>
+    <polygon points="110,290 90,345 130,345" fill="#1a3a2a"/>
+    <polygon points="110,315 93,355 127,355" fill="#0d2a1a"/>
+    <!-- Snow on branches -->
+    <ellipse cx="97" cy="320" rx="10" ry="3.5" fill="#ffffff" opacity="0.6"/>
+    <ellipse cx="123" cy="310" rx="9" ry="3" fill="#ffffff" opacity="0.7"/>
+    <ellipse cx="110" cy="285" rx="7" ry="2.5" fill="#ffffff" opacity="0.65"/>
+  </g>
+
+  <!-- Right pine trees -->
+  <g class="bb-pine-3">
+    <rect x="457" y="345" width="6" height="55" fill="#3d2a1a" rx="2"/>
+    <polygon points="460,248 433,345 487,345" fill="#1a3a2a"/>
+    <polygon points="460,278 438,335 482,335" fill="#0d2a1a"/>
+    <polygon points="460,305 442,345 478,345" fill="#1a3a2a"/>
+    <ellipse cx="445" cy="310" rx="10" ry="3.5" fill="#ffffff" opacity="0.6"/>
+    <ellipse cx="475" cy="300" rx="9" ry="3" fill="#ffffff" opacity="0.65"/>
+    <ellipse cx="460" cy="275" rx="7" ry="2.5" fill="#ffffff" opacity="0.7"/>
+  </g>
+
+  <g class="bb-pine-4">
+    <rect x="497" y="365" width="5" height="55" fill="#3d2a1a" rx="2"/>
+    <polygon points="500,280 478,365 522,365" fill="#0d2a1a"/>
+    <polygon points="500,305 482,355 518,355" fill="#1a3a2a"/>
+    <polygon points="500,330 486,365 514,365" fill="#0d2a1a"/>
+    <ellipse cx="488" cy="335" rx="9" ry="3" fill="#ffffff" opacity="0.6"/>
+    <ellipse cx="512" cy="325" rx="8" ry="2.5" fill="#ffffff" opacity="0.65"/>
+  </g>
+
+  <!-- Cozy snow cave / hollow -->
+  <g id="bb-cave">
+    <!-- Cave outer glow (warm light spilling out) -->
+    <ellipse cx="370" cy="400" rx="70" ry="50" fill="#ffaa44" opacity="0.15" filter="url(#bb-strongGlow)" class="bb-cave-glow"/>
+
+    <!-- Snow drift forming cave shape -->
+    <ellipse cx="370" cy="430" rx="80" ry="55" fill="#e8f0ff"/>
+
+    <!-- Cave opening (dark arch) -->
+    <ellipse cx="370" cy="420" rx="45" ry="35" fill="#1a1020"/>
+
+    <!-- Warm glow inside cave -->
+    <ellipse cx="370" cy="415" rx="40" ry="30" fill="url(#bb-caveInner)" class="bb-cave-glow"/>
+
+    <!-- Inner warm floor glow -->
+    <ellipse cx="370" cy="430" rx="30" ry="12" fill="#ffd700" opacity="0.25" class="bb-cave-glow"/>
+
+    <!-- Cave rim snow detail -->
+    <path d="M 325 405 Q 335 390 350 392 Q 365 388 375 390 Q 390 387 400 392 Q 410 395 415 405" fill="#ffffff" stroke="none"/>
+    <ellipse cx="340" cy="398" rx="12" ry="5" fill="#ffffff" opacity="0.8"/>
+    <ellipse cx="400" cy="398" rx="12" ry="5" fill="#ffffff" opacity="0.8"/>
+
+    <!-- Warm glow rays emanating from cave -->
+    <g class="bb-cave-glow" opacity="0.3">
+      <line x1="370" y1="410" x2="340" y2="380" stroke="#ffd700" stroke-width="2" opacity="0.3" filter="url(#bb-mediumGlow)"/>
+      <line x1="370" y1="410" x2="355" y2="375" stroke="#ffaa44" stroke-width="1.5" opacity="0.25" filter="url(#bb-mediumGlow)"/>
+      <line x1="370" y1="410" x2="385" y2="375" stroke="#ffd700" stroke-width="1.5" opacity="0.25" filter="url(#bb-mediumGlow)"/>
+      <line x1="370" y1="410" x2="400" y2="380" stroke="#ffaa44" stroke-width="2" opacity="0.3" filter="url(#bb-mediumGlow)"/>
+    </g>
+
+    <!-- Small cozy blanket/bed hint inside cave -->
+    <ellipse cx="370" cy="435" rx="22" ry="6" fill="#ff8c42" opacity="0.35"/>
+    <ellipse cx="370" cy="433" rx="18" ry="5" fill="#ffd700" opacity="0.3"/>
+  </g>
+
+  <!-- Small footprints in snow leading from girl to cave -->
+  <g opacity="0.3">
+    <ellipse cx="260" cy="418" rx="3" ry="2" fill="#c0d0e0"/>
+    <ellipse cx="275" cy="420" rx="3" ry="2" fill="#c0d0e0"/>
+    <ellipse cx="290" cy="419" rx="3" ry="2" fill="#c0d0e0"/>
+    <ellipse cx="305" cy="421" rx="3" ry="2" fill="#c0d0e0"/>
+    <ellipse cx="320" cy="420" rx="3" ry="2" fill="#c0d0e0"/>
+    <ellipse cx="335" cy="418" rx="3" ry="2" fill="#c0d0e0"/>
+  </g>
+
+  <!-- ==================== LAYER 5: Primary character (Asha - little girl) ==================== -->
+  <g class="bb-girl" id="bb-asha" filter="url(#bb-shadow)">
+    <!-- Character shadow on snow -->
+    <ellipse cx="230" cy="425" rx="25" ry="6" fill="#b0c0d0" opacity="0.4"/>
+
+    <!-- Legs (small boots) -->
+    <rect x="220" y="400" width="8" height="20" rx="3" fill="#4a3030"/>
+    <rect x="234" y="400" width="8" height="20" rx="3" fill="#4a3030"/>
+    <!-- Boot soles -->
+    <ellipse cx="224" cy="420" rx="6" ry="3" fill="#3a2020"/>
+    <ellipse cx="238" cy="420" rx="6" ry="3" fill="#3a2020"/>
+
+    <!-- Body / warm red coat -->
+    <rect x="213" y="340" width="36" height="65" rx="12" fill="#ff4466"/>
+    <!-- Coat details -->
+    <rect x="213" y="390" width="36" height="15" rx="6" fill="#ff6b8a" opacity="0.6"/>
+    <!-- Coat buttons -->
+    <circle cx="231" cy="360" r="2" fill="#cc2244"/>
+    <circle cx="231" cy="375" r="2" fill="#cc2244"/>
+
+    <!-- Arms -->
+    <!-- Left arm (reaching forward slightly) -->
+    <path d="M 215 355 Q 200 360 195 375" stroke="#ff4466" stroke-width="10" fill="none" stroke-linecap="round"/>
+    <!-- Left mitten -->
+    <circle cx="195" cy="377" r="6" fill="#ff6b8a"/>
+
+    <!-- Right arm -->
+    <path d="M 247 355 Q 260 365 258 378" stroke="#ff4466" stroke-width="10" fill="none" stroke-linecap="round"/>
+    <!-- Right mitten -->
+    <circle cx="258" cy="380" r="6" fill="#ff6b8a"/>
+
+    <!-- Scarf (yellow) -->
+    <path d="M 215 330 Q 220 325 231 325 Q 242 325 247 330 L 248 340 Q 240 338 231 338 Q 222 338 214 340 Z" fill="#ffaa44"/>
+    <!-- Scarf wrap -->
+    <rect x="214" y="332" width="34" height="10" rx="4" fill="#ffaa44"/>
+    <!-- Scarf trailing end -->
+    <g class="bb-scarf-end">
+      <path d="M 247 335 Q 255 340 258 350 Q 260 360 255 365" stroke="#ffaa44" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M 255 365 L 258 372 M 255 365 L 252 371 M 255 365 L 256 373" stroke="#ffaa44" stroke-width="2" fill="none" stroke-linecap="round"/>
+    </g>
+
+    <!-- Head -->
+    <circle cx="231" cy="308" r="24" fill="#f4b5a0"/>
+
+    <!-- Hair (dark brown, covering top of head) -->
+    <path d="M 207 305 Q 207 280 231 275 Q 255 280 255 305" fill="#3a2020"/>
+    <!-- Hair bangs -->
+    <path d="M 212 300 Q 215 290 225 288 Q 220 298 218 305" fill="#3a2020"/>
+    <path d="M 222 298 Q 228 285 238 288 Q 235 295 232 302" fill="#3a2020"/>
+    <path d="M 240 300 Q 243 290 250 295 Q 247 300 245 305" fill="#3a2020"/>
+    <!-- Hair side -->
+    <ellipse cx="210" cy="310" rx="5" ry="12" fill="#3a2020"/>
+    <ellipse cx="252" cy="310" rx="5" ry="12" fill="#3a2020"/>
+
+    <!-- Face features -->
+    <!-- Left eye -->
+    <circle cx="222" cy="310" r="5" fill="#ffffff"/>
+    <circle cx="223" cy="311" r="3.5" fill="#2C3E6E"/>
+    <circle cx="224" cy="309" r="1.5" fill="#ffffff" opacity="0.9"/>
+    <circle cx="221" cy="312" r="0.8" fill="#ffffff" opacity="0.5"/>
+
+    <!-- Right eye -->
+    <circle cx="240" cy="310" r="5" fill="#ffffff"/>
+    <circle cx="241" cy="311" r="3.5" fill="#2C3E6E"/>
+    <circle cx="242" cy="309" r="1.5" fill="#ffffff" opacity="0.9"/>
+    <circle cx="239" cy="312" r="0.8" fill="#ffffff" opacity="0.5"/>
+
+    <!-- Eyebrows (gentle curious expression) -->
+    <path d="M 217 304 Q 222 301 227 303" stroke="#3a2020" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    <path d="M 235 303 Q 240 301 245 304" stroke="#3a2020" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+
+    <!-- Rosy cheeks -->
+    <circle cx="215" cy="316" r="5" fill="#FFB6C1" opacity="0.5" filter="url(#bb-softGlow)"/>
+    <circle cx="247" cy="316" r="5" fill="#FFB6C1" opacity="0.5" filter="url(#bb-softGlow)"/>
+
+    <!-- Small nose -->
+    <circle cx="231" cy="314" r="1.5" fill="#e8a090" opacity="0.6"/>
+
+    <!-- Gentle smile -->
+    <path d="M 224 320 Q 231 325 238 320" stroke="#cc7766" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+    <!-- Warm hat (red matching coat) -->
+    <path d="M 207 302 Q 207 278 231 272 Q 255 278 255 302" fill="#ff4466"/>
+    <rect x="205" y="298" width="52" height="8" rx="4" fill="#ff6b8a"/>
+    <!-- Hat pom-pom -->
+    <circle cx="231" cy="270" r="6" fill="#ffffff"/>
+
+    <!-- Breath mist puffs -->
+    <g class="bb-breath-1">
+      <ellipse cx="248" cy="320" rx="8" ry="5" fill="url(#bb-breathGlow)" opacity="0.5"/>
+    </g>
+    <g class="bb-breath-2">
+      <ellipse cx="250" cy="318" rx="6" ry="4" fill="url(#bb-breathGlow)" opacity="0.4"/>
+    </g>
+  </g>
+
+  <!-- ==================== LAYER 6: Foreground (snowflakes, nearest elements) ==================== -->
+  <!-- Foreground snow mounds -->
+  <ellipse cx="50" cy="490" rx="100" ry="40" fill="#ffffff" opacity="0.7"/>
+  <ellipse cx="470" cy="495" rx="90" ry="35" fill="#ffffff" opacity="0.6"/>
+  <ellipse cx="256" cy="500" rx="280" ry="30" fill="#e8f0ff" opacity="0.5"/>
+
+  <!-- Falling snowflakes -->
+  <g id="bb-snowflakes">
+    <!-- Large snowflakes -->
+    <circle cx="60" cy="80" r="3" fill="#ffffff" opacity="0.8" class="bb-snow-1"/>
+    <circle cx="150" cy="120" r="2.5" fill="#ffffff" opacity="0.7" class="bb-snow-2"/>
+    <circle cx="250" cy="60" r="3.5" fill="#ffffff" opacity="0.9" class="bb-snow-3"/>
+    <circle cx="340" cy="100" r="2.8" fill="#ffffff" opacity="0.75" class="bb-snow-4"/>
+    <circle cx="430" cy="70" r="3" fill="#ffffff" opacity="0.8" class="bb-snow-5"/>
+    <circle cx="100" cy="150" r="2.2" fill="#ffffff" opacity="0.65" class="bb-snow-6"/>
+
+    <!-- Medium snowflakes -->
+    <circle cx="200" cy="140" r="2" fill="#e8f0ff" opacity="0.7" class="bb-snow-7"/>
+    <circle cx="300" cy="50" r="2.3" fill="#ffffff" opacity="0.8" class="bb-snow-8"/>
+    <circle cx="400" cy="160" r="1.8" fill="#e8f0ff" opacity="0.6" class="bb-snow-9"/>
+    <circle cx="480" cy="130" r="2.5" fill="#ffffff" opacity="0.75" class="bb-snow-10"/>
+
+    <!-- Small snowflakes -->
+    <circle cx="35" cy="200" r="1.5" fill="#e8f0ff" opacity="0.5" class="bb-snow-11"/>
+    <circle cx="180" cy="180" r="1.8" fill="#ffffff" opacity="0.6" class="bb-snow-12"/>
+  </g>
+
+  <!-- Small sparkle near cave glow -->
+  <circle cx="355" cy="390" r="2" fill="#ffd700" opacity="0.6" class="bb-star-3" filter="url(#bb-softGlow)"/>
+  <circle cx="385" cy="388" r="1.5" fill="#ffd700" opacity="0.5" class="bb-star-7" filter="url(#bb-softGlow)"/>
+
+  <!-- ==================== LAYER 7: Vignette overlay ==================== -->
+  <rect width="512" height="512" fill="url(#bb-vignette)" opacity="0.4"/>
+</svg>

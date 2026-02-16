@@ -1,0 +1,593 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Sky gradient: deep cosmic dark -->
+    <linearGradient id="sc2-skyGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#050510"/>
+      <stop offset="45%" stop-color="#0a0a2e"/>
+      <stop offset="100%" stop-color="#151540"/>
+    </linearGradient>
+
+    <!-- Aurora gradient (vertical shimmer band) -->
+    <linearGradient id="sc2-auroraGrad1" x1="0" y1="0" x2="1" y2="0.3">
+      <stop offset="0%" stop-color="#ff69b4" stop-opacity="0"/>
+      <stop offset="25%" stop-color="#ff69b4" stop-opacity="0.25"/>
+      <stop offset="50%" stop-color="#9370db" stop-opacity="0.3"/>
+      <stop offset="75%" stop-color="#00ccff" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#00ff88" stop-opacity="0"/>
+    </linearGradient>
+
+    <linearGradient id="sc2-auroraGrad2" x1="0.2" y1="0" x2="0.8" y2="0.4">
+      <stop offset="0%" stop-color="#00ccff" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#9370db" stop-opacity="0.2"/>
+      <stop offset="60%" stop-color="#00ff88" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#ff69b4" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Hilltop gradient -->
+    <linearGradient id="sc2-hillGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a1a3a"/>
+      <stop offset="100%" stop-color="#0d0d20"/>
+    </linearGradient>
+
+    <!-- Star glow radial -->
+    <radialGradient id="sc2-starGlow" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#ffd700" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Character silhouette glow -->
+    <radialGradient id="sc2-charGlow" cx="50%" cy="60%">
+      <stop offset="0%" stop-color="#9370db" stop-opacity="0.4"/>
+      <stop offset="60%" stop-color="#4488ff" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#050510" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Constellation line gradient -->
+    <linearGradient id="sc2-constGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4488ff" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#6644cc" stop-opacity="0.5"/>
+    </linearGradient>
+
+    <!-- Music note gradient -->
+    <linearGradient id="sc2-noteGrad" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#ffaa44"/>
+      <stop offset="100%" stop-color="#ff69b4"/>
+    </linearGradient>
+
+    <!-- Sound wave ring gradient -->
+    <radialGradient id="sc2-waveGrad" cx="50%" cy="50%">
+      <stop offset="70%" stop-color="#00ccff" stop-opacity="0"/>
+      <stop offset="85%" stop-color="#00ccff" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#00ccff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Vignette -->
+    <radialGradient id="sc2-vignette">
+      <stop offset="45%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.55"/>
+    </radialGradient>
+
+    <!-- Filters -->
+    <filter id="sc2-softGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="sc2-mediumGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="sc2-strongGlow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="sc2-heavyBlur">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10"/>
+    </filter>
+  </defs>
+
+  <style>
+    /* --- ANIMATION KEYFRAMES --- */
+
+    /* 1. Music note float upward */
+    @keyframes sc2-noteFloat1 {
+      0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.9; }
+      80% { opacity: 0.7; }
+      100% { transform: translate(-15px, -90px) rotate(-20deg); opacity: 0; }
+    }
+    @keyframes sc2-noteFloat2 {
+      0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.85; }
+      75% { opacity: 0.6; }
+      100% { transform: translate(20px, -100px) rotate(15deg); opacity: 0; }
+    }
+    @keyframes sc2-noteFloat3 {
+      0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+      12% { opacity: 0.9; }
+      85% { opacity: 0.5; }
+      100% { transform: translate(-10px, -80px) rotate(-25deg); opacity: 0; }
+    }
+    @keyframes sc2-noteFloat4 {
+      0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+      8% { opacity: 0.8; }
+      78% { opacity: 0.6; }
+      100% { transform: translate(25px, -95px) rotate(18deg); opacity: 0; }
+    }
+
+    /* 2. Aurora wave shimmer */
+    @keyframes sc2-auroraWave1 {
+      0%, 100% { transform: translateX(0px) scaleY(1); opacity: 0.25; }
+      25% { transform: translateX(20px) scaleY(1.08); opacity: 0.35; }
+      50% { transform: translateX(-10px) scaleY(0.95); opacity: 0.2; }
+      75% { transform: translateX(15px) scaleY(1.05); opacity: 0.3; }
+    }
+    @keyframes sc2-auroraWave2 {
+      0%, 100% { transform: translateX(0px) scaleY(1); opacity: 0.2; }
+      30% { transform: translateX(-25px) scaleY(1.1); opacity: 0.3; }
+      60% { transform: translateX(18px) scaleY(0.92); opacity: 0.18; }
+      85% { transform: translateX(-8px) scaleY(1.04); opacity: 0.28; }
+    }
+
+    /* 3. Star pulse with sound wave rings */
+    @keyframes sc2-starPulse {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.3); opacity: 1; }
+    }
+    @keyframes sc2-soundRing {
+      0% { transform: scale(0.3); opacity: 0.7; }
+      100% { transform: scale(2.5); opacity: 0; }
+    }
+    @keyframes sc2-soundRingSlow {
+      0% { transform: scale(0.4); opacity: 0.6; }
+      100% { transform: scale(3); opacity: 0; }
+    }
+
+    /* 4. Constellation line glow pulse */
+    @keyframes sc2-constGlow {
+      0%, 100% { opacity: 0.25; stroke-width: 0.8; }
+      50% { opacity: 0.7; stroke-width: 1.4; }
+    }
+    @keyframes sc2-constGlow2 {
+      0%, 100% { opacity: 0.2; stroke-width: 0.7; }
+      50% { opacity: 0.6; stroke-width: 1.2; }
+    }
+
+    /* 5. Girl hair/dress sway */
+    @keyframes sc2-hairSway {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(3deg); }
+      75% { transform: rotate(-4deg); }
+    }
+    @keyframes sc2-dressSway {
+      0%, 100% { transform: skewX(0deg); }
+      30% { transform: skewX(2deg); }
+      70% { transform: skewX(-2.5deg); }
+    }
+
+    /* 6. Sparkle cascade */
+    @keyframes sc2-sparkle1 {
+      0%, 100% { opacity: 0; transform: translateY(0) scale(0.5); }
+      15% { opacity: 1; transform: translateY(-5px) scale(1); }
+      50% { opacity: 0.7; transform: translateY(-20px) scale(0.8); }
+      85% { opacity: 0.2; transform: translateY(-35px) scale(0.4); }
+    }
+    @keyframes sc2-sparkle2 {
+      0%, 100% { opacity: 0; transform: translateY(0) scale(0.4); }
+      20% { opacity: 0.9; transform: translateY(-8px) scale(1.1); }
+      55% { opacity: 0.6; transform: translateY(-25px) scale(0.7); }
+      90% { opacity: 0.1; transform: translateY(-40px) scale(0.3); }
+    }
+
+    /* 7. Gentle star twinkle (background) */
+    @keyframes sc2-twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    @keyframes sc2-twinkle2 {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.9; }
+    }
+
+    /* 8. Cosmic energy flow */
+    @keyframes sc2-energyFlow {
+      0% { stroke-dashoffset: 80; opacity: 0.3; }
+      50% { stroke-dashoffset: 0; opacity: 0.6; }
+      100% { stroke-dashoffset: -80; opacity: 0.3; }
+    }
+
+    /* --- ANIMATION CLASSES --- */
+
+    /* Background stars */
+    .sc2-star-t1 { animation: sc2-twinkle 3s ease-in-out infinite; }
+    .sc2-star-t2 { animation: sc2-twinkle 2.8s ease-in-out infinite 0.5s; }
+    .sc2-star-t3 { animation: sc2-twinkle2 3.2s ease-in-out infinite 1.1s; }
+    .sc2-star-t4 { animation: sc2-twinkle 2.6s ease-in-out infinite 1.6s; }
+    .sc2-star-t5 { animation: sc2-twinkle2 3.4s ease-in-out infinite 0.3s; }
+    .sc2-star-t6 { animation: sc2-twinkle 2.9s ease-in-out infinite 2s; }
+
+    /* Singing stars (with pulse) */
+    .sc2-sing1 { animation: sc2-starPulse 3s ease-in-out infinite; }
+    .sc2-sing2 { animation: sc2-starPulse 3.2s ease-in-out infinite 0.6s; }
+    .sc2-sing3 { animation: sc2-starPulse 2.8s ease-in-out infinite 1.2s; }
+    .sc2-sing4 { animation: sc2-starPulse 3.4s ease-in-out infinite 1.8s; }
+    .sc2-sing5 { animation: sc2-starPulse 3.1s ease-in-out infinite 0.4s; }
+
+    /* Sound wave rings */
+    .sc2-ring1 { animation: sc2-soundRing 3s ease-in-out infinite; }
+    .sc2-ring2 { animation: sc2-soundRing 3.2s ease-in-out infinite 0.6s; }
+    .sc2-ring3 { animation: sc2-soundRingSlow 3.5s ease-in-out infinite 1.2s; }
+    .sc2-ring4 { animation: sc2-soundRing 2.8s ease-in-out infinite 1.8s; }
+    .sc2-ring5 { animation: sc2-soundRingSlow 3.3s ease-in-out infinite 0.3s; }
+
+    /* Aurora */
+    .sc2-aurora1 { animation: sc2-auroraWave1 9s ease-in-out infinite; }
+    .sc2-aurora2 { animation: sc2-auroraWave2 10s ease-in-out infinite 1.5s; }
+
+    /* Constellation lines */
+    .sc2-const1 { animation: sc2-constGlow 4s ease-in-out infinite; }
+    .sc2-const2 { animation: sc2-constGlow2 4.3s ease-in-out infinite 0.8s; }
+    .sc2-const3 { animation: sc2-constGlow 3.8s ease-in-out infinite 1.6s; }
+
+    /* Music notes floating */
+    .sc2-note1 { animation: sc2-noteFloat1 6s ease-in-out infinite; }
+    .sc2-note2 { animation: sc2-noteFloat2 5.5s ease-in-out infinite 1s; }
+    .sc2-note3 { animation: sc2-noteFloat3 7s ease-in-out infinite 2s; }
+    .sc2-note4 { animation: sc2-noteFloat4 5.8s ease-in-out infinite 3s; }
+    .sc2-note5 { animation: sc2-noteFloat1 6.5s ease-in-out infinite 1.5s; }
+    .sc2-note6 { animation: sc2-noteFloat3 5.2s ease-in-out infinite 3.8s; }
+    .sc2-note7 { animation: sc2-noteFloat2 6.8s ease-in-out infinite 0.5s; }
+
+    /* Hair and dress sway */
+    .sc2-hair { animation: sc2-hairSway 5s ease-in-out infinite; transform-origin: 256px 310px; }
+    .sc2-dress { animation: sc2-dressSway 5s ease-in-out infinite 0.3s; transform-origin: 256px 370px; }
+
+    /* Sparkles */
+    .sc2-sp1 { animation: sc2-sparkle1 6s ease-in-out infinite; }
+    .sc2-sp2 { animation: sc2-sparkle2 6.3s ease-in-out infinite 0.8s; }
+    .sc2-sp3 { animation: sc2-sparkle1 5.8s ease-in-out infinite 1.6s; }
+    .sc2-sp4 { animation: sc2-sparkle2 6.5s ease-in-out infinite 2.4s; }
+    .sc2-sp5 { animation: sc2-sparkle1 5.5s ease-in-out infinite 3.2s; }
+    .sc2-sp6 { animation: sc2-sparkle2 6.2s ease-in-out infinite 0.4s; }
+    .sc2-sp7 { animation: sc2-sparkle1 5.9s ease-in-out infinite 2s; }
+    .sc2-sp8 { animation: sc2-sparkle2 6.4s ease-in-out infinite 1.2s; }
+
+    /* Cosmic energy streams */
+    .sc2-energy1 { animation: sc2-energyFlow 7s ease-in-out infinite; stroke-dasharray: 40 40; }
+    .sc2-energy2 { animation: sc2-energyFlow 8s ease-in-out infinite 2s; stroke-dasharray: 30 50; }
+  </style>
+
+  <!-- ============================================= -->
+  <!-- LAYER 1: Background sky                       -->
+  <!-- ============================================= -->
+  <rect width="512" height="512" fill="url(#sc2-skyGradient)"/>
+
+  <!-- Subtle cosmic nebula washes -->
+  <ellipse cx="130" cy="100" rx="160" ry="80" fill="#1a0a3e" opacity="0.2" filter="url(#sc2-heavyBlur)"/>
+  <ellipse cx="400" cy="180" rx="120" ry="100" fill="#150a30" opacity="0.18" filter="url(#sc2-heavyBlur)"/>
+  <ellipse cx="256" cy="400" rx="200" ry="60" fill="#0d0d2e" opacity="0.15" filter="url(#sc2-heavyBlur)"/>
+
+  <!-- ============================================= -->
+  <!-- LAYER 2: Far background — distant stars       -->
+  <!-- ============================================= -->
+  <g opacity="0.6">
+    <!-- Tiny distant stars -->
+    <circle cx="30" cy="45" r="0.8" fill="#ffffff" class="sc2-star-t1"/>
+    <circle cx="80" cy="25" r="0.6" fill="#ffe4b5" class="sc2-star-t2"/>
+    <circle cx="145" cy="60" r="0.7" fill="#ffffff" class="sc2-star-t3"/>
+    <circle cx="200" cy="30" r="0.5" fill="#ffd700" class="sc2-star-t4"/>
+    <circle cx="310" cy="50" r="0.8" fill="#ffffff" class="sc2-star-t5"/>
+    <circle cx="370" cy="35" r="0.6" fill="#ffe4b5" class="sc2-star-t6"/>
+    <circle cx="430" cy="55" r="0.7" fill="#ffffff" class="sc2-star-t1"/>
+    <circle cx="490" cy="40" r="0.5" fill="#ffd700" class="sc2-star-t2"/>
+    <circle cx="55" cy="110" r="0.6" fill="#ffffff" class="sc2-star-t3"/>
+    <circle cx="170" cy="95" r="0.5" fill="#ffe4b5" class="sc2-star-t4"/>
+    <circle cx="260" cy="75" r="0.7" fill="#ffffff" class="sc2-star-t5"/>
+    <circle cx="340" cy="100" r="0.6" fill="#ffd700" class="sc2-star-t6"/>
+    <circle cx="450" cy="90" r="0.5" fill="#ffffff" class="sc2-star-t1"/>
+    <circle cx="40" cy="180" r="0.6" fill="#ffe4b5" class="sc2-star-t2"/>
+    <circle cx="120" cy="155" r="0.7" fill="#ffffff" class="sc2-star-t3"/>
+    <circle cx="220" cy="140" r="0.5" fill="#ffd700" class="sc2-star-t4"/>
+    <circle cx="380" cy="150" r="0.8" fill="#ffffff" class="sc2-star-t5"/>
+    <circle cx="480" cy="145" r="0.6" fill="#ffe4b5" class="sc2-star-t6"/>
+    <circle cx="65" cy="240" r="0.5" fill="#ffffff" class="sc2-star-t1"/>
+    <circle cx="470" cy="230" r="0.6" fill="#ffd700" class="sc2-star-t2"/>
+    <circle cx="25" cy="300" r="0.5" fill="#ffffff" class="sc2-star-t3"/>
+    <circle cx="490" cy="310" r="0.7" fill="#ffe4b5" class="sc2-star-t4"/>
+    <circle cx="15" cy="370" r="0.6" fill="#ffffff" class="sc2-star-t5"/>
+    <circle cx="500" cy="380" r="0.5" fill="#ffd700" class="sc2-star-t6"/>
+  </g>
+
+  <!-- ============================================= -->
+  <!-- LAYER 3: Mid background — Aurora + Constellation lines -->
+  <!-- ============================================= -->
+
+  <!-- Aurora bands -->
+  <g class="sc2-aurora1">
+    <path d="M0,80 Q80,50 160,90 T320,70 T480,100 L512,100 L512,200 Q400,170 280,190 T120,180 L0,170 Z"
+          fill="url(#sc2-auroraGrad1)" opacity="0.3" filter="url(#sc2-mediumGlow)"/>
+  </g>
+  <g class="sc2-aurora2">
+    <path d="M0,120 Q100,95 200,130 T400,110 L512,130 L512,220 Q380,200 250,215 T80,200 L0,210 Z"
+          fill="url(#sc2-auroraGrad2)" opacity="0.25" filter="url(#sc2-mediumGlow)"/>
+  </g>
+
+  <!-- Constellation pattern: Lyra (lyre) — left sky area -->
+  <g>
+    <line x1="80" y1="130" x2="120" y2="160" stroke="url(#sc2-constGrad)" stroke-width="1" stroke-linecap="round" class="sc2-const1"/>
+    <line x1="120" y1="160" x2="105" y2="200" stroke="url(#sc2-constGrad)" stroke-width="1" stroke-linecap="round" class="sc2-const1"/>
+    <line x1="120" y1="160" x2="145" y2="205" stroke="url(#sc2-constGrad)" stroke-width="1" stroke-linecap="round" class="sc2-const1"/>
+    <line x1="105" y1="200" x2="90" y2="240" stroke="url(#sc2-constGrad)" stroke-width="1" stroke-linecap="round" class="sc2-const1"/>
+    <line x1="145" y1="205" x2="155" y2="245" stroke="url(#sc2-constGrad)" stroke-width="1" stroke-linecap="round" class="sc2-const1"/>
+    <line x1="90" y1="240" x2="125" y2="260" stroke="url(#sc2-constGrad)" stroke-width="1" stroke-linecap="round" class="sc2-const1"/>
+    <line x1="155" y1="245" x2="125" y2="260" stroke="url(#sc2-constGrad)" stroke-width="1" stroke-linecap="round" class="sc2-const1"/>
+  </g>
+
+  <!-- Constellation pattern: right sky — a harp shape -->
+  <g>
+    <line x1="380" y1="110" x2="410" y2="145" stroke="url(#sc2-constGrad)" stroke-width="1" stroke-linecap="round" class="sc2-const2"/>
+    <line x1="410" y1="145" x2="430" y2="120" stroke="url(#sc2-constGrad)" stroke-width="1" stroke-linecap="round" class="sc2-const2"/>
+    <line x1="430" y1="120" x2="460" y2="155" stroke="url(#sc2-constGrad)" stroke-width="1" stroke-linecap="round" class="sc2-const2"/>
+    <line x1="410" y1="145" x2="395" y2="195" stroke="url(#sc2-constGrad)" stroke-width="1" stroke-linecap="round" class="sc2-const2"/>
+    <line x1="460" y1="155" x2="445" y2="200" stroke="url(#sc2-constGrad)" stroke-width="1" stroke-linecap="round" class="sc2-const2"/>
+    <line x1="395" y1="195" x2="445" y2="200" stroke="url(#sc2-constGrad)" stroke-width="1" stroke-linecap="round" class="sc2-const2"/>
+  </g>
+
+  <!-- Small constellation: overhead crown -->
+  <g>
+    <line x1="210" y1="45" x2="240" y2="30" stroke="url(#sc2-constGrad)" stroke-width="0.8" stroke-linecap="round" class="sc2-const3"/>
+    <line x1="240" y1="30" x2="270" y2="35" stroke="url(#sc2-constGrad)" stroke-width="0.8" stroke-linecap="round" class="sc2-const3"/>
+    <line x1="270" y1="35" x2="300" y2="50" stroke="url(#sc2-constGrad)" stroke-width="0.8" stroke-linecap="round" class="sc2-const3"/>
+    <line x1="240" y1="30" x2="255" y2="15" stroke="url(#sc2-constGrad)" stroke-width="0.8" stroke-linecap="round" class="sc2-const3"/>
+    <line x1="270" y1="35" x2="260" y2="18" stroke="url(#sc2-constGrad)" stroke-width="0.8" stroke-linecap="round" class="sc2-const3"/>
+  </g>
+
+  <!-- Cosmic energy flow streams -->
+  <path d="M60,200 Q150,180 200,220 Q250,260 180,300"
+        fill="none" stroke="#9370db" stroke-width="1.2" stroke-linecap="round"
+        opacity="0.3" class="sc2-energy1"/>
+  <path d="M340,180 Q400,210 440,260 Q470,300 430,340"
+        fill="none" stroke="#00ccff" stroke-width="1" stroke-linecap="round"
+        opacity="0.25" class="sc2-energy2"/>
+
+  <!-- ============================================= -->
+  <!-- LAYER 4: Middle ground — Singing stars with sound waves -->
+  <!-- ============================================= -->
+
+  <!-- Singing star 1 (top-left area) -->
+  <g filter="url(#sc2-softGlow)">
+    <circle cx="80" cy="130" r="3" fill="#ffd700" class="sc2-sing1"/>
+    <circle cx="80" cy="130" r="10" fill="none" stroke="#00ccff" stroke-width="0.6" opacity="0.5" class="sc2-ring1"/>
+    <circle cx="80" cy="130" r="10" fill="none" stroke="#9370db" stroke-width="0.4" opacity="0.4" class="sc2-ring3"/>
+  </g>
+
+  <!-- Singing star 2 (upper-mid-left) -->
+  <g filter="url(#sc2-softGlow)">
+    <circle cx="160" cy="85" r="3.5" fill="#ffe4b5" class="sc2-sing2"/>
+    <circle cx="160" cy="85" r="12" fill="none" stroke="#ff69b4" stroke-width="0.5" opacity="0.5" class="sc2-ring2"/>
+  </g>
+
+  <!-- Singing star 3 (center-high) -->
+  <g filter="url(#sc2-mediumGlow)">
+    <circle cx="256" cy="60" r="4" fill="#ffd700" class="sc2-sing3"/>
+    <circle cx="256" cy="60" r="14" fill="none" stroke="#00ccff" stroke-width="0.7" opacity="0.6" class="sc2-ring3"/>
+    <circle cx="256" cy="60" r="14" fill="none" stroke="#ff69b4" stroke-width="0.4" opacity="0.3" class="sc2-ring1"/>
+  </g>
+
+  <!-- Singing star 4 (upper-right) -->
+  <g filter="url(#sc2-softGlow)">
+    <circle cx="355" cy="95" r="3" fill="#ffffff" class="sc2-sing4"/>
+    <circle cx="355" cy="95" r="11" fill="none" stroke="#9370db" stroke-width="0.5" opacity="0.5" class="sc2-ring4"/>
+  </g>
+
+  <!-- Singing star 5 (far right) -->
+  <g filter="url(#sc2-softGlow)">
+    <circle cx="440" cy="130" r="3.5" fill="#ffd700" class="sc2-sing5"/>
+    <circle cx="440" cy="130" r="12" fill="none" stroke="#00ccff" stroke-width="0.6" opacity="0.5" class="sc2-ring5"/>
+    <circle cx="440" cy="130" r="12" fill="none" stroke="#00ff88" stroke-width="0.3" opacity="0.3" class="sc2-ring2"/>
+  </g>
+
+  <!-- Constellation node stars (at constellation vertices) -->
+  <circle cx="120" cy="160" r="2.2" fill="#ffe4b5" class="sc2-star-t1" filter="url(#sc2-softGlow)"/>
+  <circle cx="105" cy="200" r="2" fill="#ffd700" class="sc2-star-t3" filter="url(#sc2-softGlow)"/>
+  <circle cx="145" cy="205" r="1.8" fill="#ffe4b5" class="sc2-star-t5" filter="url(#sc2-softGlow)"/>
+  <circle cx="90" cy="240" r="2" fill="#ffffff" class="sc2-star-t2" filter="url(#sc2-softGlow)"/>
+  <circle cx="155" cy="245" r="1.8" fill="#ffd700" class="sc2-star-t4" filter="url(#sc2-softGlow)"/>
+  <circle cx="125" cy="260" r="2.5" fill="#ffe4b5" class="sc2-star-t6" filter="url(#sc2-softGlow)"/>
+
+  <circle cx="380" cy="110" r="2" fill="#ffe4b5" class="sc2-star-t2" filter="url(#sc2-softGlow)"/>
+  <circle cx="410" cy="145" r="2.2" fill="#ffd700" class="sc2-star-t4" filter="url(#sc2-softGlow)"/>
+  <circle cx="430" cy="120" r="1.8" fill="#ffffff" class="sc2-star-t6" filter="url(#sc2-softGlow)"/>
+  <circle cx="460" cy="155" r="2" fill="#ffe4b5" class="sc2-star-t1" filter="url(#sc2-softGlow)"/>
+  <circle cx="395" cy="195" r="2.2" fill="#ffd700" class="sc2-star-t3" filter="url(#sc2-softGlow)"/>
+  <circle cx="445" cy="200" r="2" fill="#ffffff" class="sc2-star-t5" filter="url(#sc2-softGlow)"/>
+
+  <!-- Crown constellation nodes -->
+  <circle cx="210" cy="45" r="1.5" fill="#ffe4b5" class="sc2-star-t4" filter="url(#sc2-softGlow)"/>
+  <circle cx="240" cy="30" r="2" fill="#ffd700" class="sc2-star-t2" filter="url(#sc2-softGlow)"/>
+  <circle cx="270" cy="35" r="1.8" fill="#ffffff" class="sc2-star-t6" filter="url(#sc2-softGlow)"/>
+  <circle cx="300" cy="50" r="1.5" fill="#ffe4b5" class="sc2-star-t1" filter="url(#sc2-softGlow)"/>
+  <circle cx="255" cy="15" r="2.2" fill="#ffd700" class="sc2-star-t3" filter="url(#sc2-softGlow)"/>
+  <circle cx="260" cy="18" r="1.5" fill="#ffe4b5" class="sc2-star-t5" filter="url(#sc2-softGlow)"/>
+
+  <!-- Musical notes floating from singing stars -->
+  <!-- Note pair near star 1 -->
+  <g class="sc2-note1" filter="url(#sc2-softGlow)">
+    <text x="90" y="115" font-family="serif" font-size="14" fill="url(#sc2-noteGrad)" opacity="0.9">&#9834;</text>
+  </g>
+  <g class="sc2-note5" filter="url(#sc2-softGlow)">
+    <text x="70" y="120" font-family="serif" font-size="11" fill="#ff69b4" opacity="0.8">&#9835;</text>
+  </g>
+
+  <!-- Note near star 2 -->
+  <g class="sc2-note2" filter="url(#sc2-softGlow)">
+    <text x="170" y="70" font-family="serif" font-size="13" fill="url(#sc2-noteGrad)" opacity="0.85">&#9833;</text>
+  </g>
+
+  <!-- Notes near center star -->
+  <g class="sc2-note3" filter="url(#sc2-softGlow)">
+    <text x="265" y="45" font-family="serif" font-size="15" fill="#ffaa44" opacity="0.9">&#9834;</text>
+  </g>
+  <g class="sc2-note6" filter="url(#sc2-softGlow)">
+    <text x="245" y="50" font-family="serif" font-size="11" fill="#ff69b4" opacity="0.8">&#9835;</text>
+  </g>
+
+  <!-- Notes near star 4 -->
+  <g class="sc2-note4" filter="url(#sc2-softGlow)">
+    <text x="365" y="80" font-family="serif" font-size="12" fill="url(#sc2-noteGrad)" opacity="0.85">&#9833;</text>
+  </g>
+
+  <!-- Note near star 5 -->
+  <g class="sc2-note7" filter="url(#sc2-softGlow)">
+    <text x="450" y="115" font-family="serif" font-size="14" fill="#ffaa44" opacity="0.9">&#9834;</text>
+  </g>
+
+  <!-- Sound wave curves (stylized arcs between stars — like music traveling) -->
+  <path d="M95,128 Q128,105 155,90" fill="none" stroke="#9370db" stroke-width="0.8"
+        opacity="0.3" stroke-linecap="round" class="sc2-const2"/>
+  <path d="M175,82 Q215,68 248,62" fill="none" stroke="#00ccff" stroke-width="0.8"
+        opacity="0.25" stroke-linecap="round" class="sc2-const1"/>
+  <path d="M268,58 Q310,72 348,90" fill="none" stroke="#ff69b4" stroke-width="0.7"
+        opacity="0.25" stroke-linecap="round" class="sc2-const3"/>
+  <path d="M368,92 Q400,108 432,125" fill="none" stroke="#9370db" stroke-width="0.8"
+        opacity="0.3" stroke-linecap="round" class="sc2-const2"/>
+
+  <!-- ============================================= -->
+  <!-- LAYER 5: Primary character — Girl on hilltop  -->
+  <!-- ============================================= -->
+
+  <!-- Hilltop -->
+  <path d="M0,430 Q100,395 180,400 Q256,390 330,398 Q420,405 512,435 L512,512 L0,512 Z"
+        fill="url(#sc2-hillGrad)"/>
+  <!-- Subtle grass texture on hilltop -->
+  <path d="M120,408 Q125,398 130,408" fill="none" stroke="#1e1e42" stroke-width="1.2" opacity="0.4"/>
+  <path d="M200,400 Q204,390 208,400" fill="none" stroke="#1e1e42" stroke-width="1" opacity="0.35"/>
+  <path d="M300,401 Q305,392 310,402" fill="none" stroke="#1e1e42" stroke-width="1.1" opacity="0.38"/>
+  <path d="M380,407 Q384,398 388,408" fill="none" stroke="#1e1e42" stroke-width="1" opacity="0.35"/>
+
+  <!-- Character aura glow -->
+  <ellipse cx="256" cy="360" rx="80" ry="60" fill="url(#sc2-charGlow)" filter="url(#sc2-strongGlow)"/>
+
+  <!-- Girl silhouette — body -->
+  <g>
+    <!-- Dress / lower body -->
+    <g class="sc2-dress">
+      <path d="M236,370 Q230,395 222,420 Q240,425 256,422 Q272,425 290,420 Q282,395 276,370 Z"
+            fill="#0e0e28" opacity="0.95"/>
+      <!-- Dress hem detail -->
+      <path d="M222,420 Q240,418 256,422 Q272,418 290,420 Q280,428 256,430 Q232,428 222,420"
+            fill="#121238" opacity="0.8"/>
+    </g>
+
+    <!-- Torso -->
+    <path d="M244,335 L242,370 Q249,373 256,374 Q263,373 270,370 L268,335 Z"
+          fill="#0c0c24"/>
+
+    <!-- Left arm raised — reaching to sky -->
+    <path d="M244,338 Q230,320 215,290 Q210,280 208,270"
+          fill="none" stroke="#0c0c24" stroke-width="7" stroke-linecap="round"/>
+    <!-- Left hand open -->
+    <circle cx="207" cy="268" r="5" fill="#0c0c24"/>
+    <path d="M204,263 L201,256" fill="none" stroke="#0c0c24" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M207,262 L206,254" fill="none" stroke="#0c0c24" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M210,263 L212,255" fill="none" stroke="#0c0c24" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Right arm raised — reaching to sky -->
+    <path d="M268,338 Q282,318 298,288 Q303,278 305,268"
+          fill="none" stroke="#0c0c24" stroke-width="7" stroke-linecap="round"/>
+    <!-- Right hand open -->
+    <circle cx="306" cy="266" r="5" fill="#0c0c24"/>
+    <path d="M303,261 L300,253" fill="none" stroke="#0c0c24" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M306,260 L306,252" fill="none" stroke="#0c0c24" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M309,261 L312,254" fill="none" stroke="#0c0c24" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Head -->
+    <circle cx="256" cy="318" r="18" fill="#0c0c24"/>
+
+    <!-- Hair flowing — animated -->
+    <g class="sc2-hair">
+      <!-- Main hair mass -->
+      <path d="M238,312 Q232,305 228,318 Q225,330 230,345 Q228,355 224,365"
+            fill="none" stroke="#0c0c24" stroke-width="8" stroke-linecap="round"/>
+      <path d="M240,308 Q236,302 234,312 Q232,325 234,340 Q230,352 226,362"
+            fill="none" stroke="#0e0e28" stroke-width="5" stroke-linecap="round"/>
+      <!-- Hair wisps -->
+      <path d="M242,306 Q235,298 230,308 Q226,318 228,332"
+            fill="none" stroke="#0c0c24" stroke-width="4" stroke-linecap="round"/>
+      <!-- Right side hair strands -->
+      <path d="M274,312 Q280,320 278,335 Q280,345 282,358"
+            fill="none" stroke="#0c0c24" stroke-width="6" stroke-linecap="round"/>
+      <path d="M272,308 Q277,315 276,328 Q278,340 280,350"
+            fill="none" stroke="#0e0e28" stroke-width="4" stroke-linecap="round"/>
+    </g>
+
+    <!-- Subtle cosmic glow on character edges -->
+    <path d="M244,338 Q230,320 215,290 Q210,280 208,270"
+          fill="none" stroke="#9370db" stroke-width="1" stroke-linecap="round" opacity="0.35" filter="url(#sc2-softGlow)"/>
+    <path d="M268,338 Q282,318 298,288 Q303,278 305,268"
+          fill="none" stroke="#00ccff" stroke-width="1" stroke-linecap="round" opacity="0.3" filter="url(#sc2-softGlow)"/>
+    <!-- Head rim light -->
+    <path d="M240,308 Q248,298 256,296 Q264,298 272,308"
+          fill="none" stroke="#9370db" stroke-width="0.8" opacity="0.4" filter="url(#sc2-softGlow)"/>
+  </g>
+
+  <!-- ============================================= -->
+  <!-- LAYER 6: Foreground — Sparkles and particles  -->
+  <!-- ============================================= -->
+
+  <!-- Sparkle cascade particles -->
+  <g filter="url(#sc2-softGlow)">
+    <!-- Around girl's hands -->
+    <circle cx="200" cy="260" r="1.5" fill="#ffd700" class="sc2-sp1"/>
+    <circle cx="215" cy="275" r="1.2" fill="#ffffff" class="sc2-sp2"/>
+    <circle cx="195" cy="250" r="1" fill="#ff69b4" class="sc2-sp3"/>
+    <circle cx="310" cy="258" r="1.5" fill="#ffd700" class="sc2-sp4"/>
+    <circle cx="298" cy="273" r="1.2" fill="#ffffff" class="sc2-sp5"/>
+    <circle cx="315" cy="248" r="1" fill="#00ccff" class="sc2-sp6"/>
+
+    <!-- Additional sparkles scattered around scene -->
+    <circle cx="180" cy="200" r="1.3" fill="#ffe4b5" class="sc2-sp7"/>
+    <circle cx="330" cy="190" r="1.4" fill="#ffd700" class="sc2-sp8"/>
+    <circle cx="150" cy="280" r="1" fill="#ff69b4" class="sc2-sp1"/>
+    <circle cx="360" cy="275" r="1.1" fill="#00ff88" class="sc2-sp3"/>
+    <circle cx="240" cy="220" r="1.2" fill="#ffffff" class="sc2-sp5"/>
+    <circle cx="275" cy="215" r="1" fill="#9370db" class="sc2-sp7"/>
+
+    <!-- Sparkle diamond shapes -->
+    <path d="M190,230 L192,226 L194,230 L192,234 Z" fill="#ffd700" class="sc2-sp2"/>
+    <path d="M320,225 L322,221 L324,225 L322,229 Z" fill="#00ccff" class="sc2-sp4"/>
+    <path d="M256,180 L258,175 L260,180 L258,185 Z" fill="#ff69b4" class="sc2-sp6"/>
+    <path d="M140,170 L142,167 L144,170 L142,173 Z" fill="#ffe4b5" class="sc2-sp8"/>
+    <path d="M370,165 L372,162 L374,165 L372,168 Z" fill="#ffd700" class="sc2-sp1"/>
+  </g>
+
+  <!-- Floating music notes in the foreground (larger, closer) -->
+  <g class="sc2-note3" filter="url(#sc2-mediumGlow)">
+    <text x="220" y="280" font-family="serif" font-size="18" fill="#ffaa44" opacity="0.6">&#9834;</text>
+  </g>
+  <g class="sc2-note1" filter="url(#sc2-mediumGlow)">
+    <text x="285" y="270" font-family="serif" font-size="16" fill="#ff69b4" opacity="0.55">&#9835;</text>
+  </g>
+
+  <!-- Extra medium stars in mid-sky area -->
+  <circle cx="50" cy="280" r="1.8" fill="#ffe4b5" class="sc2-star-t3" filter="url(#sc2-softGlow)"/>
+  <circle cx="462" cy="265" r="2" fill="#ffd700" class="sc2-star-t5" filter="url(#sc2-softGlow)"/>
+  <circle cx="100" cy="320" r="1.5" fill="#ffffff" class="sc2-star-t1" filter="url(#sc2-softGlow)"/>
+  <circle cx="420" cy="310" r="1.8" fill="#ffe4b5" class="sc2-star-t4" filter="url(#sc2-softGlow)"/>
+
+  <!-- ============================================= -->
+  <!-- LAYER 7: Vignette overlay                     -->
+  <!-- ============================================= -->
+  <rect width="512" height="512" fill="url(#sc2-vignette)" opacity="0.4"/>
+</svg>

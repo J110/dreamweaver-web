@@ -53,6 +53,24 @@
   left: 0;
 }
 
+.ageBadge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: 3;
+  background: rgba(13, 11, 46, 0.85);
+  color: #FFD93D;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 10px;
+  letter-spacing: 0.3px;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 217, 61, 0.3);
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
 .cardStoryGradient {
   background: linear-gradient(135deg, rgba(107, 76, 230, 0.4), rgba(255, 107, 157, 0.3));
 }

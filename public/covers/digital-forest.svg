@@ -1,0 +1,600 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Sky gradient -->
+    <linearGradient id="df-skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#050a15"/>
+      <stop offset="45%" stop-color="#0a1520"/>
+      <stop offset="100%" stop-color="#0f2030"/>
+    </linearGradient>
+
+    <!-- Ground gradient -->
+    <linearGradient id="df-groundGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d2a1a"/>
+      <stop offset="100%" stop-color="#081810"/>
+    </linearGradient>
+
+    <!-- Tree bark gradients -->
+    <linearGradient id="df-bark1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0d2a1a"/>
+      <stop offset="50%" stop-color="#1a3a2a"/>
+      <stop offset="100%" stop-color="#0d2a1a"/>
+    </linearGradient>
+    <linearGradient id="df-bark2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0a2218"/>
+      <stop offset="50%" stop-color="#2d4a3a"/>
+      <stop offset="100%" stop-color="#0a2218"/>
+    </linearGradient>
+
+    <!-- Canopy gradient -->
+    <radialGradient id="df-canopy1" cx="50%" cy="60%" r="55%">
+      <stop offset="0%" stop-color="#1a3a2a" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#0d2a1a" stop-opacity="0.6"/>
+    </radialGradient>
+    <radialGradient id="df-canopy2" cx="40%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2d4a3a" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#1a3a2a" stop-opacity="0.5"/>
+    </radialGradient>
+
+    <!-- Bioluminescent glow gradient -->
+    <radialGradient id="df-bioGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00ff88" stop-opacity="0.7"/>
+      <stop offset="60%" stop-color="#00ffcc" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#44ffaa" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Pulse accent glow -->
+    <radialGradient id="df-pulseGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00ccff" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#88eeff" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#00ccff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Mushroom glow gradient -->
+    <radialGradient id="df-mushGlow" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#ff69b4" stop-opacity="0.8"/>
+      <stop offset="60%" stop-color="#cc44ff" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#cc44ff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Character backlight glow -->
+    <radialGradient id="df-charGlow" cx="50%" cy="55%" r="50%">
+      <stop offset="0%" stop-color="#00ff88" stop-opacity="0.35"/>
+      <stop offset="60%" stop-color="#00ffcc" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#050a15" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Vignette -->
+    <radialGradient id="df-vignette">
+      <stop offset="45%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.55"/>
+    </radialGradient>
+
+    <!-- Soft glow filter -->
+    <filter id="df-softGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Medium glow filter -->
+    <filter id="df-medGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Strong glow filter -->
+    <filter id="df-strongGlow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    /* Root pulse traveling along network */
+    @keyframes df-rootPulse1 {
+      0%, 100% { opacity: 0.15; }
+      15%, 25% { opacity: 0.9; }
+      40% { opacity: 0.15; }
+    }
+    @keyframes df-rootPulse2 {
+      0%, 100% { opacity: 0.15; }
+      25%, 35% { opacity: 0.9; }
+      50% { opacity: 0.15; }
+    }
+    @keyframes df-rootPulse3 {
+      0%, 100% { opacity: 0.15; }
+      35%, 45% { opacity: 0.9; }
+      60% { opacity: 0.15; }
+    }
+    @keyframes df-rootPulse4 {
+      0%, 100% { opacity: 0.15; }
+      50%, 60% { opacity: 0.9; }
+      75% { opacity: 0.15; }
+    }
+    @keyframes df-rootPulse5 {
+      0%, 100% { opacity: 0.15; }
+      65%, 75% { opacity: 0.9; }
+      90% { opacity: 0.15; }
+    }
+
+    .df-rp1 { animation: df-rootPulse1 3.5s ease-in-out infinite; }
+    .df-rp2 { animation: df-rootPulse2 3.5s ease-in-out infinite; }
+    .df-rp3 { animation: df-rootPulse3 3.5s ease-in-out infinite; }
+    .df-rp4 { animation: df-rootPulse4 3.5s ease-in-out infinite; }
+    .df-rp5 { animation: df-rootPulse5 3.5s ease-in-out infinite; }
+
+    /* Canopy sway */
+    @keyframes df-canopySway {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(1.5deg); }
+      75% { transform: rotate(-1.5deg); }
+    }
+    .df-sway1 { animation: df-canopySway 7s ease-in-out infinite; transform-origin: 50% 100%; }
+    .df-sway2 { animation: df-canopySway 6.5s ease-in-out infinite 0.8s; transform-origin: 50% 100%; }
+    .df-sway3 { animation: df-canopySway 7.5s ease-in-out infinite 1.5s; transform-origin: 50% 100%; }
+
+    /* Mushroom glow pulse */
+    @keyframes df-mushPulse {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.08); }
+    }
+    .df-mush1 { animation: df-mushPulse 2.5s ease-in-out infinite; transform-origin: center bottom; }
+    .df-mush2 { animation: df-mushPulse 2.2s ease-in-out infinite 0.6s; transform-origin: center bottom; }
+    .df-mush3 { animation: df-mushPulse 2.8s ease-in-out infinite 1.2s; transform-origin: center bottom; }
+    .df-mush4 { animation: df-mushPulse 2.3s ease-in-out infinite 0.3s; transform-origin: center bottom; }
+
+    /* Spore float (firefly-like) */
+    @keyframes df-sporeFloat1 {
+      0% { transform: translate(0, 0); opacity: 0; }
+      15% { opacity: 0.8; }
+      50% { transform: translate(12px, -40px); opacity: 0.6; }
+      85% { opacity: 0.3; }
+      100% { transform: translate(-8px, -80px); opacity: 0; }
+    }
+    @keyframes df-sporeFloat2 {
+      0% { transform: translate(0, 0); opacity: 0; }
+      20% { opacity: 0.7; }
+      55% { transform: translate(-15px, -35px); opacity: 0.5; }
+      100% { transform: translate(10px, -70px); opacity: 0; }
+    }
+    @keyframes df-sporeFloat3 {
+      0% { transform: translate(0, 0); opacity: 0; }
+      10% { opacity: 0.9; }
+      45% { transform: translate(8px, -45px); opacity: 0.4; }
+      100% { transform: translate(-5px, -85px); opacity: 0; }
+    }
+
+    .df-spore1 { animation: df-sporeFloat1 6s ease-in-out infinite; }
+    .df-spore2 { animation: df-sporeFloat2 5.5s ease-in-out infinite 1s; }
+    .df-spore3 { animation: df-sporeFloat3 6.5s ease-in-out infinite 2s; }
+    .df-spore4 { animation: df-sporeFloat1 5.8s ease-in-out infinite 3s; }
+    .df-spore5 { animation: df-sporeFloat2 6.2s ease-in-out infinite 1.5s; }
+    .df-spore6 { animation: df-sporeFloat3 5.6s ease-in-out infinite 0.5s; }
+    .df-spore7 { animation: df-sporeFloat1 7s ease-in-out infinite 2.5s; }
+    .df-spore8 { animation: df-sporeFloat2 5.3s ease-in-out infinite 4s; }
+
+    /* Star twinkle through canopy gaps */
+    @keyframes df-starTwinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.9; }
+    }
+    .df-star1 { animation: df-starTwinkle 2.5s ease-in-out infinite; }
+    .df-star2 { animation: df-starTwinkle 2.3s ease-in-out infinite 0.5s; }
+    .df-star3 { animation: df-starTwinkle 2.7s ease-in-out infinite 1.1s; }
+    .df-star4 { animation: df-starTwinkle 2.1s ease-in-out infinite 1.6s; }
+    .df-star5 { animation: df-starTwinkle 2.6s ease-in-out infinite 0.3s; }
+    .df-star6 { animation: df-starTwinkle 2.4s ease-in-out infinite 2.0s; }
+    .df-star7 { animation: df-starTwinkle 2.8s ease-in-out infinite 0.8s; }
+
+    /* Circuit pattern shimmer on trunks */
+    @keyframes df-circuitShimmer {
+      0%, 100% { opacity: 0.2; stroke-opacity: 0.2; }
+      30% { opacity: 0.7; stroke-opacity: 0.7; }
+      60% { opacity: 0.3; stroke-opacity: 0.3; }
+    }
+    .df-circuit1 { animation: df-circuitShimmer 4s ease-in-out infinite; }
+    .df-circuit2 { animation: df-circuitShimmer 4.3s ease-in-out infinite 1s; }
+    .df-circuit3 { animation: df-circuitShimmer 3.8s ease-in-out infinite 2s; }
+    .df-circuit4 { animation: df-circuitShimmer 4.5s ease-in-out infinite 0.5s; }
+
+    /* Ambient background glow breathing */
+    @keyframes df-ambientGlow {
+      0%, 100% { opacity: 0.15; }
+      50% { opacity: 0.35; }
+    }
+    .df-ambient { animation: df-ambientGlow 5s ease-in-out infinite; }
+
+    /* Network node pulse */
+    @keyframes df-nodePulse {
+      0%, 100% { r: 2; opacity: 0.4; }
+      50% { r: 3.5; opacity: 1; }
+    }
+    .df-node1 { animation: df-nodePulse 3s ease-in-out infinite; }
+    .df-node2 { animation: df-nodePulse 3.2s ease-in-out infinite 0.7s; }
+    .df-node3 { animation: df-nodePulse 2.8s ease-in-out infinite 1.4s; }
+    .df-node4 { animation: df-nodePulse 3.4s ease-in-out infinite 2.1s; }
+  </style>
+
+  <!-- ============ LAYER 1: Background sky ============ -->
+  <rect width="512" height="512" fill="url(#df-skyGrad)"/>
+
+  <!-- Ambient bioluminescent glow from below treeline -->
+  <ellipse cx="256" cy="420" rx="280" ry="120" fill="url(#df-bioGlow)" opacity="0.2" class="df-ambient"/>
+
+  <!-- ============ LAYER 2: Far background (distant trees, stars) ============ -->
+  <!-- Faint nebula-like glow in sky -->
+  <ellipse cx="140" cy="120" rx="80" ry="50" fill="#00ff88" opacity="0.02"/>
+  <ellipse cx="380" cy="100" rx="70" ry="45" fill="#00ccff" opacity="0.02"/>
+  <ellipse cx="256" cy="80" rx="100" ry="40" fill="#cc44ff" opacity="0.015"/>
+
+  <g opacity="0.25">
+    <!-- Distant tree silhouettes - far row -->
+    <path d="M0 280 Q30 200 50 280 Q70 210 90 280 Q110 190 130 280 Q150 215 170 280 Q190 195 210 280 Q230 220 256 280 Q270 200 290 280 Q310 210 340 280 Q360 190 380 280 Q400 220 420 280 Q440 200 460 280 Q480 215 500 280 L512 280 V512 H0Z" fill="#0d2a1a"/>
+    <!-- Slightly closer distant trees -->
+    <path d="M0 310 Q40 240 70 310 Q100 250 130 310 Q155 230 180 310 Q210 260 240 310 Q265 235 290 310 Q320 255 350 310 Q375 240 400 310 Q430 260 460 310 Q485 245 512 310 V512 H0Z" fill="#1a3a2a" opacity="0.7"/>
+  </g>
+
+  <!-- Faint distant bioluminescence in far tree line -->
+  <g opacity="0.12" filter="url(#df-softGlow)">
+    <path d="M30 290 Q50 285 70 292 Q90 288 110 294" fill="none" stroke="#00ff88" stroke-width="0.5" class="df-rp5"/>
+    <path d="M200 295 Q220 290 240 296 Q260 292 280 298" fill="none" stroke="#44ffaa" stroke-width="0.4" class="df-rp3"/>
+    <path d="M340 292 Q360 287 380 293 Q400 289 420 295" fill="none" stroke="#00ffcc" stroke-width="0.5" class="df-rp1"/>
+    <circle cx="70" cy="292" r="1" fill="#00ff88"/>
+    <circle cx="240" cy="296" r="0.8" fill="#44ffaa"/>
+    <circle cx="380" cy="293" r="1" fill="#00ffcc"/>
+  </g>
+
+  <!-- Stars visible through canopy gaps -->
+  <g>
+    <circle cx="85" cy="45" r="1" fill="#ffffff" class="df-star1"/>
+    <circle cx="190" cy="30" r="1.2" fill="#ffffff" class="df-star2"/>
+    <circle cx="310" cy="55" r="0.8" fill="#ffffff" class="df-star3"/>
+    <circle cx="420" cy="35" r="1.1" fill="#ffffff" class="df-star4"/>
+    <circle cx="145" cy="75" r="0.9" fill="#88eeff" class="df-star5"/>
+    <circle cx="370" cy="70" r="1" fill="#88eeff" class="df-star6"/>
+    <circle cx="256" cy="18" r="1.3" fill="#ffffff" class="df-star7"/>
+    <circle cx="50" cy="90" r="0.7" fill="#ffffff" class="df-star1"/>
+    <circle cx="460" cy="80" r="0.8" fill="#ffffff" class="df-star3"/>
+    <circle cx="230" cy="95" r="0.6" fill="#88eeff" class="df-star5"/>
+  </g>
+
+  <!-- ============ LAYER 3: Mid background (main trees, root network) ============ -->
+
+  <!-- Left large tree -->
+  <g class="df-sway1">
+    <!-- Trunk -->
+    <path d="M55 150 Q60 120 70 100 Q80 80 75 60 Q68 80 62 100 Q50 130 45 150 Q40 200 38 280 Q36 350 40 430 Q42 460 44 480 L90 480 Q88 460 86 430 Q82 350 80 280 Q78 200 75 150Z" fill="url(#df-bark1)"/>
+    <!-- Circuit patterns on trunk -->
+    <g class="df-circuit1" filter="url(#df-softGlow)">
+      <path d="M58 200 Q62 190 60 170 Q65 160 63 145" fill="none" stroke="#00ff88" stroke-width="1" stroke-opacity="0.5"/>
+      <path d="M70 220 Q68 200 72 180 Q68 165 70 150" fill="none" stroke="#00ffcc" stroke-width="0.8" stroke-opacity="0.4"/>
+      <path d="M52 260 L58 245 Q60 235 55 220" fill="none" stroke="#00ff88" stroke-width="0.7" stroke-opacity="0.4"/>
+      <circle cx="60" cy="170" r="1.5" fill="#00ff88" opacity="0.6"/>
+      <circle cx="70" cy="180" r="1.2" fill="#00ffcc" opacity="0.5"/>
+      <circle cx="55" cy="220" r="1.3" fill="#44ffaa" opacity="0.5"/>
+    </g>
+    <!-- Canopy mass -->
+    <ellipse cx="65" cy="75" rx="55" ry="50" fill="url(#df-canopy1)"/>
+    <ellipse cx="50" cy="60" rx="40" ry="35" fill="#1a3a2a" opacity="0.8"/>
+    <ellipse cx="85" cy="65" rx="35" ry="30" fill="#2d4a3a" opacity="0.6"/>
+  </g>
+
+  <!-- Center-left tree (tall) -->
+  <g class="df-sway2">
+    <path d="M170 130 Q178 100 182 70 Q186 50 180 30 Q175 50 172 70 Q165 100 160 130 Q155 200 153 300 Q151 380 155 450 Q157 470 158 490 L198 490 Q196 470 194 450 Q190 380 188 300 Q186 200 183 130Z" fill="url(#df-bark2)"/>
+    <!-- Circuit patterns -->
+    <g class="df-circuit2" filter="url(#df-softGlow)">
+      <path d="M168 250 Q172 235 170 215 Q175 200 172 185 Q178 170 175 155" fill="none" stroke="#00ff88" stroke-width="1.1" stroke-opacity="0.5"/>
+      <path d="M182 280 Q180 260 184 240 Q180 220 182 200" fill="none" stroke="#00ffcc" stroke-width="0.9" stroke-opacity="0.45"/>
+      <path d="M163 310 L170 295 Q173 280 168 265" fill="none" stroke="#44ffaa" stroke-width="0.8" stroke-opacity="0.4"/>
+      <circle cx="172" cy="215" r="1.5" fill="#00ff88" opacity="0.6"/>
+      <circle cx="175" cy="155" r="1.8" fill="#00ffcc" opacity="0.5"/>
+      <circle cx="182" cy="240" r="1.3" fill="#44ffaa" opacity="0.5"/>
+    </g>
+    <!-- Canopy -->
+    <ellipse cx="178" cy="40" rx="60" ry="45" fill="url(#df-canopy2)"/>
+    <ellipse cx="160" cy="30" rx="45" ry="35" fill="#1a3a2a" opacity="0.8"/>
+    <ellipse cx="195" cy="35" rx="40" ry="30" fill="#0d2a1a" opacity="0.7"/>
+  </g>
+
+  <!-- Right large tree -->
+  <g class="df-sway3">
+    <path d="M400 160 Q408 130 412 100 Q418 75 415 50 Q408 75 404 100 Q396 130 390 160 Q385 230 383 310 Q381 380 385 440 Q387 460 388 485 L430 485 Q428 460 426 440 Q422 380 420 310 Q418 230 415 160Z" fill="url(#df-bark1)"/>
+    <!-- Circuit patterns -->
+    <g class="df-circuit3" filter="url(#df-softGlow)">
+      <path d="M398 260 Q402 245 400 225 Q406 210 403 190 Q408 175 405 160" fill="none" stroke="#00ff88" stroke-width="1" stroke-opacity="0.5"/>
+      <path d="M415 290 Q412 270 416 250 Q412 230 414 210" fill="none" stroke="#00ffcc" stroke-width="0.9" stroke-opacity="0.45"/>
+      <path d="M392 320 L398 305 Q400 290 395 275" fill="none" stroke="#00ff88" stroke-width="0.7" stroke-opacity="0.4"/>
+      <circle cx="400" cy="225" r="1.5" fill="#00ff88" opacity="0.6"/>
+      <circle cx="405" cy="160" r="1.6" fill="#00ffcc" opacity="0.5"/>
+      <circle cx="414" cy="250" r="1.2" fill="#44ffaa" opacity="0.5"/>
+    </g>
+    <!-- Canopy -->
+    <ellipse cx="410" cy="60" rx="60" ry="50" fill="url(#df-canopy1)"/>
+    <ellipse cx="395" cy="50" rx="45" ry="38" fill="#2d4a3a" opacity="0.7"/>
+    <ellipse cx="430" cy="55" rx="40" ry="32" fill="#1a3a2a" opacity="0.8"/>
+  </g>
+
+  <!-- Far right edge tree -->
+  <path d="M470 180 Q476 150 478 130 Q472 150 468 180 Q465 240 463 330 Q461 400 465 460 L495 460 Q493 400 491 330 Q489 240 485 180Z" fill="#0d2a1a" opacity="0.7"/>
+  <g class="df-circuit4" filter="url(#df-softGlow)">
+    <path d="M472 280 Q475 265 473 245" fill="none" stroke="#00ff88" stroke-width="0.8" stroke-opacity="0.35"/>
+    <path d="M480 310 Q478 295 481 275" fill="none" stroke="#00ffcc" stroke-width="0.6" stroke-opacity="0.3"/>
+    <circle cx="473" cy="245" r="1" fill="#00ff88" opacity="0.4"/>
+    <circle cx="480" cy="275" r="0.8" fill="#00ffcc" opacity="0.35"/>
+  </g>
+
+  <!-- Far left edge tree -->
+  <path d="M15 200 Q20 170 22 150 Q18 170 14 200 Q10 260 8 340 Q6 400 10 455 L35 455 Q33 400 31 340 Q29 260 25 200Z" fill="#0d2a1a" opacity="0.6"/>
+  <g class="df-circuit1" filter="url(#df-softGlow)">
+    <path d="M17 290 Q19 275 18 260" fill="none" stroke="#00ff88" stroke-width="0.6" stroke-opacity="0.3"/>
+    <circle cx="18" cy="260" r="0.8" fill="#00ff88" opacity="0.35"/>
+  </g>
+
+  <!-- Mid-ground smaller tree between center-left and right -->
+  <path d="M320 220 Q325 195 328 175 Q324 195 320 220 Q316 280 314 350 Q312 400 316 450 L340 450 Q338 400 336 350 Q334 280 330 220Z" fill="#1a3a2a" opacity="0.5"/>
+  <g class="df-circuit3" filter="url(#df-softGlow)">
+    <path d="M322 310 Q325 295 323 280 Q327 265 325 250" fill="none" stroke="#00ff88" stroke-width="0.7" stroke-opacity="0.3"/>
+    <circle cx="323" cy="280" r="1" fill="#44ffaa" opacity="0.4"/>
+    <circle cx="325" cy="250" r="0.9" fill="#00ffcc" opacity="0.35"/>
+  </g>
+
+  <!-- ============ LAYER 4: Ground, root network, mushrooms ============ -->
+
+  <!-- Ground plane -->
+  <path d="M0 400 Q80 385 160 395 Q240 380 320 390 Q400 382 480 395 L512 390 V512 H0Z" fill="url(#df-groundGrad)"/>
+  <path d="M0 420 Q100 410 200 418 Q300 408 400 415 Q450 410 512 418 V512 H0Z" fill="#081810"/>
+
+  <!-- Root network (bioluminescent mycelium connecting trees) -->
+  <g filter="url(#df-medGlow)">
+    <!-- Main root line: left tree to center-left tree -->
+    <path d="M65 430 Q90 425 120 435 Q145 440 158 445" fill="none" stroke="#00ff88" stroke-width="1.5" class="df-rp1"/>
+    <!-- Root: center-left to center area -->
+    <path d="M175 445 Q200 435 230 440 Q250 438 270 435" fill="none" stroke="#00ff88" stroke-width="1.5" class="df-rp2"/>
+    <!-- Root: center area to right tree -->
+    <path d="M270 435 Q310 430 350 438 Q375 440 395 442" fill="none" stroke="#00ff88" stroke-width="1.5" class="df-rp3"/>
+    <!-- Root: right tree to far right -->
+    <path d="M420 442 Q440 435 460 440 Q475 438 485 435" fill="none" stroke="#00ffcc" stroke-width="1.2" class="df-rp4"/>
+
+    <!-- Secondary root branches -->
+    <path d="M120 435 Q130 450 145 458 Q160 462 170 455" fill="none" stroke="#44ffaa" stroke-width="1" class="df-rp2"/>
+    <path d="M230 440 Q240 450 255 460 Q265 458 270 450" fill="none" stroke="#44ffaa" stroke-width="1" class="df-rp3"/>
+    <path d="M350 438 Q360 448 370 455 Q380 452 385 445" fill="none" stroke="#00ffcc" stroke-width="0.8" class="df-rp4"/>
+    <path d="M90 425 Q95 415 105 420 Q115 425 120 435" fill="none" stroke="#44ffaa" stroke-width="0.8" class="df-rp1"/>
+
+    <!-- Deep root tendrils going down -->
+    <path d="M160 445 Q155 460 160 475 Q165 485 170 490" fill="none" stroke="#00ff88" stroke-width="0.7" class="df-rp2"/>
+    <path d="M270 435 Q268 455 275 470 Q278 478 280 485" fill="none" stroke="#00ffcc" stroke-width="0.7" class="df-rp3"/>
+    <path d="M395 442 Q392 458 398 472 Q400 480 402 488" fill="none" stroke="#00ff88" stroke-width="0.7" class="df-rp4"/>
+
+    <!-- Cross-connection roots -->
+    <path d="M100 435 Q115 455 140 460 Q170 462 200 445" fill="none" stroke="#00ffcc" stroke-width="0.6" class="df-rp5"/>
+    <path d="M300 432 Q320 450 340 455 Q360 450 380 440" fill="none" stroke="#44ffaa" stroke-width="0.6" class="df-rp5"/>
+  </g>
+
+  <!-- Network junction nodes (where roots meet) -->
+  <g filter="url(#df-strongGlow)">
+    <circle cx="120" cy="435" r="2.5" fill="#00ff88" class="df-node1"/>
+    <circle cx="175" cy="445" r="3" fill="#00ffcc" class="df-node2"/>
+    <circle cx="270" cy="435" r="3" fill="#00ff88" class="df-node3"/>
+    <circle cx="395" cy="442" r="2.5" fill="#00ffcc" class="df-node4"/>
+    <circle cx="230" cy="440" r="2" fill="#44ffaa" class="df-node1"/>
+    <circle cx="350" cy="438" r="2" fill="#44ffaa" class="df-node2"/>
+    <circle cx="65" cy="430" r="2.5" fill="#00ff88" class="df-node3"/>
+    <circle cx="460" cy="440" r="2" fill="#00ffcc" class="df-node4"/>
+  </g>
+
+  <!-- Bioluminescent mushrooms cluster - left side -->
+  <g class="df-mush1" filter="url(#df-softGlow)">
+    <ellipse cx="105" cy="415" rx="6" ry="3" fill="#ff69b4" opacity="0.8"/>
+    <rect x="104" y="415" width="2" height="6" rx="1" fill="#cc88aa"/>
+    <ellipse cx="105" cy="410" rx="10" ry="5" fill="url(#df-mushGlow)" opacity="0.5"/>
+  </g>
+  <g class="df-mush2" filter="url(#df-softGlow)">
+    <ellipse cx="115" cy="418" rx="4.5" ry="2.5" fill="#cc44ff" opacity="0.75"/>
+    <rect x="114" y="418" width="1.5" height="5" rx="0.8" fill="#aa66cc"/>
+    <ellipse cx="115" cy="414" rx="8" ry="4" fill="url(#df-mushGlow)" opacity="0.4"/>
+  </g>
+
+  <!-- Mushroom cluster - right side -->
+  <g class="df-mush3" filter="url(#df-softGlow)">
+    <ellipse cx="365" cy="412" rx="5.5" ry="3" fill="#ff69b4" opacity="0.8"/>
+    <rect x="364" y="412" width="2" height="5.5" rx="1" fill="#cc88aa"/>
+    <ellipse cx="365" cy="408" rx="9" ry="4.5" fill="url(#df-mushGlow)" opacity="0.45"/>
+  </g>
+  <g class="df-mush4" filter="url(#df-softGlow)">
+    <ellipse cx="375" cy="416" rx="4" ry="2.2" fill="#cc44ff" opacity="0.7"/>
+    <rect x="374" y="416" width="1.5" height="4.5" rx="0.8" fill="#aa66cc"/>
+    <ellipse cx="375" cy="412" rx="7" ry="3.5" fill="url(#df-mushGlow)" opacity="0.35"/>
+  </g>
+
+  <!-- Small mushroom near center -->
+  <g class="df-mush1" filter="url(#df-softGlow)">
+    <ellipse cx="240" cy="420" rx="3.5" ry="2" fill="#ff69b4" opacity="0.65"/>
+    <rect x="239.3" y="420" width="1.2" height="4" rx="0.6" fill="#cc88aa"/>
+    <ellipse cx="240" cy="417" rx="6" ry="3" fill="url(#df-mushGlow)" opacity="0.3"/>
+  </g>
+
+  <!-- Mushroom cluster - far left near tree base -->
+  <g class="df-mush3" filter="url(#df-softGlow)">
+    <ellipse cx="48" cy="425" rx="4" ry="2" fill="#ff69b4" opacity="0.6"/>
+    <rect x="47.2" y="425" width="1.4" height="4.5" rx="0.7" fill="#cc88aa"/>
+    <ellipse cx="48" cy="422" rx="7" ry="3" fill="url(#df-mushGlow)" opacity="0.3"/>
+  </g>
+  <g class="df-mush2" filter="url(#df-softGlow)">
+    <ellipse cx="56" cy="428" rx="3" ry="1.8" fill="#cc44ff" opacity="0.55"/>
+    <rect x="55.2" y="428" width="1.2" height="3.5" rx="0.6" fill="#aa66cc"/>
+    <ellipse cx="56" cy="425" rx="5.5" ry="2.8" fill="url(#df-mushGlow)" opacity="0.25"/>
+  </g>
+
+  <!-- Tiny mushrooms near right tree base -->
+  <g class="df-mush4" filter="url(#df-softGlow)">
+    <ellipse cx="432" cy="430" rx="3.5" ry="1.8" fill="#ff69b4" opacity="0.55"/>
+    <rect x="431.3" y="430" width="1.2" height="3.5" rx="0.6" fill="#cc88aa"/>
+    <ellipse cx="432" cy="427" rx="6" ry="2.8" fill="url(#df-mushGlow)" opacity="0.25"/>
+  </g>
+
+  <!-- Ground-level mycelium detail patches -->
+  <g filter="url(#df-softGlow)" opacity="0.35">
+    <path d="M70 440 Q80 437 92 442 Q85 444 75 441Z" fill="#00ff88"/>
+    <path d="M190 450 Q205 446 218 452 Q208 454 195 451Z" fill="#44ffaa"/>
+    <path d="M310 445 Q322 441 335 447 Q325 449 315 446Z" fill="#00ffcc"/>
+    <path d="M440 448 Q450 444 462 449 Q453 451 443 449Z" fill="#00ff88"/>
+  </g>
+
+  <!-- ============ LAYER 5: Primary character (teen silhouette) ============ -->
+
+  <!-- Character ambient backlight -->
+  <ellipse cx="256" cy="380" rx="60" ry="80" fill="url(#df-charGlow)" opacity="0.6"/>
+
+  <!-- Teen figure silhouette - standing, looking up -->
+  <g>
+    <!-- Body silhouette -->
+    <!-- Legs -->
+    <path d="M248 430 Q247 415 246 400 Q245 390 244 380" fill="none" stroke="#0a1520" stroke-width="7" stroke-linecap="round"/>
+    <path d="M264 430 Q265 415 266 400 Q267 390 268 380" fill="none" stroke="#0a1520" stroke-width="7" stroke-linecap="round"/>
+    <!-- Torso -->
+    <path d="M244 380 Q242 365 243 350 Q245 335 250 325 Q255 318 258 315" fill="none" stroke="#0a1520" stroke-width="10" stroke-linecap="round"/>
+    <path d="M268 380 Q270 365 269 350 Q267 335 262 325 Q258 318 258 315" fill="none" stroke="#0a1520" stroke-width="10" stroke-linecap="round"/>
+    <!-- Fill the torso -->
+    <path d="M244 380 Q242 365 243 350 Q245 335 250 325 Q255 318 258 315 Q261 318 266 325 Q269 335 269 350 Q270 365 268 380Z" fill="#0a1520"/>
+
+    <!-- Arms - slightly outward, one hand reaching toward root light -->
+    <path d="M247 340 Q238 345 230 352 Q222 358 215 362" fill="none" stroke="#0a1520" stroke-width="5" stroke-linecap="round"/>
+    <path d="M265 340 Q274 345 282 350 Q290 354 296 356" fill="none" stroke="#0a1520" stroke-width="5" stroke-linecap="round"/>
+
+    <!-- Head - tilted slightly upward, looking at canopy -->
+    <circle cx="258" cy="300" r="15" fill="#0a1520"/>
+    <!-- Hair shape -->
+    <path d="M243 297 Q245 285 255 282 Q262 280 270 284 Q275 288 274 297 Q272 293 265 290 Q255 288 248 293Z" fill="#0a1520"/>
+
+    <!-- Subtle edge highlight from bioluminescence on the character -->
+    <path d="M243 380 Q241 365 242 350 Q244 335 249 325" fill="none" stroke="#00ff88" stroke-width="0.6" opacity="0.35"/>
+    <path d="M269 380 Q271 365 270 350 Q268 335 263 325" fill="none" stroke="#00ff88" stroke-width="0.6" opacity="0.35"/>
+    <!-- Head rim light -->
+    <path d="M244 305 Q245 295 252 288 Q258 284 265 286 Q271 290 273 298" fill="none" stroke="#00ffcc" stroke-width="0.5" opacity="0.3"/>
+
+    <!-- Shoes/feet -->
+    <ellipse cx="246" cy="433" rx="7" ry="3" fill="#0a1520"/>
+    <ellipse cx="266" cy="433" rx="7" ry="3" fill="#0a1520"/>
+  </g>
+
+  <!-- Ground glow around character's feet from network -->
+  <ellipse cx="256" cy="432" rx="25" ry="6" fill="#00ff88" opacity="0.15" filter="url(#df-medGlow)"/>
+
+  <!-- Subtle bioluminescent reflection on character from below -->
+  <ellipse cx="256" cy="415" rx="15" ry="25" fill="#00ff88" opacity="0.04"/>
+
+  <!-- Tiny root tendrils near character's feet -->
+  <g filter="url(#df-softGlow)" opacity="0.4">
+    <path d="M240 435 Q245 432 252 434" fill="none" stroke="#00ff88" stroke-width="0.5" class="df-rp2"/>
+    <path d="M260 434 Q267 431 274 435" fill="none" stroke="#44ffaa" stroke-width="0.5" class="df-rp4"/>
+    <circle cx="252" cy="434" r="0.8" fill="#00ff88"/>
+    <circle cx="260" cy="434" r="0.7" fill="#44ffaa"/>
+  </g>
+
+  <!-- ============ LAYER 6: Foreground (spores, particles, closest elements) ============ -->
+
+  <!-- Floating bioluminescent spores -->
+  <g filter="url(#df-softGlow)">
+    <circle cx="130" cy="350" r="2" fill="#00ff88" class="df-spore1"/>
+    <circle cx="200" cy="320" r="1.5" fill="#44ffaa" class="df-spore2"/>
+    <circle cx="310" cy="340" r="1.8" fill="#00ffcc" class="df-spore3"/>
+    <circle cx="380" cy="360" r="2" fill="#00ff88" class="df-spore4"/>
+    <circle cx="170" cy="380" r="1.3" fill="#44ffaa" class="df-spore5"/>
+    <circle cx="340" cy="310" r="1.6" fill="#00ccff" class="df-spore6"/>
+    <circle cx="90" cy="330" r="1.4" fill="#88eeff" class="df-spore7"/>
+    <circle cx="430" cy="350" r="1.5" fill="#00ff88" class="df-spore8"/>
+  </g>
+
+  <!-- Additional floating spores higher up -->
+  <g filter="url(#df-softGlow)">
+    <circle cx="150" cy="250" r="1.2" fill="#00ffcc" class="df-spore3"/>
+    <circle cx="350" cy="230" r="1" fill="#44ffaa" class="df-spore5"/>
+    <circle cx="220" cy="270" r="1.4" fill="#00ff88" class="df-spore1"/>
+    <circle cx="290" cy="250" r="1.1" fill="#88eeff" class="df-spore7"/>
+    <circle cx="100" cy="280" r="1.3" fill="#00ccff" class="df-spore4"/>
+    <circle cx="420" cy="270" r="1" fill="#44ffaa" class="df-spore6"/>
+  </g>
+
+  <!-- Foreground root/moss at bottom edge -->
+  <path d="M0 470 Q30 462 60 468 Q100 460 140 465 Q180 458 220 462 Q260 456 300 460 Q340 455 380 462 Q420 458 460 465 Q490 460 512 468 V512 H0Z" fill="#0d2a1a" opacity="0.9"/>
+
+  <!-- Foreground bioluminescent details on bottom roots -->
+  <g filter="url(#df-softGlow)" opacity="0.5">
+    <path d="M20 475 Q40 470 60 472 Q80 468 100 473" fill="none" stroke="#00ff88" stroke-width="0.8" class="df-rp5"/>
+    <path d="M150 468 Q170 463 190 466 Q210 462 230 465" fill="none" stroke="#44ffaa" stroke-width="0.7" class="df-rp1"/>
+    <path d="M300 464 Q320 460 340 463 Q360 458 380 462" fill="none" stroke="#00ffcc" stroke-width="0.8" class="df-rp3"/>
+    <path d="M420 468 Q440 464 460 467 Q480 462 500 466" fill="none" stroke="#00ff88" stroke-width="0.7" class="df-rp5"/>
+  </g>
+
+  <!-- Foreground fern silhouettes (left) -->
+  <g opacity="0.5">
+    <path d="M0 460 Q15 440 25 445 Q18 448 10 455Z" fill="#1a3a2a"/>
+    <path d="M5 465 Q22 445 30 450 Q20 455 12 462Z" fill="#0d2a1a"/>
+    <path d="M10 475 Q30 455 38 460 Q25 465 15 472Z" fill="#1a3a2a"/>
+    <path d="M0 480 Q18 465 28 470 Q15 474 5 480Z" fill="#2d4a3a"/>
+    <!-- Fern glow traces -->
+    <path d="M12 468 Q20 460 28 465" fill="none" stroke="#00ff88" stroke-width="0.3" opacity="0.4" class="df-rp5"/>
+  </g>
+
+  <!-- Foreground fern silhouettes (right) -->
+  <g opacity="0.5">
+    <path d="M512 458 Q495 438 485 443 Q495 446 505 455Z" fill="#1a3a2a"/>
+    <path d="M507 465 Q490 445 482 450 Q492 455 502 462Z" fill="#0d2a1a"/>
+    <path d="M502 475 Q482 455 475 460 Q488 465 498 472Z" fill="#1a3a2a"/>
+    <path d="M512 480 Q494 465 484 470 Q497 474 507 480Z" fill="#2d4a3a"/>
+    <!-- Fern glow traces -->
+    <path d="M500 468 Q492 460 484 465" fill="none" stroke="#44ffaa" stroke-width="0.3" opacity="0.4" class="df-rp1"/>
+  </g>
+
+  <!-- Foreground floating particles closer to viewer (larger, more diffuse) -->
+  <g filter="url(#df-medGlow)">
+    <circle cx="50" cy="400" r="2.5" fill="#00ff88" opacity="0.25" class="df-spore2"/>
+    <circle cx="460" cy="380" r="2.2" fill="#44ffaa" opacity="0.2" class="df-spore6"/>
+    <circle cx="160" cy="410" r="1.8" fill="#00ccff" opacity="0.2" class="df-spore4"/>
+    <circle cx="350" cy="395" r="2" fill="#00ff88" opacity="0.22" class="df-spore8"/>
+  </g>
+
+  <!-- Foreground moss/lichen on bottom edge with bio-glow -->
+  <g opacity="0.6">
+    <ellipse cx="60" cy="490" rx="18" ry="6" fill="#1a3a2a"/>
+    <ellipse cx="60" cy="489" rx="12" ry="3" fill="#2d4a3a" opacity="0.5"/>
+    <ellipse cx="180" cy="495" rx="15" ry="5" fill="#0d2a1a"/>
+    <ellipse cx="340" cy="492" rx="20" ry="6" fill="#1a3a2a"/>
+    <ellipse cx="340" cy="491" rx="14" ry="3" fill="#2d4a3a" opacity="0.5"/>
+    <ellipse cx="470" cy="493" rx="16" ry="5" fill="#0d2a1a"/>
+  </g>
+
+  <!-- Canopy leaf silhouettes hanging down at top edges -->
+  <g opacity="0.4">
+    <!-- Top-left canopy overhang -->
+    <ellipse cx="30" cy="15" rx="40" ry="25" fill="#0d2a1a"/>
+    <ellipse cx="60" cy="10" rx="35" ry="20" fill="#1a3a2a" opacity="0.8"/>
+    <ellipse cx="10" cy="20" rx="25" ry="18" fill="#0d2a1a" opacity="0.9"/>
+    <!-- Top-right canopy overhang -->
+    <ellipse cx="480" cy="12" rx="38" ry="22" fill="#0d2a1a"/>
+    <ellipse cx="500" cy="18" rx="30" ry="20" fill="#1a3a2a" opacity="0.8"/>
+    <ellipse cx="455" cy="8" rx="28" ry="18" fill="#0d2a1a" opacity="0.9"/>
+    <!-- Center top gap between canopies -->
+    <ellipse cx="256" cy="5" rx="45" ry="15" fill="#1a3a2a" opacity="0.3"/>
+  </g>
+
+  <!-- Falling leaf particles (very subtle) -->
+  <g opacity="0.2">
+    <ellipse cx="120" cy="160" rx="2" ry="1" fill="#2d4a3a" transform="rotate(25 120 160)" class="df-spore3"/>
+    <ellipse cx="380" cy="180" rx="1.5" ry="0.8" fill="#1a3a2a" transform="rotate(-15 380 180)" class="df-spore5"/>
+    <ellipse cx="260" cy="140" rx="1.8" ry="0.9" fill="#2d4a3a" transform="rotate(40 260 140)" class="df-spore7"/>
+  </g>
+
+  <!-- ============ LAYER 7: Vignette overlay ============ -->
+  <rect width="512" height="512" fill="url(#df-vignette)" opacity="0.45"/>
+</svg>

@@ -1,0 +1,682 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Deep sea background gradient -->
+    <linearGradient id="sw-skyGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#030810"/>
+      <stop offset="40%" stop-color="#061020"/>
+      <stop offset="75%" stop-color="#081828"/>
+      <stop offset="100%" stop-color="#0a1830"/>
+    </linearGradient>
+
+    <!-- Character helmet light beam -->
+    <radialGradient id="sw-charGlow" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.6"/>
+      <stop offset="40%" stop-color="#ffaa44" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#ffaa44" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Bioluminescent teal glow -->
+    <radialGradient id="sw-bioGlowTeal" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00ffcc" stop-opacity="0.7"/>
+      <stop offset="60%" stop-color="#00e5ff" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#00e5ff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Bioluminescent pink glow -->
+    <radialGradient id="sw-bioGlowPink" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff69b4" stop-opacity="0.65"/>
+      <stop offset="60%" stop-color="#cc44ff" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#cc44ff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Rune glow gradient -->
+    <radialGradient id="sw-runeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00ffcc" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#00ffcc" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Helmet light cone -->
+    <linearGradient id="sw-lightCone" x1="0.5" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.35"/>
+      <stop offset="50%" stop-color="#ffaa44" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#ffaa44" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Coral gradient warm -->
+    <linearGradient id="sw-coralWarm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff6b8a"/>
+      <stop offset="100%" stop-color="#ff4466"/>
+    </linearGradient>
+
+    <!-- Coral gradient cool -->
+    <linearGradient id="sw-coralCool" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#44ffaa"/>
+      <stop offset="100%" stop-color="#00ffcc"/>
+    </linearGradient>
+
+    <!-- Ruin stone gradient -->
+    <linearGradient id="sw-ruinStone" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6a7080"/>
+      <stop offset="50%" stop-color="#5a6070"/>
+      <stop offset="100%" stop-color="#4a5060"/>
+    </linearGradient>
+
+    <!-- Light ray from above -->
+    <linearGradient id="sw-lightRay" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#0a3060" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#0a3060" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Vignette -->
+    <radialGradient id="sw-vignette">
+      <stop offset="40%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.6"/>
+    </radialGradient>
+
+    <!-- Soft glow filter -->
+    <filter id="sw-softGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Medium glow filter -->
+    <filter id="sw-mediumGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Strong glow filter -->
+    <filter id="sw-strongGlow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    /* === ANIMATION KEYFRAMES === */
+
+    /* 1. Jellyfish float + pulse (5-7s) */
+    @keyframes sw-jellyFloat {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.55; }
+      30% { transform: translateY(-12px) scale(1.03); opacity: 0.75; }
+      60% { transform: translateY(-6px) scale(0.97); opacity: 0.6; }
+    }
+    @keyframes sw-jellyFloat2 {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.5; }
+      35% { transform: translateY(-10px) scale(1.05); opacity: 0.7; }
+      65% { transform: translateY(-4px) scale(0.98); opacity: 0.55; }
+    }
+    @keyframes sw-jellyTentacle {
+      0%, 100% { transform: rotate(-2deg) scaleY(1); }
+      50% { transform: rotate(2deg) scaleY(0.92); }
+    }
+
+    /* 2. Bioluminescent plankton sparkle (2-3s staggered) */
+    @keyframes sw-planktonSparkle {
+      0%, 100% { opacity: 0.15; transform: scale(0.7); }
+      50% { opacity: 0.95; transform: scale(1.3); }
+    }
+
+    /* 3. Diver bubble stream (4-5s) */
+    @keyframes sw-bubbleRise1 {
+      0% { transform: translateY(0) translateX(0); opacity: 0.7; }
+      40% { transform: translateY(-80px) translateX(6px); opacity: 0.5; }
+      100% { transform: translateY(-200px) translateX(-4px); opacity: 0; }
+    }
+    @keyframes sw-bubbleRise2 {
+      0% { transform: translateY(0) translateX(0); opacity: 0.6; }
+      45% { transform: translateY(-90px) translateX(-8px); opacity: 0.4; }
+      100% { transform: translateY(-220px) translateX(5px); opacity: 0; }
+    }
+    @keyframes sw-bubbleRise3 {
+      0% { transform: translateY(0) translateX(0); opacity: 0.65; }
+      50% { transform: translateY(-70px) translateX(10px); opacity: 0.45; }
+      100% { transform: translateY(-190px) translateX(-6px); opacity: 0; }
+    }
+
+    /* 4. Ancient rune glow (3-4s) */
+    @keyframes sw-runeGlow {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.85; }
+    }
+    @keyframes sw-runeGlow2 {
+      0%, 100% { opacity: 0.15; }
+      40% { opacity: 0.7; }
+      60% { opacity: 0.75; }
+    }
+
+    /* 5. Seaweed sway (6s) */
+    @keyframes sw-seaweedSway {
+      0%, 100% { transform: rotate(-4deg); }
+      50% { transform: rotate(4deg); }
+    }
+    @keyframes sw-seaweedSway2 {
+      0%, 100% { transform: rotate(3deg); }
+      50% { transform: rotate(-3deg); }
+    }
+
+    /* 6. Fish school dart (8-10s) */
+    @keyframes sw-fishDart {
+      0% { transform: translateX(-60px) translateY(10px); opacity: 0; }
+      10% { opacity: 0.7; }
+      50% { transform: translateX(30px) translateY(-8px); opacity: 0.7; }
+      90% { opacity: 0.7; }
+      100% { transform: translateX(560px) translateY(5px); opacity: 0; }
+    }
+    @keyframes sw-fishDart2 {
+      0% { transform: translateX(570px) translateY(-5px); opacity: 0; }
+      10% { opacity: 0.65; }
+      50% { transform: translateX(280px) translateY(6px); opacity: 0.65; }
+      90% { opacity: 0.65; }
+      100% { transform: translateX(-60px) translateY(-8px); opacity: 0; }
+    }
+
+    /* 7. Diver gentle bob */
+    @keyframes sw-diverFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-7px) rotate(1deg); }
+    }
+
+    /* 8. Helmet light beam flicker */
+    @keyframes sw-lightFlicker {
+      0%, 100% { opacity: 0.25; }
+      30% { opacity: 0.35; }
+      60% { opacity: 0.2; }
+      80% { opacity: 0.38; }
+    }
+
+    /* 9. Light ray shimmer from surface */
+    @keyframes sw-rayShimmer {
+      0%, 100% { opacity: 0.05; }
+      50% { opacity: 0.12; }
+    }
+
+    /* 10. Anglerfish lure glow */
+    @keyframes sw-lureGlow {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.15); }
+    }
+
+    /* === ANIMATION ASSIGNMENTS === */
+
+    .sw-jelly-1 {
+      transform-origin: 420px 145px;
+      animation: sw-jellyFloat 6s ease-in-out infinite;
+    }
+    .sw-jelly-2 {
+      transform-origin: 80px 180px;
+      animation: sw-jellyFloat2 7s ease-in-out 1.2s infinite;
+    }
+    .sw-jelly-3 {
+      transform-origin: 460px 260px;
+      animation: sw-jellyFloat 5.5s ease-in-out 2.5s infinite;
+    }
+    .sw-jelly-tent-1 {
+      transform-origin: 420px 160px;
+      animation: sw-jellyTentacle 3s ease-in-out infinite;
+    }
+    .sw-jelly-tent-2 {
+      transform-origin: 80px 195px;
+      animation: sw-jellyTentacle 3.5s ease-in-out 0.5s infinite;
+    }
+    .sw-jelly-tent-3 {
+      transform-origin: 460px 275px;
+      animation: sw-jellyTentacle 2.8s ease-in-out 1s infinite;
+    }
+
+    .sw-plankton-1 { animation: sw-planktonSparkle 2.2s ease-in-out infinite; }
+    .sw-plankton-2 { animation: sw-planktonSparkle 2.5s ease-in-out 0.3s infinite; }
+    .sw-plankton-3 { animation: sw-planktonSparkle 2.8s ease-in-out 0.7s infinite; }
+    .sw-plankton-4 { animation: sw-planktonSparkle 2.1s ease-in-out 1.1s infinite; }
+    .sw-plankton-5 { animation: sw-planktonSparkle 2.6s ease-in-out 1.5s infinite; }
+    .sw-plankton-6 { animation: sw-planktonSparkle 2.3s ease-in-out 0.5s infinite; }
+    .sw-plankton-7 { animation: sw-planktonSparkle 2.9s ease-in-out 1.8s infinite; }
+    .sw-plankton-8 { animation: sw-planktonSparkle 2.4s ease-in-out 2.2s infinite; }
+    .sw-plankton-9 { animation: sw-planktonSparkle 2.7s ease-in-out 0.9s infinite; }
+    .sw-plankton-10 { animation: sw-planktonSparkle 2s ease-in-out 1.3s infinite; }
+    .sw-plankton-11 { animation: sw-planktonSparkle 2.5s ease-in-out 2.6s infinite; }
+    .sw-plankton-12 { animation: sw-planktonSparkle 2.3s ease-in-out 0.2s infinite; }
+
+    .sw-bubble-1 { animation: sw-bubbleRise1 4.5s ease-in-out infinite; }
+    .sw-bubble-2 { animation: sw-bubbleRise2 4s ease-in-out 0.6s infinite; }
+    .sw-bubble-3 { animation: sw-bubbleRise3 4.8s ease-in-out 1.2s infinite; }
+    .sw-bubble-4 { animation: sw-bubbleRise1 4.2s ease-in-out 1.8s infinite; }
+    .sw-bubble-5 { animation: sw-bubbleRise2 5s ease-in-out 2.5s infinite; }
+    .sw-bubble-6 { animation: sw-bubbleRise3 4.3s ease-in-out 3.1s infinite; }
+
+    .sw-rune-1 { animation: sw-runeGlow 3.5s ease-in-out infinite; }
+    .sw-rune-2 { animation: sw-runeGlow2 3.8s ease-in-out 0.8s infinite; }
+    .sw-rune-3 { animation: sw-runeGlow 3.2s ease-in-out 1.6s infinite; }
+    .sw-rune-4 { animation: sw-runeGlow2 4s ease-in-out 2.2s infinite; }
+    .sw-rune-5 { animation: sw-runeGlow 3.6s ease-in-out 0.4s infinite; }
+
+    .sw-seaweed-1 {
+      transform-origin: 55px 512px;
+      animation: sw-seaweedSway 6s ease-in-out infinite;
+    }
+    .sw-seaweed-2 {
+      transform-origin: 95px 512px;
+      animation: sw-seaweedSway2 6.5s ease-in-out 0.5s infinite;
+    }
+    .sw-seaweed-3 {
+      transform-origin: 430px 512px;
+      animation: sw-seaweedSway 5.8s ease-in-out 1s infinite;
+    }
+    .sw-seaweed-4 {
+      transform-origin: 470px 512px;
+      animation: sw-seaweedSway2 6.2s ease-in-out 1.5s infinite;
+    }
+    .sw-seaweed-5 {
+      transform-origin: 350px 512px;
+      animation: sw-seaweedSway 5.5s ease-in-out 0.3s infinite;
+    }
+
+    .sw-fish-school-1 { animation: sw-fishDart 9s ease-in-out infinite; }
+    .sw-fish-school-2 { animation: sw-fishDart 9.5s ease-in-out 1.5s infinite; }
+    .sw-fish-school-3 { animation: sw-fishDart 8.5s ease-in-out 0.8s infinite; }
+    .sw-fish-school-4 { animation: sw-fishDart2 10s ease-in-out infinite; }
+    .sw-fish-school-5 { animation: sw-fishDart2 9.2s ease-in-out 2s infinite; }
+
+    .sw-diver-group {
+      animation: sw-diverFloat 5s ease-in-out infinite;
+    }
+
+    .sw-helmet-light {
+      animation: sw-lightFlicker 4s ease-in-out infinite;
+    }
+
+    .sw-ray-1 { animation: sw-rayShimmer 7s ease-in-out infinite; }
+    .sw-ray-2 { animation: sw-rayShimmer 8s ease-in-out 2s infinite; }
+    .sw-ray-3 { animation: sw-rayShimmer 6.5s ease-in-out 3.5s infinite; }
+
+    .sw-angler-lure {
+      transform-origin: 105px 355px;
+      animation: sw-lureGlow 2.5s ease-in-out infinite;
+    }
+  </style>
+
+  <!-- ============================================ -->
+  <!-- LAYER 1: Background deep sea atmosphere      -->
+  <!-- ============================================ -->
+  <rect width="512" height="512" fill="url(#sw-skyGradient)"/>
+
+  <!-- Subtle deep water gradient overlay -->
+  <rect width="512" height="512" fill="#0a1830" opacity="0.15"/>
+
+  <!-- Distant light rays from above -->
+  <g class="sw-ray-1">
+    <polygon points="160,0 200,0 260,512 120,512" fill="url(#sw-lightRay)" opacity="0.07"/>
+  </g>
+  <g class="sw-ray-2">
+    <polygon points="300,0 340,0 380,512 240,512" fill="url(#sw-lightRay)" opacity="0.06"/>
+  </g>
+  <g class="sw-ray-3">
+    <polygon points="80,0 110,0 170,512 40,512" fill="url(#sw-lightRay)" opacity="0.05"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 2: Far background (distant ruins)      -->
+  <!-- ============================================ -->
+  <g opacity="0.2">
+    <!-- Distant column left -->
+    <rect x="30" y="200" width="16" height="180" rx="3" fill="#4a5060"/>
+    <rect x="24" y="192" width="28" height="12" rx="2" fill="#5a6070"/>
+    <rect x="24" y="376" width="28" height="10" rx="2" fill="#4a5060"/>
+
+    <!-- Distant arch center -->
+    <rect x="140" y="230" width="12" height="160" rx="2" fill="#4a5060"/>
+    <rect x="200" y="230" width="12" height="160" rx="2" fill="#4a5060"/>
+    <path d="M140 240 Q176 190 212 240" fill="none" stroke="#4a5060" stroke-width="10" stroke-linecap="round"/>
+
+    <!-- Distant column far right -->
+    <rect x="460" y="220" width="14" height="150" rx="3" fill="#4a5060"/>
+    <rect x="454" y="212" width="26" height="10" rx="2" fill="#5a6070"/>
+
+    <!-- Distant broken wall -->
+    <path d="M360 280 L360 380 L420 380 L420 310 L400 295 L380 310 L380 280 Z" fill="#4a5060"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 3: Mid background (main ruins + coral) -->
+  <!-- ============================================ -->
+
+  <!-- Large ruin arch - left side -->
+  <g opacity="0.7">
+    <rect x="50" y="280" width="24" height="200" rx="4" fill="url(#sw-ruinStone)"/>
+    <rect x="40" y="270" width="44" height="16" rx="3" fill="#6a7080"/>
+    <!-- Column detail lines -->
+    <line x1="56" y1="290" x2="56" y2="470" stroke="#5a6070" stroke-width="1.5" opacity="0.5"/>
+    <line x1="66" y1="290" x2="66" y2="470" stroke="#5a6070" stroke-width="1.5" opacity="0.5"/>
+  </g>
+
+  <g opacity="0.7">
+    <rect x="150" y="300" width="24" height="180" rx="4" fill="url(#sw-ruinStone)"/>
+    <rect x="140" y="290" width="44" height="16" rx="3" fill="#6a7080"/>
+    <line x1="156" y1="310" x2="156" y2="470" stroke="#5a6070" stroke-width="1.5" opacity="0.5"/>
+    <line x1="166" y1="310" x2="166" y2="470" stroke="#5a6070" stroke-width="1.5" opacity="0.5"/>
+  </g>
+
+  <!-- Arch connecting left columns -->
+  <path d="M62 280 Q112 220 162 295" fill="none" stroke="#6a7080" stroke-width="14" stroke-linecap="round" opacity="0.65"/>
+  <path d="M62 280 Q112 230 162 295" fill="none" stroke="#5a6070" stroke-width="8" stroke-linecap="round" opacity="0.4"/>
+
+  <!-- Large ruin structure - right side -->
+  <g opacity="0.65">
+    <rect x="360" y="310" width="22" height="170" rx="4" fill="url(#sw-ruinStone)"/>
+    <rect x="350" y="300" width="42" height="14" rx="3" fill="#6a7080"/>
+    <line x1="366" y1="320" x2="366" y2="470" stroke="#5a6070" stroke-width="1.5" opacity="0.5"/>
+    <line x1="376" y1="320" x2="376" y2="470" stroke="#5a6070" stroke-width="1.5" opacity="0.5"/>
+  </g>
+
+  <g opacity="0.65">
+    <rect x="440" y="290" width="22" height="190" rx="4" fill="url(#sw-ruinStone)"/>
+    <rect x="430" y="280" width="42" height="14" rx="3" fill="#6a7080"/>
+  </g>
+
+  <!-- Right arch -->
+  <path d="M371 305 Q406 245 451 285" fill="none" stroke="#6a7080" stroke-width="12" stroke-linecap="round" opacity="0.6"/>
+
+  <!-- Broken steps / platform center -->
+  <g opacity="0.55">
+    <rect x="180" y="420" width="160" height="14" rx="2" fill="#5a6070"/>
+    <rect x="195" y="408" width="130" height="14" rx="2" fill="#5a6070"/>
+    <rect x="210" y="396" width="100" height="14" rx="2" fill="#6a7080"/>
+  </g>
+
+  <!-- Ancient rune symbols on ruins (glowing) -->
+  <g filter="url(#sw-mediumGlow)">
+    <circle cx="62" cy="340" r="4" fill="#00ffcc" class="sw-rune-1" opacity="0.3"/>
+    <circle cx="62" cy="370" r="3" fill="#00ffcc" class="sw-rune-2" opacity="0.2"/>
+    <circle cx="62" cy="400" r="3.5" fill="#00ffcc" class="sw-rune-3" opacity="0.25"/>
+    <!-- Rune lines on left column -->
+    <line x1="57" y1="335" x2="67" y2="345" stroke="#00ffcc" stroke-width="1" class="sw-rune-1" opacity="0.3"/>
+    <line x1="57" y1="365" x2="67" y2="375" stroke="#00ffcc" stroke-width="1" class="sw-rune-2" opacity="0.2"/>
+  </g>
+
+  <g filter="url(#sw-mediumGlow)">
+    <!-- Runes on right ruins -->
+    <circle cx="371" cy="360" r="3.5" fill="#00e5ff" class="sw-rune-4" opacity="0.25"/>
+    <circle cx="371" cy="390" r="3" fill="#00e5ff" class="sw-rune-5" opacity="0.2"/>
+    <line x1="366" y1="355" x2="376" y2="365" stroke="#00e5ff" stroke-width="1" class="sw-rune-4" opacity="0.25"/>
+
+    <!-- Runes on arch stones -->
+    <circle cx="112" cy="248" r="3" fill="#00ffcc" class="sw-rune-3" opacity="0.2"/>
+    <circle cx="406" cy="260" r="2.5" fill="#00e5ff" class="sw-rune-5" opacity="0.2"/>
+  </g>
+
+  <!-- Coral growing on ruins -->
+  <g opacity="0.8">
+    <!-- Coral on left column top -->
+    <ellipse cx="52" cy="275" rx="12" ry="8" fill="url(#sw-coralWarm)"/>
+    <ellipse cx="68" cy="278" rx="8" ry="6" fill="#ff6b8a" opacity="0.8"/>
+    <circle cx="48" cy="270" r="5" fill="#ff4466" opacity="0.7"/>
+
+    <!-- Coral on right column -->
+    <ellipse cx="445" cy="285" rx="10" ry="7" fill="url(#sw-coralWarm)"/>
+    <ellipse cx="458" cy="288" rx="7" ry="5" fill="#ff6b8a" opacity="0.75"/>
+
+    <!-- Green coral on steps -->
+    <ellipse cx="205" cy="400" rx="14" ry="6" fill="url(#sw-coralCool)" opacity="0.7"/>
+    <ellipse cx="290" cy="398" rx="10" ry="5" fill="#44ffaa" opacity="0.6"/>
+    <circle cx="220" cy="396" r="4" fill="#00ffcc" opacity="0.5"/>
+
+    <!-- Coral on arch -->
+    <ellipse cx="108" cy="230" rx="8" ry="5" fill="#ff6b8a" opacity="0.6"/>
+    <ellipse cx="400" cy="252" rx="7" ry="4" fill="#ff4466" opacity="0.55"/>
+  </g>
+
+  <!-- Sea floor terrain -->
+  <path d="M0 470 Q60 455 120 465 Q180 475 240 460 Q300 450 360 465 Q420 480 480 462 Q500 458 512 465 L512 512 L0 512 Z" fill="#0a1830" opacity="0.8"/>
+  <path d="M0 480 Q80 470 160 478 Q240 486 320 474 Q400 466 480 476 L512 472 L512 512 L0 512 Z" fill="#0d1e35" opacity="0.6"/>
+
+  <!-- Seaweed -->
+  <g class="sw-seaweed-1">
+    <path d="M55 512 Q45 470 55 440 Q65 410 50 380" fill="none" stroke="#1a6040" stroke-width="5" stroke-linecap="round"/>
+    <path d="M55 480 Q42 460 48 440" fill="none" stroke="#1a6040" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+  </g>
+  <g class="sw-seaweed-2">
+    <path d="M95 512 Q105 475 90 445 Q78 420 92 390" fill="none" stroke="#1a5535" stroke-width="4" stroke-linecap="round"/>
+    <path d="M92 490 Q80 465 88 445" fill="none" stroke="#1a5535" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+  </g>
+  <g class="sw-seaweed-3">
+    <path d="M430 512 Q420 480 435 455 Q448 430 432 400" fill="none" stroke="#1a6040" stroke-width="5" stroke-linecap="round"/>
+  </g>
+  <g class="sw-seaweed-4">
+    <path d="M470 512 Q480 478 465 450 Q455 430 468 405" fill="none" stroke="#1a5535" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <g class="sw-seaweed-5">
+    <path d="M350 512 Q340 485 352 460 Q362 438 348 415" fill="none" stroke="#1a5535" stroke-width="4" stroke-linecap="round"/>
+    <path d="M348 490 Q340 470 345 455" fill="none" stroke="#1a5535" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 4: Middle ground (creatures, angler)   -->
+  <!-- ============================================ -->
+
+  <!-- Jellyfish 1 - upper right, large -->
+  <g class="sw-jelly-1">
+    <!-- Jelly body (bell) -->
+    <ellipse cx="420" cy="138" rx="22" ry="16" fill="#ff69b4" opacity="0.35" filter="url(#sw-mediumGlow)"/>
+    <ellipse cx="420" cy="140" rx="18" ry="13" fill="#cc44ff" opacity="0.25"/>
+    <ellipse cx="420" cy="136" rx="12" ry="8" fill="#ff69b4" opacity="0.45"/>
+    <!-- Glow -->
+    <circle cx="420" cy="138" r="30" fill="url(#sw-bioGlowPink)" opacity="0.3"/>
+    <!-- Tentacles -->
+    <g class="sw-jelly-tent-1">
+      <path d="M408 152 Q404 175 410 195" fill="none" stroke="#ff69b4" stroke-width="1.5" opacity="0.3"/>
+      <path d="M418 154 Q420 180 416 200" fill="none" stroke="#cc44ff" stroke-width="1.5" opacity="0.3"/>
+      <path d="M428 152 Q434 178 426 198" fill="none" stroke="#ff69b4" stroke-width="1.5" opacity="0.3"/>
+      <path d="M414 153 Q410 170 415 188" fill="none" stroke="#cc44ff" stroke-width="1" opacity="0.2"/>
+      <path d="M424 153 Q428 172 422 190" fill="none" stroke="#ff69b4" stroke-width="1" opacity="0.2"/>
+    </g>
+  </g>
+
+  <!-- Jellyfish 2 - upper left, medium -->
+  <g class="sw-jelly-2">
+    <ellipse cx="80" cy="175" rx="16" ry="12" fill="#00e5ff" opacity="0.3" filter="url(#sw-mediumGlow)"/>
+    <ellipse cx="80" cy="177" rx="12" ry="9" fill="#00ffcc" opacity="0.2"/>
+    <ellipse cx="80" cy="174" rx="8" ry="6" fill="#00e5ff" opacity="0.4"/>
+    <circle cx="80" cy="175" r="24" fill="url(#sw-bioGlowTeal)" opacity="0.25"/>
+    <g class="sw-jelly-tent-2">
+      <path d="M72 186 Q68 205 74 222" fill="none" stroke="#00e5ff" stroke-width="1.2" opacity="0.25"/>
+      <path d="M80 188 Q82 210 78 226" fill="none" stroke="#00ffcc" stroke-width="1.2" opacity="0.25"/>
+      <path d="M88 186 Q92 208 86 224" fill="none" stroke="#00e5ff" stroke-width="1.2" opacity="0.25"/>
+    </g>
+  </g>
+
+  <!-- Jellyfish 3 - right mid, small -->
+  <g class="sw-jelly-3">
+    <ellipse cx="460" cy="256" rx="12" ry="9" fill="#cc44ff" opacity="0.3" filter="url(#sw-softGlow)"/>
+    <ellipse cx="460" cy="258" rx="8" ry="6" fill="#ff69b4" opacity="0.25"/>
+    <circle cx="460" cy="256" r="18" fill="url(#sw-bioGlowPink)" opacity="0.2"/>
+    <g class="sw-jelly-tent-3">
+      <path d="M454 265 Q450 280 456 292" fill="none" stroke="#cc44ff" stroke-width="1" opacity="0.2"/>
+      <path d="M460 266 Q462 282 458 294" fill="none" stroke="#ff69b4" stroke-width="1" opacity="0.2"/>
+      <path d="M466 265 Q470 282 464 293" fill="none" stroke="#cc44ff" stroke-width="1" opacity="0.2"/>
+    </g>
+  </g>
+
+  <!-- Anglerfish lurking in shadows - lower left -->
+  <g opacity="0.6">
+    <!-- Body -->
+    <ellipse cx="110" cy="365" rx="28" ry="18" fill="#1a2535"/>
+    <ellipse cx="110" cy="365" rx="24" ry="15" fill="#1e2d42"/>
+    <!-- Eye -->
+    <circle cx="125" cy="360" r="5" fill="#0a1525"/>
+    <circle cx="126" cy="359" r="3" fill="#2a4060"/>
+    <circle cx="127" cy="358" r="1.2" fill="#ffffff" opacity="0.7"/>
+    <!-- Mouth -->
+    <path d="M130 370 Q138 366 135 372" fill="none" stroke="#1a2535" stroke-width="1.5"/>
+    <!-- Small teeth -->
+    <path d="M131 369 L132 372" stroke="#4a5a70" stroke-width="0.8"/>
+    <path d="M134 368 L134 371" stroke="#4a5a70" stroke-width="0.8"/>
+    <!-- Fins -->
+    <ellipse cx="90" cy="358" rx="8" ry="4" fill="#1e2d42" opacity="0.8" transform="rotate(-15 90 358)"/>
+    <path d="M85 370 Q80 380 88 378" fill="#1a2535" opacity="0.7"/>
+    <!-- Lure stalk -->
+    <path d="M128 355 Q140 335 135 320 Q130 310 135 305" fill="none" stroke="#1e2d42" stroke-width="1.5"/>
+    <!-- Lure glow -->
+    <g class="sw-angler-lure">
+      <circle cx="135" cy="302" r="6" fill="url(#sw-bioGlowTeal)" opacity="0.8"/>
+      <circle cx="135" cy="302" r="3" fill="#00ffcc" opacity="0.7" filter="url(#sw-softGlow)"/>
+    </g>
+  </g>
+
+  <!-- Fish school darting through scene -->
+  <g class="sw-fish-school-1">
+    <path d="M0 120 L12 116 L12 124 Z" fill="#00e5ff" opacity="0.6"/>
+  </g>
+  <g class="sw-fish-school-2">
+    <path d="M0 132 L10 129 L10 135 Z" fill="#00e5ff" opacity="0.5"/>
+  </g>
+  <g class="sw-fish-school-3">
+    <path d="M0 126 L11 122 L11 130 Z" fill="#44ffaa" opacity="0.55"/>
+  </g>
+  <g class="sw-fish-school-4">
+    <path d="M0 340 L-12 336 L-12 344 Z" fill="#00e5ff" opacity="0.5"/>
+  </g>
+  <g class="sw-fish-school-5">
+    <path d="M0 350 L-10 347 L-10 353 Z" fill="#44ffaa" opacity="0.45"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 5: Primary character (child diver)     -->
+  <!-- ============================================ -->
+  <g class="sw-diver-group">
+    <!-- Helmet light cone beam -->
+    <g class="sw-helmet-light">
+      <polygon points="275,240 340,180 380,220 310,265" fill="url(#sw-lightCone)" opacity="0.3"/>
+      <polygon points="278,238 355,170 390,205 312,260" fill="#ffd700" opacity="0.05" filter="url(#sw-strongGlow)"/>
+    </g>
+
+    <!-- Character glow aura -->
+    <circle cx="260" cy="280" r="65" fill="url(#sw-charGlow)" opacity="0.4"/>
+
+    <!-- Diving suit body -->
+    <ellipse cx="258" cy="310" rx="22" ry="28" fill="#ffaa44" opacity="0.9"/>
+    <ellipse cx="258" cy="310" rx="19" ry="25" fill="#cc8833"/>
+
+    <!-- Arms -->
+    <path d="M240 298 Q222 285 215 295" fill="none" stroke="#ffaa44" stroke-width="7" stroke-linecap="round"/>
+    <path d="M276 298 Q290 288 296 295" fill="none" stroke="#ffaa44" stroke-width="7" stroke-linecap="round"/>
+    <!-- Gloves -->
+    <circle cx="213" cy="296" r="5" fill="#cc8833"/>
+    <circle cx="298" cy="296" r="5" fill="#cc8833"/>
+
+    <!-- Legs -->
+    <path d="M248 335 Q244 352 240 365" fill="none" stroke="#ffaa44" stroke-width="7" stroke-linecap="round"/>
+    <path d="M268 335 Q272 352 276 365" fill="none" stroke="#ffaa44" stroke-width="7" stroke-linecap="round"/>
+    <!-- Boots / flippers -->
+    <ellipse cx="237" cy="368" rx="8" ry="4" fill="#cc8833"/>
+    <ellipse cx="279" cy="368" rx="8" ry="4" fill="#cc8833"/>
+
+    <!-- Suit details - belt -->
+    <rect x="238" y="318" width="40" height="5" rx="2" fill="#996622" opacity="0.6"/>
+    <!-- Suit seam line -->
+    <line x1="258" y1="290" x2="258" y2="336" stroke="#996622" stroke-width="1" opacity="0.3"/>
+
+    <!-- Helmet (round diving helmet) -->
+    <circle cx="258" cy="265" r="24" fill="#4a5060"/>
+    <circle cx="258" cy="265" r="22" fill="#5a6a78"/>
+    <!-- Helmet visor (glass) -->
+    <circle cx="258" cy="265" r="16" fill="#0a2040" opacity="0.85"/>
+    <circle cx="258" cy="265" r="15" fill="#0d2850" opacity="0.7"/>
+    <!-- Visor reflection -->
+    <ellipse cx="252" cy="259" rx="5" ry="8" fill="#1a4070" opacity="0.4" transform="rotate(-10 252 259)"/>
+
+    <!-- Child face visible through visor -->
+    <!-- Eyes -->
+    <circle cx="252" cy="264" r="3.5" fill="#FFFFFF"/>
+    <circle cx="266" cy="264" r="3.5" fill="#FFFFFF"/>
+    <circle cx="253" cy="265" r="2.2" fill="#3a2510"/>
+    <circle cx="267" cy="265" r="2.2" fill="#3a2510"/>
+    <circle cx="254" cy="263" r="1" fill="#FFFFFF" opacity="0.85"/>
+    <circle cx="268" cy="263" r="1" fill="#FFFFFF" opacity="0.85"/>
+    <!-- Smile -->
+    <path d="M254 272 Q259 276 264 272" fill="none" stroke="#f4b5a0" stroke-width="1.2" stroke-linecap="round"/>
+    <!-- Cheeks -->
+    <circle cx="249" cy="270" r="2" fill="#FFB6C1" opacity="0.4"/>
+    <circle cx="269" cy="270" r="2" fill="#FFB6C1" opacity="0.4"/>
+
+    <!-- Helmet light (on top) -->
+    <circle cx="258" cy="243" r="5" fill="#ffd700" filter="url(#sw-softGlow)"/>
+    <circle cx="258" cy="243" r="3" fill="#FFFFFF" opacity="0.8"/>
+    <!-- Helmet bolts -->
+    <circle cx="238" cy="265" r="2" fill="#4a5060"/>
+    <circle cx="278" cy="265" r="2" fill="#4a5060"/>
+    <circle cx="258" cy="245" r="1.5" fill="#6a7080"/>
+    <!-- Helmet rim -->
+    <circle cx="258" cy="265" r="23" fill="none" stroke="#4a5060" stroke-width="2"/>
+
+    <!-- Air tube from helmet -->
+    <path d="M240 258 Q225 250 220 260 Q215 275 225 280" fill="none" stroke="#5a6a78" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <!-- Bubbles from diver helmet -->
+  <circle cx="240" cy="250" r="3" fill="#aaddee" opacity="0.3" class="sw-bubble-1"/>
+  <circle cx="236" cy="248" r="2" fill="#aaddee" opacity="0.25" class="sw-bubble-2"/>
+  <circle cx="244" cy="246" r="2.5" fill="#aaddee" opacity="0.28" class="sw-bubble-3"/>
+  <circle cx="238" cy="252" r="1.8" fill="#aaddee" opacity="0.22" class="sw-bubble-4"/>
+  <circle cx="242" cy="244" r="3.5" fill="#aaddee" opacity="0.3" class="sw-bubble-5"/>
+  <circle cx="235" cy="255" r="2.2" fill="#aaddee" opacity="0.26" class="sw-bubble-6"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 6: Foreground (plankton, particles)    -->
+  <!-- ============================================ -->
+
+  <!-- Bioluminescent plankton scattered everywhere -->
+  <g filter="url(#sw-softGlow)">
+    <circle cx="30" cy="100" r="1.5" fill="#44ffaa" class="sw-plankton-1"/>
+    <circle cx="140" cy="60" r="1.2" fill="#88ff88" class="sw-plankton-2"/>
+    <circle cx="320" cy="80" r="1.8" fill="#44ffaa" class="sw-plankton-3"/>
+    <circle cx="480" cy="120" r="1.3" fill="#00ffcc" class="sw-plankton-4"/>
+    <circle cx="45" cy="300" r="1.6" fill="#88ff88" class="sw-plankton-5"/>
+    <circle cx="180" cy="160" r="1.4" fill="#44ffaa" class="sw-plankton-6"/>
+    <circle cx="390" cy="180" r="1.5" fill="#00ffcc" class="sw-plankton-7"/>
+    <circle cx="500" cy="340" r="1.2" fill="#88ff88" class="sw-plankton-8"/>
+    <circle cx="260" cy="140" r="1.7" fill="#44ffaa" class="sw-plankton-9"/>
+    <circle cx="15" cy="420" r="1.3" fill="#88ff88" class="sw-plankton-10"/>
+    <circle cx="340" cy="400" r="1.5" fill="#44ffaa" class="sw-plankton-11"/>
+    <circle cx="490" cy="440" r="1.4" fill="#00ffcc" class="sw-plankton-12"/>
+  </g>
+
+  <!-- Additional glow dots near ruins (illuminating them) -->
+  <g filter="url(#sw-mediumGlow)" opacity="0.6">
+    <circle cx="75" cy="310" r="2" fill="#00ffcc" class="sw-plankton-3"/>
+    <circle cx="155" cy="345" r="1.8" fill="#00e5ff" class="sw-plankton-7"/>
+    <circle cx="365" cy="350" r="1.5" fill="#00ffcc" class="sw-plankton-1"/>
+    <circle cx="445" cy="320" r="2" fill="#00e5ff" class="sw-plankton-5"/>
+  </g>
+
+  <!-- Foreground seaweed fronds (close, darker) -->
+  <g opacity="0.5">
+    <path d="M0 490 Q10 460 5 430 Q-2 405 8 380" fill="none" stroke="#0d3a25" stroke-width="8" stroke-linecap="round"/>
+    <path d="M505 485 Q498 455 504 425 Q510 400 500 375" fill="none" stroke="#0d3a25" stroke-width="7" stroke-linecap="round"/>
+  </g>
+
+  <!-- Floating particle debris (deep sea snow) -->
+  <g opacity="0.15">
+    <circle cx="100" cy="200" r="1" fill="#8899aa"/>
+    <circle cx="200" cy="350" r="0.8" fill="#8899aa"/>
+    <circle cx="300" cy="150" r="1.2" fill="#8899aa"/>
+    <circle cx="400" cy="300" r="0.9" fill="#8899aa"/>
+    <circle cx="150" cy="420" r="1" fill="#8899aa"/>
+    <circle cx="450" cy="400" r="1.1" fill="#8899aa"/>
+    <circle cx="50" cy="160" r="0.7" fill="#8899aa"/>
+    <circle cx="480" cy="200" r="0.8" fill="#8899aa"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 7: Vignette overlay                    -->
+  <!-- ============================================ -->
+  <rect width="512" height="512" fill="url(#sw-vignette)" opacity="0.45"/>
+</svg>

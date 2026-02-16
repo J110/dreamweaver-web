@@ -1,0 +1,590 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Sky gradient: deep night sky -->
+    <linearGradient id="dk-skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#050a15" stop-opacity="1"/>
+      <stop offset="40%" stop-color="#0a1525" stop-opacity="1"/>
+      <stop offset="75%" stop-color="#0f2035" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#152840" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- Milky way glow -->
+    <radialGradient id="dk-milkyWay" cx="55%" cy="20%" r="45%">
+      <stop offset="0%" stop-color="#aaaadd" stop-opacity="0.25"/>
+      <stop offset="40%" stop-color="#8888cc" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#050a15" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Mountain gradient far -->
+    <linearGradient id="dk-mountainFar" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a2a3a" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#253545" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- Mountain gradient near -->
+    <linearGradient id="dk-mountainNear" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#253545" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#1a2a3a" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- Tree gradient -->
+    <linearGradient id="dk-treeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a3a2a" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#0d2a1a" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- Campfire core gradient -->
+    <radialGradient id="dk-fireCore" cx="50%" cy="70%" r="60%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="1"/>
+      <stop offset="30%" stop-color="#ffaa44" stop-opacity="1"/>
+      <stop offset="65%" stop-color="#ff6b35" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#ff4400" stop-opacity="0.7"/>
+    </radialGradient>
+
+    <!-- Fire ambient glow -->
+    <radialGradient id="dk-fireGlow" cx="50%" cy="55%" r="50%">
+      <stop offset="0%" stop-color="#ffaa44" stop-opacity="0.5"/>
+      <stop offset="40%" stop-color="#ff6b35" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#ff4400" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Ground fire light -->
+    <radialGradient id="dk-groundGlow" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ff8c42" stop-opacity="0.35"/>
+      <stop offset="50%" stop-color="#ff6b35" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#0f2035" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Lantern glow -->
+    <radialGradient id="dk-lanternGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffaa44" stop-opacity="0.8"/>
+      <stop offset="60%" stop-color="#ff8c42" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#ff8c42" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Ember glow -->
+    <radialGradient id="dk-emberGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff6600" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#ff3300" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Vignette -->
+    <radialGradient id="dk-vignette">
+      <stop offset="45%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.55"/>
+    </radialGradient>
+
+    <!-- Soft glow filter -->
+    <filter id="dk-softGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Medium glow filter -->
+    <filter id="dk-mediumGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Strong glow filter -->
+    <filter id="dk-strongGlow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    /* Campfire flame flicker */
+    @keyframes dk-flameFlicker {
+      0%, 100% { transform: scaleX(1) scaleY(1); opacity: 1; }
+      15% { transform: scaleX(0.92) scaleY(1.06); opacity: 0.9; }
+      30% { transform: scaleX(1.05) scaleY(0.94); opacity: 1; }
+      50% { transform: scaleX(0.95) scaleY(1.08); opacity: 0.85; }
+      65% { transform: scaleX(1.04) scaleY(0.96); opacity: 0.95; }
+      80% { transform: scaleX(0.97) scaleY(1.03); opacity: 1; }
+    }
+    .dk-flame1 { animation: dk-flameFlicker 1.8s ease-in-out infinite; transform-origin: 256px 355px; }
+    .dk-flame2 { animation: dk-flameFlicker 1.5s ease-in-out infinite 0.3s; transform-origin: 256px 360px; }
+    .dk-flame3 { animation: dk-flameFlicker 2s ease-in-out infinite 0.7s; transform-origin: 256px 358px; }
+
+    /* Inner flame dance */
+    @keyframes dk-innerFlame {
+      0%, 100% { transform: translateX(0) scaleY(1); }
+      25% { transform: translateX(-2px) scaleY(1.1); }
+      50% { transform: translateX(1px) scaleY(0.92); }
+      75% { transform: translateX(-1px) scaleY(1.05); }
+    }
+    .dk-innerFlame { animation: dk-innerFlame 1.6s ease-in-out infinite; transform-origin: 256px 345px; }
+
+    /* Ember particles rise */
+    @keyframes dk-ember1 {
+      0% { transform: translate(0, 0); opacity: 1; }
+      50% { opacity: 0.8; }
+      100% { transform: translate(-15px, -90px); opacity: 0; }
+    }
+    @keyframes dk-ember2 {
+      0% { transform: translate(0, 0); opacity: 1; }
+      50% { opacity: 0.7; }
+      100% { transform: translate(12px, -110px); opacity: 0; }
+    }
+    @keyframes dk-ember3 {
+      0% { transform: translate(0, 0); opacity: 0.9; }
+      50% { opacity: 0.6; }
+      100% { transform: translate(-8px, -100px); opacity: 0; }
+    }
+    @keyframes dk-ember4 {
+      0% { transform: translate(0, 0); opacity: 1; }
+      50% { opacity: 0.7; }
+      100% { transform: translate(18px, -85px); opacity: 0; }
+    }
+    @keyframes dk-ember5 {
+      0% { transform: translate(0, 0); opacity: 0.8; }
+      50% { opacity: 0.5; }
+      100% { transform: translate(-5px, -120px); opacity: 0; }
+    }
+    .dk-ember1 { animation: dk-ember1 5s ease-in-out infinite; }
+    .dk-ember2 { animation: dk-ember2 6s ease-in-out infinite 1.2s; }
+    .dk-ember3 { animation: dk-ember3 5.5s ease-in-out infinite 2.5s; }
+    .dk-ember4 { animation: dk-ember4 7s ease-in-out infinite 0.8s; }
+    .dk-ember5 { animation: dk-ember5 6.5s ease-in-out infinite 3s; }
+    .dk-ember6 { animation: dk-ember1 5.8s ease-in-out infinite 4s; }
+    .dk-ember7 { animation: dk-ember2 6.2s ease-in-out infinite 1.8s; }
+    .dk-ember8 { animation: dk-ember3 5.2s ease-in-out infinite 3.5s; }
+
+    /* Lantern glow pulse */
+    @keyframes dk-lanternPulse {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.08); }
+    }
+    .dk-lantern1 { animation: dk-lanternPulse 3s ease-in-out infinite; transform-origin: center; }
+    .dk-lantern2 { animation: dk-lanternPulse 3.3s ease-in-out infinite 0.8s; transform-origin: center; }
+    .dk-lantern3 { animation: dk-lanternPulse 2.8s ease-in-out infinite 1.5s; transform-origin: center; }
+
+    /* Star twinkle */
+    @keyframes dk-twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    .dk-star1 { animation: dk-twinkle 2.5s ease-in-out infinite; }
+    .dk-star2 { animation: dk-twinkle 2.8s ease-in-out infinite 0.5s; }
+    .dk-star3 { animation: dk-twinkle 2.3s ease-in-out infinite 1.1s; }
+    .dk-star4 { animation: dk-twinkle 3s ease-in-out infinite 0.3s; }
+    .dk-star5 { animation: dk-twinkle 2.6s ease-in-out infinite 1.8s; }
+    .dk-star6 { animation: dk-twinkle 2.4s ease-in-out infinite 0.7s; }
+    .dk-star7 { animation: dk-twinkle 2.9s ease-in-out infinite 1.3s; }
+    .dk-star8 { animation: dk-twinkle 2.2s ease-in-out infinite 2s; }
+    .dk-star9 { animation: dk-twinkle 3.2s ease-in-out infinite 0.9s; }
+    .dk-star10 { animation: dk-twinkle 2.7s ease-in-out infinite 1.6s; }
+
+    /* Smoke wisp rise */
+    @keyframes dk-smoke1 {
+      0% { transform: translate(0, 0) scaleX(1); opacity: 0.2; }
+      30% { opacity: 0.15; }
+      60% { transform: translate(-20px, -60px) scaleX(1.5); opacity: 0.08; }
+      100% { transform: translate(-35px, -120px) scaleX(2); opacity: 0; }
+    }
+    @keyframes dk-smoke2 {
+      0% { transform: translate(0, 0) scaleX(1); opacity: 0.18; }
+      30% { opacity: 0.12; }
+      60% { transform: translate(15px, -70px) scaleX(1.6); opacity: 0.06; }
+      100% { transform: translate(25px, -130px) scaleX(2.2); opacity: 0; }
+    }
+    .dk-smoke1 { animation: dk-smoke1 7s ease-in-out infinite; transform-origin: 256px 320px; }
+    .dk-smoke2 { animation: dk-smoke2 8s ease-in-out infinite 2.5s; transform-origin: 260px 322px; }
+    .dk-smoke3 { animation: dk-smoke1 6.5s ease-in-out infinite 4s; transform-origin: 252px 318px; }
+
+    /* Firelight glow on ground */
+    @keyframes dk-groundPulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.55; }
+    }
+    .dk-groundLight { animation: dk-groundPulse 3s ease-in-out infinite; }
+
+    /* Milky way shimmer */
+    @keyframes dk-milkyShimmer {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.35; }
+    }
+    .dk-milkyShimmer { animation: dk-milkyShimmer 6s ease-in-out infinite; }
+
+    /* Lantern sway */
+    @keyframes dk-lanternSway {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(3deg); }
+    }
+    .dk-lanternSwayL { animation: dk-lanternSway 4.5s ease-in-out infinite; transform-origin: 95px 195px; }
+    .dk-lanternSwayR { animation: dk-lanternSway 5s ease-in-out infinite 1s; transform-origin: 420px 200px; }
+    .dk-lanternSwayM { animation: dk-lanternSway 4.8s ease-in-out infinite 0.5s; transform-origin: 72px 220px; }
+  </style>
+
+  <!-- ============================================ -->
+  <!-- LAYER 1: Background sky / atmosphere         -->
+  <!-- ============================================ -->
+  <rect width="512" height="512" fill="url(#dk-skyGradient)"/>
+
+  <!-- Milky way band -->
+  <g class="dk-milkyShimmer">
+    <ellipse cx="280" cy="90" rx="200" ry="55" fill="url(#dk-milkyWay)" opacity="0.3"/>
+    <!-- Milky way detail clusters -->
+    <ellipse cx="240" cy="80" rx="80" ry="18" fill="#8888cc" opacity="0.06"/>
+    <ellipse cx="310" cy="95" rx="60" ry="14" fill="#aaaadd" opacity="0.05"/>
+    <ellipse cx="200" cy="100" rx="50" ry="10" fill="#9999cc" opacity="0.04"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 2: Stars (far background)              -->
+  <!-- ============================================ -->
+  <g>
+    <!-- Bright stars -->
+    <circle cx="60" cy="35" r="1.5" fill="#ffffff" class="dk-star1"/>
+    <circle cx="145" cy="55" r="1" fill="#ddeeff" class="dk-star2"/>
+    <circle cx="230" cy="28" r="1.3" fill="#ffffff" class="dk-star3"/>
+    <circle cx="320" cy="42" r="1" fill="#ccddff" class="dk-star4"/>
+    <circle cx="400" cy="25" r="1.5" fill="#ffffff" class="dk-star5"/>
+    <circle cx="475" cy="60" r="1.2" fill="#ddeeff" class="dk-star6"/>
+    <circle cx="90" cy="95" r="1" fill="#ffffff" class="dk-star7"/>
+    <circle cx="180" cy="115" r="0.8" fill="#ccddff" class="dk-star8"/>
+    <circle cx="350" cy="80" r="1.3" fill="#ffffff" class="dk-star9"/>
+    <circle cx="440" cy="105" r="1" fill="#ddeeff" class="dk-star10"/>
+    <!-- Dim stars (static) -->
+    <circle cx="35" cy="70" r="0.6" fill="#888899" opacity="0.5"/>
+    <circle cx="112" cy="40" r="0.5" fill="#7788aa" opacity="0.4"/>
+    <circle cx="195" cy="68" r="0.7" fill="#8899aa" opacity="0.45"/>
+    <circle cx="270" cy="55" r="0.5" fill="#7788aa" opacity="0.5"/>
+    <circle cx="375" cy="30" r="0.6" fill="#8899bb" opacity="0.4"/>
+    <circle cx="455" cy="45" r="0.5" fill="#7788aa" opacity="0.35"/>
+    <circle cx="50" cy="120" r="0.5" fill="#8899aa" opacity="0.3"/>
+    <circle cx="490" cy="85" r="0.7" fill="#7788aa" opacity="0.4"/>
+    <circle cx="160" cy="135" r="0.5" fill="#8899aa" opacity="0.35"/>
+    <circle cx="290" cy="105" r="0.6" fill="#7788aa" opacity="0.4"/>
+    <circle cx="420" cy="140" r="0.5" fill="#8899aa" opacity="0.3"/>
+    <circle cx="340" cy="120" r="0.4" fill="#7788aa" opacity="0.35"/>
+    <!-- Milky way star cluster -->
+    <circle cx="220" cy="75" r="0.4" fill="#aaaadd" opacity="0.6"/>
+    <circle cx="250" cy="85" r="0.5" fill="#bbbbdd" opacity="0.5"/>
+    <circle cx="275" cy="70" r="0.3" fill="#aaaacc" opacity="0.55"/>
+    <circle cx="300" cy="90" r="0.4" fill="#bbbbee" opacity="0.5"/>
+    <circle cx="260" cy="65" r="0.3" fill="#aaaadd" opacity="0.45"/>
+    <circle cx="235" cy="95" r="0.4" fill="#9999cc" opacity="0.5"/>
+    <circle cx="290" cy="78" r="0.3" fill="#aaaadd" opacity="0.55"/>
+    <circle cx="315" cy="82" r="0.4" fill="#bbbbcc" opacity="0.45"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 3: Mountains (mid background)          -->
+  <!-- ============================================ -->
+  <!-- Far mountain range -->
+  <path d="M0 260 L40 210 L80 230 L130 175 L180 200 L220 160 L260 190 L300 155 L340 185 L380 165 L420 195 L460 170 L500 200 L512 215 L512 310 L0 310 Z"
+        fill="url(#dk-mountainFar)" opacity="0.5"/>
+
+  <!-- Near mountain range -->
+  <path d="M0 290 L50 250 L100 270 L150 230 L200 255 L250 215 L290 245 L340 225 L390 255 L430 235 L470 260 L512 240 L512 330 L0 330 Z"
+        fill="url(#dk-mountainNear)" opacity="0.7"/>
+
+  <!-- Mountain snow caps (subtle) -->
+  <path d="M130 175 L140 182 L120 182 Z" fill="#3a4a5a" opacity="0.3"/>
+  <path d="M220 160 L230 168 L210 168 Z" fill="#3a4a5a" opacity="0.3"/>
+  <path d="M300 155 L310 164 L290 164 Z" fill="#3a4a5a" opacity="0.35"/>
+  <path d="M460 170 L470 178 L450 178 Z" fill="#3a4a5a" opacity="0.3"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 4: Trees, ground, lanterns             -->
+  <!-- ============================================ -->
+  <!-- Ground plane -->
+  <ellipse cx="256" cy="420" rx="280" ry="100" fill="#0d1a12" opacity="0.9"/>
+  <ellipse cx="256" cy="430" rx="256" ry="85" fill="#0f1f15"/>
+
+  <!-- Left tree trunk -->
+  <rect x="68" y="180" width="14" height="200" rx="3" fill="#1a1208"/>
+  <!-- Left tree canopy -->
+  <ellipse cx="75" cy="195" rx="40" ry="45" fill="url(#dk-treeGrad)"/>
+  <ellipse cx="60" cy="185" rx="28" ry="32" fill="#0d2a1a" opacity="0.8"/>
+  <ellipse cx="90" cy="190" rx="25" ry="30" fill="#1a3a2a" opacity="0.7"/>
+  <!-- Left tree branches -->
+  <path d="M72 250 L50 235 M78 270 L55 258" stroke="#1a1208" stroke-width="2.5" fill="none"/>
+
+  <!-- Right tree trunk -->
+  <rect x="413" y="190" width="13" height="190" rx="3" fill="#1a1208"/>
+  <!-- Right tree canopy -->
+  <ellipse cx="420" cy="200" rx="38" ry="42" fill="url(#dk-treeGrad)"/>
+  <ellipse cx="405" cy="195" rx="26" ry="30" fill="#1a3a2a" opacity="0.7"/>
+  <ellipse cx="435" cy="192" rx="24" ry="28" fill="#0d2a1a" opacity="0.8"/>
+  <!-- Right tree branches -->
+  <path d="M420 260 L445 248 M416 280 L440 270" stroke="#1a1208" stroke-width="2.5" fill="none"/>
+
+  <!-- Small left tree -->
+  <rect x="42" y="240" width="8" height="140" rx="2" fill="#150e06"/>
+  <ellipse cx="46" cy="242" rx="22" ry="28" fill="#0d2a1a" opacity="0.8"/>
+  <ellipse cx="38" cy="238" rx="16" ry="20" fill="#1a3a2a" opacity="0.6"/>
+
+  <!-- Lanterns hanging from left tree -->
+  <g class="dk-lanternSwayL">
+    <!-- Lantern string -->
+    <path d="M75 200 Q80 210 82 220" stroke="#4a3a2a" stroke-width="0.8" fill="none"/>
+    <!-- Lantern body -->
+    <rect x="77" y="220" width="10" height="14" rx="3" fill="#cc6622" opacity="0.8"/>
+    <rect x="79" y="222" width="6" height="10" rx="2" fill="#ffaa44" opacity="0.6"/>
+    <!-- Lantern glow -->
+    <circle cx="82" cy="227" r="15" fill="url(#dk-lanternGlow)" class="dk-lantern1" filter="url(#dk-softGlow)"/>
+  </g>
+
+  <g class="dk-lanternSwayM">
+    <!-- Second lantern on small left tree -->
+    <path d="M46 242 Q50 252 52 260" stroke="#4a3a2a" stroke-width="0.8" fill="none"/>
+    <rect x="47" y="260" width="10" height="13" rx="3" fill="#cc6622" opacity="0.8"/>
+    <rect x="49" y="262" width="6" height="9" rx="2" fill="#ffaa44" opacity="0.6"/>
+    <circle cx="52" cy="266" r="13" fill="url(#dk-lanternGlow)" class="dk-lantern3" filter="url(#dk-softGlow)"/>
+  </g>
+
+  <!-- Lantern hanging from right tree -->
+  <g class="dk-lanternSwayR">
+    <path d="M420 205 Q416 215 414 225" stroke="#4a3a2a" stroke-width="0.8" fill="none"/>
+    <rect x="409" y="225" width="10" height="14" rx="3" fill="#cc6622" opacity="0.8"/>
+    <rect x="411" y="227" width="6" height="10" rx="2" fill="#ffaa44" opacity="0.6"/>
+    <circle cx="414" cy="232" r="15" fill="url(#dk-lanternGlow)" class="dk-lantern2" filter="url(#dk-softGlow)"/>
+  </g>
+
+  <!-- Ground rocks near campfire -->
+  <ellipse cx="215" cy="400" rx="12" ry="6" fill="#1a2420" opacity="0.7"/>
+  <ellipse cx="300" cy="398" rx="10" ry="5" fill="#1a2420" opacity="0.6"/>
+  <ellipse cx="190" cy="410" rx="8" ry="4" fill="#1a2420" opacity="0.5"/>
+  <ellipse cx="325" cy="408" rx="9" ry="5" fill="#1a2420" opacity="0.55"/>
+
+  <!-- Fire ring stones -->
+  <g opacity="0.75">
+    <ellipse cx="233" cy="388" rx="6" ry="4" fill="#2a2a2a"/>
+    <ellipse cx="246" cy="392" rx="5" ry="3.5" fill="#333333"/>
+    <ellipse cx="258" cy="393" rx="6" ry="4" fill="#2a2a2a"/>
+    <ellipse cx="270" cy="391" rx="5" ry="3.5" fill="#303030"/>
+    <ellipse cx="281" cy="387" rx="6" ry="4" fill="#2a2a2a"/>
+    <ellipse cx="228" cy="380" rx="5" ry="3" fill="#333333"/>
+    <ellipse cx="284" cy="379" rx="5" ry="3" fill="#303030"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 5: Characters and campfire             -->
+  <!-- ============================================ -->
+
+  <!-- Firelight on ground (pulsing warm glow) -->
+  <ellipse cx="256" cy="400" rx="120" ry="40" fill="url(#dk-groundGlow)" class="dk-groundLight"/>
+
+  <!-- Campfire logs -->
+  <g>
+    <path d="M235 388 L275 383" stroke="#3d2210" stroke-width="5" stroke-linecap="round"/>
+    <path d="M242 385 L270 390" stroke="#4a2a14" stroke-width="4.5" stroke-linecap="round"/>
+    <path d="M240 390 L272 386" stroke="#3a1e0e" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <!-- Campfire flames -->
+  <g filter="url(#dk-strongGlow)">
+    <!-- Outer flame -->
+    <path d="M256 325 Q240 350 238 365 Q240 378 250 382 Q256 384 262 382 Q272 378 274 365 Q272 350 256 325 Z"
+          fill="#ff4400" opacity="0.7" class="dk-flame1"/>
+    <!-- Middle flame -->
+    <path d="M256 332 Q244 352 243 365 Q245 375 252 378 Q256 380 260 378 Q267 375 269 365 Q268 352 256 332 Z"
+          fill="#ff6b35" opacity="0.85" class="dk-flame2"/>
+    <!-- Inner flame -->
+    <path d="M256 338 Q248 355 248 365 Q250 372 254 374 Q256 375 258 374 Q262 372 264 365 Q264 355 256 338 Z"
+          fill="#ffaa44" opacity="0.9" class="dk-flame3"/>
+    <!-- Bright core -->
+    <path d="M256 348 Q252 358 252 365 Q253 370 256 371 Q259 370 260 365 Q260 358 256 348 Z"
+          fill="#ffd700" class="dk-innerFlame"/>
+  </g>
+
+  <!-- Ambient fire light sphere -->
+  <circle cx="256" cy="360" r="55" fill="url(#dk-fireGlow)" filter="url(#dk-mediumGlow)"/>
+
+  <!-- Smoke wisps -->
+  <g>
+    <ellipse cx="256" cy="320" rx="8" ry="12" fill="#667788" opacity="0.12" class="dk-smoke1"/>
+    <ellipse cx="260" cy="322" rx="6" ry="10" fill="#778899" opacity="0.1" class="dk-smoke2"/>
+    <ellipse cx="252" cy="318" rx="7" ry="11" fill="#667788" opacity="0.11" class="dk-smoke3"/>
+  </g>
+
+  <!-- ======== TEEN SILHOUETTES ======== -->
+
+  <!-- Teen 1: Sitting cross-legged on left, leaning forward slightly -->
+  <g opacity="0.92">
+    <!-- Body -->
+    <path d="M185 370 Q183 355 186 342 Q190 330 195 325
+             L195 318
+             Q193 310 195 305
+             L200 303 L205 305
+             Q207 310 205 318
+             L205 325
+             Q210 330 214 342 Q217 355 215 370
+             Q210 378 200 380 Q190 378 185 370 Z"
+          fill="#0a0e14"/>
+    <!-- Head -->
+    <circle cx="200" cy="298" r="14" fill="#0c1018"/>
+    <!-- Hair (messy teen style) -->
+    <path d="M186 295 Q188 280 200 278 Q212 280 215 295 Q216 290 213 285 Q210 282 200 280 Q190 282 187 290 Z"
+          fill="#080c12"/>
+    <!-- Left arm extended toward fire -->
+    <path d="M190 330 Q180 345 178 355 Q177 358 180 360"
+          stroke="#0a0e14" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <!-- Right arm on knee -->
+    <path d="M210 332 Q218 345 220 360"
+          stroke="#0a0e14" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <!-- Crossed legs -->
+    <path d="M190 370 Q185 380 180 388 Q178 392 182 394"
+          stroke="#0a0e14" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <path d="M210 370 Q215 380 220 388 Q222 392 218 394"
+          stroke="#0a0e14" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <!-- Warm firelight rim on face/body (facing fire) -->
+    <path d="M205 290 Q210 295 212 305 Q214 315 212 330"
+          stroke="#ff6b35" stroke-width="1" opacity="0.25" fill="none"/>
+  </g>
+
+  <!-- Teen 2: Sitting with knees up, slightly right of center-left, arms around knees -->
+  <g opacity="0.92">
+    <!-- Body and tucked knees -->
+    <path d="M225 365 Q222 350 225 338 Q228 328 232 322
+             L232 315
+             Q230 308 232 303
+             L236 300 L240 303
+             Q242 308 240 315
+             L240 322
+             Q244 328 247 338 Q250 350 247 365
+             Q240 372 236 373 Q230 372 225 365 Z"
+          fill="#0a0e14"/>
+    <!-- Head -->
+    <circle cx="236" cy="295" r="13" fill="#0c1018"/>
+    <!-- Hair (longer, ponytail hint) -->
+    <path d="M223 293 Q225 278 236 276 Q247 278 249 293 Q250 288 248 283 Q245 279 236 277 Q227 279 224 288 Z"
+          fill="#080c12"/>
+    <path d="M247 288 Q250 294 252 305" stroke="#080c12" stroke-width="3" fill="none"/>
+    <!-- Knees drawn up -->
+    <ellipse cx="236" cy="358" rx="14" ry="8" fill="#0a0e14"/>
+    <!-- Arms wrapping knees -->
+    <path d="M225 338 Q222 348 223 358 Q224 362 228 363"
+          stroke="#0a0e14" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <path d="M247 338 Q250 348 249 358 Q248 362 244 363"
+          stroke="#0a0e14" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <!-- Fire rim light -->
+    <path d="M242 288 Q246 293 248 305 Q250 318 248 335"
+          stroke="#ff8c42" stroke-width="1" opacity="0.2" fill="none"/>
+  </g>
+
+  <!-- Teen 3: Sitting on right side, leaning back on hands -->
+  <g opacity="0.92">
+    <!-- Body leaning back -->
+    <path d="M295 368 Q292 352 296 340 Q300 330 304 324
+             L304 316
+             Q302 308 304 303
+             L308 300 L312 303
+             Q314 308 312 316
+             L312 324
+             Q316 330 320 340 Q324 352 321 368
+             Q315 376 308 378 Q300 376 295 368 Z"
+          fill="#0a0e14"/>
+    <!-- Head -->
+    <circle cx="308" cy="295" r="14" fill="#0c1018"/>
+    <!-- Hair (short, slightly spiky) -->
+    <path d="M294 293 Q296 278 308 276 Q320 278 322 293 Q323 286 318 280 Q312 276 308 275 Q302 276 298 280 Q294 286 294 293 Z"
+          fill="#080c12"/>
+    <path d="M302 276 L300 270 M308 275 L308 269 M314 276 L316 270" stroke="#080c12" stroke-width="1.5" fill="none"/>
+    <!-- Left arm back as support -->
+    <path d="M298 330 Q290 348 285 368 Q283 375 286 378"
+          stroke="#0a0e14" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <!-- Right arm back -->
+    <path d="M318 330 Q326 348 330 368 Q332 375 329 378"
+          stroke="#0a0e14" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <!-- Legs extended -->
+    <path d="M298 368 Q290 380 280 390 Q277 394 280 396"
+          stroke="#0a0e14" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <path d="M318 368 Q324 380 332 390 Q335 394 332 396"
+          stroke="#0a0e14" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <!-- Fire rim light on left side (facing fire) -->
+    <path d="M298 288 Q294 295 293 305 Q292 318 294 335"
+          stroke="#ff6b35" stroke-width="1" opacity="0.25" fill="none"/>
+  </g>
+
+  <!-- Teen 4: Sitting far right, hugging one knee up, one leg down -->
+  <g opacity="0.9">
+    <!-- Body -->
+    <path d="M345 372 Q343 356 346 344 Q349 334 352 328
+             L352 320
+             Q350 312 352 307
+             L356 304 L360 307
+             Q362 312 360 320
+             L360 328
+             Q363 334 366 344 Q369 356 367 372
+             Q362 380 356 382 Q350 380 345 372 Z"
+          fill="#0a0e14"/>
+    <!-- Head -->
+    <circle cx="356" cy="299" r="13" fill="#0c1018"/>
+    <!-- Hair (curly/wavy) -->
+    <path d="M343 297 Q345 282 356 280 Q367 282 369 297 Q370 290 366 284 Q360 279 356 278 Q350 279 346 284 Q343 290 343 297 Z"
+          fill="#080c12"/>
+    <circle cx="346" cy="287" r="3" fill="#080c12"/>
+    <circle cx="366" cy="287" r="3" fill="#080c12"/>
+    <circle cx="356" cy="280" r="2.5" fill="#080c12"/>
+    <!-- Right knee drawn up -->
+    <path d="M360 372 Q368 358 370 350 Q371 346 368 348 Q365 355 362 365"
+          stroke="#0a0e14" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <!-- Left leg extended -->
+    <path d="M348 372 Q342 385 336 395 Q334 398 337 400"
+          stroke="#0a0e14" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <!-- Left arm on ground -->
+    <path d="M349 332 Q342 345 338 362"
+          stroke="#0a0e14" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+    <!-- Right arm on raised knee -->
+    <path d="M362 332 Q366 342 369 350"
+          stroke="#0a0e14" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+    <!-- Fire rim light -->
+    <path d="M348 292 Q344 298 342 310 Q340 325 342 340"
+          stroke="#ff6b35" stroke-width="0.8" opacity="0.2" fill="none"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 6: Foreground (embers, particles)      -->
+  <!-- ============================================ -->
+
+  <!-- Rising embers -->
+  <g filter="url(#dk-softGlow)">
+    <circle cx="252" cy="340" r="1.5" fill="#ff6600" class="dk-ember1"/>
+    <circle cx="260" cy="338" r="1.2" fill="#ff3300" class="dk-ember2"/>
+    <circle cx="248" cy="342" r="1" fill="#ff6600" class="dk-ember3"/>
+    <circle cx="264" cy="336" r="1.3" fill="#ff3300" class="dk-ember4"/>
+    <circle cx="255" cy="335" r="0.8" fill="#ff6600" class="dk-ember5"/>
+    <circle cx="258" cy="344" r="1.1" fill="#ff3300" class="dk-ember6"/>
+    <circle cx="250" cy="337" r="0.9" fill="#ff6600" class="dk-ember7"/>
+    <circle cx="262" cy="341" r="1.4" fill="#ff3300" class="dk-ember8"/>
+  </g>
+
+  <!-- Ember glow auras (larger soft) -->
+  <circle cx="252" cy="340" r="4" fill="url(#dk-emberGlow)" class="dk-ember1" opacity="0.5"/>
+  <circle cx="260" cy="338" r="3.5" fill="url(#dk-emberGlow)" class="dk-ember2" opacity="0.4"/>
+  <circle cx="264" cy="336" r="3" fill="url(#dk-emberGlow)" class="dk-ember4" opacity="0.45"/>
+  <circle cx="255" cy="335" r="3" fill="url(#dk-emberGlow)" class="dk-ember5" opacity="0.35"/>
+
+  <!-- Foreground grass tufts -->
+  <g opacity="0.5">
+    <path d="M30 440 Q32 425 28 410" stroke="#0d2a1a" stroke-width="1.5" fill="none"/>
+    <path d="M35 442 Q38 428 34 415" stroke="#1a3a2a" stroke-width="1.2" fill="none"/>
+    <path d="M475 438 Q478 424 474 412" stroke="#0d2a1a" stroke-width="1.5" fill="none"/>
+    <path d="M480 440 Q483 427 479 416" stroke="#1a3a2a" stroke-width="1.2" fill="none"/>
+    <path d="M130 435 Q133 422 129 412" stroke="#0d2a1a" stroke-width="1.2" fill="none"/>
+    <path d="M385 434 Q388 420 384 410" stroke="#1a3a2a" stroke-width="1.2" fill="none"/>
+  </g>
+
+  <!-- Small fireflies in distance -->
+  <circle cx="95" cy="280" r="1.5" fill="#ffdd66" opacity="0.3" class="dk-star3" filter="url(#dk-softGlow)"/>
+  <circle cx="430" cy="270" r="1.2" fill="#ffdd66" opacity="0.25" class="dk-star7" filter="url(#dk-softGlow)"/>
+  <circle cx="55" cy="310" r="1" fill="#ffdd66" opacity="0.2" class="dk-star5" filter="url(#dk-softGlow)"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 7: Vignette overlay                    -->
+  <!-- ============================================ -->
+  <rect width="512" height="512" fill="url(#dk-vignette)" opacity="0.45"/>
+</svg>

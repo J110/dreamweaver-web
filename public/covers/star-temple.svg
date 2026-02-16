@@ -1,0 +1,535 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background Sky Gradient -->
+    <linearGradient id="st-skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0515;stop-opacity:1" />
+      <stop offset="45%" style="stop-color:#1a0f2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2d1b4e;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Stone Gradient -->
+    <linearGradient id="st-stoneGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b7355;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#a08460;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b7355;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Stone Wall Light -->
+    <linearGradient id="st-stoneLight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#c4a87a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a08460;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Stone Pillar Gradient -->
+    <linearGradient id="st-pillarGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#6b5a42;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#a08460;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#8b7355;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6b5a42;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Torch Flame Gradient -->
+    <radialGradient id="st-torchGlow" cx="50%" cy="60%" r="50%">
+      <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#ffaa44;stop-opacity:0.8" />
+      <stop offset="70%" style="stop-color:#ff6b35;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#ff3300;stop-opacity:0" />
+    </radialGradient>
+
+    <!-- Torch Light Cast on Wall -->
+    <radialGradient id="st-torchCast" cx="40%" cy="55%" r="55%">
+      <stop offset="0%" style="stop-color:#ffaa44;stop-opacity:0.25" />
+      <stop offset="50%" style="stop-color:#ff6b35;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#ff6b35;stop-opacity:0" />
+    </radialGradient>
+
+    <!-- Carving Glow Gradient (Blue) -->
+    <radialGradient id="st-carvGlowBlue" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#00ccff;stop-opacity:0.9" />
+      <stop offset="60%" style="stop-color:#4488ff;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#4488ff;stop-opacity:0" />
+    </radialGradient>
+
+    <!-- Carving Glow Gradient (Gold) -->
+    <radialGradient id="st-carvGlowGold" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ffd700;stop-opacity:0.9" />
+      <stop offset="60%" style="stop-color:#ffaa44;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#ffd700;stop-opacity:0" />
+    </radialGradient>
+
+    <!-- Sandy Floor Gradient -->
+    <linearGradient id="st-floorGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#7a6545;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#5a4a35;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Roof Opening Sky -->
+    <radialGradient id="st-roofSky" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#1a0f2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0a0515;stop-opacity:1" />
+    </radialGradient>
+
+    <!-- Glow Filters -->
+    <filter id="st-glow">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="st-glowStrong">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="st-glowSoft">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Styles and Animations -->
+    <style>
+      /* 1. Constellation Carvings Pulse/Glow */
+      @keyframes st-carvPulse1 {
+        0%, 100% { opacity: 0.4; }
+        50% { opacity: 1; }
+      }
+      @keyframes st-carvPulse2 {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 0.95; }
+      }
+      @keyframes st-carvPulse3 {
+        0%, 100% { opacity: 0.5; }
+        50% { opacity: 1; }
+      }
+
+      /* 2. Torch Flame Flicker */
+      @keyframes st-flameFlicker {
+        0% { transform: scaleX(1) scaleY(1); opacity: 0.9; }
+        15% { transform: scaleX(0.9) scaleY(1.1); opacity: 1; }
+        30% { transform: scaleX(1.05) scaleY(0.95); opacity: 0.85; }
+        50% { transform: scaleX(0.95) scaleY(1.08); opacity: 1; }
+        65% { transform: scaleX(1.02) scaleY(0.92); opacity: 0.9; }
+        80% { transform: scaleX(0.97) scaleY(1.05); opacity: 0.95; }
+        100% { transform: scaleX(1) scaleY(1); opacity: 0.9; }
+      }
+      @keyframes st-flameFlicker2 {
+        0% { transform: scaleX(1) scaleY(1) translateX(0); opacity: 0.7; }
+        25% { transform: scaleX(1.1) scaleY(0.9) translateX(1px); opacity: 0.9; }
+        50% { transform: scaleX(0.9) scaleY(1.1) translateX(-1px); opacity: 0.8; }
+        75% { transform: scaleX(1.05) scaleY(0.95) translateX(0.5px); opacity: 1; }
+        100% { transform: scaleX(1) scaleY(1) translateX(0); opacity: 0.7; }
+      }
+
+      /* 3. Star Twinkle Through Roof */
+      @keyframes st-starTwinkle {
+        0%, 100% { opacity: 0.2; }
+        50% { opacity: 1; }
+      }
+      @keyframes st-starTwinkle2 {
+        0%, 100% { opacity: 0.3; }
+        40% { opacity: 0.9; }
+        60% { opacity: 0.5; }
+      }
+
+      /* 4. Boy Shadow Sway */
+      @keyframes st-shadowSway {
+        0%, 100% { transform: skewX(0deg) scaleY(1); }
+        25% { transform: skewX(2deg) scaleY(1.02); }
+        50% { transform: skewX(-1deg) scaleY(0.98); }
+        75% { transform: skewX(1.5deg) scaleY(1.01); }
+      }
+
+      /* 5. Dust Motes Float */
+      @keyframes st-dustFloat1 {
+        0% { transform: translate(0, 0); opacity: 0; }
+        10% { opacity: 0.6; }
+        50% { opacity: 0.4; }
+        90% { opacity: 0.5; }
+        100% { transform: translate(15px, -40px); opacity: 0; }
+      }
+      @keyframes st-dustFloat2 {
+        0% { transform: translate(0, 0); opacity: 0; }
+        15% { opacity: 0.5; }
+        50% { opacity: 0.3; }
+        85% { opacity: 0.4; }
+        100% { transform: translate(-12px, -35px); opacity: 0; }
+      }
+      @keyframes st-dustFloat3 {
+        0% { transform: translate(0, 0); opacity: 0; }
+        20% { opacity: 0.4; }
+        80% { opacity: 0.5; }
+        100% { transform: translate(8px, -45px); opacity: 0; }
+      }
+
+      /* 6. Ancient Rune Shimmer */
+      @keyframes st-runeShimmer {
+        0%, 100% { opacity: 0.2; filter: url(#st-glow); }
+        30% { opacity: 0.8; filter: url(#st-glowStrong); }
+        50% { opacity: 1; filter: url(#st-glowStrong); }
+        70% { opacity: 0.6; filter: url(#st-glow); }
+      }
+
+      /* 7. Torch light cast breathing */
+      @keyframes st-lightBreathe {
+        0%, 100% { opacity: 0.6; }
+        30% { opacity: 0.8; }
+        60% { opacity: 0.5; }
+        80% { opacity: 0.75; }
+      }
+
+      /* Constellation Line Trace */
+      @keyframes st-lineTrace {
+        0%, 100% { stroke-opacity: 0.3; }
+        50% { stroke-opacity: 0.8; }
+      }
+
+      /* Apply animations */
+      .st-carvGroup1 { animation: st-carvPulse1 3s ease-in-out infinite; }
+      .st-carvGroup2 { animation: st-carvPulse2 3.5s ease-in-out infinite 0.8s; }
+      .st-carvGroup3 { animation: st-carvPulse3 4s ease-in-out infinite 1.6s; }
+
+      .st-flame1 { animation: st-flameFlicker 1.5s ease-in-out infinite; transform-origin: 50% 100%; }
+      .st-flame2 { animation: st-flameFlicker2 1.8s ease-in-out infinite 0.3s; transform-origin: 50% 100%; }
+
+      .st-starA { animation: st-starTwinkle 2.5s ease-in-out infinite; }
+      .st-starB { animation: st-starTwinkle2 2.5s ease-in-out infinite 0.7s; }
+      .st-starC { animation: st-starTwinkle 2.5s ease-in-out infinite 1.4s; }
+      .st-starD { animation: st-starTwinkle2 2.5s ease-in-out infinite 0.3s; }
+      .st-starE { animation: st-starTwinkle 2.5s ease-in-out infinite 1.9s; }
+
+      .st-shadow { animation: st-shadowSway 5s ease-in-out infinite; transform-origin: 65% 100%; }
+
+      .st-dust1 { animation: st-dustFloat1 6s ease-in-out infinite; }
+      .st-dust2 { animation: st-dustFloat2 7s ease-in-out infinite 1.5s; }
+      .st-dust3 { animation: st-dustFloat3 8s ease-in-out infinite 3s; }
+      .st-dust4 { animation: st-dustFloat1 7.5s ease-in-out infinite 2s; }
+      .st-dust5 { animation: st-dustFloat2 6.5s ease-in-out infinite 4s; }
+
+      .st-rune1 { animation: st-runeShimmer 4s ease-in-out infinite; }
+      .st-rune2 { animation: st-runeShimmer 4s ease-in-out infinite 1s; }
+      .st-rune3 { animation: st-runeShimmer 4s ease-in-out infinite 2s; }
+      .st-rune4 { animation: st-runeShimmer 4s ease-in-out infinite 3s; }
+
+      .st-torchCast { animation: st-lightBreathe 2s ease-in-out infinite; }
+      .st-constLine { animation: st-lineTrace 3.5s ease-in-out infinite 0.5s; }
+    </style>
+  </defs>
+
+  <!-- LAYER 1: Night Sky Background -->
+  <rect width="512" height="512" fill="url(#st-skyGrad)" />
+
+  <!-- LAYER 2: Stars Visible Through Roof Opening -->
+  <g>
+    <!-- Roof opening shape - deep sky visible above -->
+    <ellipse cx="256" cy="35" rx="95" ry="50" fill="url(#st-roofSky)" opacity="0.8" />
+
+    <!-- Stars through roof -->
+    <circle class="st-starA" cx="225" cy="18" r="1.5" fill="#ffffff" filter="url(#st-glow)" />
+    <circle class="st-starB" cx="260" cy="12" r="1" fill="#ffffff" filter="url(#st-glow)" />
+    <circle class="st-starC" cx="290" cy="22" r="1.8" fill="#ffd700" filter="url(#st-glow)" />
+    <circle class="st-starD" cx="240" cy="38" r="1.2" fill="#ffffff" filter="url(#st-glow)" />
+    <circle class="st-starE" cx="275" cy="30" r="1" fill="#00ccff" filter="url(#st-glow)" />
+    <circle class="st-starA" cx="210" cy="42" r="0.8" fill="#ffffff" filter="url(#st-glow)" opacity="0.7" />
+    <circle class="st-starB" cx="300" cy="38" r="1.3" fill="#ffffff" filter="url(#st-glow)" />
+    <circle class="st-starC" cx="248" cy="8" r="0.9" fill="#ffd700" filter="url(#st-glow)" />
+    <circle class="st-starD" cx="232" cy="50" r="0.7" fill="#ffffff" />
+    <circle class="st-starE" cx="270" cy="46" r="0.8" fill="#00ccff" filter="url(#st-glow)" />
+  </g>
+
+  <!-- LAYER 3: Temple Structure (Walls, Pillars, Roof) -->
+  <g>
+    <!-- Back wall -->
+    <rect x="45" y="55" width="422" height="400" fill="url(#st-stoneGrad)" rx="3" />
+
+    <!-- Wall texture lines (stone blocks) -->
+    <g opacity="0.15" stroke="#5a4a35" stroke-width="1" fill="none">
+      <line x1="45" y1="110" x2="467" y2="110" />
+      <line x1="45" y1="165" x2="467" y2="165" />
+      <line x1="45" y1="220" x2="467" y2="220" />
+      <line x1="45" y1="275" x2="467" y2="275" />
+      <line x1="45" y1="330" x2="467" y2="330" />
+      <line x1="45" y1="385" x2="467" y2="385" />
+      <!-- Vertical joints staggered -->
+      <line x1="130" y1="55" x2="130" y2="110" />
+      <line x1="256" y1="55" x2="256" y2="110" />
+      <line x1="380" y1="55" x2="380" y2="110" />
+      <line x1="90" y1="110" x2="90" y2="165" />
+      <line x1="200" y1="110" x2="200" y2="165" />
+      <line x1="320" y1="110" x2="320" y2="165" />
+      <line x1="430" y1="110" x2="430" y2="165" />
+      <line x1="150" y1="165" x2="150" y2="220" />
+      <line x1="280" y1="165" x2="280" y2="220" />
+      <line x1="400" y1="165" x2="400" y2="220" />
+      <line x1="110" y1="220" x2="110" y2="275" />
+      <line x1="230" y1="220" x2="230" y2="275" />
+      <line x1="350" y1="220" x2="350" y2="275" />
+      <line x1="160" y1="275" x2="160" y2="330" />
+      <line x1="300" y1="275" x2="300" y2="330" />
+      <line x1="420" y1="275" x2="420" y2="330" />
+    </g>
+
+    <!-- Crumbling roof opening -->
+    <path d="M155,55 Q180,70 200,58 Q230,42 256,55 Q280,42 310,58 Q335,70 357,55 L357,55 Q340,80 315,68 Q285,52 256,65 Q225,52 195,68 Q170,80 155,55 Z" fill="url(#st-skyGrad)" />
+
+    <!-- Roof edge stones (crumbled) -->
+    <path d="M150,58 Q160,50 170,55 Q180,62 175,70 Q165,65 155,68 Z" fill="#7a6545" />
+    <path d="M340,55 Q350,48 360,53 Q365,62 358,68 Q348,64 342,60 Z" fill="#7a6545" />
+    <path d="M190,50 Q198,45 205,52 L200,60 Q193,56 190,50 Z" fill="#6b5a42" />
+    <path d="M315,48 Q322,44 328,50 L325,58 Q318,54 315,48 Z" fill="#6b5a42" />
+
+    <!-- Left pillar -->
+    <rect x="55" y="75" width="42" height="380" fill="url(#st-pillarGrad)" />
+    <rect x="50" y="70" width="52" height="16" fill="#a08460" rx="2" />
+    <rect x="50" y="440" width="52" height="16" fill="#a08460" rx="2" />
+    <!-- Pillar detail grooves -->
+    <line x1="66" y1="86" x2="66" y2="440" stroke="#6b5a42" stroke-width="0.8" opacity="0.4" />
+    <line x1="76" y1="86" x2="76" y2="440" stroke="#c4a87a" stroke-width="0.5" opacity="0.3" />
+    <line x1="86" y1="86" x2="86" y2="440" stroke="#6b5a42" stroke-width="0.8" opacity="0.4" />
+
+    <!-- Right pillar -->
+    <rect x="415" y="75" width="42" height="380" fill="url(#st-pillarGrad)" />
+    <rect x="410" y="70" width="52" height="16" fill="#a08460" rx="2" />
+    <rect x="410" y="440" width="52" height="16" fill="#a08460" rx="2" />
+    <line x1="426" y1="86" x2="426" y2="440" stroke="#6b5a42" stroke-width="0.8" opacity="0.4" />
+    <line x1="436" y1="86" x2="436" y2="440" stroke="#c4a87a" stroke-width="0.5" opacity="0.3" />
+    <line x1="446" y1="86" x2="446" y2="440" stroke="#6b5a42" stroke-width="0.8" opacity="0.4" />
+
+    <!-- Floor -->
+    <rect x="45" y="440" width="422" height="72" fill="url(#st-floorGrad)" />
+    <!-- Floor stone lines -->
+    <g opacity="0.2" stroke="#5a4a35" stroke-width="0.8">
+      <line x1="45" y1="460" x2="467" y2="460" />
+      <line x1="45" y1="480" x2="467" y2="480" />
+      <line x1="120" y1="440" x2="120" y2="512" />
+      <line x1="220" y1="440" x2="220" y2="512" />
+      <line x1="330" y1="440" x2="330" y2="512" />
+      <line x1="410" y1="440" x2="410" y2="512" />
+    </g>
+  </g>
+
+  <!-- LAYER 4: Wall Carvings - Constellation Star Map -->
+  <g>
+    <!-- Torch light cast on wall -->
+    <ellipse class="st-torchCast" cx="280" cy="280" rx="180" ry="200" fill="url(#st-torchCast)" />
+
+    <!-- === Constellation Group 1: Large constellation (top-left wall) === -->
+    <g class="st-carvGroup1" filter="url(#st-glow)">
+      <!-- Stars (carved dots) -->
+      <circle cx="140" cy="120" r="3" fill="#00ccff" />
+      <circle cx="175" cy="105" r="2.5" fill="#00ccff" />
+      <circle cx="210" cy="115" r="3.5" fill="#00ccff" />
+      <circle cx="195" cy="145" r="2" fill="#00ccff" />
+      <circle cx="160" cy="155" r="2.8" fill="#00ccff" />
+      <circle cx="225" cy="140" r="2" fill="#4488ff" />
+      <!-- Connecting lines (carved channels) -->
+      <g class="st-constLine" stroke="#00ccff" stroke-width="1" fill="none" opacity="0.5">
+        <line x1="140" y1="120" x2="175" y2="105" />
+        <line x1="175" y1="105" x2="210" y2="115" />
+        <line x1="210" y1="115" x2="225" y2="140" />
+        <line x1="210" y1="115" x2="195" y2="145" />
+        <line x1="195" y1="145" x2="160" y2="155" />
+        <line x1="160" y1="155" x2="140" y2="120" />
+      </g>
+      <!-- Glow halos -->
+      <circle cx="210" cy="115" r="8" fill="url(#st-carvGlowBlue)" opacity="0.4" />
+      <circle cx="140" cy="120" r="6" fill="url(#st-carvGlowBlue)" opacity="0.3" />
+    </g>
+
+    <!-- === Constellation Group 2: Center wall (main feature) === -->
+    <g class="st-carvGroup2" filter="url(#st-glow)">
+      <!-- Large spiral / cosmic eye pattern -->
+      <circle cx="280" cy="180" r="4" fill="#ffd700" />
+      <circle cx="310" cy="165" r="3" fill="#ffd700" />
+      <circle cx="340" cy="175" r="3.5" fill="#ffd700" />
+      <circle cx="325" cy="200" r="2.5" fill="#ffd700" />
+      <circle cx="295" cy="210" r="3" fill="#ffd700" />
+      <circle cx="260" cy="195" r="2.5" fill="#ffd700" />
+      <circle cx="265" cy="165" r="2" fill="#ffd700" />
+      <!-- Connecting carved lines -->
+      <g class="st-constLine" stroke="#ffd700" stroke-width="1" fill="none" opacity="0.5">
+        <line x1="265" y1="165" x2="280" y2="180" />
+        <line x1="280" y1="180" x2="310" y2="165" />
+        <line x1="310" y1="165" x2="340" y2="175" />
+        <line x1="340" y1="175" x2="325" y2="200" />
+        <line x1="325" y1="200" x2="295" y2="210" />
+        <line x1="295" y1="210" x2="260" y2="195" />
+        <line x1="260" y1="195" x2="265" y2="165" />
+        <line x1="280" y1="180" x2="295" y2="210" />
+        <line x1="310" y1="165" x2="325" y2="200" />
+      </g>
+      <!-- Central glow -->
+      <circle cx="295" cy="188" r="22" fill="url(#st-carvGlowGold)" opacity="0.3" />
+      <circle cx="280" cy="180" r="10" fill="url(#st-carvGlowGold)" opacity="0.5" />
+    </g>
+
+    <!-- === Constellation Group 3: Upper-right === -->
+    <g class="st-carvGroup3" filter="url(#st-glow)">
+      <circle cx="350" cy="110" r="2.5" fill="#00ccff" />
+      <circle cx="375" cy="100" r="2" fill="#4488ff" />
+      <circle cx="395" cy="115" r="3" fill="#00ccff" />
+      <circle cx="380" cy="135" r="2.5" fill="#00ccff" />
+      <circle cx="355" cy="140" r="2" fill="#4488ff" />
+      <g class="st-constLine" stroke="#4488ff" stroke-width="0.8" fill="none" opacity="0.4">
+        <line x1="350" y1="110" x2="375" y2="100" />
+        <line x1="375" y1="100" x2="395" y2="115" />
+        <line x1="395" y1="115" x2="380" y2="135" />
+        <line x1="380" y1="135" x2="355" y2="140" />
+        <line x1="355" y1="140" x2="350" y2="110" />
+      </g>
+      <circle cx="375" cy="118" r="12" fill="url(#st-carvGlowBlue)" opacity="0.25" />
+    </g>
+
+    <!-- === Small scattered carved stars on lower wall === -->
+    <g class="st-carvGroup1" filter="url(#st-glow)" opacity="0.6">
+      <circle cx="130" cy="240" r="2" fill="#4488ff" />
+      <circle cx="155" cy="250" r="1.5" fill="#00ccff" />
+      <circle cx="145" cy="270" r="2" fill="#4488ff" />
+      <line x1="130" y1="240" x2="155" y2="250" stroke="#4488ff" stroke-width="0.6" opacity="0.4" />
+      <line x1="155" y1="250" x2="145" y2="270" stroke="#4488ff" stroke-width="0.6" opacity="0.4" />
+    </g>
+
+    <!-- === Ancient Runes along bottom wall === -->
+    <g>
+      <!-- Rune 1: Spiral symbol -->
+      <g class="st-rune1">
+        <path d="M130,340 Q135,330 145,335 Q150,345 140,350 Q130,348 130,340 Z" fill="none" stroke="#ffd700" stroke-width="1.2" opacity="0.6" />
+        <circle cx="138" cy="340" r="2" fill="#ffd700" opacity="0.4" />
+      </g>
+      <!-- Rune 2: Triangle with dot -->
+      <g class="st-rune2">
+        <path d="M185,332 L195,350 L175,350 Z" fill="none" stroke="#00ccff" stroke-width="1.2" opacity="0.6" />
+        <circle cx="185" cy="344" r="1.5" fill="#00ccff" opacity="0.5" />
+      </g>
+      <!-- Rune 3: Crossed lines -->
+      <g class="st-rune3">
+        <path d="M240,330 L250,355 M238,342 L252,342" fill="none" stroke="#ffd700" stroke-width="1.2" opacity="0.6" />
+      </g>
+      <!-- Rune 4: Circle with rays -->
+      <g class="st-rune4">
+        <circle cx="305" cy="342" r="6" fill="none" stroke="#00ccff" stroke-width="1" opacity="0.5" />
+        <line x1="305" y1="334" x2="305" y2="330" stroke="#00ccff" stroke-width="0.8" opacity="0.4" />
+        <line x1="305" y1="350" x2="305" y2="354" stroke="#00ccff" stroke-width="0.8" opacity="0.4" />
+        <line x1="297" y1="342" x2="293" y2="342" stroke="#00ccff" stroke-width="0.8" opacity="0.4" />
+        <line x1="313" y1="342" x2="317" y2="342" stroke="#00ccff" stroke-width="0.8" opacity="0.4" />
+      </g>
+      <!-- Rune 5: Zigzag -->
+      <g class="st-rune1">
+        <path d="M355,335 L362,345 L355,355 L362,365" fill="none" stroke="#ffd700" stroke-width="1" opacity="0.5" />
+      </g>
+      <!-- Rune decorative band line -->
+      <line x1="110" y1="320" x2="400" y2="320" stroke="#8b7355" stroke-width="0.6" opacity="0.4" />
+      <line x1="110" y1="370" x2="400" y2="370" stroke="#8b7355" stroke-width="0.6" opacity="0.4" />
+    </g>
+  </g>
+
+  <!-- LAYER 5: Boy Character Silhouette with Torch -->
+  <g>
+    <!-- Boy's shadow on the floor (cast by torch) -->
+    <g class="st-shadow" opacity="0.3">
+      <ellipse cx="340" cy="455" rx="65" ry="8" fill="#1a0f0a" />
+      <path d="M310,455 Q290,440 285,455 L370,455 Q365,445 340,455 Z" fill="#1a0f0a" />
+    </g>
+
+    <!-- Boy silhouette body -->
+    <g>
+      <!-- Legs -->
+      <path d="M300,430 L295,455 L302,455 L305,435 Z" fill="#1a1025" />
+      <path d="M310,430 L315,455 L308,455 L305,435 Z" fill="#1a1025" />
+      <!-- Feet -->
+      <rect x="291" y="452" width="13" height="4" rx="2" fill="#1a1025" />
+      <rect x="308" y="452" width="13" height="4" rx="2" fill="#1a1025" />
+
+      <!-- Body / torso -->
+      <path d="M290,390 Q288,420 295,432 L315,432 Q322,420 318,390 Z" fill="#1a1025" />
+
+      <!-- Head (looking up and to the left at the wall) -->
+      <ellipse cx="300" cy="378" rx="14" ry="16" fill="#1a1025" />
+      <!-- Hair tufts -->
+      <path d="M288,368 Q292,358 300,362 Q308,358 312,368" fill="#1a1025" />
+
+      <!-- Backpack suggestion -->
+      <path d="M316,395 Q325,400 324,415 Q322,425 316,425 Z" fill="#15102a" />
+
+      <!-- Left arm (at side) -->
+      <path d="M290,395 Q282,410 280,425 L284,426 Q288,412 292,398 Z" fill="#1a1025" />
+
+      <!-- Right arm (holding torch up) -->
+      <path d="M318,395 Q330,385 338,370 Q342,362 340,355 L336,356 Q335,365 332,372 Q325,385 315,393 Z" fill="#1a1025" />
+
+      <!-- Torch stick -->
+      <rect x="337" y="310" width="5" height="48" rx="2" fill="#5a3a20" />
+      <rect x="336" y="308" width="7" height="6" rx="1" fill="#6b4a30" />
+    </g>
+
+    <!-- Torch flame -->
+    <g transform="translate(340, 295)">
+      <!-- Outer flame glow -->
+      <ellipse cx="0" cy="0" rx="22" ry="28" fill="url(#st-torchGlow)" class="st-flame2" filter="url(#st-glowSoft)" opacity="0.5" />
+      <!-- Main flame -->
+      <path class="st-flame1" d="M0,12 Q-7,0 -5,-10 Q-3,-18 0,-22 Q3,-18 5,-10 Q7,0 0,12 Z" fill="#ffd700" opacity="0.95" />
+      <!-- Inner flame -->
+      <path class="st-flame2" d="M0,8 Q-4,-2 -3,-10 Q-1,-16 0,-18 Q1,-16 3,-10 Q4,-2 0,8 Z" fill="#ffaa44" opacity="0.9" />
+      <!-- Core -->
+      <path class="st-flame1" d="M0,4 Q-2,-3 -1,-8 Q0,-12 0,-13 Q0,-12 1,-8 Q2,-3 0,4 Z" fill="#ffffff" opacity="0.7" />
+      <!-- Sparks -->
+      <circle cx="-3" cy="-20" r="1" fill="#ffd700" class="st-flame2" opacity="0.6" />
+      <circle cx="2" cy="-24" r="0.8" fill="#ffaa44" class="st-flame1" opacity="0.5" />
+    </g>
+
+    <!-- Torch warm light on boy (subtle highlight edge) -->
+    <path d="M304,378 Q310,375 316,380 Q320,390 318,400 Q310,395 304,390 Z" fill="#ff6b35" opacity="0.08" />
+    <path d="M314,395 Q322,388 330,375 L334,378 Q326,392 316,398 Z" fill="#ffaa44" opacity="0.06" />
+  </g>
+
+  <!-- LAYER 6: Dust Motes in Torch Light -->
+  <g>
+    <circle class="st-dust1" cx="310" cy="350" r="1.2" fill="#ffaa44" opacity="0" />
+    <circle class="st-dust2" cx="285" cy="330" r="0.8" fill="#ffd700" opacity="0" />
+    <circle class="st-dust3" cx="350" cy="310" r="1" fill="#ffaa44" opacity="0" />
+    <circle class="st-dust4" cx="265" cy="360" r="0.9" fill="#ffffff" opacity="0" />
+    <circle class="st-dust5" cx="330" cy="340" r="1.1" fill="#ffd700" opacity="0" />
+    <circle class="st-dust1" cx="295" cy="300" r="0.7" fill="#ffaa44" opacity="0" />
+    <circle class="st-dust3" cx="370" cy="280" r="0.8" fill="#ffffff" opacity="0" />
+    <circle class="st-dust2" cx="250" cy="320" r="1" fill="#ffd700" opacity="0" />
+    <!-- Motes in light beam from roof -->
+    <circle class="st-dust4" cx="240" cy="100" r="0.6" fill="#ffffff" opacity="0" />
+    <circle class="st-dust5" cx="265" cy="130" r="0.5" fill="#ffffff" opacity="0" />
+    <circle class="st-dust1" cx="252" cy="80" r="0.7" fill="#ccccff" opacity="0" />
+  </g>
+
+  <!-- LAYER 7: Foreground Details & Overlay Effects -->
+  <g>
+    <!-- Fallen stone blocks on floor -->
+    <rect x="130" y="445" width="22" height="14" rx="2" fill="#7a6545" transform="rotate(-5,141,452)" />
+    <rect x="155" y="448" width="16" height="10" rx="1" fill="#6b5a42" transform="rotate(3,163,453)" />
+    <rect x="380" y="447" width="18" height="12" rx="2" fill="#7a6545" transform="rotate(-8,389,453)" />
+
+    <!-- Crack details in walls -->
+    <path d="M180,200 Q185,215 178,230 Q182,240 179,250" fill="none" stroke="#6b5a42" stroke-width="0.6" opacity="0.5" />
+    <path d="M370,240 Q375,250 372,265" fill="none" stroke="#6b5a42" stroke-width="0.5" opacity="0.4" />
+
+    <!-- Vine/root creeping in from top-left -->
+    <path d="M50,75 Q65,85 70,105 Q68,120 75,140" fill="none" stroke="#3a5a30" stroke-width="2" opacity="0.5" />
+    <path d="M70,105 Q80,100 85,108" fill="none" stroke="#3a5a30" stroke-width="1.5" opacity="0.4" />
+    <ellipse cx="87" cy="107" rx="4" ry="3" fill="#3a5a30" opacity="0.35" />
+
+    <!-- Very subtle vignette overlay at edges -->
+    <rect x="0" y="0" width="512" height="512" fill="url(#st-skyGrad)" opacity="0.15" />
+
+    <!-- Subtle light beam from roof opening -->
+    <path d="M200,55 L240,200 L280,200 L310,55 Z" fill="#ffffff" opacity="0.02" />
+
+    <!-- Decorative carved border at top of wall -->
+    <g opacity="0.25">
+      <path d="M100,90 Q115,82 130,90 Q145,82 160,90 Q175,82 190,90 Q205,82 220,90 Q235,82 250,90 Q265,82 280,90 Q295,82 310,90 Q325,82 340,90 Q355,82 370,90 Q385,82 400,90" fill="none" stroke="#c4a87a" stroke-width="1.2" />
+    </g>
+  </g>
+</svg>

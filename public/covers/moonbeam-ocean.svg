@@ -1,0 +1,594 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background ocean gradient (deep to mid ocean) -->
+    <linearGradient id="mo-skyGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a1628"/>
+      <stop offset="40%" stop-color="#0d2847"/>
+      <stop offset="75%" stop-color="#143d5c"/>
+      <stop offset="100%" stop-color="#1a5070"/>
+    </linearGradient>
+
+    <!-- Moonbeam character body glow -->
+    <radialGradient id="mo-charGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.7"/>
+      <stop offset="40%" stop-color="#ffd700" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#ffd700" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Moonbeam body gradient -->
+    <radialGradient id="mo-bodyGradient" cx="40%" cy="35%" r="55%">
+      <stop offset="0%" stop-color="#fffef0"/>
+      <stop offset="50%" stop-color="#ffe4b5"/>
+      <stop offset="100%" stop-color="#ffd700"/>
+    </radialGradient>
+
+    <!-- Bioluminescence glow gradient -->
+    <radialGradient id="mo-bioGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#00e5ff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Coral glow gradient -->
+    <radialGradient id="mo-coralGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff6b8a" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#ff6b8a" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Seafoam wave gradient -->
+    <linearGradient id="mo-waveGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7dffc9" stop-opacity="0.4"/>
+      <stop offset="50%" stop-color="#00e5ff" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#7dffc9" stop-opacity="0.2"/>
+    </linearGradient>
+
+    <!-- Light rays from surface -->
+    <linearGradient id="mo-lightRay" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#7dffc9" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#7dffc9" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Jellyfish body gradient -->
+    <radialGradient id="mo-jellyGradient" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#ff9ec4" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#ff6b8a" stop-opacity="0.3"/>
+    </radialGradient>
+
+    <!-- Vignette gradient -->
+    <radialGradient id="mo-vignette">
+      <stop offset="45%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.55"/>
+    </radialGradient>
+
+    <!-- Fish body gradient -->
+    <linearGradient id="mo-fishGradient1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00e5ff"/>
+      <stop offset="100%" stop-color="#7dffc9"/>
+    </linearGradient>
+
+    <linearGradient id="mo-fishGradient2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ff9ec4"/>
+      <stop offset="100%" stop-color="#ff6b8a"/>
+    </linearGradient>
+
+    <!-- Soft glow (for faces, subtle elements) -->
+    <filter id="mo-softGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Medium glow (for atmospheric effects) -->
+    <filter id="mo-mediumGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Strong glow (for magical light sources) -->
+    <filter id="mo-strongGlow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Drop shadow -->
+    <filter id="mo-shadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+      <feOffset in="blur" dy="2" result="offset"/>
+      <feMerge>
+        <feMergeNode in="offset"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    /* === ANIMATION KEYFRAMES === */
+
+    /* 1. Character bobbing — moonbeam gentle float (4.5s) */
+    @keyframes mo-moonbeamFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* 2. Bubble rise (staggered, 8-10s) */
+    @keyframes mo-bubbleRise1 {
+      0% { transform: translateY(0) translateX(0); opacity: 0.6; }
+      50% { transform: translateY(-120px) translateX(8px); opacity: 0.4; }
+      100% { transform: translateY(-250px) translateX(-4px); opacity: 0; }
+    }
+    @keyframes mo-bubbleRise2 {
+      0% { transform: translateY(0) translateX(0); opacity: 0.5; }
+      50% { transform: translateY(-100px) translateX(-10px); opacity: 0.35; }
+      100% { transform: translateY(-230px) translateX(6px); opacity: 0; }
+    }
+    @keyframes mo-bubbleRise3 {
+      0% { transform: translateY(0) translateX(0); opacity: 0.55; }
+      50% { transform: translateY(-140px) translateX(6px); opacity: 0.3; }
+      100% { transform: translateY(-260px) translateX(-8px); opacity: 0; }
+    }
+
+    /* 3. Fish swim — slow horizontal drift (12-15s) */
+    @keyframes mo-fishSwim1 {
+      0% { transform: translateX(0) translateY(0); }
+      25% { transform: translateX(20px) translateY(-5px); }
+      50% { transform: translateX(40px) translateY(0); }
+      75% { transform: translateX(20px) translateY(5px); }
+      100% { transform: translateX(0) translateY(0); }
+    }
+    @keyframes mo-fishSwim2 {
+      0% { transform: translateX(0) translateY(0); }
+      25% { transform: translateX(-15px) translateY(4px); }
+      50% { transform: translateX(-30px) translateY(0); }
+      75% { transform: translateX(-15px) translateY(-4px); }
+      100% { transform: translateX(0) translateY(0); }
+    }
+
+    /* 4. Bioluminescent pulse (2-3s on coral/jellyfish) */
+    @keyframes mo-bioPulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.9; }
+    }
+    @keyframes mo-jellyPulse {
+      0%, 100% { opacity: 0.35; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.04); }
+    }
+
+    /* 5. Wave gentle sway (7s) */
+    @keyframes mo-waveSway {
+      0%, 100% { transform: translateX(0) translateY(0); }
+      25% { transform: translateX(10px) translateY(-3px); }
+      50% { transform: translateX(0) translateY(2px); }
+      75% { transform: translateX(-10px) translateY(-3px); }
+    }
+    @keyframes mo-waveSway2 {
+      0%, 100% { transform: translateX(0) translateY(0); }
+      25% { transform: translateX(-8px) translateY(2px); }
+      50% { transform: translateX(0) translateY(-3px); }
+      75% { transform: translateX(8px) translateY(2px); }
+    }
+
+    /* 6. Sparkle twinkle (2.5s staggered) */
+    @keyframes mo-sparkleTwinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* 7. Moonbeam outer glow breathing */
+    @keyframes mo-glowBreathe {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
+
+    /* 8. Seaweed sway */
+    @keyframes mo-seaweedSway {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(3deg); }
+    }
+
+    /* 9. Light ray shimmer */
+    @keyframes mo-lightShimmer {
+      0%, 100% { opacity: 0.06; }
+      50% { opacity: 0.14; }
+    }
+
+    /* 10. Wave character eye shine */
+    @keyframes mo-eyeShine {
+      0%, 42%, 48%, 100% { transform: scaleY(1); }
+      45% { transform: scaleY(0.05); }
+    }
+
+    /* === ANIMATION ASSIGNMENTS === */
+
+    .mo-moonbeam-group {
+      animation: mo-moonbeamFloat 4.5s ease-in-out infinite;
+    }
+
+    .mo-glow-aura {
+      animation: mo-glowBreathe 4s ease-in-out infinite;
+    }
+
+    .mo-bubble-1 { animation: mo-bubbleRise1 9s ease-in-out infinite; }
+    .mo-bubble-2 { animation: mo-bubbleRise2 8s ease-in-out 1.2s infinite; }
+    .mo-bubble-3 { animation: mo-bubbleRise1 10s ease-in-out 2.5s infinite; }
+    .mo-bubble-4 { animation: mo-bubbleRise3 8.5s ease-in-out 0.8s infinite; }
+    .mo-bubble-5 { animation: mo-bubbleRise2 9.5s ease-in-out 3.2s infinite; }
+    .mo-bubble-6 { animation: mo-bubbleRise3 8s ease-in-out 4.5s infinite; }
+    .mo-bubble-7 { animation: mo-bubbleRise1 9.2s ease-in-out 1.8s infinite; }
+    .mo-bubble-8 { animation: mo-bubbleRise2 10s ease-in-out 5s infinite; }
+
+    .mo-fish-1 { animation: mo-fishSwim1 13s ease-in-out infinite; }
+    .mo-fish-2 { animation: mo-fishSwim2 14s ease-in-out 2s infinite; }
+    .mo-fish-3 { animation: mo-fishSwim1 12s ease-in-out 4s infinite; }
+
+    .mo-coral-pulse-1 { animation: mo-bioPulse 2.5s ease-in-out infinite; }
+    .mo-coral-pulse-2 { animation: mo-bioPulse 2.8s ease-in-out 0.5s infinite; }
+    .mo-coral-pulse-3 { animation: mo-bioPulse 3s ease-in-out 1s infinite; }
+
+    .mo-jelly-1 {
+      transform-origin: 390px 200px;
+      animation: mo-jellyPulse 2.5s ease-in-out infinite;
+    }
+    .mo-jelly-2 {
+      transform-origin: 420px 150px;
+      animation: mo-jellyPulse 3s ease-in-out 0.8s infinite;
+    }
+
+    .mo-wave-friend {
+      animation: mo-waveSway 7s ease-in-out infinite;
+    }
+    .mo-wave-bg-1 {
+      animation: mo-waveSway2 6.5s ease-in-out infinite;
+    }
+    .mo-wave-bg-2 {
+      animation: mo-waveSway 7.5s ease-in-out 1s infinite;
+    }
+
+    .mo-sparkle-1 { animation: mo-sparkleTwinkle 2.5s ease-in-out infinite; }
+    .mo-sparkle-2 { animation: mo-sparkleTwinkle 2.3s ease-in-out 0.4s infinite; }
+    .mo-sparkle-3 { animation: mo-sparkleTwinkle 2.7s ease-in-out 0.9s infinite; }
+    .mo-sparkle-4 { animation: mo-sparkleTwinkle 2.4s ease-in-out 1.4s infinite; }
+    .mo-sparkle-5 { animation: mo-sparkleTwinkle 2.6s ease-in-out 1.8s infinite; }
+    .mo-sparkle-6 { animation: mo-sparkleTwinkle 2.2s ease-in-out 0.6s infinite; }
+    .mo-sparkle-7 { animation: mo-sparkleTwinkle 2.8s ease-in-out 2.1s infinite; }
+    .mo-sparkle-8 { animation: mo-sparkleTwinkle 2.5s ease-in-out 1.1s infinite; }
+
+    .mo-seaweed-1 {
+      transform-origin: 70px 500px;
+      animation: mo-seaweedSway 5s ease-in-out infinite;
+    }
+    .mo-seaweed-2 {
+      transform-origin: 110px 505px;
+      animation: mo-seaweedSway 5.5s ease-in-out 0.4s infinite;
+    }
+    .mo-seaweed-3 {
+      transform-origin: 440px 500px;
+      animation: mo-seaweedSway 5.2s ease-in-out 0.8s infinite;
+    }
+    .mo-seaweed-4 {
+      transform-origin: 480px 505px;
+      animation: mo-seaweedSway 5.8s ease-in-out 1.2s infinite;
+    }
+
+    .mo-light-ray-1 { animation: mo-lightShimmer 6s ease-in-out infinite; }
+    .mo-light-ray-2 { animation: mo-lightShimmer 7s ease-in-out 1.5s infinite; }
+    .mo-light-ray-3 { animation: mo-lightShimmer 6.5s ease-in-out 3s infinite; }
+
+    .mo-eyelid-left {
+      transform-origin: 244px 227px;
+      animation: mo-eyeShine 5s ease-in-out infinite;
+    }
+    .mo-eyelid-right {
+      transform-origin: 268px 227px;
+      animation: mo-eyeShine 5s ease-in-out infinite;
+    }
+  </style>
+
+  <!-- ============================================ -->
+  <!-- LAYER 1: Background — deep ocean gradient    -->
+  <!-- ============================================ -->
+  <rect width="512" height="512" fill="url(#mo-skyGradient)"/>
+
+  <!-- Subtle deep-water atmospheric haze -->
+  <ellipse cx="256" cy="200" rx="300" ry="200" fill="#0d2847" opacity="0.3"/>
+  <ellipse cx="256" cy="350" rx="280" ry="180" fill="#143d5c" opacity="0.2"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 2: Far background — light rays, haze   -->
+  <!-- ============================================ -->
+
+  <!-- Underwater light rays filtering from surface -->
+  <g class="mo-light-ray-1">
+    <polygon points="180,0 220,0 280,300 160,300" fill="url(#mo-lightRay)" opacity="0.08"/>
+  </g>
+  <g class="mo-light-ray-2">
+    <polygon points="300,0 340,0 380,280 260,280" fill="url(#mo-lightRay)" opacity="0.06"/>
+  </g>
+  <g class="mo-light-ray-3">
+    <polygon points="100,0 130,0 170,250 80,250" fill="url(#mo-lightRay)" opacity="0.07"/>
+  </g>
+
+  <!-- Distant water surface shimmer (very faint) -->
+  <ellipse cx="256" cy="10" rx="250" ry="30" fill="#7dffc9" opacity="0.04"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 3: Mid background — distant coral, seaweed, far fish -->
+  <!-- ============================================ -->
+
+  <!-- Distant coral formation (left, far back) -->
+  <g opacity="0.25">
+    <ellipse cx="50" cy="470" rx="30" ry="50" fill="#ff6b8a"/>
+    <ellipse cx="80" cy="460" rx="20" ry="40" fill="#ff9ec4"/>
+    <circle cx="40" cy="445" r="12" fill="#ff6b8a"/>
+    <circle cx="65" cy="440" r="10" fill="#ff9ec4"/>
+  </g>
+
+  <!-- Distant coral formation (right, far back) -->
+  <g opacity="0.2">
+    <ellipse cx="460" cy="475" rx="25" ry="45" fill="#ff9ec4"/>
+    <ellipse cx="490" cy="465" rx="18" ry="35" fill="#ff6b8a"/>
+    <circle cx="450" cy="450" r="10" fill="#ff9ec4"/>
+  </g>
+
+  <!-- Far background fish (tiny, faint) -->
+  <g class="mo-fish-3" opacity="0.2">
+    <ellipse cx="420" cy="120" rx="8" ry="4" fill="#00e5ff"/>
+    <polygon points="412,120 406,116 406,124" fill="#00e5ff"/>
+    <circle cx="426" cy="119" r="1" fill="#ffffff"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 4: Middle ground — coral reef, seaweed, jellyfish, wave friend -->
+  <!-- ============================================ -->
+
+  <!-- Ocean floor base -->
+  <path d="M 0 460 Q 80 440 160 455 Q 256 465 350 450 Q 430 445 512 460 L 512 512 L 0 512 Z" fill="#0a1628" opacity="0.7"/>
+
+  <!-- Coral reef left cluster -->
+  <g>
+    <!-- Branching coral -->
+    <path d="M 100 480 Q 95 450 85 430 Q 80 420 90 415" stroke="#ff6b8a" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M 100 480 Q 110 455 105 435 Q 102 425 112 420" stroke="#ff9ec4" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M 100 480 Q 90 460 80 450" stroke="#ff6b8a" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <!-- Coral tips glow -->
+    <circle class="mo-coral-pulse-1" cx="90" cy="415" r="5" fill="#ff6b8a" filter="url(#mo-softGlow)" opacity="0.6"/>
+    <circle class="mo-coral-pulse-2" cx="112" cy="420" r="4" fill="#ff9ec4" filter="url(#mo-softGlow)" opacity="0.5"/>
+    <circle class="mo-coral-pulse-1" cx="80" cy="450" r="3" fill="#ff6b8a" filter="url(#mo-softGlow)" opacity="0.5"/>
+  </g>
+
+  <!-- Brain coral center -->
+  <g>
+    <ellipse cx="250" cy="475" rx="35" ry="20" fill="#ff6b8a" opacity="0.5"/>
+    <ellipse cx="250" cy="475" rx="35" ry="20" fill="none" stroke="#ff9ec4" stroke-width="1" opacity="0.3"/>
+    <!-- Bioluminescent dots on brain coral -->
+    <circle class="mo-coral-pulse-3" cx="240" cy="470" r="2" fill="#00e5ff" opacity="0.6"/>
+    <circle class="mo-coral-pulse-1" cx="255" cy="468" r="1.5" fill="#00e5ff" opacity="0.5"/>
+    <circle class="mo-coral-pulse-2" cx="262" cy="473" r="2" fill="#00e5ff" opacity="0.7"/>
+  </g>
+
+  <!-- Coral reef right cluster -->
+  <g>
+    <path d="M 400 485 Q 395 455 385 435 Q 380 425 390 418" stroke="#ff9ec4" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M 400 485 Q 410 460 415 440 Q 418 430 425 425" stroke="#ff6b8a" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M 400 485 Q 390 465 395 448" stroke="#ff9ec4" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle class="mo-coral-pulse-3" cx="390" cy="418" r="5" fill="#ff9ec4" filter="url(#mo-softGlow)" opacity="0.6"/>
+    <circle class="mo-coral-pulse-1" cx="425" cy="425" r="4" fill="#ff6b8a" filter="url(#mo-softGlow)" opacity="0.5"/>
+    <circle class="mo-coral-pulse-2" cx="395" cy="448" r="3" fill="#ff9ec4" filter="url(#mo-softGlow)" opacity="0.5"/>
+  </g>
+
+  <!-- Seaweed left -->
+  <g class="mo-seaweed-1">
+    <path d="M 70 500 Q 60 470 65 440 Q 70 420 60 400" stroke="#1a5a3f" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path d="M 70 500 Q 75 475 70 450 Q 65 435 72 415" stroke="#2d7a5a" stroke-width="4" fill="none" stroke-linecap="round"/>
+  </g>
+  <g class="mo-seaweed-2">
+    <path d="M 110 505 Q 105 480 110 455 Q 115 440 108 420" stroke="#1a5a3f" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M 115 505 Q 120 478 115 455 Q 112 440 118 425" stroke="#2d7a5a" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- Seaweed right -->
+  <g class="mo-seaweed-3">
+    <path d="M 440 500 Q 448 470 442 440 Q 436 420 445 400" stroke="#1a5a3f" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path d="M 445 500 Q 440 475 445 450 Q 450 435 442 415" stroke="#2d7a5a" stroke-width="4" fill="none" stroke-linecap="round"/>
+  </g>
+  <g class="mo-seaweed-4">
+    <path d="M 480 505 Q 475 480 480 455 Q 485 440 478 425" stroke="#1a5a3f" stroke-width="5" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- Jellyfish 1 (upper right) -->
+  <g class="mo-jelly-1">
+    <ellipse cx="390" cy="190" rx="18" ry="14" fill="url(#mo-jellyGradient)" filter="url(#mo-softGlow)"/>
+    <path d="M 375 200 Q 378 220 374 235" stroke="#ff9ec4" stroke-width="1.5" fill="none" opacity="0.5" stroke-linecap="round"/>
+    <path d="M 382 202 Q 380 225 383 240" stroke="#ff6b8a" stroke-width="1" fill="none" opacity="0.4" stroke-linecap="round"/>
+    <path d="M 390 204 Q 392 228 389 245" stroke="#ff9ec4" stroke-width="1.5" fill="none" opacity="0.5" stroke-linecap="round"/>
+    <path d="M 398 202 Q 400 222 396 238" stroke="#ff6b8a" stroke-width="1" fill="none" opacity="0.4" stroke-linecap="round"/>
+    <path d="M 405 200 Q 403 218 406 232" stroke="#ff9ec4" stroke-width="1.5" fill="none" opacity="0.5" stroke-linecap="round"/>
+    <!-- Jellyfish bio-dots -->
+    <circle cx="385" cy="188" r="1.5" fill="#00e5ff" opacity="0.6"/>
+    <circle cx="395" cy="186" r="1" fill="#00e5ff" opacity="0.5"/>
+  </g>
+
+  <!-- Jellyfish 2 (smaller, upper area) -->
+  <g class="mo-jelly-2">
+    <ellipse cx="420" cy="140" rx="12" ry="10" fill="url(#mo-jellyGradient)" filter="url(#mo-softGlow)" opacity="0.6"/>
+    <path d="M 410 148 Q 413 165 409 175" stroke="#ff9ec4" stroke-width="1" fill="none" opacity="0.35" stroke-linecap="round"/>
+    <path d="M 418 150 Q 420 168 417 180" stroke="#ff6b8a" stroke-width="1" fill="none" opacity="0.3" stroke-linecap="round"/>
+    <path d="M 426 148 Q 424 163 427 174" stroke="#ff9ec4" stroke-width="1" fill="none" opacity="0.35" stroke-linecap="round"/>
+  </g>
+
+  <!-- Bioluminescent fish 1 (left mid) -->
+  <g class="mo-fish-1">
+    <ellipse cx="130" cy="280" rx="14" ry="7" fill="url(#mo-fishGradient1)" filter="url(#mo-softGlow)"/>
+    <polygon points="116,280 108,274 108,286" fill="#00e5ff" opacity="0.7"/>
+    <!-- Eye -->
+    <circle cx="139" cy="278" r="2.5" fill="#ffffff"/>
+    <circle cx="140" cy="278" r="1.5" fill="#0a1628"/>
+    <circle cx="141" cy="277" r="0.6" fill="#ffffff" opacity="0.9"/>
+    <!-- Glow trail -->
+    <circle cx="130" cy="280" r="18" fill="url(#mo-bioGlow)" opacity="0.3"/>
+  </g>
+
+  <!-- Bioluminescent fish 2 (right mid) -->
+  <g class="mo-fish-2">
+    <ellipse cx="370" cy="320" rx="12" ry="6" fill="url(#mo-fishGradient2)" filter="url(#mo-softGlow)"/>
+    <polygon points="382,320 389,315 389,325" fill="#ff9ec4" opacity="0.7"/>
+    <!-- Eye -->
+    <circle cx="363" cy="318" r="2" fill="#ffffff"/>
+    <circle cx="362" cy="318" r="1.2" fill="#0a1628"/>
+    <circle cx="361" cy="317" r="0.5" fill="#ffffff" opacity="0.9"/>
+    <!-- Glow -->
+    <circle cx="370" cy="320" r="15" fill="url(#mo-coralGlow)" opacity="0.25"/>
+  </g>
+
+  <!-- Friendly wave character (to the right of moonbeam) -->
+  <g class="mo-wave-friend">
+    <!-- Wave body -->
+    <path d="M 300 250 Q 320 230 340 245 Q 360 260 345 275 Q 330 285 310 275 Q 295 265 300 250 Z" fill="url(#mo-waveGradient)" filter="url(#mo-mediumGlow)"/>
+    <!-- Inner shimmer -->
+    <path d="M 310 255 Q 325 242 335 252 Q 345 262 335 270 Q 325 276 315 268 Q 308 262 310 255 Z" fill="#7dffc9" opacity="0.2"/>
+
+    <!-- Wave face — left eye -->
+    <circle cx="318" cy="256" r="4" fill="#ffffff"/>
+    <circle cx="318" cy="257" r="2.8" fill="#143d5c"/>
+    <circle cx="318" cy="258" r="1.8" fill="#0a1628"/>
+    <circle cx="320" cy="255" r="1" fill="#ffffff" opacity="0.9"/>
+    <circle cx="316" cy="259" r="0.5" fill="#ffffff" opacity="0.5"/>
+
+    <!-- Wave face — right eye -->
+    <circle cx="332" cy="256" r="4" fill="#ffffff"/>
+    <circle cx="332" cy="257" r="2.8" fill="#143d5c"/>
+    <circle cx="332" cy="258" r="1.8" fill="#0a1628"/>
+    <circle cx="334" cy="255" r="1" fill="#ffffff" opacity="0.9"/>
+    <circle cx="330" cy="259" r="0.5" fill="#ffffff" opacity="0.5"/>
+
+    <!-- Wave smile -->
+    <path d="M 320 265 Q 325 270 330 265" stroke="#143d5c" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+    <!-- Rosy cheeks -->
+    <ellipse cx="313" cy="263" rx="4" ry="2.5" fill="#7dffc9" opacity="0.3"/>
+    <ellipse cx="337" cy="263" rx="4" ry="2.5" fill="#7dffc9" opacity="0.3"/>
+  </g>
+
+  <!-- Background wave shapes -->
+  <g class="mo-wave-bg-1" opacity="0.15">
+    <path d="M 0 180 Q 60 165 120 178 Q 180 190 240 175 Q 300 160 360 175 Q 420 188 512 170" stroke="#7dffc9" stroke-width="2" fill="none"/>
+  </g>
+  <g class="mo-wave-bg-2" opacity="0.1">
+    <path d="M 0 350 Q 70 338 140 350 Q 210 362 280 348 Q 350 335 420 348 Q 480 360 512 352" stroke="#00e5ff" stroke-width="1.5" fill="none"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 5: Primary character — moonbeam        -->
+  <!-- ============================================ -->
+  <g class="mo-moonbeam-group">
+    <!-- Outer glow aura (largest) -->
+    <circle class="mo-glow-aura" cx="240" cy="240" r="60" fill="url(#mo-charGlow)" filter="url(#mo-strongGlow)" opacity="0.35"/>
+
+    <!-- Medium glow ring -->
+    <circle class="mo-glow-aura" cx="240" cy="240" r="42" fill="url(#mo-charGlow)" opacity="0.25"/>
+
+    <!-- Character shadow on ocean floor hint -->
+    <ellipse cx="240" cy="290" rx="20" ry="5" fill="#ffd700" opacity="0.08" filter="url(#mo-mediumGlow)"/>
+
+    <!-- Moonbeam teardrop/drop body -->
+    <path d="M 240 210 Q 255 220 260 240 Q 260 258 240 265 Q 220 258 220 240 Q 225 220 240 210 Z" fill="url(#mo-bodyGradient)" filter="url(#mo-softGlow)"/>
+
+    <!-- Body inner highlight -->
+    <ellipse cx="235" cy="232" rx="8" ry="12" fill="#ffffff" opacity="0.25"/>
+
+    <!-- Face — Left eye -->
+    <circle cx="232" cy="238" r="8" fill="#ffffff"/>
+    <circle cx="232" cy="240" r="5.5" fill="#5a3d1a"/>
+    <circle cx="232" cy="241" r="3.5" fill="#2C3E6E"/>
+    <circle cx="234" cy="237" r="1.8" fill="#ffffff" opacity="0.95"/>
+    <circle cx="230" cy="242" r="0.9" fill="#ffffff" opacity="0.6"/>
+
+    <!-- Face — Right eye -->
+    <circle cx="250" cy="238" r="8" fill="#ffffff"/>
+    <circle cx="250" cy="240" r="5.5" fill="#5a3d1a"/>
+    <circle cx="250" cy="241" r="3.5" fill="#2C3E6E"/>
+    <circle cx="252" cy="237" r="1.8" fill="#ffffff" opacity="0.95"/>
+    <circle cx="248" cy="242" r="0.9" fill="#ffffff" opacity="0.6"/>
+
+    <!-- Eyelids for blink -->
+    <ellipse class="mo-eyelid-left" cx="232" cy="235" rx="9" ry="5" fill="#ffe4b5"/>
+    <ellipse class="mo-eyelid-right" cx="250" cy="235" rx="9" ry="5" fill="#ffe4b5"/>
+
+    <!-- Happy curved smile -->
+    <path d="M 235 250 Q 241 256 247 250" stroke="#8b6914" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+    <!-- Rosy cheeks -->
+    <ellipse cx="225" cy="248" rx="5" ry="3" fill="#ffb6c1" opacity="0.4"/>
+    <ellipse cx="257" cy="248" rx="5" ry="3" fill="#ffb6c1" opacity="0.4"/>
+
+    <!-- Top glow point (teardrop tip highlight) -->
+    <circle cx="240" cy="214" r="3" fill="#ffffff" opacity="0.5" filter="url(#mo-softGlow)"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 6: Foreground particles — bubbles, sparkles -->
+  <!-- ============================================ -->
+
+  <!-- Bubbles (rising from various positions) -->
+  <circle class="mo-bubble-1" cx="180" cy="400" r="4" fill="none" stroke="#7dffc9" stroke-width="0.8" opacity="0.5"/>
+  <circle class="mo-bubble-2" cx="220" cy="420" r="3" fill="none" stroke="#00e5ff" stroke-width="0.7" opacity="0.4"/>
+  <circle class="mo-bubble-3" cx="300" cy="390" r="5" fill="none" stroke="#7dffc9" stroke-width="0.8" opacity="0.5"/>
+  <circle class="mo-bubble-4" cx="150" cy="380" r="3.5" fill="none" stroke="#00e5ff" stroke-width="0.7" opacity="0.45"/>
+  <circle class="mo-bubble-5" cx="350" cy="410" r="4" fill="none" stroke="#7dffc9" stroke-width="0.8" opacity="0.5"/>
+  <circle class="mo-bubble-6" cx="260" cy="430" r="2.5" fill="none" stroke="#00e5ff" stroke-width="0.6" opacity="0.4"/>
+  <circle class="mo-bubble-7" cx="320" cy="395" r="3" fill="none" stroke="#7dffc9" stroke-width="0.7" opacity="0.45"/>
+  <circle class="mo-bubble-8" cx="200" cy="440" r="2" fill="none" stroke="#00e5ff" stroke-width="0.6" opacity="0.35"/>
+
+  <!-- Bubble inner shine highlights -->
+  <circle class="mo-bubble-1" cx="179" cy="399" r="1" fill="#ffffff" opacity="0.3"/>
+  <circle class="mo-bubble-3" cx="299" cy="388" r="1.3" fill="#ffffff" opacity="0.25"/>
+  <circle class="mo-bubble-5" cx="349" cy="409" r="1" fill="#ffffff" opacity="0.3"/>
+
+  <!-- Sparkle particles (small golden/white dots) -->
+  <circle class="mo-sparkle-1" cx="190" cy="200" r="1.5" fill="#ffe4b5" filter="url(#mo-softGlow)"/>
+  <circle class="mo-sparkle-2" cx="310" cy="170" r="1.2" fill="#ffd700" filter="url(#mo-softGlow)"/>
+  <circle class="mo-sparkle-3" cx="160" cy="310" r="1.3" fill="#ffe4b5" filter="url(#mo-softGlow)"/>
+  <circle class="mo-sparkle-4" cx="360" cy="280" r="1.5" fill="#ffd700" filter="url(#mo-softGlow)"/>
+  <circle class="mo-sparkle-5" cx="280" cy="150" r="1" fill="#ffe4b5" filter="url(#mo-softGlow)"/>
+  <circle class="mo-sparkle-6" cx="120" cy="180" r="1.2" fill="#ffd700" filter="url(#mo-softGlow)"/>
+  <circle class="mo-sparkle-7" cx="400" cy="250" r="1.4" fill="#ffe4b5" filter="url(#mo-softGlow)"/>
+  <circle class="mo-sparkle-8" cx="210" cy="340" r="1.1" fill="#ffd700" filter="url(#mo-softGlow)"/>
+
+  <!-- 4-pointed sparkle stars -->
+  <g class="mo-sparkle-1">
+    <line x1="170" y1="140" x2="170" y2="148" stroke="#ffe4b5" stroke-width="0.7" opacity="0.7"/>
+    <line x1="166" y1="144" x2="174" y2="144" stroke="#ffe4b5" stroke-width="0.7" opacity="0.7"/>
+  </g>
+  <g class="mo-sparkle-3">
+    <line x1="440" y1="300" x2="440" y2="308" stroke="#ffd700" stroke-width="0.6" opacity="0.6"/>
+    <line x1="436" y1="304" x2="444" y2="304" stroke="#ffd700" stroke-width="0.6" opacity="0.6"/>
+  </g>
+  <g class="mo-sparkle-5">
+    <line x1="90" y1="250" x2="90" y2="256" stroke="#00e5ff" stroke-width="0.6" opacity="0.5"/>
+    <line x1="87" y1="253" x2="93" y2="253" stroke="#00e5ff" stroke-width="0.6" opacity="0.5"/>
+  </g>
+  <g class="mo-sparkle-7">
+    <line x1="350" y1="130" x2="350" y2="138" stroke="#ffe4b5" stroke-width="0.7" opacity="0.6"/>
+    <line x1="346" y1="134" x2="354" y2="134" stroke="#ffe4b5" stroke-width="0.7" opacity="0.6"/>
+  </g>
+
+  <!-- Bioluminescent floating plankton -->
+  <circle class="mo-sparkle-2" cx="80" cy="340" r="1" fill="#00e5ff" opacity="0.4"/>
+  <circle class="mo-sparkle-4" cx="450" cy="360" r="0.8" fill="#00e5ff" opacity="0.35"/>
+  <circle class="mo-sparkle-6" cx="200" cy="160" r="0.9" fill="#00e5ff" opacity="0.3"/>
+  <circle class="mo-sparkle-8" cx="330" cy="380" r="1" fill="#00e5ff" opacity="0.4"/>
+  <circle class="mo-sparkle-1" cx="480" cy="200" r="0.7" fill="#00e5ff" opacity="0.3"/>
+  <circle class="mo-sparkle-3" cx="50" cy="290" r="0.8" fill="#00e5ff" opacity="0.35"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 7: Vignette overlay                    -->
+  <!-- ============================================ -->
+  <rect width="512" height="512" fill="url(#mo-vignette)" opacity="0.45"/>
+
+</svg>

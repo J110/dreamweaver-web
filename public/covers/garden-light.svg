@@ -1,0 +1,657 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Sky Gradient -->
+    <linearGradient id="gl-skyGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f1a3a" stop-opacity="1"/>
+      <stop offset="40%" stop-color="#1a2d5a" stop-opacity="1"/>
+      <stop offset="75%" stop-color="#253d6a" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#1a4a2a" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- Moon Glow Gradient -->
+    <radialGradient id="gl-moonGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fef5d9" stop-opacity="0.9"/>
+      <stop offset="40%" stop-color="#ffd700" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#ffd700" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Moon Surface -->
+    <radialGradient id="gl-moonSurface" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#fef5d9" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#f0e6c0" stop-opacity="1"/>
+    </radialGradient>
+
+    <!-- Garden Ground Gradient -->
+    <linearGradient id="gl-gardenGround" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2d6a3a" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#1a4a2a" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- Flower Glow Gradients -->
+    <radialGradient id="gl-goldFlowerGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.7"/>
+      <stop offset="60%" stop-color="#ffd700" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#ffd700" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="gl-pinkFlowerGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff69b4" stop-opacity="0.6"/>
+      <stop offset="60%" stop-color="#ff69b4" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#ff69b4" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="gl-purpleFlowerGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#9370db" stop-opacity="0.6"/>
+      <stop offset="60%" stop-color="#9370db" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#9370db" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Kitten Fur Gradient -->
+    <radialGradient id="gl-kittenFur" cx="45%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#e89c5a" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#d4874a" stop-opacity="1"/>
+    </radialGradient>
+
+    <!-- Kitten Ear Inner -->
+    <radialGradient id="gl-earInner" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffb6c1" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#e8a0aa" stop-opacity="1"/>
+    </radialGradient>
+
+    <!-- Kitten Iris -->
+    <radialGradient id="gl-irisGradient" cx="45%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#7ec87e" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#4a9a4a" stop-opacity="1"/>
+    </radialGradient>
+
+    <!-- Firefly Glow -->
+    <radialGradient id="gl-fireflyGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.9"/>
+      <stop offset="50%" stop-color="#ffe4b5" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#ffd700" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Character warm aura -->
+    <radialGradient id="gl-kittenAura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#ffd700" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Foliage gradients -->
+    <radialGradient id="gl-bushDark" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#3d8a4a" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#1a4a2a" stop-opacity="1"/>
+    </radialGradient>
+
+    <radialGradient id="gl-bushMid" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#2d6a3a" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#1a4a2a" stop-opacity="0.9"/>
+    </radialGradient>
+
+    <!-- Vignette -->
+    <radialGradient id="gl-vignette">
+      <stop offset="45%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.55"/>
+    </radialGradient>
+
+    <!-- Filters -->
+    <filter id="gl-softGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="gl-mediumGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="gl-strongGlow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="gl-shadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+      <feOffset in="blur" dy="2" result="offset"/>
+      <feMerge>
+        <feMergeNode in="offset"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    /* === ANIMATION KEYFRAMES === */
+
+    /* 1. Kitten tail sway (Creature behavior) */
+    @keyframes gl-tailSway {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(8deg); }
+      75% { transform: rotate(-6deg); }
+    }
+
+    /* 2. Flower glow pulse (Light effects) */
+    @keyframes gl-flowerPulse {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.08); opacity: 1; }
+    }
+
+    @keyframes gl-flowerPulse2 {
+      0%, 100% { transform: scale(1); opacity: 0.75; }
+      50% { transform: scale(1.06); opacity: 1; }
+    }
+
+    /* 3. Firefly drift + pulse (Particle movement) */
+    @keyframes gl-fireflyDrift1 {
+      0% { transform: translate(0px, 0px); opacity: 0.5; }
+      25% { transform: translate(12px, -18px); opacity: 1; }
+      50% { transform: translate(-8px, -28px); opacity: 0.6; }
+      75% { transform: translate(15px, -10px); opacity: 0.9; }
+      100% { transform: translate(0px, 0px); opacity: 0.5; }
+    }
+
+    @keyframes gl-fireflyDrift2 {
+      0% { transform: translate(0px, 0px); opacity: 0.6; }
+      25% { transform: translate(-15px, -12px); opacity: 0.9; }
+      50% { transform: translate(10px, -22px); opacity: 0.5; }
+      75% { transform: translate(-5px, -8px); opacity: 1; }
+      100% { transform: translate(0px, 0px); opacity: 0.6; }
+    }
+
+    @keyframes gl-fireflyDrift3 {
+      0% { transform: translate(0px, 0px); opacity: 0.7; }
+      30% { transform: translate(18px, -8px); opacity: 1; }
+      60% { transform: translate(-12px, -20px); opacity: 0.5; }
+      100% { transform: translate(0px, 0px); opacity: 0.7; }
+    }
+
+    @keyframes gl-fireflyPulse {
+      0%, 100% { opacity: 0.4; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.15); }
+    }
+
+    /* 4. Moon glow aura pulse (Light effects) */
+    @keyframes gl-moonAuraPulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.04); }
+    }
+
+    /* 5. Gentle grass/leaf sway (Environmental movement) */
+    @keyframes gl-grassSway {
+      0%, 100% { transform: rotate(0deg); }
+      30% { transform: rotate(2.5deg); }
+      70% { transform: rotate(-2deg); }
+    }
+
+    @keyframes gl-leafSway {
+      0%, 100% { transform: rotate(0deg) translateX(0px); }
+      50% { transform: rotate(3deg) translateX(2px); }
+    }
+
+    /* 6. Star twinkle (Light effects) */
+    @keyframes gl-starTwinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    /* 7. Kitten breathing (Character movement) */
+    @keyframes gl-kittenBreathe {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(1.02); }
+    }
+
+    /* 8. Eye blink (Character movement) */
+    @keyframes gl-eyeBlink {
+      0%, 42%, 48%, 100% { transform: scaleY(1); }
+      45% { transform: scaleY(0.05); }
+    }
+
+    /* 9. Tree sway (Environmental movement) */
+    @keyframes gl-treeSway {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(1.5deg); }
+    }
+
+    /* 10. Flower stem sway (Environmental movement) */
+    @keyframes gl-stemSway {
+      0%, 100% { transform: rotate(0deg); }
+      40% { transform: rotate(2deg); }
+      80% { transform: rotate(-1.5deg); }
+    }
+
+    /* === ANIMATION ASSIGNMENTS === */
+
+    .gl-tail { animation: gl-tailSway 4.5s ease-in-out infinite; transform-origin: 288px 340px; }
+
+    .gl-flower-gold-1 { animation: gl-flowerPulse 2.5s ease-in-out infinite; transform-origin: 175px 370px; }
+    .gl-flower-gold-2 { animation: gl-flowerPulse 2.8s ease-in-out infinite 0.5s; transform-origin: 340px 385px; }
+    .gl-flower-pink-1 { animation: gl-flowerPulse2 2.3s ease-in-out infinite 0.3s; transform-origin: 140px 395px; }
+    .gl-flower-purple-1 { animation: gl-flowerPulse2 2.6s ease-in-out infinite 0.8s; transform-origin: 370px 370px; }
+    .gl-flower-pink-2 { animation: gl-flowerPulse 3s ease-in-out infinite 1.2s; transform-origin: 200px 400px; }
+
+    .gl-firefly-1 { animation: gl-fireflyDrift1 4s ease-in-out infinite; }
+    .gl-firefly-2 { animation: gl-fireflyDrift2 3.5s ease-in-out infinite 0.6s; }
+    .gl-firefly-3 { animation: gl-fireflyDrift3 4.5s ease-in-out infinite 1.2s; }
+    .gl-firefly-4 { animation: gl-fireflyDrift1 3.8s ease-in-out infinite 0.3s; }
+    .gl-firefly-5 { animation: gl-fireflyDrift2 4.2s ease-in-out infinite 0.9s; }
+    .gl-firefly-6 { animation: gl-fireflyDrift3 3.6s ease-in-out infinite 1.5s; }
+    .gl-firefly-7 { animation: gl-fireflyDrift1 5s ease-in-out infinite 0.4s; }
+    .gl-firefly-8 { animation: gl-fireflyDrift2 4.8s ease-in-out infinite 1.8s; }
+
+    .gl-firefly-core-1 { animation: gl-fireflyPulse 2.2s ease-in-out infinite; }
+    .gl-firefly-core-2 { animation: gl-fireflyPulse 2.5s ease-in-out infinite 0.4s; }
+    .gl-firefly-core-3 { animation: gl-fireflyPulse 2s ease-in-out infinite 0.8s; }
+    .gl-firefly-core-4 { animation: gl-fireflyPulse 2.3s ease-in-out infinite 1.1s; }
+    .gl-firefly-core-5 { animation: gl-fireflyPulse 2.6s ease-in-out infinite 0.2s; }
+    .gl-firefly-core-6 { animation: gl-fireflyPulse 2.1s ease-in-out infinite 1.4s; }
+    .gl-firefly-core-7 { animation: gl-fireflyPulse 2.8s ease-in-out infinite 0.7s; }
+    .gl-firefly-core-8 { animation: gl-fireflyPulse 2.4s ease-in-out infinite 1.6s; }
+
+    .gl-moon-aura { animation: gl-moonAuraPulse 4s ease-in-out infinite; transform-origin: 410px 85px; }
+
+    .gl-grass-1 { animation: gl-grassSway 5.5s ease-in-out infinite; transform-origin: bottom center; }
+    .gl-grass-2 { animation: gl-grassSway 6s ease-in-out infinite 0.4s; transform-origin: bottom center; }
+    .gl-grass-3 { animation: gl-grassSway 5s ease-in-out infinite 0.8s; transform-origin: bottom center; }
+    .gl-grass-4 { animation: gl-grassSway 6.5s ease-in-out infinite 1.2s; transform-origin: bottom center; }
+    .gl-grass-5 { animation: gl-leafSway 7s ease-in-out infinite 0.3s; transform-origin: bottom center; }
+
+    .gl-star-1 { animation: gl-starTwinkle 2.5s ease-in-out infinite; }
+    .gl-star-2 { animation: gl-starTwinkle 2.8s ease-in-out infinite 0.5s; }
+    .gl-star-3 { animation: gl-starTwinkle 2.3s ease-in-out infinite 1.0s; }
+    .gl-star-4 { animation: gl-starTwinkle 2.6s ease-in-out infinite 1.5s; }
+    .gl-star-5 { animation: gl-starTwinkle 3s ease-in-out infinite 0.3s; }
+    .gl-star-6 { animation: gl-starTwinkle 2.4s ease-in-out infinite 0.8s; }
+    .gl-star-7 { animation: gl-starTwinkle 2.7s ease-in-out infinite 1.3s; }
+    .gl-star-8 { animation: gl-starTwinkle 2.2s ease-in-out infinite 1.8s; }
+    .gl-star-9 { animation: gl-starTwinkle 3.2s ease-in-out infinite 0.6s; }
+    .gl-star-10 { animation: gl-starTwinkle 2.9s ease-in-out infinite 2s; }
+
+    .gl-kitten-body { animation: gl-kittenBreathe 5s ease-in-out infinite; transform-origin: 255px 340px; }
+
+    .gl-eyelid-left { animation: gl-eyeBlink 5s ease-in-out infinite; transform-origin: 242px 298px; }
+    .gl-eyelid-right { animation: gl-eyeBlink 5s ease-in-out infinite; transform-origin: 264px 298px; }
+
+    .gl-far-tree-1 { animation: gl-treeSway 6s ease-in-out infinite; transform-origin: 60px 300px; }
+    .gl-far-tree-2 { animation: gl-treeSway 7s ease-in-out infinite 0.5s; transform-origin: 460px 290px; }
+    .gl-far-tree-3 { animation: gl-treeSway 5.5s ease-in-out infinite 1s; transform-origin: 110px 310px; }
+
+    .gl-stem-1 { animation: gl-stemSway 5s ease-in-out infinite; transform-origin: 175px 420px; }
+    .gl-stem-2 { animation: gl-stemSway 5.5s ease-in-out infinite 0.3s; transform-origin: 340px 430px; }
+    .gl-stem-3 { animation: gl-stemSway 4.8s ease-in-out infinite 0.7s; transform-origin: 140px 440px; }
+    .gl-stem-4 { animation: gl-stemSway 5.2s ease-in-out infinite 1s; transform-origin: 370px 420px; }
+    .gl-stem-5 { animation: gl-stemSway 5.8s ease-in-out infinite 0.5s; transform-origin: 200px 445px; }
+  </style>
+
+  <!-- ============================================ -->
+  <!-- LAYER 1: Background Sky / Atmosphere         -->
+  <!-- ============================================ -->
+  <rect width="512" height="512" fill="url(#gl-skyGradient)"/>
+
+  <!-- Stars scattered across the sky -->
+  <circle cx="45" cy="38" r="1.2" fill="#ffffff" class="gl-star-1"/>
+  <circle cx="120" cy="55" r="1" fill="#ffffff" class="gl-star-2"/>
+  <circle cx="200" cy="30" r="1.4" fill="#ffffff" class="gl-star-3"/>
+  <circle cx="280" cy="50" r="1.1" fill="#ffffff" class="gl-star-4"/>
+  <circle cx="340" cy="25" r="1.3" fill="#ffffff" class="gl-star-5"/>
+  <circle cx="90" cy="95" r="0.9" fill="#ffffff" class="gl-star-6"/>
+  <circle cx="170" cy="80" r="1.2" fill="#ffffff" class="gl-star-7"/>
+  <circle cx="310" cy="90" r="1" fill="#ffffff" class="gl-star-8"/>
+  <circle cx="480" cy="42" r="1.1" fill="#ffffff" class="gl-star-9"/>
+  <circle cx="60" cy="140" r="0.8" fill="#ffffff" class="gl-star-10"/>
+  <circle cx="150" cy="120" r="0.7" fill="#ffe4b5" opacity="0.6"/>
+  <circle cx="240" cy="70" r="0.9" fill="#ffe4b5" opacity="0.5"/>
+  <circle cx="450" cy="110" r="0.8" fill="#ffffff" opacity="0.5"/>
+  <circle cx="370" cy="65" r="0.6" fill="#ffe4b5" opacity="0.4"/>
+
+  <!-- Moon with glow aura -->
+  <g class="gl-moon-aura">
+    <circle cx="410" cy="85" r="55" fill="url(#gl-moonGlow)" filter="url(#gl-strongGlow)"/>
+  </g>
+  <circle cx="410" cy="85" r="30" fill="url(#gl-moonSurface)" filter="url(#gl-softGlow)"/>
+  <!-- Moon craters -->
+  <circle cx="400" cy="78" r="4" fill="#e8dbb0" opacity="0.4"/>
+  <circle cx="418" cy="90" r="3" fill="#e8dbb0" opacity="0.3"/>
+  <circle cx="408" cy="98" r="2.5" fill="#e8dbb0" opacity="0.35"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 2: Far Background (Distant Trees)      -->
+  <!-- ============================================ -->
+  <g opacity="0.25">
+    <!-- Far left tree cluster -->
+    <g class="gl-far-tree-1">
+      <rect x="55" y="240" width="10" height="80" fill="#1a3a20" rx="2"/>
+      <ellipse cx="60" cy="230" rx="30" ry="40" fill="#1a4a2a"/>
+      <ellipse cx="50" cy="245" rx="22" ry="30" fill="#153d22"/>
+    </g>
+    <!-- Far right tree -->
+    <g class="gl-far-tree-2">
+      <rect x="455" y="230" width="10" height="80" fill="#1a3a20" rx="2"/>
+      <ellipse cx="460" cy="220" rx="35" ry="45" fill="#1a4a2a"/>
+      <ellipse cx="470" cy="240" rx="25" ry="30" fill="#153d22"/>
+    </g>
+    <!-- Additional far tree -->
+    <g class="gl-far-tree-3">
+      <rect x="105" y="250" width="8" height="60" fill="#1a3a20" rx="2"/>
+      <ellipse cx="110" cy="240" rx="25" ry="35" fill="#1a4a2a"/>
+    </g>
+    <!-- Distant tree silhouettes -->
+    <ellipse cx="420" cy="260" rx="28" ry="38" fill="#153d22"/>
+    <ellipse cx="25" cy="275" rx="30" ry="35" fill="#143520"/>
+    <ellipse cx="500" cy="270" rx="25" ry="32" fill="#143520"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 3: Mid Background (Bushes, Hedges)     -->
+  <!-- ============================================ -->
+  <g opacity="0.55">
+    <!-- Left bush cluster -->
+    <ellipse cx="50" cy="340" rx="55" ry="35" fill="url(#gl-bushDark)"/>
+    <ellipse cx="30" cy="345" rx="35" ry="28" fill="#1a4a2a"/>
+    <!-- Right bush cluster -->
+    <ellipse cx="470" cy="335" rx="50" ry="38" fill="url(#gl-bushDark)"/>
+    <ellipse cx="495" cy="340" rx="30" ry="25" fill="#1a4a2a"/>
+    <!-- Center-left mid bush -->
+    <ellipse cx="100" cy="355" rx="40" ry="30" fill="url(#gl-bushMid)"/>
+    <!-- Center-right mid bush -->
+    <ellipse cx="420" cy="350" rx="45" ry="32" fill="url(#gl-bushMid)"/>
+  </g>
+
+  <!-- Moonlight on garden (atmospheric glow) -->
+  <ellipse cx="256" cy="370" rx="180" ry="80" fill="#ffd700" opacity="0.04" filter="url(#gl-strongGlow)"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 4: Garden Ground / Flowers / Stems     -->
+  <!-- ============================================ -->
+
+  <!-- Ground plane -->
+  <ellipse cx="256" cy="450" rx="300" ry="120" fill="url(#gl-gardenGround)"/>
+  <ellipse cx="256" cy="460" rx="280" ry="100" fill="#1a4a2a" opacity="0.7"/>
+
+  <!-- Garden path hint -->
+  <ellipse cx="256" cy="465" rx="70" ry="30" fill="#2a5a35" opacity="0.5"/>
+  <ellipse cx="256" cy="470" rx="50" ry="20" fill="#305f3a" opacity="0.4"/>
+
+  <!-- Grass blades -->
+  <g class="gl-grass-1">
+    <path d="M80 430 Q82 400 78 380" stroke="#3d8a4a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M88 432 Q92 405 86 385" stroke="#2d6a3a" stroke-width="2" fill="none" stroke-linecap="round"/>
+  </g>
+  <g class="gl-grass-2">
+    <path d="M440 425 Q443 395 438 375" stroke="#3d8a4a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M448 428 Q452 400 446 382" stroke="#2d6a3a" stroke-width="2" fill="none" stroke-linecap="round"/>
+  </g>
+  <g class="gl-grass-3">
+    <path d="M120 440 Q124 415 118 395" stroke="#3d8a4a" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M126 442 Q130 418 124 400" stroke="#2d6a3a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  </g>
+  <g class="gl-grass-4">
+    <path d="M400 435 Q403 408 398 388" stroke="#3d8a4a" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M408 438 Q412 412 406 395" stroke="#2d6a3a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  </g>
+  <g class="gl-grass-5">
+    <path d="M310 445 Q314 420 308 400" stroke="#2d6a3a" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M316 447 Q320 424 314 405" stroke="#3d8a4a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- === Glowing Flowers === -->
+
+  <!-- Gold Flower 1 (left of kitten) -->
+  <g class="gl-stem-1">
+    <path d="M175 420 Q172 395 175 370" stroke="#2d6a3a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="170" cy="398" rx="8" ry="5" fill="#3d8a4a" opacity="0.8" transform="rotate(-20 170 398)"/>
+    <g class="gl-flower-gold-1">
+      <circle cx="175" cy="370" r="20" fill="url(#gl-goldFlowerGlow)" filter="url(#gl-mediumGlow)"/>
+      <ellipse cx="175" cy="365" rx="5" ry="8" fill="#ffd700" opacity="0.9"/>
+      <ellipse cx="170" cy="370" rx="5" ry="8" fill="#ffdd33" opacity="0.85" transform="rotate(-35 170 370)"/>
+      <ellipse cx="180" cy="370" rx="5" ry="8" fill="#ffdd33" opacity="0.85" transform="rotate(35 180 370)"/>
+      <ellipse cx="172" cy="375" rx="5" ry="7" fill="#ffc800" opacity="0.8" transform="rotate(20 172 375)"/>
+      <ellipse cx="178" cy="375" rx="5" ry="7" fill="#ffc800" opacity="0.8" transform="rotate(-20 178 375)"/>
+      <circle cx="175" cy="370" r="3" fill="#ffeeaa"/>
+    </g>
+  </g>
+
+  <!-- Pink Flower 1 (far left) -->
+  <g class="gl-stem-3">
+    <path d="M140 440 Q137 418 140 395" stroke="#2d6a3a" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <ellipse cx="135" cy="420" rx="7" ry="4" fill="#3d8a4a" opacity="0.7" transform="rotate(-15 135 420)"/>
+    <g class="gl-flower-pink-1">
+      <circle cx="140" cy="395" r="18" fill="url(#gl-pinkFlowerGlow)" filter="url(#gl-mediumGlow)"/>
+      <ellipse cx="140" cy="390" rx="4.5" ry="7" fill="#ff69b4" opacity="0.9"/>
+      <ellipse cx="135" cy="395" rx="4.5" ry="7" fill="#ff7ec4" opacity="0.85" transform="rotate(-40 135 395)"/>
+      <ellipse cx="145" cy="395" rx="4.5" ry="7" fill="#ff7ec4" opacity="0.85" transform="rotate(40 145 395)"/>
+      <ellipse cx="137" cy="400" rx="4" ry="6" fill="#ff5aaa" opacity="0.8" transform="rotate(25 137 400)"/>
+      <ellipse cx="143" cy="400" rx="4" ry="6" fill="#ff5aaa" opacity="0.8" transform="rotate(-25 143 400)"/>
+      <circle cx="140" cy="395" r="2.5" fill="#ffb6d9"/>
+    </g>
+  </g>
+
+  <!-- Gold Flower 2 (right of kitten) -->
+  <g class="gl-stem-2">
+    <path d="M340 430 Q337 408 340 385" stroke="#2d6a3a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="345" cy="410" rx="8" ry="4.5" fill="#3d8a4a" opacity="0.8" transform="rotate(15 345 410)"/>
+    <g class="gl-flower-gold-2">
+      <circle cx="340" cy="385" r="18" fill="url(#gl-goldFlowerGlow)" filter="url(#gl-mediumGlow)"/>
+      <ellipse cx="340" cy="380" rx="5" ry="7.5" fill="#ffd700" opacity="0.9"/>
+      <ellipse cx="335" cy="385" rx="4.5" ry="7" fill="#ffdd33" opacity="0.85" transform="rotate(-30 335 385)"/>
+      <ellipse cx="345" cy="385" rx="4.5" ry="7" fill="#ffdd33" opacity="0.85" transform="rotate(30 345 385)"/>
+      <ellipse cx="337" cy="390" rx="4" ry="6.5" fill="#ffc800" opacity="0.8" transform="rotate(15 337 390)"/>
+      <ellipse cx="343" cy="390" rx="4" ry="6.5" fill="#ffc800" opacity="0.8" transform="rotate(-15 343 390)"/>
+      <circle cx="340" cy="385" r="2.8" fill="#ffeeaa"/>
+    </g>
+  </g>
+
+  <!-- Purple Flower (far right) -->
+  <g class="gl-stem-4">
+    <path d="M370 420 Q373 398 370 370" stroke="#2d6a3a" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <ellipse cx="375" cy="400" rx="7" ry="4" fill="#3d8a4a" opacity="0.7" transform="rotate(20 375 400)"/>
+    <g class="gl-flower-purple-1">
+      <circle cx="370" cy="370" r="17" fill="url(#gl-purpleFlowerGlow)" filter="url(#gl-mediumGlow)"/>
+      <ellipse cx="370" cy="365" rx="4.5" ry="7" fill="#9370db" opacity="0.9"/>
+      <ellipse cx="365" cy="370" rx="4" ry="6.5" fill="#a080e5" opacity="0.85" transform="rotate(-35 365 370)"/>
+      <ellipse cx="375" cy="370" rx="4" ry="6.5" fill="#a080e5" opacity="0.85" transform="rotate(35 375 370)"/>
+      <ellipse cx="367" cy="375" rx="4" ry="6" fill="#8060cc" opacity="0.8" transform="rotate(20 367 375)"/>
+      <ellipse cx="373" cy="375" rx="4" ry="6" fill="#8060cc" opacity="0.8" transform="rotate(-20 373 375)"/>
+      <circle cx="370" cy="370" r="2.5" fill="#c8b0ee"/>
+    </g>
+  </g>
+
+  <!-- Pink Flower 2 (near center-left) -->
+  <g class="gl-stem-5">
+    <path d="M200 445 Q197 422 200 400" stroke="#2d6a3a" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <g class="gl-flower-pink-2">
+      <circle cx="200" cy="400" r="15" fill="url(#gl-pinkFlowerGlow)" filter="url(#gl-mediumGlow)"/>
+      <ellipse cx="200" cy="396" rx="4" ry="6" fill="#ff69b4" opacity="0.85"/>
+      <ellipse cx="196" cy="400" rx="3.5" ry="5.5" fill="#ff7ec4" opacity="0.8" transform="rotate(-35 196 400)"/>
+      <ellipse cx="204" cy="400" rx="3.5" ry="5.5" fill="#ff7ec4" opacity="0.8" transform="rotate(35 204 400)"/>
+      <circle cx="200" cy="400" r="2" fill="#ffb6d9"/>
+    </g>
+  </g>
+
+  <!-- Small ground flowers / buds scattered -->
+  <circle cx="110" cy="420" r="3" fill="#ffd700" opacity="0.4"/>
+  <circle cx="300" cy="435" r="2.5" fill="#ff69b4" opacity="0.35"/>
+  <circle cx="420" cy="425" r="3" fill="#9370db" opacity="0.3"/>
+  <circle cx="160" cy="445" r="2" fill="#ffd700" opacity="0.3"/>
+  <circle cx="350" cy="450" r="2.5" fill="#ff69b4" opacity="0.25"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 5: Primary Character — Kitten Pepper   -->
+  <!-- ============================================ -->
+
+  <!-- Character warm aura glow -->
+  <circle cx="255" cy="330" r="65" fill="url(#gl-kittenAura)" filter="url(#gl-strongGlow)"/>
+
+  <!-- Kitten shadow on ground -->
+  <ellipse cx="255" cy="400" rx="45" ry="10" fill="#0a2a15" opacity="0.35"/>
+
+  <g class="gl-kitten-body" filter="url(#gl-shadow)">
+    <!-- Kitten body (rounded, sitting pose) -->
+    <ellipse cx="255" cy="360" rx="35" ry="30" fill="url(#gl-kittenFur)"/>
+    <!-- Belly lighter patch -->
+    <ellipse cx="255" cy="365" rx="20" ry="20" fill="#eeaa6a" opacity="0.6"/>
+
+    <!-- Back tabby stripes on body -->
+    <path d="M235 342 Q240 338 245 342" stroke="#c87840" stroke-width="2" fill="none" opacity="0.6" stroke-linecap="round"/>
+    <path d="M248 338 Q253 334 258 338" stroke="#c87840" stroke-width="2" fill="none" opacity="0.5" stroke-linecap="round"/>
+    <path d="M260 342 Q265 338 270 342" stroke="#c87840" stroke-width="2" fill="none" opacity="0.55" stroke-linecap="round"/>
+
+    <!-- Front left paw -->
+    <ellipse cx="238" cy="388" rx="10" ry="7" fill="#d4874a"/>
+    <ellipse cx="238" cy="390" rx="8" ry="5" fill="#eeaa6a" opacity="0.5"/>
+    <!-- Paw toes -->
+    <circle cx="233" cy="392" r="2" fill="#c87840" opacity="0.3"/>
+    <circle cx="238" cy="393" r="2" fill="#c87840" opacity="0.3"/>
+    <circle cx="243" cy="392" r="2" fill="#c87840" opacity="0.3"/>
+
+    <!-- Front right paw -->
+    <ellipse cx="272" cy="388" rx="10" ry="7" fill="#d4874a"/>
+    <ellipse cx="272" cy="390" rx="8" ry="5" fill="#eeaa6a" opacity="0.5"/>
+    <circle cx="267" cy="392" r="2" fill="#c87840" opacity="0.3"/>
+    <circle cx="272" cy="393" r="2" fill="#c87840" opacity="0.3"/>
+    <circle cx="277" cy="392" r="2" fill="#c87840" opacity="0.3"/>
+
+    <!-- Head -->
+    <circle cx="255" cy="305" r="30" fill="url(#gl-kittenFur)"/>
+
+    <!-- Forehead tabby stripes -->
+    <path d="M247 290 Q250 284 253 290" stroke="#c87840" stroke-width="1.8" fill="none" opacity="0.5" stroke-linecap="round"/>
+    <path d="M253 288 Q256 282 259 288" stroke="#c87840" stroke-width="1.8" fill="none" opacity="0.45" stroke-linecap="round"/>
+    <path d="M259 290 Q262 284 265 290" stroke="#c87840" stroke-width="1.8" fill="none" opacity="0.5" stroke-linecap="round"/>
+
+    <!-- Left ear (outer) -->
+    <path d="M230 290 L223 260 L242 282 Z" fill="#d4874a"/>
+    <!-- Left ear (inner) -->
+    <path d="M232 287 L227 265 L240 283 Z" fill="url(#gl-earInner)"/>
+
+    <!-- Right ear (outer) -->
+    <path d="M280 290 L287 260 L268 282 Z" fill="#d4874a"/>
+    <!-- Right ear (inner) -->
+    <path d="M278 287 L283 265 L270 283 Z" fill="url(#gl-earInner)"/>
+
+    <!-- Cheek fur tufts -->
+    <ellipse cx="230" cy="310" rx="8" ry="6" fill="#eeaa6a" opacity="0.4"/>
+    <ellipse cx="280" cy="310" rx="8" ry="6" fill="#eeaa6a" opacity="0.4"/>
+
+    <!-- Left eye -->
+    <circle cx="242" cy="302" r="10" fill="#ffffff"/>
+    <circle cx="242" cy="303" r="7.5" fill="url(#gl-irisGradient)"/>
+    <circle cx="242" cy="304" r="4.5" fill="#1a3a1a"/>
+    <circle cx="244" cy="300" r="2" fill="#ffffff" opacity="0.9"/>
+    <circle cx="239" cy="305" r="1" fill="#ffffff" opacity="0.6"/>
+    <!-- Left eyelid -->
+    <ellipse cx="242" cy="298" rx="11" ry="6" fill="#d4874a" class="gl-eyelid-left"/>
+
+    <!-- Right eye -->
+    <circle cx="268" cy="302" r="10" fill="#ffffff"/>
+    <circle cx="268" cy="303" r="7.5" fill="url(#gl-irisGradient)"/>
+    <circle cx="268" cy="304" r="4.5" fill="#1a3a1a"/>
+    <circle cx="270" cy="300" r="2" fill="#ffffff" opacity="0.9"/>
+    <circle cx="265" cy="305" r="1" fill="#ffffff" opacity="0.6"/>
+    <!-- Right eyelid -->
+    <ellipse cx="268" cy="298" rx="11" ry="6" fill="#d4874a" class="gl-eyelid-right"/>
+
+    <!-- Nose -->
+    <path d="M253 312 L255 315 L257 312 Z" fill="#ffb6c1"/>
+
+    <!-- Mouth (gentle smile) -->
+    <path d="M249 317 Q255 321 261 317" stroke="#c87840" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+
+    <!-- Whiskers left -->
+    <line x1="218" y1="308" x2="237" y2="310" stroke="#e8c08a" stroke-width="0.8" opacity="0.5"/>
+    <line x1="220" y1="314" x2="237" y2="314" stroke="#e8c08a" stroke-width="0.8" opacity="0.5"/>
+    <line x1="222" y1="320" x2="238" y2="317" stroke="#e8c08a" stroke-width="0.8" opacity="0.4"/>
+
+    <!-- Whiskers right -->
+    <line x1="292" y1="308" x2="273" y2="310" stroke="#e8c08a" stroke-width="0.8" opacity="0.5"/>
+    <line x1="290" y1="314" x2="273" y2="314" stroke="#e8c08a" stroke-width="0.8" opacity="0.5"/>
+    <line x1="288" y1="320" x2="272" y2="317" stroke="#e8c08a" stroke-width="0.8" opacity="0.4"/>
+
+    <!-- Cheek blush -->
+    <circle cx="233" cy="312" r="5" fill="#ffb6c1" opacity="0.3"/>
+    <circle cx="277" cy="312" r="5" fill="#ffb6c1" opacity="0.3"/>
+  </g>
+
+  <!-- Kitten tail (animated separately for sway) -->
+  <g class="gl-tail">
+    <path d="M288 365 Q305 350 310 335 Q315 320 308 310 Q302 302 298 308" stroke="#d4874a" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M288 365 Q305 350 310 335 Q315 320 308 310 Q302 302 298 308" stroke="#c87840" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.4"/>
+    <!-- Tail tip tabby stripes -->
+    <path d="M304 315 Q308 312 306 308" stroke="#c87840" stroke-width="2" fill="none" opacity="0.5" stroke-linecap="round"/>
+    <path d="M308 322 Q312 318 310 314" stroke="#c87840" stroke-width="2" fill="none" opacity="0.45" stroke-linecap="round"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 6: Foreground Fireflies / Sparkles     -->
+  <!-- ============================================ -->
+
+  <!-- Firefly 1 (upper left) -->
+  <g class="gl-firefly-1">
+    <circle cx="100" cy="220" r="12" fill="url(#gl-fireflyGlow)" class="gl-firefly-core-1" filter="url(#gl-mediumGlow)"/>
+    <ellipse cx="100" cy="220" rx="2" ry="3" fill="#ffd700"/>
+  </g>
+
+  <!-- Firefly 2 (upper right) -->
+  <g class="gl-firefly-2">
+    <circle cx="380" cy="200" r="10" fill="url(#gl-fireflyGlow)" class="gl-firefly-core-2" filter="url(#gl-mediumGlow)"/>
+    <ellipse cx="380" cy="200" rx="1.8" ry="2.5" fill="#ffd700"/>
+  </g>
+
+  <!-- Firefly 3 (mid left) -->
+  <g class="gl-firefly-3">
+    <circle cx="130" cy="290" r="11" fill="url(#gl-fireflyGlow)" class="gl-firefly-core-3" filter="url(#gl-mediumGlow)"/>
+    <ellipse cx="130" cy="290" rx="1.8" ry="2.8" fill="#ffe4b5"/>
+  </g>
+
+  <!-- Firefly 4 (mid right) -->
+  <g class="gl-firefly-4">
+    <circle cx="400" cy="280" r="10" fill="url(#gl-fireflyGlow)" class="gl-firefly-core-4" filter="url(#gl-mediumGlow)"/>
+    <ellipse cx="400" cy="280" rx="1.5" ry="2.5" fill="#ffd700"/>
+  </g>
+
+  <!-- Firefly 5 (near flowers left) -->
+  <g class="gl-firefly-5">
+    <circle cx="160" cy="350" r="9" fill="url(#gl-fireflyGlow)" class="gl-firefly-core-5" filter="url(#gl-softGlow)"/>
+    <ellipse cx="160" cy="350" rx="1.5" ry="2.2" fill="#ffe4b5"/>
+  </g>
+
+  <!-- Firefly 6 (near flowers right) -->
+  <g class="gl-firefly-6">
+    <circle cx="360" cy="340" r="10" fill="url(#gl-fireflyGlow)" class="gl-firefly-core-6" filter="url(#gl-softGlow)"/>
+    <ellipse cx="360" cy="340" rx="1.5" ry="2.5" fill="#ffd700"/>
+  </g>
+
+  <!-- Firefly 7 (high center) -->
+  <g class="gl-firefly-7">
+    <circle cx="240" cy="180" r="8" fill="url(#gl-fireflyGlow)" class="gl-firefly-core-7" filter="url(#gl-mediumGlow)"/>
+    <ellipse cx="240" cy="180" rx="1.2" ry="2" fill="#ffe4b5"/>
+  </g>
+
+  <!-- Firefly 8 (lower right foreground) -->
+  <g class="gl-firefly-8">
+    <circle cx="430" cy="360" r="9" fill="url(#gl-fireflyGlow)" class="gl-firefly-core-8" filter="url(#gl-softGlow)"/>
+    <ellipse cx="430" cy="360" rx="1.5" ry="2.2" fill="#ffd700"/>
+  </g>
+
+  <!-- Small sparkle dots (non-animated accents near flowers) -->
+  <circle cx="165" cy="358" r="1" fill="#ffd700" opacity="0.6"/>
+  <circle cx="185" cy="365" r="0.8" fill="#ffe4b5" opacity="0.5"/>
+  <circle cx="330" cy="378" r="1" fill="#ffd700" opacity="0.5"/>
+  <circle cx="355" cy="365" r="0.8" fill="#ffe4b5" opacity="0.4"/>
+  <circle cx="210" cy="390" r="0.8" fill="#ffd700" opacity="0.45"/>
+  <circle cx="150" cy="385" r="0.7" fill="#ff69b4" opacity="0.3"/>
+  <circle cx="375" cy="360" r="0.8" fill="#9370db" opacity="0.3"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 7: Vignette / Overlay                  -->
+  <!-- ============================================ -->
+  <rect width="512" height="512" fill="url(#gl-vignette)" opacity="0.4"/>
+</svg>

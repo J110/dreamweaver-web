@@ -1,0 +1,518 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Sky Gradient: deep night to dawn -->
+    <linearGradient id="py-skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1040;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#3a2060;stop-opacity:1" />
+      <stop offset="55%" style="stop-color:#6a3080;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#ff8c42;stop-opacity:1" />
+      <stop offset="90%" style="stop-color:#ffaa44;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffd700;stop-opacity:0.6" />
+    </linearGradient>
+
+    <!-- Sun glow radial -->
+    <radialGradient id="py-sunGlow" cx="50%" cy="42%" r="30%">
+      <stop offset="0%" style="stop-color:#ffd700;stop-opacity:0.9" />
+      <stop offset="40%" style="stop-color:#ffaa44;stop-opacity:0.5" />
+      <stop offset="70%" style="stop-color:#ff8c42;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#ff8c42;stop-opacity:0" />
+    </radialGradient>
+
+    <!-- Snow mountain gradient -->
+    <linearGradient id="py-snowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e8f0ff;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#c0d4e8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9ab0cc;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Mountain shadow gradient -->
+    <linearGradient id="py-mtnShadow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8a9ab8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#b0c0d8;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Green hills gradient -->
+    <linearGradient id="py-hillGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3d9a4a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2d7a3a;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="py-hillGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4dba5a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3d9a4a;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- River gradient -->
+    <linearGradient id="py-riverGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4488cc;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#5599dd;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4488cc;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- River shimmer -->
+    <linearGradient id="py-riverShimmer" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0" />
+      <stop offset="40%" style="stop-color:#ffffff;stop-opacity:0" />
+      <stop offset="50%" style="stop-color:#ffffff;stop-opacity:0.5" />
+      <stop offset="60%" style="stop-color:#ffffff;stop-opacity:0" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+    </linearGradient>
+
+    <!-- Tropical forest gradient -->
+    <linearGradient id="py-forestGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2d7a3a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a5a2a;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Earth/path gradient -->
+    <linearGradient id="py-earthGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#a08050;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b6a3a;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Cloud gradient -->
+    <radialGradient id="py-cloudGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#c0d4e8;stop-opacity:0.15" />
+    </radialGradient>
+
+    <!-- Sun rays gradient -->
+    <linearGradient id="py-rayGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffd700;stop-opacity:0.35" />
+      <stop offset="100%" style="stop-color:#ffd700;stop-opacity:0" />
+    </linearGradient>
+
+    <!-- Glow Filters -->
+    <filter id="py-glow">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="py-glowStrong">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="py-glowSoft">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Leaf shape -->
+    <path id="py-leaf" d="M0,-6 C3,-5 6,-2 6,2 C6,5 3,6 0,4 C-3,6 -6,5 -6,2 C-6,-2 -3,-5 0,-6 Z" />
+  </defs>
+
+  <style>
+    /* River flow shimmer */
+    @keyframes py-riverFlow {
+      0% { transform: translateX(-200px); }
+      100% { transform: translateX(300px); }
+    }
+
+    /* Cloud drift */
+    @keyframes py-cloudDrift {
+      0% { transform: translateX(0); }
+      50% { transform: translateX(40px); }
+      100% { transform: translateX(0); }
+    }
+
+    @keyframes py-cloudDrift2 {
+      0% { transform: translateX(0); }
+      50% { transform: translateX(-35px); }
+      100% { transform: translateX(0); }
+    }
+
+    /* Bird flight path */
+    @keyframes py-birdFly {
+      0% { transform: translate(0, 0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translate(-180px, -30px); opacity: 0; }
+    }
+
+    @keyframes py-birdFly2 {
+      0% { transform: translate(0, 0); opacity: 0; }
+      10% { opacity: 1; }
+      85% { opacity: 1; }
+      100% { transform: translate(-160px, -25px); opacity: 0; }
+    }
+
+    @keyframes py-birdFly3 {
+      0% { transform: translate(0, 0); opacity: 0; }
+      15% { opacity: 1; }
+      88% { opacity: 1; }
+      100% { transform: translate(-140px, -20px); opacity: 0; }
+    }
+
+    /* Wing flap */
+    @keyframes py-wingFlap {
+      0%, 100% { d: path("M0,0 C-4,-5 -8,-3 -12,-6 M0,0 C4,-5 8,-3 12,-6"); }
+      50% { d: path("M0,0 C-4,2 -8,1 -12,3 M0,0 C4,2 8,1 12,3"); }
+    }
+
+    /* Falling leaves */
+    @keyframes py-leafFall1 {
+      0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.8; }
+      80% { opacity: 0.7; }
+      100% { transform: translate(30px, 120px) rotate(360deg); opacity: 0; }
+    }
+
+    @keyframes py-leafFall2 {
+      0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.75; }
+      85% { opacity: 0.6; }
+      100% { transform: translate(-25px, 110px) rotate(-300deg); opacity: 0; }
+    }
+
+    @keyframes py-leafFall3 {
+      0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+      15% { opacity: 0.7; }
+      80% { opacity: 0.5; }
+      100% { transform: translate(20px, 100px) rotate(280deg); opacity: 0; }
+    }
+
+    @keyframes py-leafFall4 {
+      0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+      12% { opacity: 0.8; }
+      82% { opacity: 0.6; }
+      100% { transform: translate(-35px, 115px) rotate(-350deg); opacity: 0; }
+    }
+
+    /* Sun rays pulse */
+    @keyframes py-rayPulse {
+      0%, 100% { opacity: 0.25; transform: scaleY(1); }
+      50% { opacity: 0.5; transform: scaleY(1.08); }
+    }
+
+    /* Girl walking sway */
+    @keyframes py-girlSway {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(1.5deg); }
+      50% { transform: rotate(0deg); }
+      75% { transform: rotate(-1.5deg); }
+    }
+
+    /* Sun glow pulse */
+    @keyframes py-sunPulse {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.06); }
+    }
+
+    /* Star twinkle */
+    @keyframes py-starTwinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.9; }
+    }
+
+    @keyframes py-starTwinkle2 {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.15; }
+    }
+
+    /* Water ripple */
+    @keyframes py-waterRipple {
+      0% { rx: 8; ry: 1.5; opacity: 0.5; }
+      100% { rx: 20; ry: 3; opacity: 0; }
+    }
+
+    .py-cloud1 { animation: py-cloudDrift 14s ease-in-out infinite; }
+    .py-cloud2 { animation: py-cloudDrift2 12s ease-in-out infinite; }
+    .py-cloud3 { animation: py-cloudDrift 15s ease-in-out infinite; animation-delay: -5s; }
+
+    .py-bird1 { animation: py-birdFly 9s linear infinite; }
+    .py-bird2 { animation: py-birdFly2 9s linear infinite; animation-delay: -3s; }
+    .py-bird3 { animation: py-birdFly3 9s linear infinite; animation-delay: -6s; }
+
+    .py-shimmer { animation: py-riverFlow 4.5s linear infinite; }
+
+    .py-leaf1 { animation: py-leafFall1 7s ease-in infinite; }
+    .py-leaf2 { animation: py-leafFall2 6.5s ease-in infinite; animation-delay: -2s; }
+    .py-leaf3 { animation: py-leafFall3 7.5s ease-in infinite; animation-delay: -4s; }
+    .py-leaf4 { animation: py-leafFall4 6s ease-in infinite; animation-delay: -1s; }
+    .py-leaf5 { animation: py-leafFall1 8s ease-in infinite; animation-delay: -5s; }
+    .py-leaf6 { animation: py-leafFall2 7s ease-in infinite; animation-delay: -3.5s; }
+
+    .py-rays { animation: py-rayPulse 3s ease-in-out infinite; transform-origin: 256px 200px; }
+
+    .py-girl { animation: py-girlSway 5s ease-in-out infinite; transform-origin: 268px 340px; }
+
+    .py-sun { animation: py-sunPulse 4s ease-in-out infinite; transform-origin: 256px 200px; }
+
+    .py-star1 { animation: py-starTwinkle 3s ease-in-out infinite; }
+    .py-star2 { animation: py-starTwinkle2 2.5s ease-in-out infinite; animation-delay: -1s; }
+    .py-star3 { animation: py-starTwinkle 4s ease-in-out infinite; animation-delay: -2s; }
+    .py-star4 { animation: py-starTwinkle2 3.5s ease-in-out infinite; animation-delay: -0.5s; }
+    .py-star5 { animation: py-starTwinkle 2.8s ease-in-out infinite; animation-delay: -1.5s; }
+
+    .py-ripple1 { animation: py-waterRipple 3s ease-out infinite; }
+    .py-ripple2 { animation: py-waterRipple 3s ease-out infinite; animation-delay: -1s; }
+    .py-ripple3 { animation: py-waterRipple 3s ease-out infinite; animation-delay: -2s; }
+  </style>
+
+  <!-- LAYER 1: Sky Background -->
+  <g id="py-layer1-sky">
+    <rect width="512" height="512" fill="url(#py-skyGrad)" />
+
+    <!-- Stars in upper sky -->
+    <circle class="py-star1" cx="45" cy="30" r="1.2" fill="#ffffff" opacity="0.5" />
+    <circle class="py-star2" cx="120" cy="55" r="1" fill="#ffffff" opacity="0.4" />
+    <circle class="py-star3" cx="200" cy="20" r="1.3" fill="#ffffff" opacity="0.6" />
+    <circle class="py-star4" cx="350" cy="40" r="1" fill="#ffffff" opacity="0.3" />
+    <circle class="py-star5" cx="430" cy="25" r="1.1" fill="#ffffff" opacity="0.5" />
+    <circle class="py-star1" cx="480" cy="60" r="0.9" fill="#ffffff" opacity="0.4" />
+    <circle class="py-star3" cx="75" cy="75" r="0.8" fill="#ffffff" opacity="0.35" />
+    <circle class="py-star2" cx="290" cy="50" r="1.1" fill="#ffffff" opacity="0.45" />
+    <circle class="py-star4" cx="160" cy="85" r="0.7" fill="#ffffff" opacity="0.3" />
+    <circle class="py-star5" cx="400" cy="70" r="0.9" fill="#ffffff" opacity="0.4" />
+
+    <!-- Dawn sun and glow -->
+    <g class="py-sun" filter="url(#py-glowSoft)">
+      <circle cx="256" cy="200" r="70" fill="url(#py-sunGlow)" />
+      <circle cx="256" cy="200" r="28" fill="#ffd700" opacity="0.6" />
+      <circle cx="256" cy="200" r="16" fill="#fff4d4" opacity="0.8" />
+    </g>
+
+    <!-- Sun rays -->
+    <g class="py-rays" filter="url(#py-glowSoft)">
+      <polygon points="256,170 240,110 272,110" fill="url(#py-rayGrad)" opacity="0.3" />
+      <polygon points="280,178 320,130 335,155" fill="url(#py-rayGrad)" opacity="0.25" />
+      <polygon points="232,178 192,130 177,155" fill="url(#py-rayGrad)" opacity="0.25" />
+      <polygon points="290,195 350,175 340,200" fill="url(#py-rayGrad)" opacity="0.2" />
+      <polygon points="222,195 162,175 172,200" fill="url(#py-rayGrad)" opacity="0.2" />
+      <polygon points="256,225 235,280 277,280" fill="url(#py-rayGrad)" opacity="0.15" />
+    </g>
+
+    <!-- Clouds -->
+    <g class="py-cloud1">
+      <ellipse cx="90" cy="120" rx="45" ry="14" fill="url(#py-cloudGrad)" />
+      <ellipse cx="105" cy="115" rx="30" ry="10" fill="url(#py-cloudGrad)" />
+    </g>
+    <g class="py-cloud2">
+      <ellipse cx="400" cy="105" rx="50" ry="12" fill="url(#py-cloudGrad)" />
+      <ellipse cx="380" cy="100" rx="28" ry="9" fill="url(#py-cloudGrad)" />
+    </g>
+    <g class="py-cloud3">
+      <ellipse cx="250" cy="95" rx="35" ry="10" fill="url(#py-cloudGrad)" />
+      <ellipse cx="265" cy="90" rx="22" ry="8" fill="url(#py-cloudGrad)" />
+    </g>
+  </g>
+
+  <!-- LAYER 2: Snowy Himalayan Peaks -->
+  <g id="py-layer2-mountains">
+    <!-- Far mountain range (darker, behind) -->
+    <polygon points="0,250 60,165 110,195 160,150 210,180 256,138 300,170 340,145 390,185 440,155 490,180 512,200 512,260 0,260" fill="url(#py-mtnShadow)" opacity="0.7" />
+
+    <!-- Main snow peaks -->
+    <polygon points="0,250 50,180 85,210 130,160 175,195 220,155 256,170 290,152 330,175 365,148 410,190 450,165 490,195 512,210 512,260 0,260" fill="url(#py-snowGrad)" />
+
+    <!-- Snow highlights on peaks -->
+    <polygon points="130,160 150,175 155,168 175,195 160,185" fill="#ffffff" opacity="0.5" />
+    <polygon points="290,152 310,168 315,160 330,175 318,170" fill="#ffffff" opacity="0.45" />
+    <polygon points="365,148 382,163 388,156 410,190 395,175" fill="#ffffff" opacity="0.5" />
+    <polygon points="220,155 238,167 242,162 256,170 245,165" fill="#ffffff" opacity="0.4" />
+
+    <!-- Mountain shadow details -->
+    <polygon points="130,160 145,200 160,185 175,195 155,220 120,220" fill="#8a9ab8" opacity="0.3" />
+    <polygon points="365,148 385,195 400,182 410,190 395,220 355,220" fill="#8a9ab8" opacity="0.25" />
+  </g>
+
+  <!-- LAYER 3: Green Rolling Hills (mid) -->
+  <g id="py-layer3-hills">
+    <!-- Far green hills -->
+    <path d="M0,280 Q60,240 120,260 Q180,235 240,255 Q300,230 360,250 Q420,235 480,255 Q500,260 512,265 L512,310 L0,310 Z" fill="url(#py-hillGrad1)" />
+
+    <!-- Nearer hills with variation -->
+    <path d="M0,300 Q50,270 100,285 Q160,260 220,278 Q280,258 340,275 Q400,262 460,280 Q490,275 512,285 L512,330 L0,330 Z" fill="url(#py-hillGrad2)" />
+
+    <!-- Hill texture lines -->
+    <path d="M60,278 Q80,272 100,277" stroke="#2d7a3a" stroke-width="0.6" fill="none" opacity="0.4" />
+    <path d="M200,270 Q220,265 240,270" stroke="#2d7a3a" stroke-width="0.6" fill="none" opacity="0.4" />
+    <path d="M350,268 Q370,262 390,268" stroke="#2d7a3a" stroke-width="0.6" fill="none" opacity="0.35" />
+
+    <!-- Small scattered trees on hills -->
+    <g fill="#2d7a3a" opacity="0.6">
+      <polygon points="80,275 77,265 83,265" />
+      <polygon points="150,268 147,258 153,258" />
+      <polygon points="310,265 307,255 313,255" />
+      <polygon points="420,272 417,262 423,262" />
+      <polygon points="470,277 467,267 473,267" />
+    </g>
+  </g>
+
+  <!-- LAYER 4: River Winding Through -->
+  <g id="py-layer4-river">
+    <!-- River path -->
+    <path d="M0,328 Q60,318 120,325 Q180,315 230,320 Q270,310 310,318 Q360,308 410,315 Q460,312 512,320 L512,345 Q460,340 410,342 Q360,338 310,345 Q270,340 230,347 Q180,343 120,350 Q60,345 0,352 Z" fill="url(#py-riverGrad)" />
+
+    <!-- River highlight ripples -->
+    <path d="M40,332 Q70,328 100,334" stroke="#88ccee" stroke-width="0.8" fill="none" opacity="0.4" />
+    <path d="M180,325 Q210,320 240,326" stroke="#88ccee" stroke-width="0.8" fill="none" opacity="0.35" />
+    <path d="M330,322 Q360,316 390,323" stroke="#88ccee" stroke-width="0.7" fill="none" opacity="0.4" />
+
+    <!-- Animated shimmer on river -->
+    <clipPath id="py-riverClip">
+      <path d="M0,328 Q60,318 120,325 Q180,315 230,320 Q270,310 310,318 Q360,308 410,315 Q460,312 512,320 L512,345 Q460,340 410,342 Q360,338 310,345 Q270,340 230,347 Q180,343 120,350 Q60,345 0,352 Z" />
+    </clipPath>
+    <rect class="py-shimmer" x="-200" y="308" width="400" height="50" fill="url(#py-riverShimmer)" clip-path="url(#py-riverClip)" />
+
+    <!-- Water ripple ellipses -->
+    <ellipse class="py-ripple1" cx="160" cy="335" rx="8" ry="1.5" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.4" />
+    <ellipse class="py-ripple2" cx="300" cy="330" rx="8" ry="1.5" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.35" />
+    <ellipse class="py-ripple3" cx="420" cy="333" rx="8" ry="1.5" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.3" />
+
+    <!-- Riverbank edges -->
+    <path d="M0,325 Q60,315 120,322 Q180,312 230,317 Q270,307 310,315 Q360,305 410,312 Q460,309 512,317" stroke="#a08050" stroke-width="1.5" fill="none" opacity="0.4" />
+    <path d="M0,355 Q60,348 120,353 Q180,346 230,350 Q270,343 310,348 Q360,341 410,345 Q460,343 512,348" stroke="#8b6a3a" stroke-width="1.5" fill="none" opacity="0.4" />
+  </g>
+
+  <!-- LAYER 5: Tropical Forest & Path -->
+  <g id="py-layer5-forest">
+    <!-- Ground behind forest -->
+    <rect x="0" y="350" width="512" height="162" fill="url(#py-earthGrad)" />
+
+    <!-- Forest background layer -->
+    <path d="M0,370 Q30,355 50,362 Q70,352 90,358 Q110,348 130,355 Q150,345 165,350 Q180,342 195,348 L195,410 L0,410 Z" fill="#1a5a2a" />
+    <path d="M320,365 Q345,350 365,358 Q385,348 405,355 Q425,345 445,352 Q465,342 485,350 Q500,345 512,348 L512,410 L320,410 Z" fill="#1a5a2a" />
+
+    <!-- Forest mid canopy -->
+    <path d="M0,380 Q20,365 40,372 Q60,360 80,368 Q100,355 120,365 Q140,355 160,362 Q175,355 190,360 L190,420 L0,420 Z" fill="#2d7a3a" />
+    <path d="M330,375 Q355,360 375,368 Q395,358 415,365 Q435,353 455,362 Q475,355 490,360 Q505,355 512,358 L512,420 L330,420 Z" fill="#2d7a3a" />
+
+    <!-- Tree trunks -->
+    <g fill="#5a4030" opacity="0.6">
+      <rect x="35" y="372" width="4" height="30" />
+      <rect x="78" y="366" width="3.5" height="34" />
+      <rect x="125" y="360" width="4" height="38" />
+      <rect x="160" y="363" width="3" height="32" />
+      <rect x="355" y="368" width="4" height="32" />
+      <rect x="398" y="362" width="3.5" height="36" />
+      <rect x="445" y="358" width="4" height="38" />
+      <rect x="485" y="362" width="3" height="34" />
+    </g>
+
+    <!-- Hiking path winding through center -->
+    <path d="M200,355 Q230,370 256,380 Q280,392 295,410 Q310,430 320,460 Q330,480 335,512" fill="none" stroke="url(#py-earthGrad)" stroke-width="18" stroke-linecap="round" opacity="0.7" />
+    <path d="M200,355 Q230,370 256,380 Q280,392 295,410 Q310,430 320,460 Q330,480 335,512" fill="none" stroke="#c4a870" stroke-width="1" stroke-dasharray="3,5" opacity="0.4" />
+
+    <!-- Grass tufts along path -->
+    <g fill="#4dba5a" opacity="0.5">
+      <path d="M210,365 Q212,355 214,365" stroke="#4dba5a" stroke-width="1" fill="none" />
+      <path d="M240,375 Q242,365 244,375" stroke="#4dba5a" stroke-width="1" fill="none" />
+      <path d="M285,400 Q287,390 289,400" stroke="#4dba5a" stroke-width="1" fill="none" />
+      <path d="M302,418 Q304,408 306,418" stroke="#4dba5a" stroke-width="1" fill="none" />
+    </g>
+
+    <!-- Flowers/small plants near path -->
+    <circle cx="215" cy="368" r="2" fill="#ff8c42" opacity="0.5" />
+    <circle cx="245" cy="378" r="1.5" fill="#ffd700" opacity="0.5" />
+    <circle cx="290" cy="405" r="2" fill="#ff8c42" opacity="0.4" />
+    <circle cx="230" cy="373" r="1.5" fill="#ffaa44" opacity="0.45" />
+  </g>
+
+  <!-- LAYER 6: Girl Character & Animated Elements -->
+  <g id="py-layer6-character">
+    <!-- Girl hiking silhouette -->
+    <g class="py-girl">
+      <!-- Shadow on ground -->
+      <ellipse cx="268" cy="378" rx="12" ry="3" fill="#3a2020" opacity="0.25" />
+
+      <!-- Legs -->
+      <line x1="264" y1="358" x2="258" y2="375" stroke="#2a1520" stroke-width="3.5" stroke-linecap="round" />
+      <line x1="270" y1="358" x2="278" y2="375" stroke="#2a1520" stroke-width="3.5" stroke-linecap="round" />
+
+      <!-- Body -->
+      <path d="M260,330 Q262,345 267,358" stroke="#2a1520" stroke-width="5" stroke-linecap="round" fill="none" />
+
+      <!-- Torso fill -->
+      <path d="M257,328 Q260,325 270,326 Q273,330 272,345 Q270,358 267,360 L262,360 Q259,350 257,340 Z" fill="#2a1520" />
+
+      <!-- Backpack -->
+      <rect x="270" y="328" width="10" height="16" rx="3" fill="#3a2535" />
+      <rect x="271" y="330" width="8" height="3" rx="1" fill="#4a3545" />
+
+      <!-- Arms -->
+      <line x1="260" y1="334" x2="250" y2="348" stroke="#2a1520" stroke-width="2.5" stroke-linecap="round" />
+      <line x1="272" y1="334" x2="282" y2="346" stroke="#2a1520" stroke-width="2.5" stroke-linecap="round" />
+
+      <!-- Walking stick in hand -->
+      <line x1="250" y1="348" x2="245" y2="378" stroke="#5a4030" stroke-width="1.8" stroke-linecap="round" />
+
+      <!-- Head -->
+      <circle cx="265" cy="322" r="8" fill="#2a1520" />
+
+      <!-- Hair (ponytail flowing) -->
+      <path d="M270,318 Q278,315 282,322 Q284,328 280,332" stroke="#2a1520" stroke-width="3" fill="none" stroke-linecap="round" />
+
+      <!-- Cap/hat brim -->
+      <ellipse cx="265" cy="317" rx="10" ry="2.5" fill="#3a2535" />
+      <path d="M256,317 Q265,308 274,317" fill="#3a2535" />
+    </g>
+
+    <!-- Birds flying in formation -->
+    <g>
+      <g class="py-bird1">
+        <path d="M420,140 Q414,133 408,138 M420,140 Q426,133 432,138" stroke="#2a1520" stroke-width="1.3" fill="none" stroke-linecap="round" />
+      </g>
+      <g class="py-bird2">
+        <path d="M445,130 Q440,124 435,128 M445,130 Q450,124 455,128" stroke="#2a1520" stroke-width="1.1" fill="none" stroke-linecap="round" />
+      </g>
+      <g class="py-bird3">
+        <path d="M435,148 Q430,142 426,146 M435,148 Q440,142 444,146" stroke="#2a1520" stroke-width="1" fill="none" stroke-linecap="round" />
+      </g>
+    </g>
+
+    <!-- Falling leaves -->
+    <g>
+      <use href="#py-leaf" class="py-leaf1" x="120" y="360" fill="#4dba5a" opacity="0" transform="scale(0.6)" />
+      <use href="#py-leaf" class="py-leaf2" x="155" y="355" fill="#3d9a4a" opacity="0" transform="scale(0.5)" />
+      <use href="#py-leaf" class="py-leaf3" x="370" y="358" fill="#4dba5a" opacity="0" transform="scale(0.55)" />
+      <use href="#py-leaf" class="py-leaf4" x="420" y="352" fill="#2d7a3a" opacity="0" transform="scale(0.5)" />
+      <use href="#py-leaf" class="py-leaf5" x="460" y="355" fill="#4dba5a" opacity="0" transform="scale(0.45)" />
+      <use href="#py-leaf" class="py-leaf6" x="85" y="365" fill="#3d9a4a" opacity="0" transform="scale(0.55)" />
+    </g>
+  </g>
+
+  <!-- LAYER 7: Foreground & Title Overlay -->
+  <g id="py-layer7-overlay">
+    <!-- Bottom foreground foliage -->
+    <path d="M0,470 Q20,455 40,462 Q60,450 80,458 Q100,448 120,455 Q140,445 160,452 Q180,442 200,450 Q220,445 240,452 L240,512 L0,512 Z" fill="#1a5a2a" opacity="0.7" />
+    <path d="M272,448 Q295,440 320,450 Q345,440 370,448 Q395,438 420,447 Q445,437 470,445 Q490,440 512,448 L512,512 L272,512 Z" fill="#1a5a2a" opacity="0.7" />
+
+    <!-- More foreground leaves -->
+    <path d="M0,485 Q30,475 55,480 Q80,472 110,478 Q135,470 160,477 L160,512 L0,512 Z" fill="#2d7a3a" opacity="0.6" />
+    <path d="M360,478 Q390,470 420,476 Q450,468 480,475 Q500,470 512,474 L512,512 L360,512 Z" fill="#2d7a3a" opacity="0.6" />
+
+    <!-- Atmospheric golden overlay at horizon -->
+    <rect x="0" y="180" width="512" height="80" fill="#ffd700" opacity="0.04" />
+
+    <!-- Subtle vignette -->
+    <rect x="0" y="0" width="512" height="512" fill="url(#py-skyGrad)" opacity="0.05" />
+
+    <!-- Title area with backdrop -->
+    <rect x="100" y="430" width="312" height="72" rx="10" fill="#1a1040" opacity="0.55" />
+    <rect x="100" y="430" width="312" height="72" rx="10" fill="none" stroke="#ffd700" stroke-width="0.8" opacity="0.3" />
+
+    <!-- Hindi title -->
+    <text x="256" y="460" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="18" font-weight="bold" fill="#ffd700" filter="url(#py-glow)" opacity="0.95">
+      <tspan>&#x0930;&#x093F;&#x092F;&#x093E; &#x0915;&#x0940; &#x092A;&#x094D;&#x0930;&#x0915;&#x0943;&#x0924;&#x093F; &#x092F;&#x093E;&#x0924;&#x094D;&#x0930;&#x093E;</tspan>
+    </text>
+
+    <!-- English subtitle -->
+    <text x="256" y="482" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="10" fill="#ffaa44" letter-spacing="2" opacity="0.8">
+      RIYA'S NATURE JOURNEY
+    </text>
+
+    <!-- Decorative line under title -->
+    <line x1="170" y1="490" x2="342" y2="490" stroke="#ffd700" stroke-width="0.5" opacity="0.4" />
+  </g>
+</svg>

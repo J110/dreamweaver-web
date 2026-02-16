@@ -1,0 +1,593 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Sky Gradient -->
+    <linearGradient id="ss-skyGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a1a3e"/>
+      <stop offset="40%" stop-color="#1a3060"/>
+      <stop offset="100%" stop-color="#2a4080"/>
+    </linearGradient>
+
+    <!-- Aurora Gradient -->
+    <linearGradient id="ss-auroraGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00ff88" stop-opacity="0"/>
+      <stop offset="20%" stop-color="#00ff88" stop-opacity="0.15"/>
+      <stop offset="40%" stop-color="#44ccff" stop-opacity="0.2"/>
+      <stop offset="60%" stop-color="#00ff88" stop-opacity="0.18"/>
+      <stop offset="80%" stop-color="#44ccff" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#00ff88" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Snow Ground Gradient -->
+    <linearGradient id="ss-snowGround" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8f0ff"/>
+      <stop offset="100%" stop-color="#c8d8f0"/>
+    </linearGradient>
+
+    <!-- School Building Gradient -->
+    <linearGradient id="ss-buildingGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4a5a7a"/>
+      <stop offset="100%" stop-color="#3a4a6a"/>
+    </linearGradient>
+
+    <!-- School Roof Gradient -->
+    <linearGradient id="ss-roofGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5a6a8a"/>
+      <stop offset="100%" stop-color="#3a4a6a"/>
+    </linearGradient>
+
+    <!-- Window Warm Glow -->
+    <radialGradient id="ss-windowGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffdd88" stop-opacity="0.9"/>
+      <stop offset="60%" stop-color="#ffaa44" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#ff8833" stop-opacity="0.2"/>
+    </radialGradient>
+
+    <!-- Seal Body Gradient -->
+    <radialGradient id="ss-sealBody" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#a0b0c0"/>
+      <stop offset="50%" stop-color="#8090a0"/>
+      <stop offset="100%" stop-color="#708090"/>
+    </radialGradient>
+
+    <!-- Seal Belly Lighter -->
+    <radialGradient id="ss-sealBelly" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#c0d0e0"/>
+      <stop offset="100%" stop-color="#a0b0c0"/>
+    </radialGradient>
+
+    <!-- Girl Coat Gradient -->
+    <linearGradient id="ss-coatGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff69b4"/>
+      <stop offset="100%" stop-color="#ff4488"/>
+    </linearGradient>
+
+    <!-- Icicle Gradient -->
+    <linearGradient id="ss-icicleGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c0e4ff" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#b0d4f1" stop-opacity="0.5"/>
+    </linearGradient>
+
+    <!-- Character Warm Glow -->
+    <radialGradient id="ss-charGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff69b4" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#ff69b4" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Vignette -->
+    <radialGradient id="ss-vignette">
+      <stop offset="45%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.5"/>
+    </radialGradient>
+
+    <!-- Filters -->
+    <filter id="ss-softGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="ss-mediumGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="ss-strongGlow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    /* Animation 1: Seal flipper clap */
+    @keyframes ss-flipperClap {
+      0%, 100% { transform: rotate(0deg); }
+      20% { transform: rotate(-25deg); }
+      35% { transform: rotate(5deg); }
+      50% { transform: rotate(-22deg); }
+      65% { transform: rotate(3deg); }
+      80% { transform: rotate(-18deg); }
+    }
+    @keyframes ss-flipperClapR {
+      0%, 100% { transform: rotate(0deg); }
+      20% { transform: rotate(25deg); }
+      35% { transform: rotate(-5deg); }
+      50% { transform: rotate(22deg); }
+      65% { transform: rotate(-3deg); }
+      80% { transform: rotate(18deg); }
+    }
+
+    /* Animation 2: Snowflake fall */
+    @keyframes ss-snowfall1 {
+      0% { transform: translate(0px, -20px); opacity: 0; }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.6; }
+      100% { transform: translate(15px, 530px); opacity: 0; }
+    }
+    @keyframes ss-snowfall2 {
+      0% { transform: translate(0px, -20px); opacity: 0; }
+      10% { opacity: 0.7; }
+      90% { opacity: 0.5; }
+      100% { transform: translate(-12px, 530px); opacity: 0; }
+    }
+    @keyframes ss-snowfall3 {
+      0% { transform: translate(0px, -20px); opacity: 0; }
+      10% { opacity: 0.9; }
+      90% { opacity: 0.4; }
+      100% { transform: translate(8px, 530px); opacity: 0; }
+    }
+
+    /* Animation 3: Girl bounce */
+    @keyframes ss-girlBounce {
+      0%, 100% { transform: translateY(0px); }
+      25% { transform: translateY(-6px); }
+      50% { transform: translateY(0px); }
+      75% { transform: translateY(-4px); }
+    }
+
+    /* Animation 4: Icicle drip sparkle */
+    @keyframes ss-icicleDrip {
+      0%, 100% { opacity: 0; transform: translateY(0px); }
+      10% { opacity: 0.9; }
+      60% { opacity: 0.6; }
+      100% { opacity: 0; transform: translateY(18px); }
+    }
+    @keyframes ss-icicleShimmer {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* Animation 5: Aurora shimmer */
+    @keyframes ss-auroraShimmer {
+      0%, 100% { transform: translateX(0px) scaleY(1); opacity: 0.3; }
+      25% { transform: translateX(15px) scaleY(1.15); opacity: 0.5; }
+      50% { transform: translateX(-10px) scaleY(0.9); opacity: 0.35; }
+      75% { transform: translateX(8px) scaleY(1.1); opacity: 0.45; }
+    }
+
+    /* Animation 6: School window warm glow */
+    @keyframes ss-windowPulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    /* Animation 7: Seal body bob */
+    @keyframes ss-sealBob {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      30% { transform: translateY(-3px) rotate(1deg); }
+      60% { transform: translateY(-1px) rotate(-1deg); }
+    }
+
+    /* Animation 8: Star twinkle */
+    @keyframes ss-starTwinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    /* Animation 9: Seal eye blink */
+    @keyframes ss-sealBlink {
+      0%, 42%, 48%, 100% { transform: scaleY(1); }
+      45% { transform: scaleY(0.05); }
+    }
+
+    /* Animation 10: Girl scarf wave */
+    @keyframes ss-scarfWave {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(3deg); }
+      50% { transform: rotate(-2deg); }
+      75% { transform: rotate(2deg); }
+    }
+
+    /* Apply animations */
+    .ss-flipper-left {
+      animation: ss-flipperClap 3.5s ease-in-out infinite;
+      transform-origin: 100% 30%;
+    }
+    .ss-flipper-right {
+      animation: ss-flipperClapR 3.5s ease-in-out infinite;
+      transform-origin: 0% 30%;
+    }
+
+    .ss-snow1 { animation: ss-snowfall1 7s ease-in-out infinite; }
+    .ss-snow2 { animation: ss-snowfall2 7.5s ease-in-out infinite 0.8s; }
+    .ss-snow3 { animation: ss-snowfall3 6.8s ease-in-out infinite 1.6s; }
+    .ss-snow4 { animation: ss-snowfall1 7.2s ease-in-out infinite 2.4s; }
+    .ss-snow5 { animation: ss-snowfall2 6.5s ease-in-out infinite 3.2s; }
+    .ss-snow6 { animation: ss-snowfall3 7.8s ease-in-out infinite 4s; }
+    .ss-snow7 { animation: ss-snowfall1 6.9s ease-in-out infinite 4.8s; }
+    .ss-snow8 { animation: ss-snowfall2 7.3s ease-in-out infinite 5.5s; }
+    .ss-snow9 { animation: ss-snowfall3 7.1s ease-in-out infinite 0.4s; }
+    .ss-snow10 { animation: ss-snowfall1 6.6s ease-in-out infinite 1.2s; }
+    .ss-snow11 { animation: ss-snowfall2 7.4s ease-in-out infinite 2s; }
+    .ss-snow12 { animation: ss-snowfall3 6.7s ease-in-out infinite 3.6s; }
+
+    .ss-girl-group {
+      animation: ss-girlBounce 4s ease-in-out infinite;
+    }
+
+    .ss-drip1 { animation: ss-icicleDrip 2.5s ease-in-out infinite; }
+    .ss-drip2 { animation: ss-icicleDrip 2.5s ease-in-out infinite 0.8s; }
+    .ss-drip3 { animation: ss-icicleDrip 2.5s ease-in-out infinite 1.5s; }
+    .ss-icicle-sparkle1 { animation: ss-icicleShimmer 2.5s ease-in-out infinite; }
+    .ss-icicle-sparkle2 { animation: ss-icicleShimmer 2.5s ease-in-out infinite 0.6s; }
+    .ss-icicle-sparkle3 { animation: ss-icicleShimmer 2.5s ease-in-out infinite 1.2s; }
+
+    .ss-aurora {
+      animation: ss-auroraShimmer 8s ease-in-out infinite;
+      transform-origin: center center;
+    }
+    .ss-aurora2 {
+      animation: ss-auroraShimmer 8s ease-in-out infinite 2s;
+      transform-origin: center center;
+    }
+    .ss-aurora3 {
+      animation: ss-auroraShimmer 8s ease-in-out infinite 4s;
+      transform-origin: center center;
+    }
+
+    .ss-window-glow1 { animation: ss-windowPulse 3s ease-in-out infinite; }
+    .ss-window-glow2 { animation: ss-windowPulse 3s ease-in-out infinite 0.5s; }
+    .ss-window-glow3 { animation: ss-windowPulse 3s ease-in-out infinite 1s; }
+    .ss-window-glow4 { animation: ss-windowPulse 3s ease-in-out infinite 1.5s; }
+
+    .ss-seal-group {
+      animation: ss-sealBob 4.5s ease-in-out infinite;
+    }
+
+    .ss-star1 { animation: ss-starTwinkle 3s ease-in-out infinite; }
+    .ss-star2 { animation: ss-starTwinkle 2.8s ease-in-out infinite 0.5s; }
+    .ss-star3 { animation: ss-starTwinkle 3.2s ease-in-out infinite 1s; }
+    .ss-star4 { animation: ss-starTwinkle 2.6s ease-in-out infinite 1.5s; }
+    .ss-star5 { animation: ss-starTwinkle 3.4s ease-in-out infinite 2s; }
+    .ss-star6 { animation: ss-starTwinkle 2.9s ease-in-out infinite 0.8s; }
+    .ss-star7 { animation: ss-starTwinkle 3.1s ease-in-out infinite 1.3s; }
+
+    .ss-seal-eyelid {
+      animation: ss-sealBlink 5s ease-in-out infinite;
+      transform-origin: center center;
+    }
+
+    .ss-scarf-end {
+      animation: ss-scarfWave 5s ease-in-out infinite;
+      transform-origin: 0% 0%;
+    }
+  </style>
+
+  <!-- LAYER 1: Background sky -->
+  <rect width="512" height="512" fill="url(#ss-skyGradient)"/>
+
+  <!-- LAYER 2: Far background — Aurora borealis hints and stars -->
+  <!-- Aurora bands -->
+  <g class="ss-aurora" opacity="0.35">
+    <ellipse cx="256" cy="60" rx="220" ry="30" fill="url(#ss-auroraGrad)"/>
+    <ellipse cx="200" cy="45" rx="160" ry="18" fill="#00ff88" opacity="0.1" filter="url(#ss-strongGlow)"/>
+  </g>
+  <g class="ss-aurora2" opacity="0.25">
+    <ellipse cx="300" cy="80" rx="180" ry="22" fill="url(#ss-auroraGrad)"/>
+    <ellipse cx="340" cy="70" rx="120" ry="14" fill="#44ccff" opacity="0.12" filter="url(#ss-strongGlow)"/>
+  </g>
+  <g class="ss-aurora3" opacity="0.2">
+    <ellipse cx="180" cy="95" rx="140" ry="16" fill="url(#ss-auroraGrad)"/>
+  </g>
+
+  <!-- Stars -->
+  <circle class="ss-star1" cx="60" cy="35" r="1.5" fill="#ffffff"/>
+  <circle class="ss-star2" cx="130" cy="20" r="1.2" fill="#ffffff"/>
+  <circle class="ss-star3" cx="380" cy="28" r="1.8" fill="#ffffff"/>
+  <circle class="ss-star4" cx="450" cy="50" r="1.3" fill="#ffffff"/>
+  <circle class="ss-star5" cx="310" cy="15" r="1.4" fill="#ffffff"/>
+  <circle class="ss-star6" cx="200" cy="55" r="1" fill="#ffffff"/>
+  <circle class="ss-star7" cx="470" cy="25" r="1.6" fill="#ffffff"/>
+  <circle cx="90" cy="65" r="0.8" fill="#ffffff" opacity="0.5"/>
+  <circle cx="420" cy="75" r="0.9" fill="#ffffff" opacity="0.4"/>
+  <circle cx="240" cy="30" r="1.1" fill="#ffffff" opacity="0.6"/>
+
+  <!-- Distant snow hills -->
+  <g opacity="0.25">
+    <ellipse cx="100" cy="210" rx="140" ry="60" fill="#c8d8f0"/>
+    <ellipse cx="400" cy="200" rx="160" ry="65" fill="#d0e0f8"/>
+    <ellipse cx="256" cy="220" rx="120" ry="50" fill="#c0d4f0"/>
+  </g>
+
+  <!-- LAYER 3: Mid background — School building -->
+  <g>
+    <!-- Building main body -->
+    <rect x="140" y="170" width="240" height="170" rx="4" fill="url(#ss-buildingGrad)"/>
+
+    <!-- Roof -->
+    <polygon points="120,175 260,105 400,175" fill="url(#ss-roofGrad)"/>
+    <!-- Roof snow cap -->
+    <polygon points="130,175 260,112 390,175" fill="#e8f0ff" opacity="0.85"/>
+    <ellipse cx="260" cy="112" rx="12" ry="8" fill="#ffffff" opacity="0.9"/>
+
+    <!-- Bell tower -->
+    <rect x="238" y="85" width="44" height="30" rx="2" fill="#4a5a7a"/>
+    <polygon points="235,88 260,68 285,88" fill="#5a6a8a"/>
+    <polygon points="238,88 260,72 282,88" fill="#e8f0ff" opacity="0.8"/>
+    <!-- Bell -->
+    <circle cx="260" cy="98" r="6" fill="#c8a050" filter="url(#ss-softGlow)"/>
+    <rect x="258" y="90" width="4" height="5" fill="#a08040"/>
+
+    <!-- Windows row 1 -->
+    <g>
+      <rect x="165" y="200" width="30" height="35" rx="3" fill="#1a2040"/>
+      <rect class="ss-window-glow1" x="165" y="200" width="30" height="35" rx="3" fill="url(#ss-windowGlow)"/>
+      <line x1="180" y1="200" x2="180" y2="235" stroke="#4a5a7a" stroke-width="2"/>
+      <line x1="165" y1="217" x2="195" y2="217" stroke="#4a5a7a" stroke-width="2"/>
+    </g>
+    <g>
+      <rect x="215" y="200" width="30" height="35" rx="3" fill="#1a2040"/>
+      <rect class="ss-window-glow2" x="215" y="200" width="30" height="35" rx="3" fill="url(#ss-windowGlow)"/>
+      <line x1="230" y1="200" x2="230" y2="235" stroke="#4a5a7a" stroke-width="2"/>
+      <line x1="215" y1="217" x2="245" y2="217" stroke="#4a5a7a" stroke-width="2"/>
+    </g>
+    <g>
+      <rect x="265" y="200" width="30" height="35" rx="3" fill="#1a2040"/>
+      <rect class="ss-window-glow3" x="265" y="200" width="30" height="35" rx="3" fill="url(#ss-windowGlow)"/>
+      <line x1="280" y1="200" x2="280" y2="235" stroke="#4a5a7a" stroke-width="2"/>
+      <line x1="265" y1="217" x2="295" y2="217" stroke="#4a5a7a" stroke-width="2"/>
+    </g>
+    <g>
+      <rect x="315" y="200" width="30" height="35" rx="3" fill="#1a2040"/>
+      <rect class="ss-window-glow4" x="315" y="200" width="30" height="35" rx="3" fill="url(#ss-windowGlow)"/>
+      <line x1="330" y1="200" x2="330" y2="235" stroke="#4a5a7a" stroke-width="2"/>
+      <line x1="315" y1="217" x2="345" y2="217" stroke="#4a5a7a" stroke-width="2"/>
+    </g>
+
+    <!-- Door -->
+    <rect x="245" y="280" width="30" height="60" rx="3" fill="#2a3a5a"/>
+    <rect x="247" y="282" width="26" height="56" rx="2" fill="#3a4a6a"/>
+    <circle cx="268" cy="312" r="2.5" fill="#c8a050"/>
+
+    <!-- School sign -->
+    <rect x="195" y="255" width="130" height="18" rx="3" fill="#2a3a5a"/>
+    <text x="260" y="268" text-anchor="middle" font-family="serif" font-size="10" fill="#e8f0ff" font-weight="bold">SNOW SCHOOL</text>
+
+    <!-- Icicles hanging from roof -->
+    <g>
+      <polygon points="155,175 158,175 157,195" fill="url(#ss-icicleGrad)"/>
+      <circle class="ss-icicle-sparkle1" cx="157" cy="180" r="1" fill="#ffffff"/>
+      <circle class="ss-drip1" cx="157" cy="195" r="1.5" fill="#c0e4ff" opacity="0.7"/>
+
+      <polygon points="180,175 183,175 182,200" fill="url(#ss-icicleGrad)"/>
+      <circle class="ss-icicle-sparkle2" cx="182" cy="185" r="1" fill="#ffffff"/>
+
+      <polygon points="210,175 213,175 212,192" fill="url(#ss-icicleGrad)"/>
+
+      <polygon points="300,175 303,175 302,198" fill="url(#ss-icicleGrad)"/>
+      <circle class="ss-icicle-sparkle3" cx="302" cy="183" r="1" fill="#ffffff"/>
+      <circle class="ss-drip2" cx="302" cy="198" r="1.5" fill="#c0e4ff" opacity="0.7"/>
+
+      <polygon points="330,175 333,175 332,190" fill="url(#ss-icicleGrad)"/>
+
+      <polygon points="355,175 358,175 357,202" fill="url(#ss-icicleGrad)"/>
+      <circle class="ss-drip3" cx="357" cy="202" r="1.5" fill="#c0e4ff" opacity="0.7"/>
+
+      <polygon points="375,175 378,175 377,188" fill="url(#ss-icicleGrad)"/>
+    </g>
+
+    <!-- Snow on building edges -->
+    <ellipse cx="145" cy="170" rx="18" ry="6" fill="#ffffff" opacity="0.85"/>
+    <ellipse cx="370" cy="170" rx="18" ry="6" fill="#ffffff" opacity="0.85"/>
+    <rect x="138" y="170" width="244" height="5" rx="2" fill="#e8f0ff" opacity="0.6"/>
+  </g>
+
+  <!-- LAYER 4: Middle ground — Snow ground and playground elements -->
+  <!-- Main snow ground -->
+  <ellipse cx="256" cy="420" rx="280" ry="120" fill="url(#ss-snowGround)"/>
+  <ellipse cx="256" cy="460" rx="300" ry="100" fill="#ffffff" opacity="0.7"/>
+
+  <!-- Snow mounds -->
+  <ellipse cx="80" cy="400" rx="70" ry="30" fill="#e8f0ff"/>
+  <ellipse cx="430" cy="395" rx="75" ry="32" fill="#e8f0ff"/>
+  <ellipse cx="256" cy="345" rx="160" ry="20" fill="#dce8f8" opacity="0.5"/>
+
+  <!-- Small snow-covered fence posts -->
+  <g opacity="0.6">
+    <rect x="80" y="350" width="5" height="30" rx="1" fill="#5a6a8a"/>
+    <ellipse cx="82" cy="350" rx="6" ry="4" fill="#ffffff"/>
+    <rect x="110" y="348" width="5" height="32" rx="1" fill="#5a6a8a"/>
+    <ellipse cx="112" cy="348" rx="6" ry="4" fill="#ffffff"/>
+    <line x1="82" y1="358" x2="112" y2="356" stroke="#5a6a8a" stroke-width="2"/>
+    <line x1="82" y1="368" x2="112" y2="366" stroke="#5a6a8a" stroke-width="2"/>
+
+    <rect x="395" y="352" width="5" height="28" rx="1" fill="#5a6a8a"/>
+    <ellipse cx="397" cy="352" rx="6" ry="4" fill="#ffffff"/>
+    <rect x="425" y="350" width="5" height="30" rx="1" fill="#5a6a8a"/>
+    <ellipse cx="427" cy="350" rx="6" ry="4" fill="#ffffff"/>
+    <line x1="397" y1="360" x2="427" y2="358" stroke="#5a6a8a" stroke-width="2"/>
+    <line x1="397" y1="370" x2="427" y2="368" stroke="#5a6a8a" stroke-width="2"/>
+  </g>
+
+  <!-- Snowman in background -->
+  <g transform="translate(420, 340)" opacity="0.7">
+    <circle cx="0" cy="20" r="18" fill="#e8f0ff"/>
+    <circle cx="0" cy="0" r="13" fill="#f0f4ff"/>
+    <circle cx="0" cy="-18" r="9" fill="#f0f4ff"/>
+    <circle cx="-3" cy="-20" r="1.5" fill="#2a3a5a"/>
+    <circle cx="3" cy="-20" r="1.5" fill="#2a3a5a"/>
+    <polygon points="-1,-17 8,-16 -1,-15" fill="#ff8844"/>
+    <circle cx="0" cy="0" r="1.5" fill="#2a3a5a"/>
+    <circle cx="0" cy="7" r="1.5" fill="#2a3a5a"/>
+  </g>
+
+  <!-- Character warm glow -->
+  <circle cx="230" cy="380" r="80" fill="url(#ss-charGlow)" filter="url(#ss-mediumGlow)"/>
+
+  <!-- LAYER 5: Primary characters — Girl and Seal -->
+  <!-- Girl character -->
+  <g class="ss-girl-group" transform="translate(190, 340)">
+    <!-- Legs -->
+    <rect x="-8" y="40" width="8" height="24" rx="3" fill="#2a3a5a"/>
+    <rect x="4" y="40" width="8" height="24" rx="3" fill="#2a3a5a"/>
+    <!-- Boots -->
+    <ellipse cx="-4" cy="65" rx="7" ry="4" fill="#3a2a1a"/>
+    <ellipse cx="8" cy="65" rx="7" ry="4" fill="#3a2a1a"/>
+    <ellipse cx="-4" cy="63" rx="7" ry="2" fill="#ffffff" opacity="0.3"/>
+    <ellipse cx="8" cy="63" rx="7" ry="2" fill="#ffffff" opacity="0.3"/>
+
+    <!-- Body / Pink coat -->
+    <ellipse cx="0" cy="25" rx="18" ry="24" fill="url(#ss-coatGrad)"/>
+    <!-- Coat fur trim at bottom -->
+    <ellipse cx="0" cy="42" rx="18" ry="5" fill="#ffffff" opacity="0.8"/>
+
+    <!-- Arms -->
+    <line x1="-16" y1="18" x2="-28" y2="30" stroke="#ff69b4" stroke-width="7" stroke-linecap="round"/>
+    <line x1="16" y1="18" x2="28" y2="30" stroke="#ff69b4" stroke-width="7" stroke-linecap="round"/>
+    <!-- Mittens -->
+    <circle cx="-28" cy="32" r="5" fill="#ff4488"/>
+    <circle cx="28" cy="32" r="5" fill="#ff4488"/>
+
+    <!-- Scarf -->
+    <ellipse cx="0" cy="5" rx="14" ry="5" fill="#44ccff"/>
+    <g class="ss-scarf-end" transform="translate(10, 5)">
+      <path d="M 0 0 Q 5 8 3 18 Q 1 22 4 26" stroke="#44ccff" stroke-width="6" fill="none" stroke-linecap="round"/>
+    </g>
+
+    <!-- Head -->
+    <circle cx="0" cy="-12" r="16" fill="#d4a574"/>
+    <!-- Cheeks -->
+    <circle cx="-9" cy="-6" r="4" fill="#ffb6c1" opacity="0.5"/>
+    <circle cx="9" cy="-6" r="4" fill="#ffb6c1" opacity="0.5"/>
+
+    <!-- Eyes -->
+    <circle cx="-5" cy="-14" r="4" fill="#ffffff"/>
+    <circle cx="5" cy="-14" r="4" fill="#ffffff"/>
+    <circle cx="-5" cy="-13" r="2.8" fill="#3a2a1a"/>
+    <circle cx="5" cy="-13" r="2.8" fill="#3a2a1a"/>
+    <circle cx="-4" cy="-14.5" r="1.2" fill="#ffffff" opacity="0.9"/>
+    <circle cx="6" cy="-14.5" r="1.2" fill="#ffffff" opacity="0.9"/>
+
+    <!-- Smile -->
+    <path d="M -4 -7 Q 0 -3 4 -7" stroke="#5a3a2a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+
+    <!-- Hair - dark brown -->
+    <ellipse cx="0" cy="-20" rx="17" ry="10" fill="#3a2a1a"/>
+    <ellipse cx="-12" cy="-14" rx="6" ry="10" fill="#3a2a1a"/>
+    <ellipse cx="12" cy="-14" rx="6" ry="10" fill="#3a2a1a"/>
+
+    <!-- Winter hat -->
+    <ellipse cx="0" cy="-22" rx="16" ry="10" fill="#ff69b4"/>
+    <ellipse cx="0" cy="-28" rx="12" ry="8" fill="#ff4488"/>
+    <circle cx="0" cy="-35" r="5" fill="#ffffff"/>
+    <!-- Hat fur trim -->
+    <ellipse cx="0" cy="-15" rx="17" ry="4" fill="#ffffff" opacity="0.85"/>
+  </g>
+
+  <!-- Seal pup -->
+  <g class="ss-seal-group" transform="translate(290, 365)">
+    <!-- Body -->
+    <ellipse cx="0" cy="15" rx="30" ry="20" fill="url(#ss-sealBody)"/>
+    <!-- Belly -->
+    <ellipse cx="0" cy="20" rx="22" ry="13" fill="url(#ss-sealBelly)" opacity="0.7"/>
+
+    <!-- Tail -->
+    <ellipse cx="-28" cy="22" rx="14" ry="8" fill="#708090" transform="rotate(-20, -28, 22)"/>
+    <ellipse cx="-36" cy="18" rx="8" ry="5" fill="#708090" transform="rotate(15, -36, 18)"/>
+    <ellipse cx="-36" cy="26" rx="8" ry="5" fill="#708090" transform="rotate(-15, -36, 26)"/>
+
+    <!-- Flippers -->
+    <g class="ss-flipper-left" transform="translate(-18, 5)">
+      <ellipse cx="-8" cy="8" rx="5" ry="12" fill="#8090a0" transform="rotate(20)"/>
+    </g>
+    <g class="ss-flipper-right" transform="translate(18, 5)">
+      <ellipse cx="8" cy="8" rx="5" ry="12" fill="#8090a0" transform="rotate(-20)"/>
+    </g>
+
+    <!-- Head -->
+    <circle cx="0" cy="-5" r="18" fill="url(#ss-sealBody)"/>
+    <!-- Lighter face patch -->
+    <ellipse cx="0" cy="0" rx="12" ry="10" fill="#b0c0d0" opacity="0.5"/>
+
+    <!-- Eyes -->
+    <g>
+      <circle cx="-7" cy="-8" r="5.5" fill="#ffffff"/>
+      <circle cx="7" cy="-8" r="5.5" fill="#ffffff"/>
+      <circle cx="-7" cy="-7" r="4" fill="#1a1a2a"/>
+      <circle cx="7" cy="-7" r="4" fill="#1a1a2a"/>
+      <circle cx="-6" cy="-9" r="1.8" fill="#ffffff" opacity="0.9"/>
+      <circle cx="8" cy="-9" r="1.8" fill="#ffffff" opacity="0.9"/>
+      <circle cx="-8" cy="-6" r="0.8" fill="#ffffff" opacity="0.6"/>
+      <circle cx="6" cy="-6" r="0.8" fill="#ffffff" opacity="0.6"/>
+      <!-- Eyelids for blink -->
+      <ellipse class="ss-seal-eyelid" cx="-7" cy="-11" rx="6" ry="4" fill="#8090a0"/>
+      <ellipse class="ss-seal-eyelid" cx="7" cy="-11" rx="6" ry="4" fill="#8090a0"/>
+    </g>
+
+    <!-- Nose -->
+    <ellipse cx="0" cy="2" rx="4" ry="2.5" fill="#3a3a4a"/>
+    <ellipse cx="0" cy="1.5" rx="2" ry="1" fill="#5a5a6a" opacity="0.5"/>
+
+    <!-- Whiskers -->
+    <line x1="-4" y1="3" x2="-18" y2="0" stroke="#c0d0e0" stroke-width="0.8" opacity="0.7"/>
+    <line x1="-4" y1="5" x2="-17" y2="6" stroke="#c0d0e0" stroke-width="0.8" opacity="0.7"/>
+    <line x1="-4" y1="7" x2="-16" y2="10" stroke="#c0d0e0" stroke-width="0.8" opacity="0.6"/>
+    <line x1="4" y1="3" x2="18" y2="0" stroke="#c0d0e0" stroke-width="0.8" opacity="0.7"/>
+    <line x1="4" y1="5" x2="17" y2="6" stroke="#c0d0e0" stroke-width="0.8" opacity="0.7"/>
+    <line x1="4" y1="7" x2="16" y2="10" stroke="#c0d0e0" stroke-width="0.8" opacity="0.6"/>
+
+    <!-- Mouth -->
+    <path d="M -3 5 Q 0 8 3 5" stroke="#3a3a4a" stroke-width="1" fill="none" stroke-linecap="round"/>
+
+    <!-- Rosy cheeks -->
+    <circle cx="-12" cy="0" r="3" fill="#ffb6c1" opacity="0.3"/>
+    <circle cx="12" cy="0" r="3" fill="#ffb6c1" opacity="0.3"/>
+  </g>
+
+  <!-- LAYER 6: Foreground — Snowflakes and sparkles -->
+  <!-- Snowflakes -->
+  <circle class="ss-snow1" cx="50" cy="0" r="2.5" fill="#ffffff" opacity="0.8"/>
+  <circle class="ss-snow2" cx="120" cy="0" r="2" fill="#ffffff" opacity="0.7"/>
+  <circle class="ss-snow3" cx="200" cy="0" r="3" fill="#ffffff" opacity="0.9"/>
+  <circle class="ss-snow4" cx="280" cy="0" r="2" fill="#ffffff" opacity="0.6"/>
+  <circle class="ss-snow5" cx="350" cy="0" r="2.5" fill="#ffffff" opacity="0.8"/>
+  <circle class="ss-snow6" cx="420" cy="0" r="1.8" fill="#ffffff" opacity="0.7"/>
+  <circle class="ss-snow7" cx="470" cy="0" r="2.2" fill="#ffffff" opacity="0.75"/>
+  <circle class="ss-snow8" cx="30" cy="0" r="1.5" fill="#ffffff" opacity="0.65"/>
+  <circle class="ss-snow9" cx="160" cy="0" r="2.8" fill="#ffffff" opacity="0.85"/>
+  <circle class="ss-snow10" cx="320" cy="0" r="1.8" fill="#ffffff" opacity="0.7"/>
+  <circle class="ss-snow11" cx="90" cy="0" r="2.2" fill="#e8f0ff" opacity="0.6"/>
+  <circle class="ss-snow12" cx="490" cy="0" r="2" fill="#e8f0ff" opacity="0.7"/>
+
+  <!-- Foreground snow mound -->
+  <ellipse cx="60" cy="490" rx="90" ry="35" fill="#e8f0ff" opacity="0.7"/>
+  <ellipse cx="460" cy="495" rx="80" ry="30" fill="#e8f0ff" opacity="0.7"/>
+
+  <!-- Small sparkle dots on snow (frost effect) -->
+  <circle cx="150" cy="390" r="1" fill="#ffffff" opacity="0.6" filter="url(#ss-softGlow)"/>
+  <circle cx="220" cy="410" r="1" fill="#ffffff" opacity="0.5" filter="url(#ss-softGlow)"/>
+  <circle cx="330" cy="400" r="1.2" fill="#ffffff" opacity="0.6" filter="url(#ss-softGlow)"/>
+  <circle cx="180" cy="420" r="0.8" fill="#ffffff" opacity="0.5" filter="url(#ss-softGlow)"/>
+  <circle cx="350" cy="415" r="1" fill="#ffffff" opacity="0.55" filter="url(#ss-softGlow)"/>
+  <circle cx="270" cy="395" r="0.9" fill="#ffffff" opacity="0.5" filter="url(#ss-softGlow)"/>
+
+  <!-- LAYER 7: Vignette overlay -->
+  <rect width="512" height="512" fill="url(#ss-vignette)" opacity="0.4"/>
+</svg>

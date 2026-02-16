@@ -42,6 +42,21 @@ export default function ContentCard({ content, onClick }) {
     }
   };
 
+  // Derive age group label from age_group or target_age
+  const getAgeLabel = () => {
+    if (content.age_group) return content.age_group;
+    const age = content.target_age;
+    if (age == null) return null;
+    if (age <= 1) return '0-1';
+    if (age <= 3) return '1-3';
+    if (age <= 5) return '4-5';
+    if (age <= 8) return '6-8';
+    if (age <= 12) return '8-12';
+    return '12+';
+  };
+
+  const ageLabel = getAgeLabel();
+
   const cardContent = (
     <>
       <div className={`${styles.cardArt} ${content.cover ? styles.cardArtWithImage : getTypeColor(content.type)}`}>
@@ -58,6 +73,11 @@ export default function ContentCard({ content, onClick }) {
             {content.type?.toLowerCase() === 'song' && '🎵'}
             {content.type?.toLowerCase() === 'story' && '✨'}
           </div>
+        )}
+        {ageLabel && (
+          <span className={styles.ageBadge}>
+            {ageLabel} yrs
+          </span>
         )}
       </div>
       <div className={styles.cardContent}>

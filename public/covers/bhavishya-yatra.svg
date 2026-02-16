@@ -1,0 +1,715 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Sky gradient -->
+    <linearGradient id="by-skyGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#050510"/>
+      <stop offset="40%" stop-color="#0a0a2e"/>
+      <stop offset="100%" stop-color="#151540"/>
+    </linearGradient>
+
+    <!-- City glow from below -->
+    <radialGradient id="by-cityGlow" cx="50%" cy="85%">
+      <stop offset="0%" stop-color="#00ffcc" stop-opacity="0.12"/>
+      <stop offset="40%" stop-color="#ff00ff" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Neon teal glow -->
+    <radialGradient id="by-neonTealGlow" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#00ffcc" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#00ffcc" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Neon magenta glow -->
+    <radialGradient id="by-neonMagentaGlow" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#ff00ff" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#ff00ff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Hologram gradient -->
+    <linearGradient id="by-holoGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#44ffaa" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#88eeff" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#44ffaa" stop-opacity="0.1"/>
+    </linearGradient>
+
+    <!-- Vehicle trail gradient -->
+    <linearGradient id="by-trailGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffaa44" stop-opacity="0"/>
+      <stop offset="60%" stop-color="#ffaa44" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#ffaa44" stop-opacity="1"/>
+    </linearGradient>
+
+    <linearGradient id="by-trailGradient2" x1="100%" y1="0%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#ff4466" stop-opacity="0"/>
+      <stop offset="60%" stop-color="#ff4466" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#ff4466" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- Building window gradient -->
+    <linearGradient id="by-buildingGrad1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3a3a7e"/>
+      <stop offset="100%" stop-color="#1a1a3e"/>
+    </linearGradient>
+
+    <linearGradient id="by-buildingGrad2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a2a5e"/>
+      <stop offset="100%" stop-color="#1a1a3e"/>
+    </linearGradient>
+
+    <!-- Ground reflection gradient -->
+    <linearGradient id="by-groundGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#151540"/>
+      <stop offset="100%" stop-color="#0a0a20"/>
+    </linearGradient>
+
+    <!-- Vignette -->
+    <radialGradient id="by-vignette">
+      <stop offset="45%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.55"/>
+    </radialGradient>
+
+    <!-- Filters -->
+    <filter id="by-softGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="by-mediumGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="by-strongGlow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="by-heavyBlur">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10"/>
+    </filter>
+  </defs>
+
+  <style>
+    /* === Flying vehicles across sky === */
+    @keyframes by-vehicleFly1 {
+      0% { transform: translateX(-80px); }
+      100% { transform: translateX(600px); }
+    }
+    @keyframes by-vehicleFly2 {
+      0% { transform: translateX(600px); }
+      100% { transform: translateX(-80px); }
+    }
+    @keyframes by-vehicleFly3 {
+      0% { transform: translate(-60px, 0px); }
+      100% { transform: translate(580px, -20px); }
+    }
+
+    /* === Neon sign pulse === */
+    @keyframes by-neonPulse1 {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+    @keyframes by-neonPulse2 {
+      0%, 100% { opacity: 0.4; }
+      40% { opacity: 0.9; }
+      60% { opacity: 0.6; }
+      80% { opacity: 1; }
+    }
+    @keyframes by-neonPulse3 {
+      0%, 100% { opacity: 0.6; }
+      30% { opacity: 1; }
+      70% { opacity: 0.3; }
+    }
+
+    /* === Hologram flicker === */
+    @keyframes by-holoFlicker {
+      0%, 100% { opacity: 0.6; transform: scaleY(1); }
+      10% { opacity: 0.3; transform: scaleY(0.98); }
+      12% { opacity: 0.8; transform: scaleY(1); }
+      50% { opacity: 0.7; transform: scaleY(1.01); }
+      70% { opacity: 0.4; transform: scaleY(0.97); }
+      72% { opacity: 0.9; transform: scaleY(1); }
+    }
+
+    /* === Building window twinkle === */
+    @keyframes by-windowTwinkle1 {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.9; }
+    }
+    @keyframes by-windowTwinkle2 {
+      0%, 100% { opacity: 0.5; }
+      30% { opacity: 1; }
+      70% { opacity: 0.2; }
+    }
+    @keyframes by-windowTwinkle3 {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    /* === Star twinkle === */
+    @keyframes by-starTwinkle1 {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.9; }
+    }
+    @keyframes by-starTwinkle2 {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+    @keyframes by-starTwinkle3 {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.8; }
+    }
+
+    /* === Vehicle light trail fade === */
+    @keyframes by-trailFade1 {
+      0%, 100% { opacity: 0.3; }
+      30% { opacity: 0.8; }
+      60% { opacity: 0.5; }
+      80% { opacity: 0.9; }
+    }
+    @keyframes by-trailFade2 {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.7; }
+    }
+
+    /* === Ground neon reflection pulse === */
+    @keyframes by-groundPulse {
+      0%, 100% { opacity: 0.15; }
+      50% { opacity: 0.3; }
+    }
+
+    /* === Character gentle float === */
+    @keyframes by-kidsFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-3px); }
+    }
+
+    /* Class assignments */
+    .by-vehicle1 {
+      animation: by-vehicleFly1 10s linear infinite;
+    }
+    .by-vehicle2 {
+      animation: by-vehicleFly2 12s linear infinite;
+    }
+    .by-vehicle3 {
+      animation: by-vehicleFly3 8s linear infinite;
+    }
+    .by-neon1 {
+      animation: by-neonPulse1 2.5s ease-in-out infinite;
+    }
+    .by-neon2 {
+      animation: by-neonPulse2 2s ease-in-out infinite 0.4s;
+    }
+    .by-neon3 {
+      animation: by-neonPulse3 3s ease-in-out infinite 0.8s;
+    }
+    .by-holo {
+      animation: by-holoFlicker 3s ease-in-out infinite;
+    }
+    .by-win1 {
+      animation: by-windowTwinkle1 2.5s ease-in-out infinite;
+    }
+    .by-win2 {
+      animation: by-windowTwinkle2 2.8s ease-in-out infinite 0.3s;
+    }
+    .by-win3 {
+      animation: by-windowTwinkle3 2.2s ease-in-out infinite 0.7s;
+    }
+    .by-star1 {
+      animation: by-starTwinkle1 2.5s ease-in-out infinite;
+    }
+    .by-star2 {
+      animation: by-starTwinkle2 3s ease-in-out infinite 0.5s;
+    }
+    .by-star3 {
+      animation: by-starTwinkle3 2.8s ease-in-out infinite 1.1s;
+    }
+    .by-trail1 {
+      animation: by-trailFade1 4s ease-in-out infinite;
+    }
+    .by-trail2 {
+      animation: by-trailFade2 5s ease-in-out infinite 0.6s;
+    }
+    .by-groundGlow {
+      animation: by-groundPulse 4s ease-in-out infinite;
+    }
+    .by-kids {
+      animation: by-kidsFloat 5s ease-in-out infinite;
+    }
+  </style>
+
+  <!-- ============================================ -->
+  <!-- LAYER 1: Background sky/atmosphere           -->
+  <!-- ============================================ -->
+  <rect width="512" height="512" fill="url(#by-skyGradient)"/>
+
+  <!-- Atmospheric city glow from below -->
+  <rect width="512" height="512" fill="url(#by-cityGlow)"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 2: Far background (distant stars)      -->
+  <!-- ============================================ -->
+
+  <!-- Stars -->
+  <circle cx="40" cy="35" r="1.2" fill="#ffffff" class="by-star1"/>
+  <circle cx="95" cy="52" r="0.9" fill="#ccddff" class="by-star2"/>
+  <circle cx="145" cy="28" r="1.4" fill="#ffffff" class="by-star3"/>
+  <circle cx="200" cy="65" r="1" fill="#ffffdd" class="by-star1"/>
+  <circle cx="255" cy="22" r="1.3" fill="#ffffff" class="by-star2"/>
+  <circle cx="310" cy="48" r="0.8" fill="#aaccff" class="by-star3"/>
+  <circle cx="355" cy="30" r="1.1" fill="#ffffff" class="by-star1"/>
+  <circle cx="400" cy="58" r="1.5" fill="#ccddff" class="by-star2"/>
+  <circle cx="455" cy="25" r="1" fill="#ffffdd" class="by-star3"/>
+  <circle cx="480" cy="70" r="1.2" fill="#ffffff" class="by-star1"/>
+  <circle cx="70" cy="90" r="0.9" fill="#ffffff" class="by-star3"/>
+  <circle cx="170" cy="95" r="1.1" fill="#aaccff" class="by-star2"/>
+  <circle cx="270" cy="85" r="0.8" fill="#ffffff" class="by-star1"/>
+  <circle cx="370" cy="92" r="1.3" fill="#ffffdd" class="by-star3"/>
+  <circle cx="440" cy="100" r="1" fill="#ccddff" class="by-star2"/>
+  <circle cx="22" cy="115" r="0.7" fill="#ffffff" class="by-star1"/>
+  <circle cx="130" cy="120" r="1.2" fill="#ffffff" class="by-star2"/>
+  <circle cx="490" cy="45" r="0.9" fill="#ffffff" class="by-star3"/>
+
+  <!-- 4-pointed sparkle stars -->
+  <g class="by-star2" opacity="0.7">
+    <polygon points="120,60 123,66 130,68 123,70 120,76 117,70 110,68 117,66" fill="#88eeff"/>
+  </g>
+  <g class="by-star1" opacity="0.6">
+    <polygon points="340,35 342,40 348,42 342,44 340,49 338,44 332,42 338,40" fill="#ffddaa"/>
+  </g>
+  <g class="by-star3" opacity="0.65">
+    <polygon points="470,80 472,85 478,87 472,89 470,94 468,89 462,87 468,85" fill="#ccddff"/>
+  </g>
+
+  <!-- Distant haze nebula effect -->
+  <ellipse cx="120" cy="100" rx="90" ry="50" fill="#ff00ff" opacity="0.04" filter="url(#by-heavyBlur)"/>
+  <ellipse cx="400" cy="80" rx="80" ry="45" fill="#00ccff" opacity="0.05" filter="url(#by-heavyBlur)"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 3: Mid background (distant buildings)  -->
+  <!-- ============================================ -->
+
+  <!-- Far distant buildings silhouettes -->
+  <rect x="30" y="200" width="22" height="160" fill="#1a1a3e" opacity="0.4"/>
+  <rect x="58" y="220" width="18" height="140" fill="#1a1a3e" opacity="0.35"/>
+  <rect x="82" y="190" width="26" height="170" fill="#1a1a3e" opacity="0.4"/>
+  <rect x="420" y="210" width="20" height="150" fill="#1a1a3e" opacity="0.35"/>
+  <rect x="448" y="195" width="24" height="165" fill="#1a1a3e" opacity="0.4"/>
+  <rect x="478" y="225" width="18" height="135" fill="#1a1a3e" opacity="0.35"/>
+
+  <!-- Distant building windows (dim) -->
+  <rect x="35" y="210" width="3" height="2" fill="#ffd700" opacity="0.2" class="by-win1"/>
+  <rect x="42" y="225" width="3" height="2" fill="#00ccff" opacity="0.15" class="by-win2"/>
+  <rect x="87" y="200" width="3" height="2" fill="#ffd700" opacity="0.2" class="by-win3"/>
+  <rect x="95" y="218" width="3" height="2" fill="#ff00ff" opacity="0.15" class="by-win1"/>
+  <rect x="425" y="220" width="3" height="2" fill="#ffd700" opacity="0.2" class="by-win2"/>
+  <rect x="455" y="205" width="3" height="2" fill="#00ccff" opacity="0.18" class="by-win3"/>
+  <rect x="465" y="230" width="3" height="2" fill="#ffd700" opacity="0.15" class="by-win1"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 4: Middle ground (main city buildings) -->
+  <!-- ============================================ -->
+
+  <!-- === Left building cluster === -->
+  <!-- Tall left tower -->
+  <rect x="20" y="150" width="45" height="230" rx="2" fill="url(#by-buildingGrad1)"/>
+  <!-- Tower top dome -->
+  <ellipse cx="42" cy="150" rx="22" ry="8" fill="#2a2a5e"/>
+  <!-- Antenna -->
+  <line x1="42" y1="142" x2="42" y2="118" stroke="#3a3a7e" stroke-width="2"/>
+  <circle cx="42" cy="116" r="3" fill="#00ffcc" class="by-neon1" filter="url(#by-softGlow)"/>
+
+  <!-- Tower windows -->
+  <rect x="28" y="165" width="4" height="3" fill="#ffd700" class="by-win1"/>
+  <rect x="36" y="165" width="4" height="3" fill="#ffd700" class="by-win2"/>
+  <rect x="48" y="165" width="4" height="3" fill="#00ccff" class="by-win3"/>
+  <rect x="28" y="180" width="4" height="3" fill="#00ccff" class="by-win2"/>
+  <rect x="36" y="180" width="4" height="3" fill="#ffd700" class="by-win1"/>
+  <rect x="48" y="180" width="4" height="3" fill="#ffd700" class="by-win3"/>
+  <rect x="28" y="195" width="4" height="3" fill="#ffd700" class="by-win3"/>
+  <rect x="36" y="195" width="4" height="3" fill="#00ccff" class="by-win2"/>
+  <rect x="48" y="195" width="4" height="3" fill="#ffd700" class="by-win1"/>
+  <rect x="28" y="210" width="4" height="3" fill="#ffd700" class="by-win1"/>
+  <rect x="36" y="210" width="4" height="3" fill="#ffd700" class="by-win3"/>
+  <rect x="48" y="210" width="4" height="3" fill="#00ccff" class="by-win2"/>
+  <rect x="28" y="225" width="4" height="3" fill="#00ccff" class="by-win2"/>
+  <rect x="36" y="225" width="4" height="3" fill="#ffd700" class="by-win1"/>
+  <rect x="48" y="225" width="4" height="3" fill="#ffd700" class="by-win3"/>
+  <rect x="28" y="240" width="4" height="3" fill="#ffd700" class="by-win3"/>
+  <rect x="36" y="240" width="4" height="3" fill="#ffd700" class="by-win2"/>
+  <rect x="48" y="240" width="4" height="3" fill="#00ccff" class="by-win1"/>
+
+  <!-- Neon strip on left tower -->
+  <rect x="20" y="255" width="45" height="2" fill="#00ffcc" class="by-neon1" filter="url(#by-softGlow)"/>
+  <rect x="20" y="300" width="45" height="2" fill="#ff00ff" class="by-neon2" filter="url(#by-softGlow)"/>
+
+  <!-- Second left building (shorter, wider) -->
+  <rect x="70" y="200" width="55" height="180" rx="2" fill="url(#by-buildingGrad2)"/>
+  <!-- Roof structure -->
+  <polygon points="70,200 97,175 125,200" fill="#2a2a5e"/>
+  <!-- Roof beacon -->
+  <circle cx="97" cy="178" r="4" fill="#ff00ff" class="by-neon2" filter="url(#by-softGlow)"/>
+
+  <!-- Windows -->
+  <rect x="78" y="212" width="4" height="3" fill="#ffd700" class="by-win2"/>
+  <rect x="88" y="212" width="4" height="3" fill="#ffd700" class="by-win3"/>
+  <rect x="98" y="212" width="4" height="3" fill="#00ccff" class="by-win1"/>
+  <rect x="108" y="212" width="4" height="3" fill="#ffd700" class="by-win2"/>
+  <rect x="78" y="227" width="4" height="3" fill="#00ccff" class="by-win1"/>
+  <rect x="88" y="227" width="4" height="3" fill="#ffd700" class="by-win2"/>
+  <rect x="98" y="227" width="4" height="3" fill="#ffd700" class="by-win3"/>
+  <rect x="108" y="227" width="4" height="3" fill="#00ccff" class="by-win1"/>
+  <rect x="78" y="242" width="4" height="3" fill="#ffd700" class="by-win3"/>
+  <rect x="88" y="242" width="4" height="3" fill="#00ccff" class="by-win1"/>
+  <rect x="98" y="242" width="4" height="3" fill="#ffd700" class="by-win2"/>
+  <rect x="108" y="242" width="4" height="3" fill="#ffd700" class="by-win3"/>
+  <rect x="78" y="257" width="4" height="3" fill="#ffd700" class="by-win1"/>
+  <rect x="88" y="257" width="4" height="3" fill="#ffd700" class="by-win3"/>
+  <rect x="98" y="257" width="4" height="3" fill="#ffd700" class="by-win2"/>
+  <rect x="108" y="257" width="4" height="3" fill="#00ccff" class="by-win1"/>
+
+  <!-- Neon sign on second building -->
+  <rect x="75" y="270" width="46" height="14" rx="2" fill="#1a1a3e" stroke="#ff00ff" stroke-width="1" class="by-neon3" filter="url(#by-softGlow)"/>
+  <text x="98" y="280" fill="#ff00ff" font-family="sans-serif" font-size="7" text-anchor="middle" class="by-neon3">NEON</text>
+
+  <!-- === Central tall spire === -->
+  <rect x="135" y="120" width="35" height="260" rx="2" fill="#2a2a5e"/>
+  <!-- Spire top -->
+  <polygon points="135,120 152,80 170,120" fill="#3a3a7e"/>
+  <!-- Spire beacon -->
+  <circle cx="152" cy="84" r="5" fill="#00ffcc" class="by-neon1" filter="url(#by-mediumGlow)"/>
+
+  <!-- Spire windows -->
+  <rect x="142" y="135" width="4" height="3" fill="#ffd700" class="by-win1"/>
+  <rect x="153" y="135" width="4" height="3" fill="#00ccff" class="by-win2"/>
+  <rect x="142" y="150" width="4" height="3" fill="#00ccff" class="by-win3"/>
+  <rect x="153" y="150" width="4" height="3" fill="#ffd700" class="by-win1"/>
+  <rect x="142" y="165" width="4" height="3" fill="#ffd700" class="by-win2"/>
+  <rect x="153" y="165" width="4" height="3" fill="#ffd700" class="by-win3"/>
+  <rect x="142" y="180" width="4" height="3" fill="#ffd700" class="by-win1"/>
+  <rect x="153" y="180" width="4" height="3" fill="#00ccff" class="by-win2"/>
+  <rect x="142" y="195" width="4" height="3" fill="#00ccff" class="by-win3"/>
+  <rect x="153" y="195" width="4" height="3" fill="#ffd700" class="by-win1"/>
+
+  <!-- Neon strips on spire -->
+  <rect x="135" y="210" width="35" height="2" fill="#00ccff" class="by-neon2" filter="url(#by-softGlow)"/>
+  <rect x="135" y="260" width="35" height="2" fill="#ff00ff" class="by-neon3" filter="url(#by-softGlow)"/>
+  <rect x="135" y="310" width="35" height="2" fill="#00ffcc" class="by-neon1" filter="url(#by-softGlow)"/>
+
+  <!-- === Right building cluster === -->
+  <!-- Right tall tower -->
+  <rect x="340" y="140" width="42" height="240" rx="2" fill="url(#by-buildingGrad1)"/>
+  <!-- Cylindrical top -->
+  <ellipse cx="361" cy="140" rx="21" ry="7" fill="#3a3a7e"/>
+  <!-- Antenna -->
+  <line x1="361" y1="133" x2="361" y2="108" stroke="#2a2a5e" stroke-width="2"/>
+  <circle cx="361" cy="106" r="4" fill="#ff6b35" class="by-neon3" filter="url(#by-softGlow)"/>
+
+  <!-- Windows -->
+  <rect x="348" y="155" width="4" height="3" fill="#ffd700" class="by-win3"/>
+  <rect x="358" y="155" width="4" height="3" fill="#00ccff" class="by-win1"/>
+  <rect x="368" y="155" width="4" height="3" fill="#ffd700" class="by-win2"/>
+  <rect x="348" y="170" width="4" height="3" fill="#00ccff" class="by-win2"/>
+  <rect x="358" y="170" width="4" height="3" fill="#ffd700" class="by-win3"/>
+  <rect x="368" y="170" width="4" height="3" fill="#ffd700" class="by-win1"/>
+  <rect x="348" y="185" width="4" height="3" fill="#ffd700" class="by-win1"/>
+  <rect x="358" y="185" width="4" height="3" fill="#ffd700" class="by-win2"/>
+  <rect x="368" y="185" width="4" height="3" fill="#00ccff" class="by-win3"/>
+  <rect x="348" y="200" width="4" height="3" fill="#ffd700" class="by-win3"/>
+  <rect x="358" y="200" width="4" height="3" fill="#00ccff" class="by-win1"/>
+  <rect x="368" y="200" width="4" height="3" fill="#ffd700" class="by-win2"/>
+  <rect x="348" y="215" width="4" height="3" fill="#00ccff" class="by-win2"/>
+  <rect x="358" y="215" width="4" height="3" fill="#ffd700" class="by-win3"/>
+  <rect x="368" y="215" width="4" height="3" fill="#ffd700" class="by-win1"/>
+
+  <!-- Neon strips -->
+  <rect x="340" y="230" width="42" height="2" fill="#ff00ff" class="by-neon2" filter="url(#by-softGlow)"/>
+  <rect x="340" y="280" width="42" height="2" fill="#00ccff" class="by-neon1" filter="url(#by-softGlow)"/>
+
+  <!-- Second right building -->
+  <rect x="388" y="180" width="50" height="200" rx="2" fill="url(#by-buildingGrad2)"/>
+  <!-- Roof ridge -->
+  <polygon points="388,180 413,158 438,180" fill="#2a2a5e"/>
+  <circle cx="413" cy="162" r="3" fill="#ff00ff" class="by-neon3" filter="url(#by-softGlow)"/>
+
+  <!-- Windows -->
+  <rect x="396" y="195" width="4" height="3" fill="#ffd700" class="by-win1"/>
+  <rect x="406" y="195" width="4" height="3" fill="#00ccff" class="by-win2"/>
+  <rect x="416" y="195" width="4" height="3" fill="#ffd700" class="by-win3"/>
+  <rect x="426" y="195" width="4" height="3" fill="#ffd700" class="by-win1"/>
+  <rect x="396" y="210" width="4" height="3" fill="#00ccff" class="by-win3"/>
+  <rect x="406" y="210" width="4" height="3" fill="#ffd700" class="by-win1"/>
+  <rect x="416" y="210" width="4" height="3" fill="#ffd700" class="by-win2"/>
+  <rect x="426" y="210" width="4" height="3" fill="#00ccff" class="by-win3"/>
+  <rect x="396" y="225" width="4" height="3" fill="#ffd700" class="by-win2"/>
+  <rect x="406" y="225" width="4" height="3" fill="#ffd700" class="by-win3"/>
+  <rect x="416" y="225" width="4" height="3" fill="#00ccff" class="by-win1"/>
+  <rect x="426" y="225" width="4" height="3" fill="#ffd700" class="by-win2"/>
+
+  <!-- Neon sign on right building -->
+  <rect x="392" y="240" width="40" height="14" rx="2" fill="#1a1a3e" stroke="#00ffcc" stroke-width="1" class="by-neon1" filter="url(#by-softGlow)"/>
+  <text x="412" y="250" fill="#00ffcc" font-family="sans-serif" font-size="6" text-anchor="middle" class="by-neon1">FUTURE</text>
+
+  <!-- Far right tower -->
+  <rect x="445" y="170" width="38" height="210" rx="2" fill="#1a1a3e"/>
+  <rect x="445" y="170" width="38" height="3" fill="#00ffcc" class="by-neon2" filter="url(#by-softGlow)"/>
+  <rect x="453" y="185" width="4" height="3" fill="#ffd700" class="by-win1"/>
+  <rect x="463" y="185" width="4" height="3" fill="#00ccff" class="by-win3"/>
+  <rect x="473" y="185" width="4" height="3" fill="#ffd700" class="by-win2"/>
+  <rect x="453" y="200" width="4" height="3" fill="#00ccff" class="by-win2"/>
+  <rect x="463" y="200" width="4" height="3" fill="#ffd700" class="by-win1"/>
+  <rect x="473" y="200" width="4" height="3" fill="#ffd700" class="by-win3"/>
+  <rect x="453" y="215" width="4" height="3" fill="#ffd700" class="by-win3"/>
+  <rect x="463" y="215" width="4" height="3" fill="#ffd700" class="by-win2"/>
+  <rect x="473" y="215" width="4" height="3" fill="#00ccff" class="by-win1"/>
+
+  <!-- === Holographic display (between buildings) === -->
+  <g class="by-holo" transform="translate(180, 180)">
+    <!-- Hologram projection base -->
+    <rect x="0" y="80" width="30" height="3" fill="#44ffaa" opacity="0.5"/>
+    <!-- Holographic display -->
+    <rect x="2" y="20" width="26" height="55" rx="2" fill="url(#by-holoGradient)" opacity="0.5"/>
+    <!-- Hologram scanlines -->
+    <line x1="4" y1="30" x2="26" y2="30" stroke="#88eeff" stroke-width="0.5" opacity="0.6"/>
+    <line x1="4" y1="40" x2="26" y2="40" stroke="#88eeff" stroke-width="0.5" opacity="0.5"/>
+    <line x1="4" y1="50" x2="26" y2="50" stroke="#88eeff" stroke-width="0.5" opacity="0.6"/>
+    <line x1="4" y1="60" x2="26" y2="60" stroke="#88eeff" stroke-width="0.5" opacity="0.5"/>
+    <!-- Hologram content (abstract shape) -->
+    <circle cx="15" cy="42" r="8" fill="none" stroke="#44ffaa" stroke-width="1" opacity="0.7"/>
+    <polygon points="15,34 20,46 10,46" fill="#88eeff" opacity="0.3"/>
+  </g>
+
+  <!-- Second hologram on right side -->
+  <g class="by-holo" style="animation-delay: 1.2s;" transform="translate(300, 200)">
+    <rect x="0" y="60" width="25" height="3" fill="#44ffaa" opacity="0.4"/>
+    <rect x="1" y="15" width="23" height="40" rx="2" fill="url(#by-holoGradient)" opacity="0.4"/>
+    <line x1="3" y1="25" x2="22" y2="25" stroke="#88eeff" stroke-width="0.5" opacity="0.5"/>
+    <line x1="3" y1="35" x2="22" y2="35" stroke="#88eeff" stroke-width="0.5" opacity="0.4"/>
+    <line x1="3" y1="45" x2="22" y2="45" stroke="#88eeff" stroke-width="0.5" opacity="0.5"/>
+    <rect x="6" y="22" width="13" height="8" rx="1" fill="#44ffaa" opacity="0.3"/>
+  </g>
+
+  <!-- === Flying vehicles with light trails === -->
+
+  <!-- Vehicle 1: moving left to right (upper sky) -->
+  <g class="by-vehicle1">
+    <!-- Light trail -->
+    <rect x="-70" y="128" width="70" height="2" fill="url(#by-trailGradient1)" class="by-trail1" filter="url(#by-softGlow)"/>
+    <!-- Vehicle body -->
+    <ellipse cx="5" cy="127" rx="8" ry="4" fill="#ffaa44"/>
+    <ellipse cx="5" cy="127" rx="5" ry="2.5" fill="#ffd700" opacity="0.7"/>
+    <!-- Vehicle glow -->
+    <circle cx="5" cy="127" r="6" fill="#ffaa44" opacity="0.3" filter="url(#by-softGlow)"/>
+  </g>
+
+  <!-- Vehicle 2: moving right to left (mid sky) -->
+  <g class="by-vehicle2">
+    <!-- Light trail -->
+    <rect x="5" y="168" width="65" height="2" fill="url(#by-trailGradient2)" class="by-trail2" filter="url(#by-softGlow)"/>
+    <!-- Vehicle body -->
+    <ellipse cx="0" cy="167" rx="7" ry="3.5" fill="#ff4466"/>
+    <ellipse cx="0" cy="167" rx="4" ry="2" fill="#ff8899" opacity="0.7"/>
+    <!-- Vehicle glow -->
+    <circle cx="0" cy="167" r="5" fill="#ff4466" opacity="0.3" filter="url(#by-softGlow)"/>
+  </g>
+
+  <!-- Vehicle 3: fast diagonal (lower) -->
+  <g class="by-vehicle3">
+    <!-- Light trail -->
+    <rect x="-55" y="103" width="55" height="1.5" fill="url(#by-trailGradient1)" class="by-trail1" filter="url(#by-softGlow)"/>
+    <!-- Vehicle body -->
+    <ellipse cx="3" cy="102" rx="6" ry="3" fill="#ffaa44"/>
+    <ellipse cx="3" cy="102" rx="3.5" ry="1.8" fill="#ffe066" opacity="0.8"/>
+    <circle cx="3" cy="102" r="4" fill="#ffaa44" opacity="0.25" filter="url(#by-softGlow)"/>
+  </g>
+
+  <!-- === Neon accent lights on building edges === -->
+  <!-- Vertical neon strips -->
+  <rect x="65" y="200" width="1.5" height="180" fill="#00ffcc" opacity="0.4" class="by-neon1"/>
+  <rect x="125" y="200" width="1.5" height="180" fill="#00ccff" opacity="0.3" class="by-neon2"/>
+  <rect x="170" y="120" width="1.5" height="260" fill="#ff00ff" opacity="0.3" class="by-neon3"/>
+  <rect x="340" y="140" width="1.5" height="240" fill="#00ccff" opacity="0.3" class="by-neon1"/>
+  <rect x="382" y="140" width="1.5" height="240" fill="#ff00ff" opacity="0.3" class="by-neon2"/>
+  <rect x="438" y="180" width="1.5" height="200" fill="#00ffcc" opacity="0.35" class="by-neon3"/>
+  <rect x="483" y="170" width="1.5" height="210" fill="#00ccff" opacity="0.3" class="by-neon1"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 5: Primary characters (3 kids)         -->
+  <!-- ============================================ -->
+
+  <!-- Ground / platform the kids stand on -->
+  <rect x="0" y="380" width="512" height="132" fill="url(#by-groundGrad)"/>
+
+  <!-- Ground neon reflection strips -->
+  <rect x="40" y="385" width="120" height="1" fill="#00ffcc" opacity="0.2" class="by-groundGlow"/>
+  <rect x="200" y="390" width="100" height="1" fill="#ff00ff" opacity="0.15" class="by-groundGlow" style="animation-delay: 0.5s;"/>
+  <rect x="350" y="383" width="130" height="1" fill="#00ccff" opacity="0.2" class="by-groundGlow" style="animation-delay: 1s;"/>
+
+  <!-- Neon glow pools on ground -->
+  <ellipse cx="150" cy="400" rx="60" ry="8" fill="#00ffcc" opacity="0.06" class="by-groundGlow" filter="url(#by-heavyBlur)"/>
+  <ellipse cx="360" cy="395" rx="50" ry="7" fill="#ff00ff" opacity="0.05" class="by-groundGlow" filter="url(#by-heavyBlur)" style="animation-delay: 0.8s;"/>
+
+  <!-- === 3 Kid silhouettes looking up in wonder === -->
+  <g class="by-kids" transform="translate(256, 380)">
+    <!-- Kid 1 (center, slightly taller - Advait) -->
+    <g transform="translate(0, 0)">
+      <!-- Body -->
+      <ellipse cx="0" cy="0" rx="10" ry="14" fill="#1a1a3e"/>
+      <!-- Head -->
+      <circle cx="0" cy="-20" r="9" fill="#D4A574"/>
+      <!-- Hair -->
+      <ellipse cx="0" cy="-26" rx="9" ry="5" fill="#2c1810"/>
+      <ellipse cx="-4" cy="-24" rx="5" ry="6" fill="#2c1810"/>
+      <ellipse cx="4" cy="-24" rx="5" ry="6" fill="#2c1810"/>
+      <!-- Eyes (looking up) -->
+      <circle cx="-3.5" cy="-21" r="2.5" fill="#FFFFFF"/>
+      <circle cx="3.5" cy="-21" r="2.5" fill="#FFFFFF"/>
+      <circle cx="-3.5" cy="-22.5" r="1.5" fill="#1e3a7a"/>
+      <circle cx="3.5" cy="-22.5" r="1.5" fill="#1e3a7a"/>
+      <circle cx="-3" cy="-23" r="0.6" fill="#FFFFFF" opacity="0.9"/>
+      <circle cx="4" cy="-23" r="0.6" fill="#FFFFFF" opacity="0.9"/>
+      <!-- Open mouth (wonder) -->
+      <ellipse cx="0" cy="-16" rx="2" ry="1.5" fill="#3a2020"/>
+      <!-- Rosy cheeks -->
+      <ellipse cx="-6" cy="-18" rx="2.5" ry="1.5" fill="#FFB6C1" opacity="0.4"/>
+      <ellipse cx="6" cy="-18" rx="2.5" ry="1.5" fill="#FFB6C1" opacity="0.4"/>
+      <!-- Arms raised up/out in wonder -->
+      <line x1="-8" y1="-5" x2="-16" y2="-18" stroke="#D4A574" stroke-width="3" stroke-linecap="round"/>
+      <line x1="8" y1="-5" x2="16" y2="-18" stroke="#D4A574" stroke-width="3" stroke-linecap="round"/>
+      <!-- Hands -->
+      <circle cx="-17" cy="-19" r="2" fill="#D4A574"/>
+      <circle cx="17" cy="-19" r="2" fill="#D4A574"/>
+      <!-- Legs -->
+      <line x1="-4" y1="12" x2="-5" y2="24" stroke="#1a1a3e" stroke-width="4" stroke-linecap="round"/>
+      <line x1="4" y1="12" x2="5" y2="24" stroke="#1a1a3e" stroke-width="4" stroke-linecap="round"/>
+      <!-- Shoes -->
+      <ellipse cx="-6" cy="26" rx="4" ry="2" fill="#2a2a5e"/>
+      <ellipse cx="6" cy="26" rx="4" ry="2" fill="#2a2a5e"/>
+      <!-- Jacket accent (neon stripe) -->
+      <rect x="-10" y="-8" width="20" height="1.5" fill="#00ffcc" opacity="0.5"/>
+    </g>
+
+    <!-- Kid 2 (left, slightly shorter) -->
+    <g transform="translate(-35, 5)">
+      <!-- Body -->
+      <ellipse cx="0" cy="0" rx="9" ry="12" fill="#1a1a3e"/>
+      <!-- Head -->
+      <circle cx="0" cy="-17" r="8" fill="#f4b5a0"/>
+      <!-- Hair (ponytail style) -->
+      <ellipse cx="0" cy="-23" rx="8" ry="4" fill="#4a2010"/>
+      <ellipse cx="6" cy="-20" rx="3" ry="7" fill="#4a2010"/>
+      <!-- Eyes (looking up right) -->
+      <circle cx="-3" cy="-18" r="2.2" fill="#FFFFFF"/>
+      <circle cx="3" cy="-18" r="2.2" fill="#FFFFFF"/>
+      <circle cx="-2.5" cy="-19.5" r="1.3" fill="#2e5a3a"/>
+      <circle cx="3.5" cy="-19.5" r="1.3" fill="#2e5a3a"/>
+      <circle cx="-2" cy="-20" r="0.5" fill="#FFFFFF" opacity="0.9"/>
+      <circle cx="4" cy="-20" r="0.5" fill="#FFFFFF" opacity="0.9"/>
+      <!-- Smile -->
+      <path d="M -2.5,-13.5 Q 0,-11.5 2.5,-13.5" fill="none" stroke="#8b4040" stroke-width="0.8" stroke-linecap="round"/>
+      <!-- Cheeks -->
+      <ellipse cx="-5" cy="-15" rx="2" ry="1.2" fill="#FFB6C1" opacity="0.4"/>
+      <ellipse cx="5" cy="-15" rx="2" ry="1.2" fill="#FFB6C1" opacity="0.4"/>
+      <!-- Arms (one pointing up) -->
+      <line x1="-7" y1="-3" x2="-13" y2="-12" stroke="#f4b5a0" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="7" y1="-3" x2="14" y2="-16" stroke="#f4b5a0" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="15" cy="-17" r="1.8" fill="#f4b5a0"/>
+      <!-- Legs -->
+      <line x1="-3" y1="10" x2="-4" y2="21" stroke="#1a1a3e" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="3" y1="10" x2="4" y2="21" stroke="#1a1a3e" stroke-width="3.5" stroke-linecap="round"/>
+      <!-- Shoes -->
+      <ellipse cx="-5" cy="23" rx="3.5" ry="1.8" fill="#3a3a7e"/>
+      <ellipse cx="5" cy="23" rx="3.5" ry="1.8" fill="#3a3a7e"/>
+      <!-- Jacket accent -->
+      <rect x="-9" y="-6" width="18" height="1.5" fill="#ff00ff" opacity="0.4"/>
+    </g>
+
+    <!-- Kid 3 (right, medium height) -->
+    <g transform="translate(38, 3)">
+      <!-- Body -->
+      <ellipse cx="0" cy="0" rx="9" ry="13" fill="#1a1a3e"/>
+      <!-- Head -->
+      <circle cx="0" cy="-18" r="8.5" fill="#e8c89c"/>
+      <!-- Hair (curly/messy) -->
+      <circle cx="-4" cy="-24" rx="4" ry="4" fill="#1a0f08"/>
+      <circle cx="3" cy="-25" rx="4.5" ry="3.5" fill="#1a0f08"/>
+      <circle cx="0" cy="-26" rx="5" ry="3" fill="#1a0f08"/>
+      <circle cx="-6" cy="-22" rx="3" ry="4" fill="#1a0f08"/>
+      <circle cx="6" cy="-22" rx="3" ry="4" fill="#1a0f08"/>
+      <!-- Eyes (looking up left) -->
+      <circle cx="-3" cy="-19" r="2.3" fill="#FFFFFF"/>
+      <circle cx="3" cy="-19" r="2.3" fill="#FFFFFF"/>
+      <circle cx="-3.5" cy="-20.5" r="1.4" fill="#5a3a1e"/>
+      <circle cx="2.5" cy="-20.5" r="1.4" fill="#5a3a1e"/>
+      <circle cx="-3" cy="-21" r="0.5" fill="#FFFFFF" opacity="0.9"/>
+      <circle cx="3" cy="-21" r="0.5" fill="#FFFFFF" opacity="0.9"/>
+      <!-- Open mouth (awe) -->
+      <ellipse cx="0" cy="-14" rx="1.8" ry="1.2" fill="#3a2020"/>
+      <!-- Cheeks -->
+      <ellipse cx="-5.5" cy="-16" rx="2.2" ry="1.3" fill="#FFB6C1" opacity="0.4"/>
+      <ellipse cx="5.5" cy="-16" rx="2.2" ry="1.3" fill="#FFB6C1" opacity="0.4"/>
+      <!-- Arms -->
+      <line x1="-7" y1="-4" x2="-15" y2="-14" stroke="#e8c89c" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="7" y1="-4" x2="12" y2="2" stroke="#e8c89c" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="-16" cy="-15" r="1.8" fill="#e8c89c"/>
+      <!-- Legs -->
+      <line x1="-3" y1="11" x2="-4" y2="22" stroke="#1a1a3e" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="3" y1="11" x2="4" y2="22" stroke="#1a1a3e" stroke-width="3.5" stroke-linecap="round"/>
+      <!-- Shoes -->
+      <ellipse cx="-5" cy="24" rx="3.5" ry="1.8" fill="#2a2a5e"/>
+      <ellipse cx="5" cy="24" rx="3.5" ry="1.8" fill="#2a2a5e"/>
+      <!-- Jacket accent -->
+      <rect x="-9" y="-7" width="18" height="1.5" fill="#00ccff" opacity="0.4"/>
+    </g>
+
+    <!-- Character shadow on ground -->
+    <ellipse cx="0" cy="30" rx="50" ry="4" fill="#000000" opacity="0.25"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 6: Foreground (sparkles, particles)    -->
+  <!-- ============================================ -->
+
+  <!-- Floating neon particles -->
+  <circle cx="60" cy="340" r="1.5" fill="#00ffcc" class="by-neon1" opacity="0.6" filter="url(#by-softGlow)"/>
+  <circle cx="130" cy="320" r="1" fill="#ff00ff" class="by-neon2" opacity="0.5" filter="url(#by-softGlow)"/>
+  <circle cx="380" cy="335" r="1.3" fill="#00ccff" class="by-neon3" opacity="0.55" filter="url(#by-softGlow)"/>
+  <circle cx="450" cy="310" r="1" fill="#00ffcc" class="by-neon1" opacity="0.5" filter="url(#by-softGlow)"/>
+  <circle cx="200" cy="350" r="1.2" fill="#ff00ff" class="by-neon2" opacity="0.45" filter="url(#by-softGlow)"/>
+  <circle cx="320" cy="345" r="0.9" fill="#ff6b35" class="by-neon3" opacity="0.5" filter="url(#by-softGlow)"/>
+
+  <!-- Foreground sparkle stars (neon colored) -->
+  <g class="by-star1" opacity="0.8">
+    <polygon points="75,290 78,296 85,298 78,300 75,306 72,300 65,298 72,296" fill="#00ffcc" filter="url(#by-softGlow)"/>
+  </g>
+  <g class="by-star2" opacity="0.7">
+    <polygon points="440,270 442,275 448,277 442,279 440,284 438,279 432,277 438,275" fill="#ff00ff" filter="url(#by-softGlow)"/>
+  </g>
+  <g class="by-star3" opacity="0.75">
+    <polygon points="255,300 257,305 263,307 257,309 255,314 253,309 247,307 253,305" fill="#88eeff" filter="url(#by-softGlow)"/>
+  </g>
+
+  <!-- Ground level light streaks (road lights) -->
+  <line x1="0" y1="395" x2="180" y2="395" stroke="#00ffcc" stroke-width="0.8" opacity="0.15" class="by-groundGlow"/>
+  <line x1="330" y1="392" x2="512" y2="392" stroke="#ff00ff" stroke-width="0.8" opacity="0.12" class="by-groundGlow" style="animation-delay: 0.6s;"/>
+
+  <!-- Subtle upward light beams from city -->
+  <polygon points="152,120 148,60 156,60" fill="#00ffcc" opacity="0.04"/>
+  <polygon points="361,140 357,80 365,80" fill="#ff00ff" opacity="0.035"/>
+  <polygon points="42,150 38,90 46,90" fill="#00ccff" opacity="0.03"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 7: Vignette overlay                    -->
+  <!-- ============================================ -->
+  <rect width="512" height="512" fill="url(#by-vignette)" opacity="0.4"/>
+</svg>

@@ -1,0 +1,544 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Sky gradient: deep purple to violet with sunset warmth -->
+    <linearGradient id="fi-skyGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a0a3e"/>
+      <stop offset="30%" stop-color="#3a1a6e"/>
+      <stop offset="55%" stop-color="#5a2a8e"/>
+      <stop offset="75%" stop-color="#7a3a6e"/>
+      <stop offset="100%" stop-color="#1a4a7a"/>
+    </linearGradient>
+
+    <!-- Sunset glow radial -->
+    <radialGradient id="fi-sunsetGlow" cx="75%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#ff6b35" stop-opacity="0.45"/>
+      <stop offset="40%" stop-color="#ffaa44" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#5a2a8e" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Ocean gradient -->
+    <linearGradient id="fi-oceanGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a4a7a"/>
+      <stop offset="50%" stop-color="#2a5a8a"/>
+      <stop offset="100%" stop-color="#0e3058"/>
+    </linearGradient>
+
+    <!-- Island top gradient -->
+    <linearGradient id="fi-islandTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3da05a"/>
+      <stop offset="100%" stop-color="#2d8a4a"/>
+    </linearGradient>
+
+    <!-- Island rock underside -->
+    <linearGradient id="fi-islandRock" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6b5040"/>
+      <stop offset="50%" stop-color="#503828"/>
+      <stop offset="100%" stop-color="#3a2818"/>
+    </linearGradient>
+
+    <!-- Rainbow bridge gradient -->
+    <linearGradient id="fi-rainbowBridge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ff4444"/>
+      <stop offset="20%" stop-color="#ffaa44"/>
+      <stop offset="40%" stop-color="#ffff44"/>
+      <stop offset="60%" stop-color="#44ff44"/>
+      <stop offset="80%" stop-color="#4488ff"/>
+      <stop offset="100%" stop-color="#aa44ff"/>
+    </linearGradient>
+
+    <!-- Waterfall gradient -->
+    <linearGradient id="fi-waterfallGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#88ccff" stop-opacity="0.9"/>
+      <stop offset="50%" stop-color="#aaddff" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#88ccff" stop-opacity="0.2"/>
+    </linearGradient>
+
+    <!-- Character skin tone -->
+    <radialGradient id="fi-skinTone" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#e8c49a"/>
+      <stop offset="100%" stop-color="#d4a878"/>
+    </radialGradient>
+
+    <!-- Character hair -->
+    <radialGradient id="fi-hairGrad" cx="40%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#2a1a0a"/>
+      <stop offset="100%" stop-color="#1a0a00"/>
+    </radialGradient>
+
+    <!-- Vignette -->
+    <radialGradient id="fi-vignette">
+      <stop offset="40%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.5"/>
+    </radialGradient>
+
+    <!-- Cloud gradient -->
+    <radialGradient id="fi-cloudGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e8d0f0" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#c8a0d0" stop-opacity="0.1"/>
+    </radialGradient>
+
+    <!-- Ocean sparkle glow -->
+    <radialGradient id="fi-sparkleGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#88ccff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Soft glow filter (subtle elements) -->
+    <filter id="fi-softGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Medium glow filter (atmospheric effects) -->
+    <filter id="fi-mediumGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Strong glow filter (magical light sources) -->
+    <filter id="fi-strongGlow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    /* === ANIMATION KEYFRAMES === */
+
+    /* 1. Floating islands gentle bob (5-7s, staggered) */
+    @keyframes fi-islandFloat1 {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    @keyframes fi-islandFloat2 {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes fi-islandFloat3 {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+
+    /* 2. Waterfall cascade shimmer (3-4s) */
+    @keyframes fi-waterfallShimmer {
+      0% { opacity: 0.7; transform: translateY(0px); }
+      50% { opacity: 1; transform: translateY(2px); }
+      100% { opacity: 0.7; transform: translateY(0px); }
+    }
+    @keyframes fi-waterfallDrop {
+      0% { opacity: 0.5; transform: translateY(-4px); }
+      50% { opacity: 0.9; transform: translateY(4px); }
+      100% { opacity: 0.5; transform: translateY(-4px); }
+    }
+
+    /* 3. Rainbow bridge glow pulse (4s) */
+    @keyframes fi-rainbowPulse {
+      0%, 100% { opacity: 0.55; filter: url(#fi-softGlow); }
+      50% { opacity: 0.9; filter: url(#fi-mediumGlow); }
+    }
+
+    /* 4. Ocean sparkle (2.5s) */
+    @keyframes fi-oceanSparkle1 {
+      0%, 100% { opacity: 0.15; transform: scale(0.8); }
+      50% { opacity: 0.9; transform: scale(1.3); }
+    }
+    @keyframes fi-oceanSparkle2 {
+      0%, 100% { opacity: 0.2; transform: scale(0.9); }
+      50% { opacity: 0.85; transform: scale(1.2); }
+    }
+
+    /* 5. Cloud drift (12-15s) */
+    @keyframes fi-cloudDrift1 {
+      0%, 100% { transform: translateX(0px); }
+      50% { transform: translateX(35px); }
+    }
+    @keyframes fi-cloudDrift2 {
+      0%, 100% { transform: translateX(0px); }
+      50% { transform: translateX(-30px); }
+    }
+    @keyframes fi-cloudDrift3 {
+      0%, 100% { transform: translateX(0px); }
+      50% { transform: translateX(25px); }
+    }
+
+    /* 6. Star twinkle (2.5s staggered) */
+    @keyframes fi-starTwinkle1 {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+    @keyframes fi-starTwinkle2 {
+      0%, 100% { opacity: 0.35; }
+      50% { opacity: 0.9; }
+    }
+    @keyframes fi-starTwinkle3 {
+      0%, 100% { opacity: 0.15; }
+      50% { opacity: 0.85; }
+    }
+
+    /* 7. Character gentle breathing */
+    @keyframes fi-girlBreathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.015); }
+    }
+
+    /* 8. Sunset glow pulse */
+    @keyframes fi-sunsetPulse {
+      0%, 100% { opacity: 0.85; }
+      50% { opacity: 1; }
+    }
+
+    /* 9. Wave gentle motion */
+    @keyframes fi-waveMotion {
+      0%, 100% { transform: translateX(0) translateY(0); }
+      25% { transform: translateX(6px) translateY(-1.5px); }
+      50% { transform: translateX(0) translateY(1px); }
+      75% { transform: translateX(-6px) translateY(-1.5px); }
+    }
+  </style>
+
+  <!-- ============================================ -->
+  <!-- LAYER 1: SKY BACKGROUND                     -->
+  <!-- ============================================ -->
+  <g id="fi-layer-sky">
+    <!-- Base sky gradient -->
+    <rect width="512" height="512" fill="url(#fi-skyGradient)"/>
+
+    <!-- Sunset glow overlay -->
+    <rect width="512" height="512" fill="url(#fi-sunsetGlow)" style="animation: fi-sunsetPulse 8s ease-in-out infinite;"/>
+
+    <!-- Warm horizon band -->
+    <ellipse cx="400" cy="260" rx="200" ry="80" fill="#ff6b35" opacity="0.12" filter="url(#fi-strongGlow)"/>
+    <ellipse cx="380" cy="270" rx="160" ry="50" fill="#ffaa44" opacity="0.1" filter="url(#fi-mediumGlow)"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 2: STARS AND CLOUDS                   -->
+  <!-- ============================================ -->
+  <g id="fi-layer-stars-clouds">
+    <!-- Stars scattered across the upper sky -->
+    <circle cx="45" cy="30" r="1.2" fill="#ffffff" style="animation: fi-starTwinkle1 2.5s ease-in-out infinite;"/>
+    <circle cx="120" cy="55" r="1" fill="#ffffff" style="animation: fi-starTwinkle2 2.5s ease-in-out 0.4s infinite;"/>
+    <circle cx="200" cy="20" r="1.4" fill="#ffffff" style="animation: fi-starTwinkle3 2.5s ease-in-out 0.8s infinite;"/>
+    <circle cx="280" cy="45" r="0.9" fill="#ffffff" style="animation: fi-starTwinkle1 2.5s ease-in-out 1.2s infinite;"/>
+    <circle cx="350" cy="25" r="1.1" fill="#ffffff" style="animation: fi-starTwinkle2 2.5s ease-in-out 0.2s infinite;"/>
+    <circle cx="420" cy="50" r="1.3" fill="#ffffff" style="animation: fi-starTwinkle3 2.5s ease-in-out 1.6s infinite;"/>
+    <circle cx="480" cy="30" r="0.8" fill="#ffffff" style="animation: fi-starTwinkle1 2.5s ease-in-out 0.6s infinite;"/>
+    <circle cx="75" cy="80" r="1" fill="#ffffff" style="animation: fi-starTwinkle2 2.5s ease-in-out 1s infinite;"/>
+    <circle cx="160" cy="100" r="1.2" fill="#ffffff" style="animation: fi-starTwinkle3 2.5s ease-in-out 1.4s infinite;"/>
+    <circle cx="310" cy="70" r="0.9" fill="#ffffff" style="animation: fi-starTwinkle1 2.5s ease-in-out 1.8s infinite;"/>
+    <circle cx="460" cy="85" r="1.1" fill="#ffffff" style="animation: fi-starTwinkle2 2.5s ease-in-out 0.3s infinite;"/>
+    <circle cx="30" cy="120" r="0.8" fill="#ffffff" style="animation: fi-starTwinkle3 2.5s ease-in-out 0.9s infinite;"/>
+    <circle cx="240" cy="88" r="1" fill="#ffffff" style="animation: fi-starTwinkle1 2.5s ease-in-out 2.1s infinite;"/>
+    <circle cx="500" cy="110" r="1.2" fill="#ffffff" style="animation: fi-starTwinkle2 2.5s ease-in-out 0.7s infinite;"/>
+    <circle cx="400" cy="95" r="0.7" fill="#ffe8cc" style="animation: fi-starTwinkle3 2.5s ease-in-out 1.5s infinite;"/>
+
+    <!-- Star cross sparkles -->
+    <g filter="url(#fi-softGlow)" style="animation: fi-starTwinkle1 2.5s ease-in-out 0.5s infinite;">
+      <line x1="90" y1="42" x2="90" y2="52" stroke="#ffffff" stroke-width="0.6"/>
+      <line x1="85" y1="47" x2="95" y2="47" stroke="#ffffff" stroke-width="0.6"/>
+    </g>
+    <g filter="url(#fi-softGlow)" style="animation: fi-starTwinkle2 2.5s ease-in-out 1.3s infinite;">
+      <line x1="440" y1="60" x2="440" y2="72" stroke="#ffffff" stroke-width="0.6"/>
+      <line x1="434" y1="66" x2="446" y2="66" stroke="#ffffff" stroke-width="0.6"/>
+    </g>
+
+    <!-- Clouds drifting -->
+    <g style="animation: fi-cloudDrift1 14s ease-in-out infinite;">
+      <ellipse cx="80" cy="130" rx="45" ry="14" fill="url(#fi-cloudGrad)"/>
+      <ellipse cx="65" cy="126" rx="25" ry="10" fill="url(#fi-cloudGrad)"/>
+    </g>
+    <g style="animation: fi-cloudDrift2 12s ease-in-out 2s infinite;">
+      <ellipse cx="360" cy="105" rx="40" ry="12" fill="url(#fi-cloudGrad)"/>
+      <ellipse cx="380" cy="100" rx="28" ry="9" fill="url(#fi-cloudGrad)"/>
+    </g>
+    <g style="animation: fi-cloudDrift3 15s ease-in-out 4s infinite;">
+      <ellipse cx="490" cy="145" rx="35" ry="11" fill="url(#fi-cloudGrad)"/>
+      <ellipse cx="478" cy="140" rx="22" ry="8" fill="url(#fi-cloudGrad)"/>
+    </g>
+    <g style="animation: fi-cloudDrift1 13s ease-in-out 6s infinite;">
+      <ellipse cx="220" cy="118" rx="30" ry="10" fill="url(#fi-cloudGrad)"/>
+    </g>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 3: BACKGROUND FLOATING ISLANDS        -->
+  <!-- ============================================ -->
+  <g id="fi-layer-bg-islands">
+    <!-- Far left small island (background) -->
+    <g style="animation: fi-islandFloat3 7s ease-in-out 1s infinite;">
+      <!-- Rock underside -->
+      <path d="M35,210 Q45,200 75,200 Q85,200 90,210 Q85,245 65,260 Q50,260 40,245 Z" fill="url(#fi-islandRock)" opacity="0.7"/>
+      <!-- Green top -->
+      <ellipse cx="62" cy="202" rx="30" ry="8" fill="url(#fi-islandTop)" opacity="0.7"/>
+      <!-- Tiny trees -->
+      <circle cx="55" cy="195" r="5" fill="#2d8a4a" opacity="0.6"/>
+      <circle cx="68" cy="193" r="4" fill="#3da05a" opacity="0.6"/>
+    </g>
+
+    <!-- Far right distant island -->
+    <g style="animation: fi-islandFloat2 6.5s ease-in-out 2.5s infinite;">
+      <!-- Rock -->
+      <path d="M430,185 Q445,175 470,175 Q485,175 490,185 Q485,215 465,228 Q448,228 435,215 Z" fill="url(#fi-islandRock)" opacity="0.6"/>
+      <!-- Green top -->
+      <ellipse cx="460" cy="178" rx="28" ry="7" fill="url(#fi-islandTop)" opacity="0.6"/>
+      <!-- Tree -->
+      <circle cx="455" cy="170" r="5" fill="#2d8a4a" opacity="0.5"/>
+      <circle cx="465" cy="168" r="6" fill="#3da05a" opacity="0.5"/>
+
+      <!-- Small waterfall from this island -->
+      <g style="animation: fi-waterfallShimmer 3.5s ease-in-out infinite;">
+        <path d="M458,228 Q456,260 460,295 Q462,300 457,300 Q452,295 454,260 Q453,240 455,228" fill="url(#fi-waterfallGrad)" opacity="0.4"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 4: MAIN FLOATING ISLANDS + BRIDGES    -->
+  <!-- ============================================ -->
+  <g id="fi-layer-main-islands">
+
+    <!-- === CENTER-LEFT MAIN ISLAND (Kiran stands here) === -->
+    <g style="animation: fi-islandFloat1 6s ease-in-out infinite;">
+      <!-- Rock underside with tapering -->
+      <path d="M100,260 Q120,245 185,240 Q230,240 250,260 Q240,310 210,340 Q180,355 155,350 Q125,340 110,310 Z" fill="url(#fi-islandRock)"/>
+      <!-- Earthy mid-band -->
+      <path d="M105,265 Q125,250 185,245 Q225,245 245,265 Q240,280 220,290 Q180,300 140,290 Q115,280 105,265 Z" fill="#7a6040"/>
+      <!-- Green grassy top surface -->
+      <ellipse cx="175" cy="244" rx="72" ry="16" fill="url(#fi-islandTop)"/>
+      <!-- Grass tufts -->
+      <ellipse cx="140" cy="242" rx="12" ry="4" fill="#45b860"/>
+      <ellipse cx="200" cy="241" rx="10" ry="3.5" fill="#45b860"/>
+
+      <!-- Trees on main island -->
+      <rect x="125" y="216" width="3" height="26" rx="1" fill="#5a4030"/>
+      <circle cx="126" cy="210" r="10" fill="#2d8a4a"/>
+      <circle cx="122" cy="214" r="7" fill="#3da05a"/>
+      <circle cx="131" cy="213" r="6" fill="#258040"/>
+
+      <rect x="148" y="220" width="2.5" height="22" rx="1" fill="#5a4030"/>
+      <circle cx="149" cy="214" r="8" fill="#3da05a"/>
+      <circle cx="145" cy="217" r="5.5" fill="#2d8a4a"/>
+
+      <!-- Small flowers -->
+      <circle cx="195" cy="237" r="2" fill="#ff88aa"/>
+      <circle cx="200" cy="239" r="1.5" fill="#ffaa55"/>
+      <circle cx="160" cy="238" r="1.8" fill="#aa88ff"/>
+
+      <!-- Main waterfall from this island -->
+      <g style="animation: fi-waterfallShimmer 3s ease-in-out infinite;">
+        <path d="M170,340 Q168,370 172,410 Q174,420 168,420 Q162,415 164,380 Q162,360 166,340" fill="url(#fi-waterfallGrad)" opacity="0.75"/>
+        <path d="M173,345 Q176,375 174,415" stroke="#aaddff" stroke-width="1" fill="none" opacity="0.4"/>
+        <path d="M164,348 Q161,378 163,412" stroke="#aaddff" stroke-width="0.8" fill="none" opacity="0.3"/>
+      </g>
+      <!-- Waterfall splash mist -->
+      <g style="animation: fi-waterfallDrop 3.5s ease-in-out 0.5s infinite;">
+        <ellipse cx="170" cy="420" rx="10" ry="3" fill="#88ccff" opacity="0.25" filter="url(#fi-softGlow)"/>
+      </g>
+
+      <!-- === KIRAN (girl character) on island edge === -->
+      <g transform="translate(210, 206)" style="animation: fi-girlBreathe 4s ease-in-out infinite;">
+        <!-- Dress / body (salwar kameez inspired) -->
+        <path d="M-4,14 Q-6,8 -3,4 Q0,0 3,0 Q6,0 9,4 Q12,8 10,14 Q8,22 7,30 L-1,30 Q-3,22 -4,14 Z" fill="#ff6b8a"/>
+        <!-- Dupatta flowing -->
+        <path d="M-3,5 Q-8,8 -10,14 Q-9,18 -6,16 Q-3,12 -1,8 Z" fill="#ffaa44" opacity="0.7"/>
+
+        <!-- Arms reaching forward toward rainbow -->
+        <line x1="-2" y1="10" x2="-8" y2="6" stroke="#d4a878" stroke-width="2" stroke-linecap="round"/>
+        <line x1="8" y1="10" x2="14" y2="5" stroke="#d4a878" stroke-width="2" stroke-linecap="round"/>
+
+        <!-- Head -->
+        <circle cx="3" cy="-4" r="5.5" fill="url(#fi-skinTone)"/>
+
+        <!-- Hair (long, dark, flowing) -->
+        <path d="M-3,-8 Q-4,-12 -1,-14 Q3,-15 6,-13 Q9,-10 9,-6 Q10,-3 9,-1 Q8,0 7,-3 Q6,-6 5,-8 Q3,-10 0,-10 Q-2,-9 -3,-8 Z" fill="url(#fi-hairGrad)"/>
+        <!-- Hair flowing behind -->
+        <path d="M7,-5 Q10,-3 12,2 Q13,6 11,10 Q10,8 10,4 Q9,0 8,-3 Z" fill="#1a0a00" opacity="0.8"/>
+
+        <!-- Eyes (looking right/forward) -->
+        <ellipse cx="1" cy="-5" rx="1.2" ry="1.4" fill="#1a0a00"/>
+        <ellipse cx="5" cy="-5" rx="1.2" ry="1.4" fill="#1a0a00"/>
+        <!-- Eye sparkle -->
+        <circle cx="1.5" cy="-5.5" r="0.4" fill="#ffffff"/>
+        <circle cx="5.5" cy="-5.5" r="0.4" fill="#ffffff"/>
+
+        <!-- Small smile -->
+        <path d="M1.5,-2 Q3,-0.8 4.5,-2" stroke="#c07060" stroke-width="0.5" fill="none"/>
+
+        <!-- Legs -->
+        <line x1="1" y1="30" x2="0" y2="36" stroke="#d4a878" stroke-width="2" stroke-linecap="round"/>
+        <line x1="5" y1="30" x2="6" y2="36" stroke="#d4a878" stroke-width="2" stroke-linecap="round"/>
+        <!-- Shoes -->
+        <ellipse cx="-1" cy="37" rx="2.5" ry="1.2" fill="#8844aa"/>
+        <ellipse cx="7" cy="37" rx="2.5" ry="1.2" fill="#8844aa"/>
+      </g>
+    </g>
+
+    <!-- === CENTER-RIGHT ISLAND === -->
+    <g style="animation: fi-islandFloat2 5.5s ease-in-out 1.5s infinite;">
+      <!-- Rock underside -->
+      <path d="M300,235 Q320,220 370,218 Q400,218 415,235 Q408,280 385,305 Q360,315 340,310 Q318,300 308,275 Z" fill="url(#fi-islandRock)"/>
+      <!-- Earthy band -->
+      <path d="M305,240 Q322,226 370,222 Q396,222 410,240 Q405,255 390,262 Q360,270 330,262 Q312,255 305,240 Z" fill="#7a6040"/>
+      <!-- Green top -->
+      <ellipse cx="358" cy="222" rx="55" ry="14" fill="url(#fi-islandTop)"/>
+      <!-- Grass -->
+      <ellipse cx="340" cy="220" rx="14" ry="4" fill="#45b860"/>
+      <ellipse cx="375" cy="219" rx="10" ry="3.5" fill="#45b860"/>
+
+      <!-- Trees -->
+      <rect x="370" y="195" width="3" height="24" rx="1" fill="#5a4030"/>
+      <circle cx="372" cy="189" r="9" fill="#2d8a4a"/>
+      <circle cx="367" cy="192" r="6" fill="#3da05a"/>
+      <circle cx="377" cy="191" r="5" fill="#258040"/>
+
+      <rect x="390" y="200" width="2.5" height="20" rx="1" fill="#5a4030"/>
+      <circle cx="391" cy="194" r="7" fill="#3da05a"/>
+      <circle cx="387" cy="197" r="5" fill="#2d8a4a"/>
+
+      <!-- Flowers -->
+      <circle cx="335" cy="216" r="2" fill="#ffaa55"/>
+      <circle cx="345" cy="218" r="1.5" fill="#ff88aa"/>
+      <circle cx="355" cy="215" r="2" fill="#88aaff"/>
+
+      <!-- Small magical crystal -->
+      <polygon points="350,207 353,215 347,215" fill="#aa88ff" opacity="0.7" filter="url(#fi-softGlow)"/>
+
+      <!-- Waterfall from right island -->
+      <g style="animation: fi-waterfallShimmer 3.2s ease-in-out 0.8s infinite;">
+        <path d="M345,305 Q343,335 347,380 Q349,390 343,390 Q337,385 339,350 Q337,330 341,305" fill="url(#fi-waterfallGrad)" opacity="0.65"/>
+        <path d="M348,310 Q351,345 349,385" stroke="#aaddff" stroke-width="0.8" fill="none" opacity="0.35"/>
+      </g>
+      <!-- Splash mist -->
+      <g style="animation: fi-waterfallDrop 3.8s ease-in-out 1s infinite;">
+        <ellipse cx="345" cy="392" rx="8" ry="3" fill="#88ccff" opacity="0.2" filter="url(#fi-softGlow)"/>
+      </g>
+    </g>
+
+    <!-- === RAINBOW BRIDGE connecting the two main islands === -->
+    <g style="animation: fi-rainbowPulse 4s ease-in-out infinite;" filter="url(#fi-softGlow)">
+      <!-- Rainbow arc bands (multiple arcs for thickness) -->
+      <path d="M240,240 Q290,185 310,222" stroke="#ff4444" stroke-width="3" fill="none" opacity="0.55"/>
+      <path d="M240,243 Q290,190 310,225" stroke="#ffaa44" stroke-width="2.5" fill="none" opacity="0.55"/>
+      <path d="M240,246 Q290,195 310,228" stroke="#ffff44" stroke-width="2" fill="none" opacity="0.5"/>
+      <path d="M240,249 Q290,200 310,231" stroke="#44ff44" stroke-width="2" fill="none" opacity="0.5"/>
+      <path d="M240,252 Q290,205 310,234" stroke="#4488ff" stroke-width="2" fill="none" opacity="0.5"/>
+      <path d="M240,255 Q290,210 310,237" stroke="#aa44ff" stroke-width="2.5" fill="none" opacity="0.45"/>
+      <!-- Bridge sparkle dots -->
+      <circle cx="270" cy="210" r="1" fill="#ffffff" opacity="0.6"/>
+      <circle cx="280" cy="205" r="0.8" fill="#ffffff" opacity="0.5"/>
+      <circle cx="290" cy="208" r="1.2" fill="#ffffff" opacity="0.55"/>
+    </g>
+
+    <!-- === SMALL RAINBOW BRIDGE to far left island === -->
+    <g style="animation: fi-rainbowPulse 4s ease-in-out 2s infinite;" filter="url(#fi-softGlow)">
+      <path d="M110,248 Q85,215 78,208" stroke="#ff4444" stroke-width="1.8" fill="none" opacity="0.35"/>
+      <path d="M110,250 Q85,218 78,211" stroke="#ffaa44" stroke-width="1.5" fill="none" opacity="0.35"/>
+      <path d="M110,252 Q85,221 78,214" stroke="#44ff44" stroke-width="1.5" fill="none" opacity="0.3"/>
+      <path d="M110,254 Q85,224 78,217" stroke="#4488ff" stroke-width="1.5" fill="none" opacity="0.3"/>
+      <path d="M110,256 Q85,227 78,220" stroke="#aa44ff" stroke-width="1.8" fill="none" opacity="0.25"/>
+    </g>
+
+    <!-- === SMALL RAINBOW BRIDGE to far right island === -->
+    <g style="animation: fi-rainbowPulse 4s ease-in-out 1s infinite;" filter="url(#fi-softGlow)">
+      <path d="M405,228 Q420,200 440,183" stroke="#ff4444" stroke-width="1.5" fill="none" opacity="0.3"/>
+      <path d="M405,230 Q420,203 440,186" stroke="#ffaa44" stroke-width="1.2" fill="none" opacity="0.3"/>
+      <path d="M405,232 Q420,206 440,189" stroke="#44ff44" stroke-width="1.2" fill="none" opacity="0.25"/>
+      <path d="M405,234 Q420,209 440,192" stroke="#4488ff" stroke-width="1.2" fill="none" opacity="0.25"/>
+      <path d="M405,236 Q420,212 440,195" stroke="#aa44ff" stroke-width="1.5" fill="none" opacity="0.2"/>
+    </g>
+
+    <!-- Tiny top island (decorative) -->
+    <g style="animation: fi-islandFloat3 7s ease-in-out 3s infinite;">
+      <path d="M240,155 Q250,148 265,148 Q275,148 278,155 Q275,170 262,178 Q252,178 243,170 Z" fill="url(#fi-islandRock)" opacity="0.5"/>
+      <ellipse cx="258" cy="150" rx="18" ry="5" fill="url(#fi-islandTop)" opacity="0.5"/>
+      <circle cx="255" cy="145" r="4" fill="#2d8a4a" opacity="0.45"/>
+      <circle cx="262" cy="143" r="3" fill="#3da05a" opacity="0.45"/>
+    </g>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 5: OCEAN                              -->
+  <!-- ============================================ -->
+  <g id="fi-layer-ocean">
+    <!-- Ocean body -->
+    <path d="M0,400 Q60,390 128,395 Q200,402 256,392 Q320,385 384,395 Q450,403 512,393 L512,512 L0,512 Z" fill="url(#fi-oceanGradient)"/>
+
+    <!-- Wave highlights -->
+    <g style="animation: fi-waveMotion 7s ease-in-out infinite;">
+      <path d="M0,405 Q64,395 128,402 Q200,410 256,398 Q320,390 384,400 Q450,408 512,397" stroke="#3a7aaa" stroke-width="1" fill="none" opacity="0.4"/>
+    </g>
+    <g style="animation: fi-waveMotion 7s ease-in-out 2s infinite;">
+      <path d="M0,415 Q80,408 160,415 Q240,422 320,412 Q400,405 512,414" stroke="#3a7aaa" stroke-width="0.8" fill="none" opacity="0.3"/>
+    </g>
+    <g style="animation: fi-waveMotion 7s ease-in-out 4s infinite;">
+      <path d="M0,430 Q100,424 200,430 Q300,436 400,428 Q480,422 512,430" stroke="#2a5a8a" stroke-width="0.6" fill="none" opacity="0.25"/>
+    </g>
+
+    <!-- Waterfall landing ripples -->
+    <ellipse cx="170" cy="425" rx="18" ry="3" fill="none" stroke="#88ccff" stroke-width="0.6" opacity="0.3" style="animation: fi-oceanSparkle1 2.5s ease-in-out infinite;"/>
+    <ellipse cx="345" cy="400" rx="14" ry="2.5" fill="none" stroke="#88ccff" stroke-width="0.5" opacity="0.25" style="animation: fi-oceanSparkle2 2.5s ease-in-out 0.5s infinite;"/>
+
+    <!-- Ocean sparkles / reflections -->
+    <circle cx="80" cy="410" r="1.2" fill="url(#fi-sparkleGlow)" style="animation: fi-oceanSparkle1 2.5s ease-in-out infinite;"/>
+    <circle cx="150" cy="440" r="1" fill="url(#fi-sparkleGlow)" style="animation: fi-oceanSparkle2 2.5s ease-in-out 0.6s infinite;"/>
+    <circle cx="220" cy="415" r="1.3" fill="url(#fi-sparkleGlow)" style="animation: fi-oceanSparkle1 2.5s ease-in-out 1.2s infinite;"/>
+    <circle cx="300" cy="425" r="1.1" fill="url(#fi-sparkleGlow)" style="animation: fi-oceanSparkle2 2.5s ease-in-out 0.3s infinite;"/>
+    <circle cx="370" cy="408" r="0.9" fill="url(#fi-sparkleGlow)" style="animation: fi-oceanSparkle1 2.5s ease-in-out 1.8s infinite;"/>
+    <circle cx="430" cy="435" r="1.2" fill="url(#fi-sparkleGlow)" style="animation: fi-oceanSparkle2 2.5s ease-in-out 0.9s infinite;"/>
+    <circle cx="490" cy="418" r="1" fill="url(#fi-sparkleGlow)" style="animation: fi-oceanSparkle1 2.5s ease-in-out 1.5s infinite;"/>
+    <circle cx="50" cy="450" r="0.8" fill="url(#fi-sparkleGlow)" style="animation: fi-oceanSparkle2 2.5s ease-in-out 2s infinite;"/>
+    <circle cx="260" cy="455" r="1.1" fill="url(#fi-sparkleGlow)" style="animation: fi-oceanSparkle1 2.5s ease-in-out 0.4s infinite;"/>
+    <circle cx="340" cy="445" r="0.9" fill="url(#fi-sparkleGlow)" style="animation: fi-oceanSparkle2 2.5s ease-in-out 1.1s infinite;"/>
+    <circle cx="180" cy="465" r="1" fill="url(#fi-sparkleGlow)" style="animation: fi-oceanSparkle1 2.5s ease-in-out 1.7s infinite;"/>
+    <circle cx="410" cy="460" r="1.2" fill="url(#fi-sparkleGlow)" style="animation: fi-oceanSparkle2 2.5s ease-in-out 0.2s infinite;"/>
+
+    <!-- Sunset reflection on water -->
+    <ellipse cx="390" cy="405" rx="60" ry="8" fill="#ff6b35" opacity="0.08" filter="url(#fi-mediumGlow)"/>
+    <ellipse cx="380" cy="420" rx="40" ry="5" fill="#ffaa44" opacity="0.06" filter="url(#fi-softGlow)"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 6: FOREGROUND DETAILS                 -->
+  <!-- ============================================ -->
+  <g id="fi-layer-foreground">
+    <!-- Foreground floating petal/leaf particles -->
+    <circle cx="60" cy="300" r="1.5" fill="#ff88aa" opacity="0.4" style="animation: fi-islandFloat1 5s ease-in-out 0.5s infinite;"/>
+    <circle cx="450" cy="280" r="1.2" fill="#ffaa55" opacity="0.35" style="animation: fi-islandFloat2 6s ease-in-out 1s infinite;"/>
+    <circle cx="256" cy="310" r="1" fill="#aa88ff" opacity="0.3" style="animation: fi-islandFloat3 7s ease-in-out 2s infinite;"/>
+    <circle cx="140" cy="330" r="1.3" fill="#88aaff" opacity="0.3" style="animation: fi-islandFloat1 5.5s ease-in-out 3s infinite;"/>
+    <circle cx="390" cy="320" r="1" fill="#ff88aa" opacity="0.25" style="animation: fi-islandFloat2 6.5s ease-in-out 1.5s infinite;"/>
+
+    <!-- Magical sparkle particles in the air -->
+    <g filter="url(#fi-softGlow)">
+      <circle cx="230" cy="200" r="1" fill="#ffdd88" opacity="0.6" style="animation: fi-starTwinkle1 2.5s ease-in-out 0.3s infinite;"/>
+      <circle cx="290" cy="180" r="0.8" fill="#ffdd88" opacity="0.5" style="animation: fi-starTwinkle2 2.5s ease-in-out 1.1s infinite;"/>
+      <circle cx="175" cy="175" r="0.9" fill="#ffdd88" opacity="0.55" style="animation: fi-starTwinkle3 2.5s ease-in-out 0.7s infinite;"/>
+      <circle cx="350" cy="170" r="1.1" fill="#ffdd88" opacity="0.45" style="animation: fi-starTwinkle1 2.5s ease-in-out 1.9s infinite;"/>
+      <circle cx="120" cy="195" r="0.7" fill="#ffdd88" opacity="0.5" style="animation: fi-starTwinkle2 2.5s ease-in-out 0.5s infinite;"/>
+    </g>
+
+    <!-- Tiny birds/butterflies silhouettes in distance -->
+    <path d="M310,140 Q313,136 316,140 Q319,136 322,140" stroke="#e0c0e0" stroke-width="0.7" fill="none" opacity="0.35"/>
+    <path d="M100,160 Q103,156 106,160 Q109,156 112,160" stroke="#e0c0e0" stroke-width="0.6" fill="none" opacity="0.3"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 7: VIGNETTE AND OVERLAY               -->
+  <!-- ============================================ -->
+  <g id="fi-layer-overlay">
+    <!-- Vignette -->
+    <rect width="512" height="512" fill="url(#fi-vignette)"/>
+
+    <!-- Very subtle overall magical shimmer -->
+    <rect width="512" height="300" fill="#aa88ff" opacity="0.02"/>
+  </g>
+</svg>

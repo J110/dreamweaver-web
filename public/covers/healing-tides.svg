@@ -1,0 +1,617 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- === GRADIENTS === -->
+    <!-- Sky gradient: deep ocean night -->
+    <linearGradient id="ht-skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#050d1a;stop-opacity:1" />
+      <stop offset="45%" style="stop-color:#0a1a3a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#102a4a;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Ocean body gradient -->
+    <linearGradient id="ht-oceanGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d2847;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#143d5c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0a1e3a;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Moon glow -->
+    <radialGradient id="ht-moonGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ffeedd;stop-opacity:0.9" />
+      <stop offset="40%" style="stop-color:#ffd700;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#ffd700;stop-opacity:0" />
+    </radialGradient>
+
+    <!-- Bioluminescent wave glow -->
+    <linearGradient id="ht-bioWaveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00ffcc;stop-opacity:0" />
+      <stop offset="20%" style="stop-color:#00ffcc;stop-opacity:0.6" />
+      <stop offset="50%" style="stop-color:#00e5ff;stop-opacity:0.8" />
+      <stop offset="80%" style="stop-color:#44ffaa;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#00ffcc;stop-opacity:0" />
+    </linearGradient>
+
+    <!-- Jellyfish gradient pink -->
+    <radialGradient id="ht-jellyPink" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" style="stop-color:#ff69b4;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#ff69b4;stop-opacity:0.2" />
+    </radialGradient>
+
+    <!-- Jellyfish gradient purple -->
+    <radialGradient id="ht-jellyPurple" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" style="stop-color:#cc44ff;stop-opacity:0.7" />
+      <stop offset="100%" style="stop-color:#cc44ff;stop-opacity:0.15" />
+    </radialGradient>
+
+    <!-- Tide pool glow -->
+    <radialGradient id="ht-tidePoolGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#00ffcc;stop-opacity:0.7" />
+      <stop offset="50%" style="stop-color:#00e5ff;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#0d2847;stop-opacity:0" />
+    </radialGradient>
+
+    <!-- Coral's skin tone (silhouette approach) -->
+    <linearGradient id="ht-girlSilhouette" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a0a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d0520;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Horizon shimmer -->
+    <linearGradient id="ht-horizonShimmer" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#00e5ff;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#102a4a;stop-opacity:0" />
+    </linearGradient>
+
+    <!-- Sand gradient -->
+    <linearGradient id="ht-sandGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a2a40;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f1a2a;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Wet sand near water -->
+    <linearGradient id="ht-wetSand" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d2040;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0a1830;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- === FILTERS === -->
+    <filter id="ht-softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+      <feMerge>
+        <feMergeNode in="coloredBlur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="ht-mediumGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+      <feMerge>
+        <feMergeNode in="coloredBlur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="ht-strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="coloredBlur" />
+      <feMerge>
+        <feMergeNode in="coloredBlur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Atmospheric haze filter -->
+    <filter id="ht-haze" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="1.5" />
+    </filter>
+  </defs>
+
+  <style>
+    /* === ANIMATION KEYFRAMES === */
+
+    /* 1) Wave gentle roll (6-8s) */
+    @keyframes ht-waveRoll {
+      0%, 100% { transform: translateX(0) translateY(0); }
+      25% { transform: translateX(8px) translateY(-2px); }
+      50% { transform: translateX(-4px) translateY(1px); }
+      75% { transform: translateX(6px) translateY(-1px); }
+    }
+
+    @keyframes ht-waveRoll2 {
+      0%, 100% { transform: translateX(0) translateY(0); }
+      30% { transform: translateX(-6px) translateY(-3px); }
+      60% { transform: translateX(5px) translateY(1px); }
+      80% { transform: translateX(-3px) translateY(-1px); }
+    }
+
+    @keyframes ht-waveRoll3 {
+      0%, 100% { transform: translateX(0) translateY(0); }
+      20% { transform: translateX(5px) translateY(-1.5px); }
+      55% { transform: translateX(-7px) translateY(2px); }
+      80% { transform: translateX(3px) translateY(-1px); }
+    }
+
+    /* 2) Bioluminescent plankton pulse (2-3s staggered) */
+    @keyframes ht-planktonPulse {
+      0%, 100% { opacity: 0.3; r: 1.5; }
+      50% { opacity: 1; r: 2.5; }
+    }
+
+    @keyframes ht-planktonDrift {
+      0%, 100% { opacity: 0.2; transform: translateY(0) translateX(0); }
+      30% { opacity: 0.9; transform: translateY(-3px) translateX(2px); }
+      60% { opacity: 1; transform: translateY(-1px) translateX(-1px); }
+      80% { opacity: 0.5; transform: translateY(1px) translateX(1px); }
+    }
+
+    /* 3) Jellyfish float + pulse (5-7s) */
+    @keyframes ht-jellyFloat {
+      0%, 100% { transform: translateY(0) scaleY(1); }
+      30% { transform: translateY(-8px) scaleY(0.92); }
+      60% { transform: translateY(-3px) scaleY(1.03); }
+      80% { transform: translateY(-6px) scaleY(0.96); }
+    }
+
+    @keyframes ht-jellyFloat2 {
+      0%, 100% { transform: translateY(0) scaleY(1); }
+      25% { transform: translateY(-6px) scaleY(0.95); }
+      55% { transform: translateY(-10px) scaleY(1.02); }
+      75% { transform: translateY(-4px) scaleY(0.97); }
+    }
+
+    @keyframes ht-jellyPulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.85; }
+    }
+
+    @keyframes ht-jellyTentacles {
+      0%, 100% { d: path("M0,0 Q-3,12 -1,24 Q1,30 -2,36"); }
+      50% { d: path("M0,0 Q3,12 1,24 Q-1,30 2,36"); }
+    }
+
+    /* 4) Girl hair sway in breeze (4s) */
+    @keyframes ht-hairSway {
+      0%, 100% { transform: rotate(0deg) skewX(0deg); }
+      25% { transform: rotate(2deg) skewX(3deg); }
+      50% { transform: rotate(-1deg) skewX(-2deg); }
+      75% { transform: rotate(1.5deg) skewX(2deg); }
+    }
+
+    /* Dress / fabric flutter */
+    @keyframes ht-dressSway {
+      0%, 100% { transform: skewX(0deg); }
+      30% { transform: skewX(1.5deg); }
+      60% { transform: skewX(-1deg); }
+      85% { transform: skewX(0.5deg); }
+    }
+
+    /* 5) Star twinkle (2.5s) */
+    @keyframes ht-starTwinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes ht-starTwinkle2 {
+      0%, 100% { opacity: 0.5; }
+      40% { opacity: 0.15; }
+      80% { opacity: 0.9; }
+    }
+
+    /* 6) Tide pool glow pulse (3s) */
+    @keyframes ht-tidePoolPulse {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.08); }
+    }
+
+    @keyframes ht-tidePoolPulse2 {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 0.9; transform: scale(1.05); }
+    }
+
+    /* Bonus: Reaching arm gentle motion */
+    @keyframes ht-armReach {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(2deg); }
+    }
+
+    /* Bonus: Shore foam shimmer */
+    @keyframes ht-foamShimmer {
+      0%, 100% { opacity: 0.15; }
+      50% { opacity: 0.45; }
+    }
+
+    /* Bonus: Moon shimmer */
+    @keyframes ht-moonPulse {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 0.9; transform: scale(1.04); }
+    }
+
+    /* === ANIMATION CLASSES === */
+    .ht-wave1 { animation: ht-waveRoll 7s ease-in-out infinite; }
+    .ht-wave2 { animation: ht-waveRoll2 6s ease-in-out infinite; }
+    .ht-wave3 { animation: ht-waveRoll3 8s ease-in-out infinite; }
+
+    .ht-plankton1 { animation: ht-planktonPulse 2.2s ease-in-out infinite; }
+    .ht-plankton2 { animation: ht-planktonPulse 2.5s ease-in-out infinite 0.3s; }
+    .ht-plankton3 { animation: ht-planktonPulse 2.8s ease-in-out infinite 0.7s; }
+    .ht-plankton4 { animation: ht-planktonDrift 3s ease-in-out infinite 0.1s; }
+    .ht-plankton5 { animation: ht-planktonDrift 2.6s ease-in-out infinite 0.5s; }
+    .ht-plankton6 { animation: ht-planktonDrift 2.9s ease-in-out infinite 0.9s; }
+
+    .ht-jelly1 { animation: ht-jellyFloat 6s ease-in-out infinite; }
+    .ht-jelly2 { animation: ht-jellyFloat2 5.5s ease-in-out infinite 1s; }
+    .ht-jelly3 { animation: ht-jellyFloat 7s ease-in-out infinite 2s; }
+    .ht-jellyGlow { animation: ht-jellyPulse 3s ease-in-out infinite; }
+
+    .ht-hair { animation: ht-hairSway 4s ease-in-out infinite; transform-origin: 220px 275px; }
+    .ht-dress { animation: ht-dressSway 4.5s ease-in-out infinite 0.5s; transform-origin: 220px 350px; }
+    .ht-arm { animation: ht-armReach 3.5s ease-in-out infinite; transform-origin: 235px 320px; }
+
+    .ht-star1 { animation: ht-starTwinkle 2.5s ease-in-out infinite; }
+    .ht-star2 { animation: ht-starTwinkle2 2.5s ease-in-out infinite 0.4s; }
+    .ht-star3 { animation: ht-starTwinkle 3s ease-in-out infinite 0.8s; }
+    .ht-star4 { animation: ht-starTwinkle2 2.8s ease-in-out infinite 1.2s; }
+    .ht-star5 { animation: ht-starTwinkle 2.2s ease-in-out infinite 0.2s; }
+    .ht-star6 { animation: ht-starTwinkle2 2.7s ease-in-out infinite 1.5s; }
+    .ht-star7 { animation: ht-starTwinkle 3.2s ease-in-out infinite 0.6s; }
+
+    .ht-tidePool1 { animation: ht-tidePoolPulse 3s ease-in-out infinite; }
+    .ht-tidePool2 { animation: ht-tidePoolPulse2 3.2s ease-in-out infinite 0.8s; }
+    .ht-tidePool3 { animation: ht-tidePoolPulse 2.8s ease-in-out infinite 1.5s; }
+
+    .ht-foam { animation: ht-foamShimmer 4s ease-in-out infinite; }
+    .ht-moonGlow { animation: ht-moonPulse 5s ease-in-out infinite; }
+  </style>
+
+  <!-- ======================= -->
+  <!-- LAYER 1: SKY BACKGROUND -->
+  <!-- ======================= -->
+  <rect x="0" y="0" width="512" height="512" fill="url(#ht-skyGrad)" />
+
+  <!-- Moon -->
+  <g class="ht-moonGlow">
+    <circle cx="400" cy="70" r="40" fill="url(#ht-moonGlow)" filter="url(#ht-strongGlow)" />
+    <circle cx="400" cy="70" r="18" fill="#ffeedd" opacity="0.9" />
+    <circle cx="394" cy="64" r="3" fill="#eeddcc" opacity="0.4" />
+    <circle cx="406" cy="74" r="2" fill="#eeddcc" opacity="0.3" />
+    <circle cx="398" cy="78" r="1.5" fill="#eeddcc" opacity="0.3" />
+  </g>
+
+  <!-- Moon light reflection on water horizon -->
+  <ellipse cx="400" cy="260" rx="60" ry="4" fill="#ffd700" opacity="0.08" filter="url(#ht-mediumGlow)" />
+
+  <!-- ============= -->
+  <!-- LAYER 2: STARS -->
+  <!-- ============= -->
+  <g>
+    <circle cx="45" cy="32" r="1.2" fill="#ffd700" class="ht-star1" />
+    <circle cx="102" cy="55" r="0.9" fill="#ffffff" class="ht-star2" />
+    <circle cx="158" cy="20" r="1" fill="#ffd700" class="ht-star3" />
+    <circle cx="210" cy="48" r="0.8" fill="#ffffff" class="ht-star4" />
+    <circle cx="270" cy="15" r="1.1" fill="#ffd700" class="ht-star5" />
+    <circle cx="320" cy="42" r="0.7" fill="#ffffff" class="ht-star6" />
+    <circle cx="350" cy="22" r="1" fill="#ffd700" class="ht-star7" />
+    <circle cx="445" cy="35" r="0.8" fill="#ffffff" class="ht-star1" />
+    <circle cx="480" cy="55" r="1.1" fill="#ffd700" class="ht-star3" />
+    <circle cx="68" cy="78" r="0.7" fill="#ffffff" class="ht-star4" />
+    <circle cx="135" cy="95" r="0.9" fill="#ffd700" class="ht-star5" />
+    <circle cx="250" cy="80" r="0.8" fill="#ffffff" class="ht-star2" />
+    <circle cx="310" cy="68" r="1" fill="#ffd700" class="ht-star6" />
+    <circle cx="470" cy="88" r="0.7" fill="#ffffff" class="ht-star7" />
+    <circle cx="30" cy="110" r="0.8" fill="#ffd700" class="ht-star3" />
+    <circle cx="185" cy="120" r="0.6" fill="#ffffff" class="ht-star1" />
+    <circle cx="365" cy="100" r="0.9" fill="#ffd700" class="ht-star4" />
+    <circle cx="500" cy="25" r="0.7" fill="#ffffff" class="ht-star5" />
+    <!-- Bright star clusters -->
+    <g class="ht-star2" filter="url(#ht-softGlow)">
+      <circle cx="88" cy="45" r="1.5" fill="#ffd700" />
+    </g>
+    <g class="ht-star6" filter="url(#ht-softGlow)">
+      <circle cx="290" cy="30" r="1.4" fill="#ffd700" />
+    </g>
+    <g class="ht-star3" filter="url(#ht-softGlow)">
+      <circle cx="430" cy="50" r="1.3" fill="#ffd700" />
+    </g>
+  </g>
+
+  <!-- Distant clouds / atmosphere -->
+  <ellipse cx="120" cy="145" rx="80" ry="10" fill="#0a1a3a" opacity="0.5" filter="url(#ht-haze)" />
+  <ellipse cx="380" cy="130" rx="65" ry="8" fill="#0d2040" opacity="0.4" filter="url(#ht-haze)" />
+
+  <!-- ====================== -->
+  <!-- LAYER 3: OCEAN & WAVES -->
+  <!-- ====================== -->
+  <!-- Ocean base -->
+  <rect x="0" y="260" width="512" height="252" fill="url(#ht-oceanGrad)" />
+
+  <!-- Horizon shimmer line -->
+  <rect x="0" y="256" width="512" height="12" fill="url(#ht-horizonShimmer)" />
+
+  <!-- Deep water waves (background) -->
+  <g class="ht-wave3" opacity="0.3">
+    <path d="M0,290 Q40,282 80,290 T160,290 T240,290 T320,290 T400,290 T480,290 L512,290 L512,300 L0,300 Z"
+          fill="#143d5c" />
+  </g>
+
+  <!-- Mid water waves -->
+  <g class="ht-wave2" opacity="0.4">
+    <path d="M0,310 Q50,302 100,310 T200,310 T300,310 T400,310 T500,310 L512,310 L512,322 L0,322 Z"
+          fill="#0d2847" />
+    <!-- Bioluminescent line on wave crest -->
+    <path d="M0,310 Q50,302 100,310 T200,310 T300,310 T400,310 T500,310"
+          fill="none" stroke="#00ffcc" stroke-width="1.5" opacity="0.4" filter="url(#ht-softGlow)" />
+  </g>
+
+  <!-- Shore waves with bioluminescence -->
+  <g class="ht-wave1">
+    <path d="M0,355 Q60,347 120,355 T240,355 T360,355 T480,355 L512,355 L512,370 L0,370 Z"
+          fill="#0d2847" opacity="0.6" />
+    <!-- Bright bioluminescent surf line -->
+    <path d="M0,355 Q60,347 120,355 T240,355 T360,355 T480,355"
+          fill="none" stroke="url(#ht-bioWaveGrad)" stroke-width="2.5" filter="url(#ht-mediumGlow)" />
+    <!-- Secondary glow line -->
+    <path d="M20,358 Q80,351 140,358 T260,358 T380,358 T490,358"
+          fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.5" filter="url(#ht-softGlow)" />
+  </g>
+
+  <!-- Closest shore wave -->
+  <g class="ht-wave2">
+    <path d="M0,375 Q70,368 140,375 T280,375 T420,375 L512,375 L512,388 L0,388 Z"
+          fill="#102a4a" opacity="0.5" />
+    <path d="M0,375 Q70,368 140,375 T280,375 T420,375 L512,375"
+          fill="none" stroke="#00ffcc" stroke-width="2" opacity="0.5" filter="url(#ht-mediumGlow)" />
+  </g>
+
+  <!-- Foam at waterline -->
+  <g class="ht-foam">
+    <path d="M0,385 Q30,382 60,385 T120,385 T180,385 T240,385 T300,385 T360,385 T420,385 T480,385 L512,385"
+          fill="none" stroke="#00ffcc" stroke-width="1" opacity="0.25" filter="url(#ht-softGlow)" />
+  </g>
+
+  <!-- ====================================== -->
+  <!-- LAYER 4: BIOLUMINESCENT PLANKTON LAYER -->
+  <!-- ====================================== -->
+  <!-- Plankton in the surf zone -->
+  <g filter="url(#ht-softGlow)">
+    <circle cx="80" cy="360" r="1.5" fill="#00ffcc" class="ht-plankton1" />
+    <circle cx="105" cy="355" r="1.2" fill="#00e5ff" class="ht-plankton2" />
+    <circle cx="140" cy="362" r="1.8" fill="#44ffaa" class="ht-plankton3" />
+    <circle cx="170" cy="358" r="1" fill="#00ffcc" class="ht-plankton4" />
+    <circle cx="200" cy="365" r="1.4" fill="#00e5ff" class="ht-plankton5" />
+    <circle cx="235" cy="360" r="1.6" fill="#00ffcc" class="ht-plankton6" />
+    <circle cx="270" cy="357" r="1.2" fill="#44ffaa" class="ht-plankton1" />
+    <circle cx="300" cy="363" r="1.5" fill="#00e5ff" class="ht-plankton3" />
+    <circle cx="335" cy="359" r="1.1" fill="#00ffcc" class="ht-plankton2" />
+    <circle cx="370" cy="365" r="1.7" fill="#44ffaa" class="ht-plankton4" />
+    <circle cx="410" cy="358" r="1.3" fill="#00e5ff" class="ht-plankton5" />
+    <circle cx="445" cy="362" r="1" fill="#00ffcc" class="ht-plankton6" />
+    <circle cx="475" cy="356" r="1.5" fill="#44ffaa" class="ht-plankton1" />
+  </g>
+
+  <!-- Plankton in deeper water -->
+  <g filter="url(#ht-mediumGlow)">
+    <circle cx="55" cy="320" r="1" fill="#00ffcc" class="ht-plankton3" opacity="0.6" />
+    <circle cx="120" cy="315" r="0.8" fill="#00e5ff" class="ht-plankton5" opacity="0.5" />
+    <circle cx="190" cy="325" r="1.2" fill="#44ffaa" class="ht-plankton1" opacity="0.5" />
+    <circle cx="260" cy="318" r="0.9" fill="#00ffcc" class="ht-plankton4" opacity="0.6" />
+    <circle cx="340" cy="322" r="1.1" fill="#00e5ff" class="ht-plankton2" opacity="0.5" />
+    <circle cx="420" cy="315" r="0.8" fill="#44ffaa" class="ht-plankton6" opacity="0.4" />
+    <circle cx="490" cy="320" r="1" fill="#00ffcc" class="ht-plankton3" opacity="0.5" />
+  </g>
+
+  <!-- Scattered plankton in open water -->
+  <g filter="url(#ht-softGlow)">
+    <circle cx="40" cy="290" r="0.7" fill="#00ffcc" class="ht-plankton2" opacity="0.3" />
+    <circle cx="150" cy="295" r="0.6" fill="#00e5ff" class="ht-plankton4" opacity="0.3" />
+    <circle cx="310" cy="288" r="0.8" fill="#44ffaa" class="ht-plankton6" opacity="0.3" />
+    <circle cx="460" cy="292" r="0.5" fill="#00ffcc" class="ht-plankton1" opacity="0.3" />
+  </g>
+
+  <!-- ===================== -->
+  <!-- LAYER 5: JELLYFISH    -->
+  <!-- ===================== -->
+  <!-- Large jellyfish (pink) - left side -->
+  <g class="ht-jelly1" filter="url(#ht-mediumGlow)">
+    <g transform="translate(90, 300)">
+      <!-- Bell -->
+      <ellipse cx="0" cy="0" rx="18" ry="14" fill="url(#ht-jellyPink)" class="ht-jellyGlow" />
+      <ellipse cx="0" cy="-2" rx="14" ry="10" fill="#ff69b4" opacity="0.3" />
+      <!-- Inner markings -->
+      <ellipse cx="0" cy="2" rx="8" ry="5" fill="#ff8ecf" opacity="0.3" />
+      <!-- Tentacles -->
+      <path d="M-8,12 Q-12,24 -6,35 Q-3,40 -7,48" fill="none" stroke="#ff69b4" stroke-width="1" opacity="0.5" />
+      <path d="M-2,13 Q-4,26 0,38 Q2,44 -1,52" fill="none" stroke="#ff69b4" stroke-width="0.8" opacity="0.4" />
+      <path d="M5,12 Q8,25 4,36 Q2,42 5,48" fill="none" stroke="#ff69b4" stroke-width="1" opacity="0.5" />
+      <path d="M10,10 Q14,22 10,32 Q8,38 11,44" fill="none" stroke="#ff69b4" stroke-width="0.7" opacity="0.4" />
+      <path d="M-12,9 Q-16,20 -12,30 Q-10,36 -13,42" fill="none" stroke="#ff69b4" stroke-width="0.7" opacity="0.3" />
+    </g>
+  </g>
+
+  <!-- Medium jellyfish (purple) - right side -->
+  <g class="ht-jelly2" filter="url(#ht-mediumGlow)">
+    <g transform="translate(420, 310)">
+      <!-- Bell -->
+      <ellipse cx="0" cy="0" rx="14" ry="11" fill="url(#ht-jellyPurple)" class="ht-jellyGlow" />
+      <ellipse cx="0" cy="-1" rx="10" ry="7" fill="#cc44ff" opacity="0.25" />
+      <ellipse cx="0" cy="2" rx="6" ry="4" fill="#dd66ff" opacity="0.25" />
+      <!-- Tentacles -->
+      <path d="M-6,9 Q-9,20 -5,30 Q-3,35 -6,40" fill="none" stroke="#cc44ff" stroke-width="0.8" opacity="0.5" />
+      <path d="M0,10 Q-2,22 1,32 Q3,37 0,42" fill="none" stroke="#cc44ff" stroke-width="0.7" opacity="0.4" />
+      <path d="M6,9 Q9,20 5,28 Q3,34 6,38" fill="none" stroke="#cc44ff" stroke-width="0.8" opacity="0.5" />
+      <path d="M-10,7 Q-13,16 -9,24" fill="none" stroke="#cc44ff" stroke-width="0.6" opacity="0.3" />
+    </g>
+  </g>
+
+  <!-- Small jellyfish (pink) - distant -->
+  <g class="ht-jelly3" filter="url(#ht-softGlow)">
+    <g transform="translate(330, 280)">
+      <ellipse cx="0" cy="0" rx="8" ry="6" fill="url(#ht-jellyPink)" opacity="0.5" class="ht-jellyGlow" />
+      <path d="M-3,5 Q-5,12 -2,18" fill="none" stroke="#ff69b4" stroke-width="0.5" opacity="0.3" />
+      <path d="M1,5 Q3,13 0,19" fill="none" stroke="#ff69b4" stroke-width="0.5" opacity="0.3" />
+      <path d="M4,4 Q6,10 3,15" fill="none" stroke="#ff69b4" stroke-width="0.4" opacity="0.25" />
+    </g>
+  </g>
+
+  <!-- Tiny distant jellyfish -->
+  <g class="ht-jelly2" filter="url(#ht-softGlow)">
+    <g transform="translate(490, 290)">
+      <ellipse cx="0" cy="0" rx="5" ry="4" fill="#cc44ff" opacity="0.3" class="ht-jellyGlow" />
+      <path d="M-2,3 Q-3,8 -1,12" fill="none" stroke="#cc44ff" stroke-width="0.4" opacity="0.2" />
+      <path d="M2,3 Q3,8 1,12" fill="none" stroke="#cc44ff" stroke-width="0.4" opacity="0.2" />
+    </g>
+  </g>
+
+  <!-- =============================== -->
+  <!-- LAYER 6: SHORE & TIDE POOLS     -->
+  <!-- =============================== -->
+  <!-- Sandy beach -->
+  <path d="M0,390 Q80,382 160,388 Q240,394 320,386 Q400,380 512,390 L512,512 L0,512 Z"
+        fill="url(#ht-sandGrad)" />
+
+  <!-- Wet sand area -->
+  <path d="M0,390 Q80,382 160,388 Q240,394 320,386 Q400,380 512,390 L512,410 Q400,400 320,406 Q240,414 160,408 Q80,402 0,410 Z"
+        fill="url(#ht-wetSand)" />
+
+  <!-- Rocks on the shore -->
+  <ellipse cx="60" cy="430" rx="30" ry="14" fill="#0f1a2a" />
+  <ellipse cx="60" cy="428" rx="28" ry="12" fill="#162030" />
+  <ellipse cx="475" cy="420" rx="24" ry="10" fill="#0f1a2a" />
+  <ellipse cx="475" cy="418" rx="22" ry="8" fill="#162030" />
+  <ellipse cx="440" cy="440" rx="18" ry="8" fill="#0f1a2a" />
+  <ellipse cx="440" cy="438" rx="16" ry="6" fill="#152535" />
+
+  <!-- Small scattered rocks -->
+  <ellipse cx="140" cy="415" rx="8" ry="4" fill="#142535" />
+  <ellipse cx="380" cy="410" rx="10" ry="5" fill="#132030" />
+  <ellipse cx="350" cy="425" rx="6" ry="3" fill="#152535" />
+
+  <!-- Tide Pool 1 (left, near rocks) -->
+  <g class="ht-tidePool1">
+    <ellipse cx="55" cy="445" rx="20" ry="8" fill="url(#ht-tidePoolGlow)" filter="url(#ht-mediumGlow)" />
+    <ellipse cx="50" cy="444" rx="3" ry="1.5" fill="#00ffcc" opacity="0.6" />
+    <ellipse cx="60" cy="446" rx="2" ry="1" fill="#44ffaa" opacity="0.5" />
+    <circle cx="45" cy="443" r="1" fill="#00e5ff" opacity="0.7" />
+    <circle cx="62" cy="443" r="0.8" fill="#00ffcc" opacity="0.5" />
+  </g>
+
+  <!-- Tide Pool 2 (center) -->
+  <g class="ht-tidePool2">
+    <ellipse cx="300" cy="435" rx="16" ry="7" fill="url(#ht-tidePoolGlow)" filter="url(#ht-mediumGlow)" />
+    <circle cx="295" cy="434" r="1.2" fill="#00ffcc" opacity="0.6" />
+    <circle cx="305" cy="436" r="0.9" fill="#44ffaa" opacity="0.5" />
+    <circle cx="298" cy="437" r="0.7" fill="#00e5ff" opacity="0.6" />
+  </g>
+
+  <!-- Tide Pool 3 (right, near rocks) -->
+  <g class="ht-tidePool3">
+    <ellipse cx="460" cy="450" rx="18" ry="7" fill="url(#ht-tidePoolGlow)" filter="url(#ht-mediumGlow)" />
+    <circle cx="455" cy="449" r="1.1" fill="#00ffcc" opacity="0.6" />
+    <circle cx="465" cy="451" r="0.8" fill="#44ffaa" opacity="0.5" />
+    <ellipse cx="458" cy="452" rx="2" ry="1" fill="#00e5ff" opacity="0.5" />
+  </g>
+
+  <!-- Tiny organisms / anemones on rocks -->
+  <g class="ht-tidePool1" filter="url(#ht-softGlow)">
+    <circle cx="48" cy="422" r="2" fill="#00ffcc" opacity="0.4" />
+    <circle cx="72" cy="425" r="1.5" fill="#44ffaa" opacity="0.3" />
+  </g>
+  <g class="ht-tidePool2" filter="url(#ht-softGlow)">
+    <circle cx="470" cy="414" r="1.5" fill="#00e5ff" opacity="0.3" />
+    <circle cx="482" cy="416" r="1.8" fill="#00ffcc" opacity="0.35" />
+  </g>
+
+  <!-- ========================================= -->
+  <!-- LAYER 7: GIRL (CORAL) AT THE WATER'S EDGE -->
+  <!-- ========================================= -->
+  <g transform="translate(210, 260)">
+    <!-- Shadow / reflection in water -->
+    <ellipse cx="10" cy="135" rx="30" ry="5" fill="#00ffcc" opacity="0.08" filter="url(#ht-strongGlow)" />
+
+    <!-- Feet in the surf (silhouette) -->
+    <ellipse cx="2" cy="122" rx="10" ry="3" fill="#1a0a2e" opacity="0.9" />
+    <ellipse cx="16" cy="124" rx="9" ry="3" fill="#1a0a2e" opacity="0.9" />
+
+    <!-- Legs -->
+    <path d="M0,90 L-2,120 L8,122 L6,90 Z" fill="url(#ht-girlSilhouette)" />
+    <path d="M8,90 L12,122 L22,120 L18,90 Z" fill="url(#ht-girlSilhouette)" />
+
+    <!-- Body / dress -->
+    <g class="ht-dress">
+      <path d="M-4,40 Q-2,55 -6,90 L24,90 Q20,55 22,40 Z" fill="#1a0a2e" />
+      <!-- Dress flows a bit -->
+      <path d="M-6,80 Q-12,88 -8,92 L-4,90 Z" fill="#1a0a2e" opacity="0.7" />
+      <path d="M24,80 Q30,88 26,92 L22,90 Z" fill="#1a0a2e" opacity="0.7" />
+    </g>
+
+    <!-- Torso upper -->
+    <path d="M2,15 Q0,25 -2,40 L20,40 Q18,25 16,15 Z" fill="url(#ht-girlSilhouette)" />
+
+    <!-- Left arm (by side) -->
+    <path d="M-2,20 Q-10,30 -14,50 Q-16,55 -12,58" fill="none" stroke="#1a0a2e" stroke-width="5" stroke-linecap="round" />
+
+    <!-- Right arm (reaching toward glowing water) -->
+    <g class="ht-arm">
+      <path d="M18,20 Q28,15 40,8 Q48,4 55,0" fill="none" stroke="#1a0a2e" stroke-width="5" stroke-linecap="round" />
+      <!-- Hand -->
+      <circle cx="55" cy="0" r="4" fill="#1a0a2e" />
+      <!-- Fingertip glow (bioluminescence touching hand) -->
+      <circle cx="58" cy="-1" r="6" fill="#00ffcc" opacity="0.3" filter="url(#ht-strongGlow)" class="ht-plankton1" />
+      <circle cx="60" cy="0" r="3" fill="#00ffcc" opacity="0.4" filter="url(#ht-mediumGlow)" class="ht-plankton2" />
+    </g>
+
+    <!-- Neck -->
+    <rect x="5" y="8" width="8" height="8" rx="3" fill="#1a0a2e" />
+
+    <!-- Head -->
+    <circle cx="9" cy="2" r="12" fill="#1a0a2e" />
+
+    <!-- Hair (flowing, animated) -->
+    <g class="ht-hair">
+      <!-- Main hair mass -->
+      <path d="M-3,-10 Q-8,-14 -10,-8 Q-14,-4 -16,2 Q-18,10 -14,18 Q-10,22 -6,16 Q-4,10 -3,4 Z"
+            fill="#0d0520" />
+      <!-- Hair flowing behind -->
+      <path d="M-3,-10 Q2,-16 8,-14 Q14,-12 18,-8 Q22,-2 20,4 Q18,8 14,6 Q10,2 6,-2 Q2,-6 -2,-8 Z"
+            fill="#0d0520" />
+      <!-- Long flowing strands behind -->
+      <path d="M-14,18 Q-20,28 -22,38 Q-24,44 -20,42" fill="none" stroke="#0d0520" stroke-width="4" stroke-linecap="round" />
+      <path d="M-10,16 Q-16,26 -18,34 Q-19,38 -16,37" fill="none" stroke="#0d0520" stroke-width="3" stroke-linecap="round" />
+      <!-- Top detail strands -->
+      <path d="M-6,-12 Q-10,-16 -8,-10" fill="none" stroke="#150830" stroke-width="2" stroke-linecap="round" />
+    </g>
+
+    <!-- Eye (subtle detail, facing right toward ocean) -->
+    <circle cx="14" cy="0" r="1.5" fill="#88aacc" opacity="0.5" />
+    <circle cx="14.5" cy="0" r="0.8" fill="#aaddee" opacity="0.6" />
+  </g>
+
+  <!-- Girl's glow interaction with water - energy tendrils reaching from waves to hand -->
+  <g filter="url(#ht-strongGlow)">
+    <path d="M268,260 Q272,255 275,252 Q278,248 280,245"
+          fill="none" stroke="#00ffcc" stroke-width="1.2" opacity="0.4" class="ht-plankton4">
+    </path>
+    <path d="M270,263 Q276,257 282,250 Q286,246 288,242"
+          fill="none" stroke="#00e5ff" stroke-width="0.8" opacity="0.3" class="ht-plankton5">
+    </path>
+    <path d="M264,265 Q268,260 270,255"
+          fill="none" stroke="#44ffaa" stroke-width="1" opacity="0.35" class="ht-plankton6">
+    </path>
+    <!-- Sparkle particles near hand -->
+    <circle cx="272" cy="258" r="1.5" fill="#00ffcc" class="ht-plankton1" opacity="0.6" />
+    <circle cx="278" cy="254" r="1" fill="#ffd700" class="ht-plankton3" opacity="0.5" />
+    <circle cx="266" cy="262" r="1.2" fill="#00e5ff" class="ht-plankton5" opacity="0.5" />
+    <circle cx="282" cy="250" r="0.8" fill="#44ffaa" class="ht-plankton2" opacity="0.4" />
+  </g>
+
+  <!-- Additional warm sparkles scattered in the scene (ffd700 accents) -->
+  <g filter="url(#ht-softGlow)">
+    <circle cx="95" cy="345" r="1" fill="#ffd700" class="ht-star3" opacity="0.4" />
+    <circle cx="180" cy="350" r="0.8" fill="#ffd700" class="ht-star5" opacity="0.35" />
+    <circle cx="310" cy="348" r="1.1" fill="#ffd700" class="ht-star1" opacity="0.4" />
+    <circle cx="400" cy="352" r="0.7" fill="#ffd700" class="ht-star7" opacity="0.3" />
+    <circle cx="250" cy="345" r="0.9" fill="#ffd700" class="ht-star4" opacity="0.35" />
+  </g>
+
+  <!-- Distant horizon glow (atmospheric perspective) -->
+  <rect x="0" y="252" width="512" height="14" fill="#00e5ff" opacity="0.04" filter="url(#ht-strongGlow)" />
+
+</svg>
