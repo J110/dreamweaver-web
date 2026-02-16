@@ -450,24 +450,28 @@ export default function PlayerPage() {
     }
   };
 
-  // Build voice switch buttons — show only the user's 2 non-active preferred voices
+  // Build voice switch buttons — show the user's 2 non-active preferred voices
   const getVoiceSwitchOptions = () => {
     if (!content || !selectedVoice) return [];
     const allVariants = content.audio_variants || [];
     if (allVariants.length <= 1) return [];
 
-    // Get the user's 3 preferred voice base IDs (strip _hi suffix for comparison)
-    const preferredBaseIds = getStoryVoices(lang).map(v => v.replace(/_hi$/, ''));
-
-    return allVariants
-      .filter(v => {
-        // Compare using base IDs so English/Hindi variants both match preferences
+    // For stories with 3 or fewer variants (English), show all except the active one.
+    // For stories with more variants (Hindi has 6), filter to user's 3 preferred voices.
+    let filtered;
+    if (allVariants.length <= 3) {
+      filtered = allVariants.filter(v => v.voice !== selectedVoice);
+    } else {
+      const preferredBaseIds = getStoryVoices(lang).map(v => v.replace(/_hi$/, ''));
+      filtered = allVariants.filter(v => {
         const variantBaseId = v.voice.replace(/_hi$/, '');
         const isPreferred = preferredBaseIds.includes(variantBaseId);
-        // Exclude the currently selected voice
         const isActive = v.voice === selectedVoice;
         return isPreferred && !isActive;
-      })
+      });
+    }
+
+    return filtered
       .map(v => {
         const baseId = v.voice.replace(/_hi$/, '');
         const meta = VOICES[baseId];
