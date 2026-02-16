@@ -17,6 +17,12 @@ const THEMES = [
   { id: 'space', emoji: '🚀' },
   { id: 'fantasy', emoji: '🧙' },
   { id: 'fairy_tale', emoji: '🧚' },
+  { id: 'nature', emoji: '🌿' },
+  { id: 'ocean', emoji: '🌊' },
+  { id: 'bedtime', emoji: '🛏️' },
+  { id: 'friendship', emoji: '🤝' },
+  { id: 'family', emoji: '👨‍👩‍👧' },
+  { id: 'science', emoji: '🔬' },
 ];
 
 const THEME_LABELS = {
@@ -27,6 +33,12 @@ const THEME_LABELS = {
   space: { en: 'Space', hi: 'Antariksh' },
   fantasy: { en: 'Fantasy', hi: 'Kalpana' },
   fairy_tale: { en: 'Fairy Tales', hi: 'Pari Kathayein' },
+  nature: { en: 'Nature', hi: 'Prakriti' },
+  ocean: { en: 'Ocean', hi: 'Samudra' },
+  bedtime: { en: 'Bedtime', hi: 'Sone ka Samay' },
+  friendship: { en: 'Friendship', hi: 'Dosti' },
+  family: { en: 'Family', hi: 'Parivar' },
+  science: { en: 'Science', hi: 'Vigyan' },
 };
 
 export default function Home() {
@@ -46,9 +58,17 @@ export default function Home() {
   const loadStories = async () => {
     setLoading(true);
     try {
-      const data = await trendingApi.getTrending(20, lang);
-      const items = data.content || [];
-      setStories(items.length > 0 ? items : getStories(lang));
+      const data = await trendingApi.getTrending(40, lang);
+      const apiItems = data.content || [];
+      const seedItems = getStories(lang);
+      // Merge: use API items as base, then add any seedData stories not already present
+      const apiIds = new Set(apiItems.map((s) => s.id));
+      const titleMap = new Set(apiItems.map((s) => s.title));
+      const extras = seedItems.filter(
+        (s) => !apiIds.has(s.id) && !titleMap.has(s.title)
+      );
+      const merged = [...apiItems, ...extras];
+      setStories(merged.length > 0 ? merged : seedItems);
     } catch (err) {
       setStories(getStories(lang));
     } finally {

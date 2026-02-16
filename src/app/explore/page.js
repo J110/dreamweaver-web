@@ -21,10 +21,13 @@ const THEMES = [
   { id: 'adventure', emoji: '⚔️', en: 'Adventure', hi: 'Sahas' },
   { id: 'animals', emoji: '🦁', en: 'Animals', hi: 'Janwar' },
   { id: 'space', emoji: '🚀', en: 'Space', hi: 'Antariksh' },
-  { id: 'ocean', emoji: '🐚', en: 'Ocean', hi: 'Samundar' },
-  { id: 'forest', emoji: '🌲', en: 'Forest', hi: 'Jungle' },
-  { id: 'magic', emoji: '✨', en: 'Magic', hi: 'Jaadu' },
-  { id: 'friendship', emoji: '👫', en: 'Friendship', hi: 'Dosti' },
+  { id: 'ocean', emoji: '🌊', en: 'Ocean', hi: 'Samudra' },
+  { id: 'nature', emoji: '🌿', en: 'Nature', hi: 'Prakriti' },
+  { id: 'bedtime', emoji: '🛏️', en: 'Bedtime', hi: 'Sone ka Samay' },
+  { id: 'science', emoji: '🔬', en: 'Science', hi: 'Vigyan' },
+  { id: 'friendship', emoji: '🤝', en: 'Friendship', hi: 'Dosti' },
+  { id: 'family', emoji: '👨‍👩‍👧', en: 'Family', hi: 'Parivar' },
+  { id: 'dreamy', emoji: '🌙', en: 'Dreamy', hi: 'Sapne' },
 ];
 
 function ExploreContent() {
