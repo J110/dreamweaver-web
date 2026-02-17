@@ -33,6 +33,7 @@ export const SEED_STORIES = {
       categories: ["Fantasy", "Lullabies", "Magical"],
       theme: "dreamy",
       musicProfile: "dreamy-clouds",
+      musicParams: {"key": "Am", "chordNotes": [110.0, 130.81, 164.81, 220.0], "padType": "fm", "padGain": 0.0415, "padFilter": 824, "padLfo": 0.0681, "noiseType": "pink", "noiseGain": 0.0119, "droneFreq": 55.0, "droneGain": 0.0307, "melodyNotes": [220.0, 261.62, 329.62, 293.66], "melodyInterval": 3641, "melodyGain": 0.0168, "bassNotes": [55.0, 82.41, 65.41], "bassInterval": 6769, "counterNotes": [327.02, 412.02, 275.0], "counterInterval": 5203, "events": [{"type": "starTwinkle", "interval": 21697}, {"type": "chimes", "interval": 12675}, {"type": "heartbeat", "interval": 9017}]},
       audio_variants: [
         { voice: "female_1", url: "/audio/pre-gen/7fe248e1_female_1.mp3", duration_seconds: 83.68 },
         { voice: "female_2", url: "/audio/pre-gen/7fe248e1_female_2.mp3", duration_seconds: 74.94 },
@@ -58,6 +59,7 @@ export const SEED_STORIES = {
       categories: ["Animals", "Adventure", "Friendship"],
       theme: "adventure",
       musicProfile: "forest-night",
+      musicParams: {"key": "F", "chordNotes": [174.61, 220.0, 261.63, 349.22], "padType": "plucked", "padGain": 0.0397, "padFilter": 1008, "padLfo": 0.0896, "noiseType": "brown", "noiseGain": 0.0125, "droneFreq": 87.31, "droneGain": 0.0229, "melodyNotes": [349.22, 440.0, 523.26, 466.16], "melodyInterval": 3163, "melodyGain": 0.0173, "bassNotes": [87.31, 130.81, 110.0], "bassInterval": 6614, "counterNotes": [550.0, 654.08, 436.53], "counterInterval": 4933, "events": [{"type": "leaves", "interval": 11728}, {"type": "birdChirp", "interval": 7400}, {"type": "sparkle", "interval": 19865}, {"type": "windGust", "interval": 20015}]},
       audio_variants: [
         { voice: "female_1", url: "/audio/pre-gen/8e516449_female_1.mp3", duration_seconds: 112.79 },
         { voice: "female_2", url: "/audio/pre-gen/8e516449_female_2.mp3", duration_seconds: 105.24 },
@@ -83,6 +85,7 @@ export const SEED_STORIES = {
       categories: ["Lullabies", "Animals", "Nature"],
       theme: "fairy_tale",
       musicProfile: "moonlit-meadow",
+      musicParams: {"key": "A", "chordNotes": [110.0, 138.59, 164.81, 220.0], "padType": "plucked", "padGain": 0.0412, "padFilter": 1114, "padLfo": 0.0753, "noiseType": "white", "noiseGain": 0.0134, "droneFreq": 55.0, "droneGain": 0.0273, "melodyNotes": [220.0, 277.18, 329.62, 293.66], "melodyInterval": 4422, "melodyGain": 0.0185, "bassNotes": [55.0, 82.41, 69.3], "bassInterval": 6878, "counterNotes": [346.48, 412.02, 275.0], "counterInterval": 4726, "events": [{"type": "chimes", "interval": 12081}, {"type": "birdChirp", "interval": 7881}, {"type": "leaves", "interval": 17691}]},
       audio_variants: [
         { voice: "female_1", url: "/audio/pre-gen/30dec3e8_female_1.mp3", duration_seconds: 110.94 },
         { voice: "female_2", url: "/audio/pre-gen/30dec3e8_female_2.mp3", duration_seconds: 96.84 },
@@ -108,6 +111,7 @@ export const SEED_STORIES = {
       categories: ["Space", "Adventure"],
       theme: "space",
       musicProfile: "cosmic-voyage",
+      musicParams: {"key": "F", "chordNotes": [174.61, 220.0, 261.63, 349.22], "padType": "simple", "padGain": 0.0446, "padFilter": 859, "padLfo": 0.0902, "noiseType": "white", "noiseGain": 0.0125, "droneFreq": 87.31, "droneGain": 0.028, "melodyNotes": [349.22, 440.0, 523.26, 466.16], "melodyInterval": 3088, "melodyGain": 0.0192, "bassNotes": [87.31, 130.81, 110.0], "bassInterval": 5923, "counterNotes": [550.0, 654.08, 436.53], "counterInterval": 5322, "events": [{"type": "radarPing", "interval": 13098}, {"type": "sparkle", "interval": 7763}, {"type": "starTwinkle", "interval": 19137}]},
       audio_variants: [
         { voice: "female_1", url: "/audio/pre-gen/d73e9530_female_1.mp3", duration_seconds: 128.4 },
         { voice: "female_2", url: "/audio/pre-gen/d73e9530_female_2.mp3", duration_seconds: 123.99 },
@@ -133,6 +137,7 @@ export const SEED_STORIES = {
       categories: ["Magical", "Fantasy", "Nature"],
       theme: "fantasy",
       musicProfile: "enchanted-garden",
+      musicParams: {"key": "D", "chordNotes": [146.83, 185.0, 220.0, 293.66], "padType": "plucked", "padGain": 0.0499, "padFilter": 1209, "padLfo": 0.0813, "noiseType": "white", "noiseGain": 0.0126, "droneFreq": 73.42, "droneGain": 0.0275, "melodyNotes": [293.66, 370.0, 440.0, 392.0], "melodyInterval": 3070, "melodyGain": 0.02, "bassNotes": [73.42, 110.0, 92.5], "bassInterval": 6603, "counterNotes": [462.5, 550.0, 367.08], "counterInterval": 5042, "events": [{"type": "waterDrop", "interval": 8595}, {"type": "chimes", "interval": 10406}, {"type": "windGust", "interval": 20505}]},
       audio_variants: [
         { voice: "female_1", url: "/audio/pre-gen/9fba7605_female_1.mp3", duration_seconds: 144.92 },
         { voice: "female_2", url: "/audio/pre-gen/9fba7605_female_2.mp3", duration_seconds: 130.24 },
@@ -158,6 +163,7 @@ export const SEED_STORIES = {
       categories: ["Lullabies", "Magical"],
       theme: "dreamy",
       musicProfile: "starlight-lullaby",
+      musicParams: {"key": "Cm", "chordNotes": [130.81, 155.56, 196.0, 261.62], "padType": "chorus", "padGain": 0.0527, "padFilter": 656, "padLfo": 0.0777, "noiseType": "brown", "noiseGain": 0.012, "droneFreq": 65.41, "droneGain": 0.0391, "melodyNotes": [261.62, 311.12, 392.0, 349.22], "melodyInterval": 4951, "melodyGain": 0.0182, "bassNotes": [65.41, 98.0, 77.78], "bassInterval": 7370, "counterNotes": [388.9, 490.0, 327.02], "counterInterval": 5156, "events": [{"type": "heartbeat", "interval": 7668}, {"type": "starTwinkle", "interval": 23693}, {"type": "windGust", "interval": 14527}]},
       audio_variants: [
         { voice: "female_1", url: "/audio/pre-gen/c8796852_female_1.mp3", duration_seconds: 52.02 },
         { voice: "female_2", url: "/audio/pre-gen/c8796852_female_2.mp3", duration_seconds: 39.73 },
@@ -183,6 +189,7 @@ export const SEED_STORIES = {
       categories: ["Animals", "Lullabies"],
       theme: "animals",
       musicProfile: "autumn-forest",
+      musicParams: {"key": "A", "chordNotes": [110.0, 138.59, 164.81, 220.0], "padType": "resonant", "padGain": 0.0413, "padFilter": 556, "padLfo": 0.0609, "noiseType": "pink", "noiseGain": 0.0108, "droneFreq": 55.0, "droneGain": 0.0391, "melodyNotes": [220.0, 277.18, 329.62, 293.66], "melodyInterval": 4547, "melodyGain": 0.0149, "bassNotes": [55.0, 82.41, 69.3], "bassInterval": 6003, "counterNotes": [346.48, 412.02, 275.0], "counterInterval": 5332, "events": [{"type": "owl", "interval": 11994}, {"type": "frog", "interval": 19170}, {"type": "cricket", "interval": 8021}, {"type": "waterDrop", "interval": 20505}]},
       audio_variants: [
         { voice: "female_1", url: "/audio/pre-gen/e32eaee0_female_1.mp3", duration_seconds: 51.48 },
         { voice: "female_2", url: "/audio/pre-gen/e32eaee0_female_2.mp3", duration_seconds: 33.1 },
@@ -208,6 +215,7 @@ export const SEED_STORIES = {
       categories: ["Lullabies", "Magical"],
       theme: "dreamy",
       musicProfile: "ocean-drift",
+      musicParams: {"key": "Fm", "chordNotes": [174.61, 207.65, 261.63, 349.22], "padType": "simple", "padGain": 0.0397, "padFilter": 590, "padLfo": 0.0542, "noiseType": "pink", "noiseGain": 0.0134, "droneFreq": 87.31, "droneGain": 0.033, "melodyNotes": [349.22, 415.3, 523.26, 466.16], "melodyInterval": 3672, "melodyGain": 0.0194, "bassNotes": [87.31, 130.81, 103.83], "bassInterval": 6484, "counterNotes": [519.12, 654.08, 436.53], "counterInterval": 4748, "events": [{"type": "heartbeat", "interval": 7352}, {"type": "chimes", "interval": 13087}, {"type": "waveCycle", "interval": 18314}]},
       audio_variants: [
         { voice: "female_1", url: "/audio/pre-gen/a3945b7b_female_1.mp3", duration_seconds: 64.3 },
         { voice: "female_2", url: "/audio/pre-gen/a3945b7b_female_2.mp3", duration_seconds: 57.04 },
@@ -233,6 +241,7 @@ export const SEED_STORIES = {
       categories: ["Ocean", "Friendship", "Bedtime"],
       theme: "ocean",
       musicProfile: "ocean-drift",
+      musicParams: {"key": "D", "chordNotes": [146.83, 185.0, 220.0, 293.66], "padType": "chorus", "padGain": 0.0434, "padFilter": 476, "padLfo": 0.0747, "noiseType": "brown", "noiseGain": 0.0123, "droneFreq": 73.42, "droneGain": 0.0327, "melodyNotes": [293.66, 370.0, 440.0, 392.0], "melodyInterval": 5056, "melodyGain": 0.0151, "bassNotes": [73.42, 110.0, 92.5], "bassInterval": 7506, "counterNotes": [462.5, 550.0, 367.08], "counterInterval": 5690, "events": [{"type": "waveCycle", "interval": 11663}, {"type": "whaleCall", "interval": 24397}, {"type": "heartbeat", "interval": 16598}]},
       musicParams: {"key": "Cm", "chordNotes": [130.81, 155.56, 196.0, 261.62], "padType": "resonant", "padGain": 0.05, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.015, "droneFreq": 65.41, "droneGain": 0.03, "melodyNotes": [261.62, 311.12, 392.0, 349.22], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [65.41, 98.0, 77.78], "bassInterval": 6000, "counterNotes": [388.9, 490.0, 327.02], "counterInterval": 5000, "events": [{"type": "waveCycle", "interval": 12000}, {"type": "whaleCall", "interval": 20000}, {"type": "starTwinkle", "interval": 15000}, {"type": "waterDrop", "interval": 8000}]},
       musicParams: {"key": "Cm", "chordNotes": [130.81, 155.56, 196.0, 261.62], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.015, "droneFreq": 65.41, "droneGain": 0.03, "melodyNotes": [261.62, 311.12, 392.0, 349.22], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [65.41, 98.0, 77.78], "bassInterval": 6000, "counterNotes": [388.9, 490.0, 327.02], "counterInterval": 5000, "events": [{"type": "waveCycle", "interval": 12000}, {"type": "whaleCall", "interval": 20000}, {"type": "starTwinkle", "interval": 15000}, {"type": "waterDrop", "interval": 8000}]},
       audio_variants: [
@@ -260,6 +269,7 @@ export const SEED_STORIES = {
       categories: ["Nature", "Sleep", "Fantasy"],
       theme: "nature",
       musicProfile: "moonlit-meadow",
+      musicParams: {"key": "A", "chordNotes": [110.0, 138.59, 164.81, 220.0], "padType": "resonant", "padGain": 0.0407, "padFilter": 467, "padLfo": 0.047, "noiseType": "pink", "noiseGain": 0.0106, "droneFreq": 55.0, "droneGain": 0.0335, "melodyNotes": [220.0, 277.18, 329.62, 293.66], "melodyInterval": 4556, "melodyGain": 0.0145, "bassNotes": [55.0, 82.41, 69.3], "bassInterval": 7889, "counterNotes": [346.48, 412.02, 275.0], "counterInterval": 5693, "events": [{"type": "leaves", "interval": 7789}, {"type": "birdChirp", "interval": 12654}, {"type": "windGust", "interval": 16272}]},
       musicParams: {"key": "A", "chordNotes": [110.0, 138.59, 164.81, 220.0], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.07, "noiseType": "pink", "noiseGain": 0.01, "droneFreq": 55.0, "droneGain": 0.03, "melodyNotes": [220.0, 277.18, 329.62, 293.66], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [55.0, 82.41, 69.3], "bassInterval": 6000, "counterNotes": [346.48, 412.02, 275.0], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "leaves", "interval": 8000}, {"type": "cricket", "interval": 15000}, {"type": "waterDrop", "interval": 20000}]},
       musicParams: {"key": "A", "chordNotes": [110.0, 138.59, 164.81, 220.0], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.08, "noiseType": "pink", "noiseGain": 0.01, "droneFreq": 55.0, "droneGain": 0.03, "melodyNotes": [220.0, 277.18, 329.62, 293.66], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [55.0, 82.41, 69.3], "bassInterval": 6000, "counterNotes": [346.48, 412.02, 275.0], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 18000}, {"type": "leaves", "interval": 12000}, {"type": "waterDrop", "interval": 22000}, {"type": "chimes", "interval": 25000}]},
       audio_variants: [
@@ -287,6 +297,7 @@ export const SEED_STORIES = {
       categories: ["Fantasy", "Friendship", "Futuristic", "Bedtime"],
       theme: "fantasy",
       musicProfile: "enchanted-garden",
+      musicParams: {"key": "F", "chordNotes": [174.61, 220.0, 261.63, 349.22], "padType": "chorus", "padGain": 0.0536, "padFilter": 655, "padLfo": 0.0779, "noiseType": "white", "noiseGain": 0.0111, "droneFreq": 87.31, "droneGain": 0.0331, "melodyNotes": [349.22, 440.0, 523.26, 466.16], "melodyInterval": 4437, "melodyGain": 0.0176, "bassNotes": [87.31, 130.81, 110.0], "bassInterval": 6204, "counterNotes": [550.0, 654.08, 436.53], "counterInterval": 5235, "events": [{"type": "sparkle", "interval": 11093}, {"type": "chimes", "interval": 16160}, {"type": "windGust", "interval": 23328}]},
       musicParams: {"key": "F", "chordNotes": [174.61, 220.0, 261.63, 349.22], "padType": "resonant", "padGain": 0.05, "padFilter": 800, "padLfo": 0.08, "noiseType": "pink", "noiseGain": 0.01, "droneFreq": 87.31, "droneGain": 0.03, "melodyNotes": [349.22, 440.0, 523.26, 466.16], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [87.31, 130.81, 110.0], "bassInterval": 6000, "counterNotes": [550.0, 654.08, 436.53], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "radarPing", "interval": 20000}, {"type": "chimes", "interval": 15000}, {"type": "waterDrop", "interval": 8000}]},
       musicParams: {"key": "F", "chordNotes": [174.61, 220.0, 261.63, 349.22], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.08, "noiseType": "pink", "noiseGain": 0.01, "droneFreq": 87.31, "droneGain": 0.03, "melodyNotes": [349.22, 440.0, 523.26, 466.16], "melodyInterval": 3500, "melodyGain": 0.018, "bassNotes": [87.31, 130.81, 110.0], "bassInterval": 6000, "counterNotes": [550.0, 654.08, 436.53], "counterInterval": 4500, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "radarPing", "interval": 20000}, {"type": "chimes", "interval": 15000}, {"type": "leaves", "interval": 25000}]},
       audio_variants: [
@@ -314,6 +325,7 @@ export const SEED_STORIES = {
       categories: ["Problem Solving", "Family", "Nature"],
       theme: "bedtime",
       musicProfile: "starlight-lullaby",
+      musicParams: {"key": "Fm", "chordNotes": [174.61, 207.65, 261.63, 349.22], "padType": "simple", "padGain": 0.0413, "padFilter": 468, "padLfo": 0.0503, "noiseType": "pink", "noiseGain": 0.0124, "droneFreq": 87.31, "droneGain": 0.0308, "melodyNotes": [349.22, 415.3, 523.26, 466.16], "melodyInterval": 5203, "melodyGain": 0.0192, "bassNotes": [87.31, 130.81, 103.83], "bassInterval": 6454, "counterNotes": [519.12, 654.08, 436.53], "counterInterval": 5326, "events": [{"type": "heartbeat", "interval": 8222}, {"type": "cricket", "interval": 11360}, {"type": "sparkle", "interval": 18473}]},
       musicParams: {"key": "Fm", "chordNotes": [174.61, 207.65, 261.63, 349.22], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.07, "noiseType": "pink", "noiseGain": 0.01, "droneFreq": 87.31, "droneGain": 0.03, "melodyNotes": [349.22, 415.3, 523.26, 466.16], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [87.31, 130.81, 103.83], "bassInterval": 6000, "counterNotes": [519.12, 654.08, 436.53], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "cricket", "interval": 8000}, {"type": "leaves", "interval": 18000}, {"type": "waterDrop", "interval": 22000}]},
       musicParams: {"key": "Fm", "chordNotes": [174.61, 207.65, 261.63, 349.22], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.08, "noiseType": "pink", "noiseGain": 0.01, "droneFreq": 87.31, "droneGain": 0.03, "melodyNotes": [349.22, 415.3, 523.26, 466.16], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [87.31, 130.81, 103.83], "bassInterval": 6000, "counterNotes": [519.12, 654.08, 436.53], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "waterDrop", "interval": 8000}, {"type": "leaves", "interval": 18000}, {"type": "chimes", "interval": 22000}]},
       audio_variants: [
@@ -341,6 +353,7 @@ export const SEED_STORIES = {
       categories: ["Nature", "Technology", "Friendship", "Adventure", "Environmental Awareness"],
       theme: "nature",
       musicProfile: "forest-night",
+      musicParams: {"key": "A", "chordNotes": [110.0, 138.59, 164.81, 220.0], "padType": "simple", "padGain": 0.0458, "padFilter": 896, "padLfo": 0.0906, "noiseType": "pink", "noiseGain": 0.0114, "droneFreq": 55.0, "droneGain": 0.0341, "melodyNotes": [220.0, 277.18, 329.62, 293.66], "melodyInterval": 4529, "melodyGain": 0.0195, "bassNotes": [55.0, 82.41, 69.3], "bassInterval": 6550, "counterNotes": [346.48, 412.02, 275.0], "counterInterval": 5235, "events": [{"type": "leaves", "interval": 8720}, {"type": "cricket", "interval": 13432}, {"type": "owl", "interval": 21922}, {"type": "sparkle", "interval": 16774}]},
       musicParams: {"key": "Gm", "chordNotes": [98.0, 116.54, 146.83, 196.0], "padType": "resonant", "padGain": 0.05, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.01, "droneFreq": 49.0, "droneGain": 0.03, "melodyNotes": [196.0, 233.08, 293.66, 261.62], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [49.0, 73.42, 58.27], "bassInterval": 6000, "counterNotes": [291.35, 367.08, 245.0], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "radarPing", "interval": 20000}, {"type": "leaves", "interval": 8000}, {"type": "chimes", "interval": 15000}]},
       musicParams: {"key": "Gm", "chordNotes": [98.0, 116.54, 146.83, 196.0], "padType": "resonant", "padGain": 0.05, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.01, "droneFreq": 49.0, "droneGain": 0.03, "melodyNotes": [196.0, 233.08, 293.66, 261.62], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [49.0, 73.42, 58.27], "bassInterval": 6000, "counterNotes": [291.35, 367.08, 245.0], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 18000}, {"type": "radarPing", "interval": 22000}, {"type": "leaves", "interval": 12000}, {"type": "chimes", "interval": 25000}]},
       audio_variants: [
@@ -368,6 +381,7 @@ export const SEED_STORIES = {
       categories: ["Science", "Self-Discovery", "Cultural Celebration", "Astronomy"],
       theme: "science",
       musicProfile: "cosmic-voyage",
+      musicParams: {"key": "Em", "chordNotes": [82.41, 98.0, 123.47, 164.82], "padType": "fm", "padGain": 0.0466, "padFilter": 905, "padLfo": 0.0904, "noiseType": "white", "noiseGain": 0.0131, "droneFreq": 41.2, "droneGain": 0.0382, "melodyNotes": [164.82, 196.0, 246.94, 220.0], "melodyInterval": 4090, "melodyGain": 0.0165, "bassNotes": [41.2, 61.73, 49.0], "bassInterval": 6934, "counterNotes": [245.0, 308.68, 206.02], "counterInterval": 5204, "events": [{"type": "radarPing", "interval": 12402}, {"type": "starTwinkle", "interval": 22923}, {"type": "waterDrop", "interval": 8370}]},
       musicParams: {"key": "Dm", "chordNotes": [146.83, 174.61, 220.0, 293.66], "padType": "resonant", "padGain": 0.05, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.01, "droneFreq": 73.42, "droneGain": 0.03, "melodyNotes": [293.66, 349.22, 440.0, 392.0], "melodyInterval": 4000, "melodyGain": 0.02, "bassNotes": [73.42, 110.0, 87.31], "bassInterval": 6000, "counterNotes": [436.53, 550.0, 367.08], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "cricket", "interval": 8000}, {"type": "chimes", "interval": 20000}, {"type": "radarPing", "interval": 25000}]},
       musicParams: {"key": "Dm", "chordNotes": [146.83, 174.61, 220.0, 293.66], "padType": "resonant", "padGain": 0.05, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.01, "droneFreq": 73.42, "droneGain": 0.03, "melodyNotes": [293.66, 349.22, 440.0, 392.0], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [73.42, 110.0, 87.31], "bassInterval": 6000, "counterNotes": [436.53, 550.0, 367.08], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "cricket", "interval": 18000}, {"type": "leaves", "interval": 22000}, {"type": "chimes", "interval": 25000}]},
       audio_variants: [
@@ -395,6 +409,7 @@ export const SEED_STORIES = {
       categories: ["Arctic Adventure", "Animal Friends", "Discovery", "Learning"],
       theme: "animals",
       musicProfile: "autumn-forest",
+      musicParams: {"key": "F", "chordNotes": [174.61, 220.0, 261.63, 349.22], "padType": "resonant", "padGain": 0.0503, "padFilter": 820, "padLfo": 0.0746, "noiseType": "brown", "noiseGain": 0.0108, "droneFreq": 87.31, "droneGain": 0.0332, "melodyNotes": [349.22, 440.0, 523.26, 466.16], "melodyInterval": 3340, "melodyGain": 0.0172, "bassNotes": [87.31, 130.81, 110.0], "bassInterval": 6552, "counterNotes": [550.0, 654.08, 436.53], "counterInterval": 4638, "events": [{"type": "sparkle", "interval": 11033}, {"type": "frog", "interval": 21164}, {"type": "owl", "interval": 28000}, {"type": "cricket", "interval": 13039}]},
       musicParams: {"key": "Gm", "chordNotes": [98.0, 116.54, 146.83, 196.0], "padType": "resonant", "padGain": 0.05, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.01, "droneFreq": 49.0, "droneGain": 0.03, "melodyNotes": [196.0, 233.08, 293.66, 261.62], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [49.0, 73.42, 58.27], "bassInterval": 6000, "counterNotes": [291.35, 367.08, 245.0], "counterInterval": 5000, "events": [{"type": "whaleCall", "interval": 20000}, {"type": "starTwinkle", "interval": 12000}, {"type": "chimes", "interval": 15000}, {"type": "windGust", "interval": 25000}]},
       musicParams: {"key": "Gm", "chordNotes": [98.0, 116.54, 146.83, 196.0], "padType": "resonant", "padGain": 0.05, "padFilter": 800, "padLfo": 0.08, "noiseType": "pink", "noiseGain": 0.01, "droneFreq": 49.0, "droneGain": 0.03, "melodyNotes": [196.0, 233.08, 293.66, 261.62], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [49.0, 73.42, 58.27], "bassInterval": 6000, "counterNotes": [291.35, 367.08, 245.0], "counterInterval": 5000, "events": [{"type": "whaleCall", "interval": 20000}, {"type": "starTwinkle", "interval": 12000}, {"type": "chimes", "interval": 15000}, {"type": "windGust", "interval": 25000}]},
       audio_variants: [
@@ -422,6 +437,7 @@ export const SEED_STORIES = {
       categories: ["Fantasy", "Indian Culture", "Transformation", "Play"],
       theme: "fantasy",
       musicProfile: "moonlit-meadow",
+      musicParams: {"key": "Gm", "chordNotes": [98.0, 116.54, 146.83, 196.0], "padType": "plucked", "padGain": 0.0494, "padFilter": 908, "padLfo": 0.088, "noiseType": "pink", "noiseGain": 0.0122, "droneFreq": 49.0, "droneGain": 0.0275, "melodyNotes": [196.0, 233.08, 293.66, 261.62], "melodyInterval": 2962, "melodyGain": 0.0172, "bassNotes": [49.0, 73.42, 58.27], "bassInterval": 6479, "counterNotes": [291.35, 367.08, 245.0], "counterInterval": 4767, "events": [{"type": "sparkle", "interval": 8866}, {"type": "chimes", "interval": 13436}, {"type": "waterDrop", "interval": 16434}]},
       musicParams: {"key": "G", "chordNotes": [98.0, 123.47, 146.83, 196.0], "padType": "resonant", "padGain": 0.05, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.01, "droneFreq": 49.0, "droneGain": 0.03, "melodyNotes": [196.0, 246.94, 293.66, 261.62], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [49.0, 73.42, 61.73], "bassInterval": 6000, "counterNotes": [308.68, 367.08, 245.0], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "birdChirp", "interval": 18000}, {"type": "chimes", "interval": 25000}, {"type": "leaves", "interval": 15000}]},
       musicParams: {"key": "Bb", "chordNotes": [116.54, 146.83, 174.61, 233.08], "padType": "resonant", "padGain": 0.05, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.01, "droneFreq": 58.27, "droneGain": 0.03, "melodyNotes": [233.08, 293.66, 349.22, 311.12], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [58.27, 87.31, 73.42], "bassInterval": 6000, "counterNotes": [367.08, 436.53, 291.35], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "birdChirp", "interval": 18000}, {"type": "chimes", "interval": 22000}, {"type": "leaves", "interval": 15000}]},
       audio_variants: [
@@ -449,6 +465,7 @@ export const SEED_STORIES = {
       categories: ["Nature", "Family", "Discovery", "Arctic Adventure"],
       theme: "nature",
       musicProfile: "forest-night",
+      musicParams: {"key": "F", "chordNotes": [174.61, 220.0, 261.63, 349.22], "padType": "resonant", "padGain": 0.0475, "padFilter": 658, "padLfo": 0.0755, "noiseType": "brown", "noiseGain": 0.0134, "droneFreq": 87.31, "droneGain": 0.0363, "melodyNotes": [349.22, 440.0, 523.26, 466.16], "melodyInterval": 3160, "melodyGain": 0.0181, "bassNotes": [87.31, 130.81, 110.0], "bassInterval": 5545, "counterNotes": [550.0, 654.08, 436.53], "counterInterval": 4725, "events": [{"type": "cricket", "interval": 11417}, {"type": "owl", "interval": 22583}, {"type": "waterDrop", "interval": 7352}]},
       musicParams: {"key": "Bb", "chordNotes": [116.54, 146.83, 174.61, 233.08], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.015, "droneFreq": 58.27, "droneGain": 0.03, "melodyNotes": [233.08, 293.66, 349.22, 311.12], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [58.27, 87.31, 73.42], "bassInterval": 6000, "counterNotes": [367.08, 436.53, 291.35], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 18000}, {"type": "waterDrop", "interval": 12000}, {"type": "chimes", "interval": 22000}, {"type": "whaleCall", "interval": 25000}]},
       musicParams: {"key": "Em", "chordNotes": [82.41, 98.0, 123.47, 164.82], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.07, "noiseType": "brown", "noiseGain": 0.012, "droneFreq": 41.2, "droneGain": 0.035, "melodyNotes": [164.82, 196.0, 246.94, 220.0], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [41.2, 61.73, 49.0], "bassInterval": 6000, "counterNotes": [245.0, 308.68, 206.02], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 18000}, {"type": "waterDrop", "interval": 12000}, {"type": "chimes", "interval": 22000}, {"type": "whaleCall", "interval": 25000}]},
       audio_variants: [
@@ -476,6 +493,7 @@ export const SEED_STORIES = {
       categories: ["Friendship", "Teamwork", "Creativity", "Fantasy"],
       theme: "friendship",
       musicProfile: "enchanted-garden",
+      musicParams: {"key": "G", "chordNotes": [98.0, 123.47, 146.83, 196.0], "padType": "chorus", "padGain": 0.0499, "padFilter": 830, "padLfo": 0.0767, "noiseType": "white", "noiseGain": 0.0134, "droneFreq": 49.0, "droneGain": 0.0322, "melodyNotes": [196.0, 246.94, 293.66, 261.62], "melodyInterval": 3033, "melodyGain": 0.0169, "bassNotes": [49.0, 73.42, 61.73], "bassInterval": 6588, "counterNotes": [308.68, 367.08, 245.0], "counterInterval": 4579, "events": [{"type": "leaves", "interval": 8557}, {"type": "birdChirp", "interval": 13138}, {"type": "chimes", "interval": 22868}]},
       musicParams: {"key": "E", "chordNotes": [164.81, 207.65, 246.94, 329.62], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.08, "noiseType": "pink", "noiseGain": 0.01, "droneFreq": 82.41, "droneGain": 0.03, "melodyNotes": [329.62, 415.3, 493.88, 440.0], "melodyInterval": 3500, "melodyGain": 0.018, "bassNotes": [82.41, 123.47, 103.83], "bassInterval": 6000, "counterNotes": [519.12, 617.35, 412.02], "counterInterval": 4500, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "chimes", "interval": 18000}, {"type": "cricket", "interval": 22000}, {"type": "leaves", "interval": 15000}]},
       musicParams: {"key": "G", "chordNotes": [98.0, 123.47, 146.83, 196.0], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.08, "noiseType": "pink", "noiseGain": 0.01, "droneFreq": 49.0, "droneGain": 0.03, "melodyNotes": [196.0, 246.94, 293.66, 261.62], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [49.0, 73.42, 61.73], "bassInterval": 6000, "counterNotes": [308.68, 367.08, 245.0], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 18000}, {"type": "leaves", "interval": 12000}, {"type": "chimes", "interval": 22000}, {"type": "cricket", "interval": 15000}]},
       audio_variants: [
@@ -503,6 +521,7 @@ export const SEED_STORIES = {
       categories: ["Science", "Ocean", "Transformation", "Healing"],
       theme: "science",
       musicProfile: "cosmic-voyage",
+      musicParams: {"key": "Em", "chordNotes": [82.41, 98.0, 123.47, 164.82], "padType": "simple", "padGain": 0.0499, "padFilter": 852, "padLfo": 0.0755, "noiseType": "brown", "noiseGain": 0.0129, "droneFreq": 41.2, "droneGain": 0.032, "melodyNotes": [164.82, 196.0, 246.94, 220.0], "melodyInterval": 3819, "melodyGain": 0.0201, "bassNotes": [41.2, 61.73, 49.0], "bassInterval": 6645, "counterNotes": [245.0, 308.68, 206.02], "counterInterval": 5268, "events": [{"type": "radarPing", "interval": 11839}, {"type": "waterDrop", "interval": 8927}, {"type": "whaleCall", "interval": 22499}]},
       musicParams: {"key": "Am", "chordNotes": [110.0, 130.81, 164.81, 220.0], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.015, "droneFreq": 55.0, "droneGain": 0.03, "melodyNotes": [220.0, 261.62, 329.62, 293.66], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [55.0, 82.41, 65.41], "bassInterval": 6000, "counterNotes": [327.02, 412.02, 275.0], "counterInterval": 5000, "events": [{"type": "waveCycle", "interval": 12000}, {"type": "waterDrop", "interval": 8000}, {"type": "whaleCall", "interval": 25000}, {"type": "starTwinkle", "interval": 18000}]},
       musicParams: {"key": "A", "chordNotes": [110.0, 138.59, 164.81, 220.0], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.015, "droneFreq": 55.0, "droneGain": 0.03, "melodyNotes": [220.0, 277.18, 329.62, 293.66], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [55.0, 82.41, 69.3], "bassInterval": 6000, "counterNotes": [346.48, 412.02, 275.0], "counterInterval": 5000, "events": [{"type": "waveCycle", "interval": 12000}, {"type": "whaleCall", "interval": 20000}, {"type": "starTwinkle", "interval": 15000}, {"type": "waterDrop", "interval": 8000}]},
       audio_variants: [
@@ -530,6 +549,7 @@ export const SEED_STORIES = {
       categories: ["Space", "Friendship", "Ancient Civilizations", "Self-Discovery"],
       theme: "space",
       musicProfile: "cosmic-voyage",
+      musicParams: {"key": "Fm", "chordNotes": [174.61, 207.65, 261.63, 349.22], "padType": "simple", "padGain": 0.0478, "padFilter": 842, "padLfo": 0.0805, "noiseType": "white", "noiseGain": 0.0118, "droneFreq": 87.31, "droneGain": 0.0331, "melodyNotes": [349.22, 415.3, 523.26, 466.16], "melodyInterval": 4617, "melodyGain": 0.0177, "bassNotes": [87.31, 130.81, 103.83], "bassInterval": 6909, "counterNotes": [519.12, 654.08, 436.53], "counterInterval": 5469, "events": [{"type": "starTwinkle", "interval": 21802}, {"type": "radarPing", "interval": 17505}, {"type": "whaleCall", "interval": 26497}]},
       musicParams: {"key": "Em", "chordNotes": [82.41, 98.0, 123.47, 164.82], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.01, "droneFreq": 41.2, "droneGain": 0.03, "melodyNotes": [164.82, 196.0, 246.94, 220.0], "melodyInterval": 3500, "melodyGain": 0.018, "bassNotes": [41.2, 61.73, 49.0], "bassInterval": 6000, "counterNotes": [245.0, 308.68, 206.02], "counterInterval": 4500, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "chimes", "interval": 18000}, {"type": "radarPing", "interval": 25000}, {"type": "owl", "interval": 20000}]},
       musicParams: {"key": "Am", "chordNotes": [110.0, 130.81, 164.81, 220.0], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.01, "droneFreq": 55.0, "droneGain": 0.03, "melodyNotes": [220.0, 261.62, 329.62, 293.66], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [55.0, 82.41, 65.41], "bassInterval": 6000, "counterNotes": [327.02, 412.02, 275.0], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "chimes", "interval": 18000}, {"type": "radarPing", "interval": 25000}, {"type": "waterDrop", "interval": 15000}]},
       audio_variants: [
@@ -559,6 +579,7 @@ export const SEED_STORIES = {
       categories: ["Kalpana", "Lori", "Jaadui"],
       theme: "dreamy",
       musicProfile: "dreamy-clouds",
+      musicParams: {"key": "Bb", "chordNotes": [116.54, 146.83, 174.61, 233.08], "padType": "fm", "padGain": 0.0535, "padFilter": 688, "padLfo": 0.0904, "noiseType": "brown", "noiseGain": 0.012, "droneFreq": 58.27, "droneGain": 0.0323, "melodyNotes": [233.08, 293.66, 349.22, 311.12], "melodyInterval": 3635, "melodyGain": 0.0171, "bassNotes": [58.27, 87.31, 73.42], "bassInterval": 6613, "counterNotes": [367.08, 436.53, 291.35], "counterInterval": 5499, "events": [{"type": "chimes", "interval": 11963}, {"type": "heartbeat", "interval": 7157}, {"type": "sparkle", "interval": 20231}]},
       audio_variants: [
         { voice: "female_1_hi", url: "/audio/pre-gen/hi-neend_female_1_hi.mp3", duration_seconds: 78.78 },
         { voice: "female_2_hi", url: "/audio/pre-gen/hi-neend_female_2_hi.mp3", duration_seconds: 82.97 },
@@ -584,6 +605,7 @@ export const SEED_STORIES = {
       categories: ["Janwar", "Sahas", "Dosti"],
       theme: "adventure",
       musicProfile: "forest-night",
+      musicParams: {"key": "Em", "chordNotes": [82.41, 98.0, 123.47, 164.82], "padType": "fm", "padGain": 0.0463, "padFilter": 751, "padLfo": 0.0819, "noiseType": "brown", "noiseGain": 0.0126, "droneFreq": 41.2, "droneGain": 0.0267, "melodyNotes": [164.82, 196.0, 246.94, 220.0], "melodyInterval": 3310, "melodyGain": 0.0171, "bassNotes": [41.2, 61.73, 49.0], "bassInterval": 5496, "counterNotes": [245.0, 308.68, 206.02], "counterInterval": 4260, "events": [{"type": "birdChirp", "interval": 7042}, {"type": "leaves", "interval": 11201}, {"type": "windGust", "interval": 18733}]},
       audio_variants: [
         { voice: "female_1_hi", url: "/audio/pre-gen/hi-bahad_female_1_hi.mp3", duration_seconds: 81.3 },
         { voice: "female_2_hi", url: "/audio/pre-gen/hi-bahad_female_2_hi.mp3", duration_seconds: 84.43 },
@@ -609,6 +631,7 @@ export const SEED_STORIES = {
       categories: ["Lori", "Janwar", "Prakriti"],
       theme: "fairy_tale",
       musicProfile: "moonlit-meadow",
+      musicParams: {"key": "Am", "chordNotes": [110.0, 130.81, 164.81, 220.0], "padType": "plucked", "padGain": 0.0424, "padFilter": 814, "padLfo": 0.0895, "noiseType": "pink", "noiseGain": 0.0117, "droneFreq": 55.0, "droneGain": 0.028, "melodyNotes": [220.0, 261.62, 329.62, 293.66], "melodyInterval": 4618, "melodyGain": 0.018, "bassNotes": [55.0, 82.41, 65.41], "bassInterval": 5509, "counterNotes": [327.02, 412.02, 275.0], "counterInterval": 4547, "events": [{"type": "chimes", "interval": 10595}, {"type": "sparkle", "interval": 8306}, {"type": "birdChirp", "interval": 19577}]},
       audio_variants: [
         { voice: "female_1_hi", url: "/audio/pre-gen/hi-chaan_female_1_hi.mp3", duration_seconds: 54.44 },
         { voice: "female_2_hi", url: "/audio/pre-gen/hi-chaan_female_2_hi.mp3", duration_seconds: 55.57 },
@@ -634,6 +657,7 @@ export const SEED_STORIES = {
       categories: ["Antariksh", "Sahas"],
       theme: "space",
       musicProfile: "cosmic-voyage",
+      musicParams: {"key": "Cm", "chordNotes": [130.81, 155.56, 196.0, 261.62], "padType": "fm", "padGain": 0.0567, "padFilter": 869, "padLfo": 0.0983, "noiseType": "brown", "noiseGain": 0.013, "droneFreq": 65.41, "droneGain": 0.0316, "melodyNotes": [261.62, 311.12, 392.0, 349.22], "melodyInterval": 3297, "melodyGain": 0.0182, "bassNotes": [65.41, 98.0, 77.78], "bassInterval": 5869, "counterNotes": [388.9, 490.0, 327.02], "counterInterval": 4593, "events": [{"type": "whaleCall", "interval": 19369}, {"type": "radarPing", "interval": 11051}, {"type": "starTwinkle", "interval": 21382}]},
       audio_variants: [
         { voice: "female_1_hi", url: "/audio/pre-gen/hi-capta_female_1_hi.mp3", duration_seconds: 74.63 },
         { voice: "female_2_hi", url: "/audio/pre-gen/hi-capta_female_2_hi.mp3", duration_seconds: 73.6 },
@@ -659,6 +683,7 @@ export const SEED_STORIES = {
       categories: ["Jaadui", "Kalpana", "Prakriti"],
       theme: "fantasy",
       musicProfile: "enchanted-garden",
+      musicParams: {"key": "Am", "chordNotes": [110.0, 130.81, 164.81, 220.0], "padType": "plucked", "padGain": 0.0417, "padFilter": 1062, "padLfo": 0.0887, "noiseType": "pink", "noiseGain": 0.0133, "droneFreq": 55.0, "droneGain": 0.0237, "melodyNotes": [220.0, 261.62, 329.62, 293.66], "melodyInterval": 3291, "melodyGain": 0.0176, "bassNotes": [55.0, 82.41, 65.41], "bassInterval": 6577, "counterNotes": [327.02, 412.02, 275.0], "counterInterval": 4533, "events": [{"type": "birdChirp", "interval": 13581}, {"type": "waterDrop", "interval": 17692}, {"type": "sparkle", "interval": 9129}, {"type": "windGust", "interval": 22589}]},
       audio_variants: [
         { voice: "female_1_hi", url: "/audio/pre-gen/hi-gungu_female_1_hi.mp3", duration_seconds: 62.02 },
         { voice: "female_2_hi", url: "/audio/pre-gen/hi-gungu_female_2_hi.mp3", duration_seconds: 66.75 },
@@ -684,6 +709,7 @@ export const SEED_STORIES = {
       categories: ["Lori", "Jaadui"],
       theme: "dreamy",
       musicProfile: "starlight-lullaby",
+      musicParams: {"key": "Bb", "chordNotes": [116.54, 146.83, 174.61, 233.08], "padType": "chorus", "padGain": 0.0555, "padFilter": 602, "padLfo": 0.0692, "noiseType": "pink", "noiseGain": 0.0113, "droneFreq": 58.27, "droneGain": 0.0325, "melodyNotes": [233.08, 293.66, 349.22, 311.12], "melodyInterval": 4163, "melodyGain": 0.0193, "bassNotes": [58.27, 87.31, 73.42], "bassInterval": 6201, "counterNotes": [367.08, 436.53, 291.35], "counterInterval": 5488, "events": [{"type": "heartbeat", "interval": 8229}, {"type": "sparkle", "interval": 13620}, {"type": "windGust", "interval": 22349}]},
       audio_variants: [
         { voice: "female_1_hi", url: "/audio/pre-gen/hi-chama_female_1_hi.mp3", duration_seconds: 26.78 },
         { voice: "female_2_hi", url: "/audio/pre-gen/hi-chama_female_2_hi.mp3", duration_seconds: 28.61 },
@@ -709,6 +735,7 @@ export const SEED_STORIES = {
       categories: ["Janwar", "Lori"],
       theme: "animals",
       musicProfile: "autumn-forest",
+      musicParams: {"key": "G", "chordNotes": [98.0, 123.47, 146.83, 196.0], "padType": "plucked", "padGain": 0.044, "padFilter": 771, "padLfo": 0.0794, "noiseType": "pink", "noiseGain": 0.0132, "droneFreq": 49.0, "droneGain": 0.0291, "melodyNotes": [196.0, 246.94, 293.66, 261.62], "melodyInterval": 4610, "melodyGain": 0.0193, "bassNotes": [49.0, 73.42, 61.73], "bassInterval": 6698, "counterNotes": [308.68, 367.08, 245.0], "counterInterval": 4652, "events": [{"type": "cricket", "interval": 9116}, {"type": "frog", "interval": 10654}, {"type": "owl", "interval": 22792}, {"type": "birdChirp", "interval": 9496}]},
       audio_variants: [
         { voice: "female_1_hi", url: "/audio/pre-gen/hi-ullu-_female_1_hi.mp3", duration_seconds: 30.41 },
         { voice: "female_2_hi", url: "/audio/pre-gen/hi-ullu-_female_2_hi.mp3", duration_seconds: 28.12 },
@@ -734,6 +761,7 @@ export const SEED_STORIES = {
       categories: ["Lori", "Jaadui"],
       theme: "dreamy",
       musicProfile: "ocean-drift",
+      musicParams: {"key": "F", "chordNotes": [174.61, 220.0, 261.63, 349.22], "padType": "chorus", "padGain": 0.0612, "padFilter": 871, "padLfo": 0.0846, "noiseType": "brown", "noiseGain": 0.0124, "droneFreq": 87.31, "droneGain": 0.038, "melodyNotes": [349.22, 440.0, 523.26, 466.16], "melodyInterval": 4068, "melodyGain": 0.0217, "bassNotes": [87.31, 130.81, 110.0], "bassInterval": 6832, "counterNotes": [550.0, 654.08, 436.53], "counterInterval": 4817, "events": [{"type": "heartbeat", "interval": 12787}, {"type": "starTwinkle", "interval": 23712}, {"type": "chimes", "interval": 20011}]},
       audio_variants: [
         { voice: "female_1_hi", url: "/audio/pre-gen/hi-sapno_female_1_hi.mp3", duration_seconds: 26.28 },
         { voice: "female_2_hi", url: "/audio/pre-gen/hi-sapno_female_2_hi.mp3", duration_seconds: 28.43 },
@@ -759,6 +787,7 @@ export const SEED_STORIES = {
       categories: ["Nature", "Fantasy", "Sleep"],
       theme: "nature",
       musicProfile: "forest-night",
+      musicParams: {"key": "A", "chordNotes": [110.0, 138.59, 164.81, 220.0], "padType": "resonant", "padGain": 0.0426, "padFilter": 471, "padLfo": 0.0476, "noiseType": "brown", "noiseGain": 0.0125, "droneFreq": 55.0, "droneGain": 0.038, "melodyNotes": [220.0, 277.18, 329.62, 293.66], "melodyInterval": 5005, "melodyGain": 0.0141, "bassNotes": [55.0, 82.41, 69.3], "bassInterval": 8653, "counterNotes": [346.48, 412.02, 275.0], "counterInterval": 5461, "events": [{"type": "cricket", "interval": 8322}, {"type": "owl", "interval": 21976}, {"type": "leaves", "interval": 10359}]},
       musicParams: {"key": "F", "chordNotes": [174.61, 220.0, 261.63, 349.22], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.07, "noiseType": "brown", "noiseGain": 0.01, "droneFreq": 87.31, "droneGain": 0.03, "melodyNotes": [349.22, 440.0, 523.26, 466.16], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [87.31, 130.81, 110.0], "bassInterval": 6000, "counterNotes": [550.0, 654.08, 436.53], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "leaves", "interval": 18000}, {"type": "cricket", "interval": 22000}, {"type": "waterDrop", "interval": 15000}]},
       musicParams: {"key": "F", "chordNotes": [174.61, 220.0, 261.63, 349.22], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.01, "droneFreq": 87.31, "droneGain": 0.03, "melodyNotes": [349.22, 440.0, 523.26, 466.16], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [87.31, 130.81, 110.0], "bassInterval": 6000, "counterNotes": [550.0, 654.08, 436.53], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "cricket", "interval": 18000}, {"type": "leaves", "interval": 22000}, {"type": "chimes", "interval": 25000}]},
       audio_variants: [
@@ -786,6 +815,7 @@ export const SEED_STORIES = {
       categories: ["Ocean Adventure", "Friendship", "Baby Sleep"],
       theme: "ocean",
       musicProfile: "ocean-drift",
+      musicParams: {"key": "Cm", "chordNotes": [130.81, 155.56, 196.0, 261.62], "padType": "chorus", "padGain": 0.0417, "padFilter": 509, "padLfo": 0.055, "noiseType": "pink", "noiseGain": 0.0113, "droneFreq": 65.41, "droneGain": 0.0262, "melodyNotes": [261.62, 311.12, 392.0, 349.22], "melodyInterval": 4802, "melodyGain": 0.0157, "bassNotes": [65.41, 98.0, 77.78], "bassInterval": 7428, "counterNotes": [388.9, 490.0, 327.02], "counterInterval": 5296, "events": [{"type": "waveCycle", "interval": 12237}, {"type": "whaleCall", "interval": 18971}, {"type": "waterDrop", "interval": 8079}]},
       musicParams: {"key": "Cm", "chordNotes": [130.81, 155.56, 196.0, 261.62], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.07, "noiseType": "brown", "noiseGain": 0.015, "droneFreq": 65.41, "droneGain": 0.03, "melodyNotes": [261.62, 311.12, 392.0, 349.22], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [65.41, 98.0, 77.78], "bassInterval": 6000, "counterNotes": [388.9, 490.0, 327.02], "counterInterval": 5000, "events": [{"type": "waveCycle", "interval": 12000}, {"type": "whaleCall", "interval": 20000}, {"type": "waterDrop", "interval": 8000}, {"type": "starTwinkle", "interval": 15000}]},
       musicParams: {"key": "Cm", "chordNotes": [130.81, 155.56, 196.0, 261.62], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.015, "droneFreq": 65.41, "droneGain": 0.03, "melodyNotes": [261.62, 311.12, 392.0, 349.22], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [65.41, 98.0, 77.78], "bassInterval": 6000, "counterNotes": [388.9, 490.0, 327.02], "counterInterval": 5000, "events": [{"type": "waveCycle", "interval": 12000}, {"type": "whaleCall", "interval": 20000}, {"type": "waterDrop", "interval": 8000}, {"type": "starTwinkle", "interval": 15000}]},
       audio_variants: [
@@ -813,6 +843,7 @@ export const SEED_STORIES = {
       categories: ["Nature", "Friendship", "Adventure"],
       theme: "nature",
       musicProfile: "moonlit-meadow",
+      musicParams: {"key": "Dm", "chordNotes": [146.83, 174.61, 220.0, 293.66], "padType": "resonant", "padGain": 0.0454, "padFilter": 575, "padLfo": 0.0892, "noiseType": "pink", "noiseGain": 0.0122, "droneFreq": 73.42, "droneGain": 0.0328, "melodyNotes": [293.66, 349.22, 440.0, 392.0], "melodyInterval": 4177, "melodyGain": 0.0176, "bassNotes": [73.42, 110.0, 87.31], "bassInterval": 5513, "counterNotes": [436.53, 550.0, 367.08], "counterInterval": 5159, "events": [{"type": "windGust", "interval": 11475}, {"type": "cricket", "interval": 7787}, {"type": "owl", "interval": 24401}, {"type": "sparkle", "interval": 15593}]},
       musicParams: {"key": "Dm", "chordNotes": [146.83, 174.61, 220.0, 293.66], "padType": "resonant", "padGain": 0.05, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.015, "droneFreq": 73.42, "droneGain": 0.04, "melodyNotes": [293.66, 349.22, 440.0, 392.0], "melodyInterval": 4000, "melodyGain": 0.02, "bassNotes": [73.42, 110.0, 87.31], "bassInterval": 6000, "counterNotes": [436.53, 550.0, 367.08], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "windGust", "interval": 18000}, {"type": "leaves", "interval": 22000}, {"type": "chimes", "interval": 15000}]},
       musicParams: {"key": "Dm", "chordNotes": [146.83, 174.61, 220.0, 293.66], "padType": "resonant", "padGain": 0.05, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.01, "droneFreq": 73.42, "droneGain": 0.03, "melodyNotes": [293.66, 349.22, 440.0, 392.0], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [73.42, 110.0, 87.31], "bassInterval": 6000, "counterNotes": [436.53, 550.0, 367.08], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "leaves", "interval": 8000}, {"type": "chimes", "interval": 15000}, {"type": "owl", "interval": 20000}]},
       audio_variants: [
@@ -840,6 +871,7 @@ export const SEED_STORIES = {
       categories: ["Family", "Adventure", "Ocean", "Home", "Discovery"],
       theme: "family",
       musicProfile: "dreamy-clouds",
+      musicParams: {"key": "Bbm", "chordNotes": [116.54, 138.59, 174.61, 233.08], "padType": "simple", "padGain": 0.0439, "padFilter": 506, "padLfo": 0.0429, "noiseType": "brown", "noiseGain": 0.0124, "droneFreq": 58.27, "droneGain": 0.0274, "melodyNotes": [233.08, 277.18, 349.22, 311.12], "melodyInterval": 4168, "melodyGain": 0.0134, "bassNotes": [58.27, 87.31, 69.3], "bassInterval": 5855, "counterNotes": [346.48, 436.53, 291.35], "counterInterval": 4712, "events": [{"type": "heartbeat", "interval": 7584}, {"type": "chimes", "interval": 12940}, {"type": "waterDrop", "interval": 17347}, {"type": "windGust", "interval": 25814}]},
       musicParams: {"key": "D", "chordNotes": [146.83, 185.0, 220.0, 293.66], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.07, "noiseType": "brown", "noiseGain": 0.01, "droneFreq": 73.42, "droneGain": 0.03, "melodyNotes": [293.66, 370.0, 440.0, 392.0], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [73.42, 110.0, 92.5], "bassInterval": 6000, "counterNotes": [462.5, 550.0, 367.08], "counterInterval": 5000, "events": [{"type": "waveCycle", "interval": 18000}, {"type": "whaleCall", "interval": 22000}, {"type": "starTwinkle", "interval": 12000}, {"type": "waterDrop", "interval": 8000}]},
       musicParams: {"key": "Fm", "chordNotes": [174.61, 207.65, 261.63, 349.22], "padType": "resonant", "padGain": 0.05, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.015, "droneFreq": 87.31, "droneGain": 0.04, "melodyNotes": [349.22, 415.3, 523.26, 466.16], "melodyInterval": 4000, "melodyGain": 0.02, "bassNotes": [87.31, 130.81, 103.83], "bassInterval": 6000, "counterNotes": [519.12, 654.08, 436.53], "counterInterval": 5000, "events": [{"type": "waveCycle", "interval": 18000}, {"type": "whaleCall", "interval": 22000}, {"type": "waterDrop", "interval": 12000}, {"type": "starTwinkle", "interval": 25000}]},
       audio_variants: [
@@ -867,6 +899,7 @@ export const SEED_STORIES = {
       categories: ["Fantasy", "Dosti", "Teamwork"],
       theme: "friendship",
       musicProfile: "autumn-forest",
+      musicParams: {"key": "Bbm", "chordNotes": [116.54, 138.59, 174.61, 233.08], "padType": "simple", "padGain": 0.0498, "padFilter": 913, "padLfo": 0.0819, "noiseType": "pink", "noiseGain": 0.0107, "droneFreq": 58.27, "droneGain": 0.0315, "melodyNotes": [233.08, 277.18, 349.22, 311.12], "melodyInterval": 4332, "melodyGain": 0.0183, "bassNotes": [58.27, 87.31, 69.3], "bassInterval": 6261, "counterNotes": [346.48, 436.53, 291.35], "counterInterval": 4761, "events": [{"type": "sparkle", "interval": 12611}, {"type": "leaves", "interval": 7554}, {"type": "birdChirp", "interval": 16734}]},
       musicParams: {"key": "Gm", "chordNotes": [98.0, 116.54, 146.83, 196.0], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.07, "noiseType": "brown", "noiseGain": 0.01, "droneFreq": 49.0, "droneGain": 0.03, "melodyNotes": [196.0, 233.08, 293.66, 261.62], "melodyInterval": 3800, "melodyGain": 0.018, "bassNotes": [49.0, 73.42, 58.27], "bassInterval": 6000, "counterNotes": [291.35, 367.08, 245.0], "counterInterval": 4500, "events": [{"type": "starTwinkle", "interval": 18000}, {"type": "leaves", "interval": 12000}, {"type": "chimes", "interval": 22000}, {"type": "heartbeat", "interval": 25000}]},
       musicParams: {"key": "Bb", "chordNotes": [116.54, 146.83, 174.61, 233.08], "padType": "resonant", "padGain": 0.05, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.01, "droneFreq": 58.27, "droneGain": 0.03, "melodyNotes": [233.08, 293.66, 349.22, 311.12], "melodyInterval": 4000, "melodyGain": 0.02, "bassNotes": [58.27, 87.31, 73.42], "bassInterval": 6000, "counterNotes": [367.08, 436.53, 291.35], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "chimes", "interval": 18000}, {"type": "leaves", "interval": 22000}, {"type": "heartbeat", "interval": 25000}]},
       audio_variants: [
@@ -894,6 +927,7 @@ export const SEED_STORIES = {
       categories: ["Prakriti", "Paryavaran"],
       theme: "nature",
       musicProfile: "forest-night",
+      musicParams: {"key": "Em", "chordNotes": [82.41, 98.0, 123.47, 164.82], "padType": "resonant", "padGain": 0.0429, "padFilter": 937, "padLfo": 0.071, "noiseType": "pink", "noiseGain": 0.0107, "droneFreq": 41.2, "droneGain": 0.0313, "melodyNotes": [164.82, 196.0, 246.94, 220.0], "melodyInterval": 4025, "melodyGain": 0.0199, "bassNotes": [41.2, 61.73, 49.0], "bassInterval": 7193, "counterNotes": [245.0, 308.68, 206.02], "counterInterval": 5253, "events": [{"type": "leaves", "interval": 5285}, {"type": "cricket", "interval": 10244}, {"type": "windGust", "interval": 16835}, {"type": "owl", "interval": 24840}]},
       musicParams: {"key": "Bb", "chordNotes": [116.54, 146.83, 174.61, 233.08], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.012, "droneFreq": 58.27, "droneGain": 0.03, "melodyNotes": [233.08, 293.66, 349.22, 311.12], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [58.27, 87.31, 73.42], "bassInterval": 6000, "counterNotes": [367.08, 436.53, 291.35], "counterInterval": 5000, "events": [{"type": "leaves", "interval": 12000}, {"type": "waterDrop", "interval": 18000}, {"type": "cricket", "interval": 22000}, {"type": "starTwinkle", "interval": 25000}]},
       audio_variants: [
         { voice: "female_1_hi", url: "/audio/pre-gen/gen-2b9f_female_1_hi.mp3", duration_seconds: 45.1 },
@@ -920,6 +954,7 @@ export const SEED_STORIES = {
       categories: ["Animals", "Friendship", "Learning", "Adventure"],
       theme: "animals",
       musicProfile: "autumn-forest",
+      musicParams: {"key": "E", "chordNotes": [164.81, 207.65, 246.94, 329.62], "padType": "resonant", "padGain": 0.0401, "padFilter": 592, "padLfo": 0.0805, "noiseType": "brown", "noiseGain": 0.0129, "droneFreq": 82.41, "droneGain": 0.0313, "melodyNotes": [329.62, 415.3, 493.88, 440.0], "melodyInterval": 3808, "melodyGain": 0.019, "bassNotes": [82.41, 123.47, 103.83], "bassInterval": 5636, "counterNotes": [519.12, 617.35, 412.02], "counterInterval": 4931, "events": [{"type": "sparkle", "interval": 13616}, {"type": "frog", "interval": 9010}, {"type": "owl", "interval": 20739}, {"type": "cricket", "interval": 10490}]},
       musicParams: {"key": "G", "chordNotes": [98.0, 123.47, 146.83, 196.0], "padType": "resonant", "padGain": 0.05, "padFilter": 800, "padLfo": 0.08, "noiseType": "pink", "noiseGain": 0.01, "droneFreq": 49.0, "droneGain": 0.03, "melodyNotes": [196.0, 246.94, 293.66, 261.62], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [49.0, 73.42, 61.73], "bassInterval": 6000, "counterNotes": [308.68, 367.08, 245.0], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "waterDrop", "interval": 8000}, {"type": "owl", "interval": 20000}, {"type": "chimes", "interval": 15000}]},
       audio_variants: [
         { voice: "female_1_hi", url: "/audio/pre-gen/gen-6037_female_1_hi.mp3", duration_seconds: 54.37 },
@@ -946,6 +981,7 @@ export const SEED_STORIES = {
       categories: ["Fantasy", "Adventure", "Transformation", "Play"],
       theme: "fantasy",
       musicProfile: "moonlit-meadow",
+      musicParams: {"key": "Cm", "chordNotes": [130.81, 155.56, 196.0, 261.62], "padType": "fm", "padGain": 0.0521, "padFilter": 973, "padLfo": 0.0828, "noiseType": "white", "noiseGain": 0.0114, "droneFreq": 65.41, "droneGain": 0.0354, "melodyNotes": [261.62, 311.12, 392.0, 349.22], "melodyInterval": 3150, "melodyGain": 0.0171, "bassNotes": [65.41, 98.0, 77.78], "bassInterval": 5916, "counterNotes": [388.9, 490.0, 327.02], "counterInterval": 5080, "events": [{"type": "birdChirp", "interval": 12557}, {"type": "chimes", "interval": 17811}, {"type": "sparkle", "interval": 21618}]},
       musicParams: {"key": "A", "chordNotes": [110.0, 138.59, 164.81, 220.0], "padType": "resonant", "padGain": 0.05, "padFilter": 800, "padLfo": 0.08, "noiseType": "pink", "noiseGain": 0.01, "droneFreq": 55.0, "droneGain": 0.03, "melodyNotes": [220.0, 277.18, 329.62, 293.66], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [55.0, 82.41, 69.3], "bassInterval": 6000, "counterNotes": [346.48, 412.02, 275.0], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "chimes", "interval": 18000}, {"type": "waterDrop", "interval": 20000}, {"type": "leaves", "interval": 15000}]},
       audio_variants: [
         { voice: "female_1_hi", url: "/audio/pre-gen/gen-032f_female_1_hi.mp3", duration_seconds: 42.57 },
@@ -972,6 +1008,7 @@ export const SEED_STORIES = {
       categories: ["Fantasy", "Friendship", "Adventure", "Future", "Magic"],
       theme: "fantasy",
       musicProfile: "moonlit-meadow",
+      musicParams: {"key": "G", "chordNotes": [98.0, 123.47, 146.83, 196.0], "padType": "chorus", "padGain": 0.0546, "padFilter": 945, "padLfo": 0.0864, "noiseType": "pink", "noiseGain": 0.0115, "droneFreq": 49.0, "droneGain": 0.0285, "melodyNotes": [196.0, 246.94, 293.66, 261.62], "melodyInterval": 2981, "melodyGain": 0.0159, "bassNotes": [49.0, 73.42, 61.73], "bassInterval": 6267, "counterNotes": [308.68, 367.08, 245.0], "counterInterval": 5220, "events": [{"type": "waterDrop", "interval": 9133}, {"type": "chimes", "interval": 12943}, {"type": "windGust", "interval": 20046}, {"type": "sparkle", "interval": 13229}]},
       musicParams: {"key": "Em", "chordNotes": [82.41, 98.0, 123.47, 164.82], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.015, "droneFreq": 41.2, "droneGain": 0.03, "melodyNotes": [164.82, 196.0, 246.94, 220.0], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [41.2, 61.73, 49.0], "bassInterval": 6000, "counterNotes": [245.0, 308.68, 206.02], "counterInterval": 5000, "events": [{"type": "waveCycle", "interval": 18000}, {"type": "starTwinkle", "interval": 22000}, {"type": "whaleCall", "interval": 30000}, {"type": "chimes", "interval": 15000}]},
       audio_variants: [
         { voice: "female_1_hi", url: "/audio/pre-gen/gen-febb_female_1_hi.mp3", duration_seconds: 87.89 },
@@ -998,6 +1035,7 @@ export const SEED_STORIES = {
       categories: ["Adventure", "Mythology", "School", "Transformation"],
       theme: "adventure",
       musicProfile: "autumn-forest",
+      musicParams: {"key": "Gm", "chordNotes": [98.0, 116.54, 146.83, 196.0], "padType": "fm", "padGain": 0.0531, "padFilter": 981, "padLfo": 0.0728, "noiseType": "brown", "noiseGain": 0.0106, "droneFreq": 49.0, "droneGain": 0.0321, "melodyNotes": [196.0, 233.08, 293.66, 261.62], "melodyInterval": 2961, "melodyGain": 0.0187, "bassNotes": [49.0, 73.42, 58.27], "bassInterval": 6077, "counterNotes": [291.35, 367.08, 245.0], "counterInterval": 4718, "events": [{"type": "leaves", "interval": 8479}, {"type": "owl", "interval": 21601}, {"type": "birdChirp", "interval": 10804}, {"type": "sparkle", "interval": 18579}]},
       musicParams: {"key": "Fm", "chordNotes": [174.61, 207.65, 261.63, 349.22], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.01, "droneFreq": 87.31, "droneGain": 0.03, "melodyNotes": [349.22, 415.3, 523.26, 466.16], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [87.31, 130.81, 103.83], "bassInterval": 6000, "counterNotes": [519.12, 654.08, 436.53], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 18000}, {"type": "chimes", "interval": 12000}, {"type": "leaves", "interval": 22000}, {"type": "owl", "interval": 25000}]},
       audio_variants: [
         { voice: "female_1_hi", url: "/audio/pre-gen/gen-2305_female_1_hi.mp3", duration_seconds: 50.02 },
@@ -1024,6 +1062,7 @@ export const SEED_STORIES = {
       categories: ["Science", "Mythology"],
       theme: "science",
       musicProfile: "enchanted-garden",
+      musicParams: {"key": "E", "chordNotes": [164.81, 207.65, 246.94, 329.62], "padType": "fm", "padGain": 0.0508, "padFilter": 910, "padLfo": 0.0799, "noiseType": "white", "noiseGain": 0.0125, "droneFreq": 82.41, "droneGain": 0.0367, "melodyNotes": [329.62, 415.3, 493.88, 440.0], "melodyInterval": 4572, "melodyGain": 0.018, "bassNotes": [82.41, 123.47, 103.83], "bassInterval": 6991, "counterNotes": [519.12, 617.35, 412.02], "counterInterval": 4580, "events": [{"type": "radarPing", "interval": 15515}, {"type": "waterDrop", "interval": 11755}, {"type": "whaleCall", "interval": 23667}]},
       musicParams: {"key": "F", "chordNotes": [174.61, 220.0, 261.63, 349.22], "padType": "resonant", "padGain": 0.05, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.015, "droneFreq": 87.31, "droneGain": 0.03, "melodyNotes": [349.22, 440.0, 523.26, 466.16], "melodyInterval": 4000, "melodyGain": 0.02, "bassNotes": [87.31, 130.81, 110.0], "bassInterval": 6000, "counterNotes": [550.0, 654.08, 436.53], "counterInterval": 5000, "events": [{"type": "waveCycle", "interval": 12000}, {"type": "whaleCall", "interval": 20000}, {"type": "waterDrop", "interval": 8000}, {"type": "starTwinkle", "interval": 15000}]},
       audio_variants: [
         { voice: "female_1_hi", url: "/audio/pre-gen/gen-bb82_female_1_hi.mp3", duration_seconds: 31.57 },
@@ -1050,6 +1089,7 @@ export const SEED_STORIES = {
       categories: ["भविष्य", "दोस्ती", "सीखना"],
       theme: "adventure",
       musicProfile: "autumn-forest",
+      musicParams: {"key": "D", "chordNotes": [146.83, 185.0, 220.0, 293.66], "padType": "plucked", "padGain": 0.0453, "padFilter": 887, "padLfo": 0.0859, "noiseType": "brown", "noiseGain": 0.0115, "droneFreq": 73.42, "droneGain": 0.0315, "melodyNotes": [293.66, 370.0, 440.0, 392.0], "melodyInterval": 3626, "melodyGain": 0.0169, "bassNotes": [73.42, 110.0, 92.5], "bassInterval": 6007, "counterNotes": [462.5, 550.0, 367.08], "counterInterval": 4693, "events": [{"type": "leaves", "interval": 7087}, {"type": "owl", "interval": 20215}, {"type": "birdChirp", "interval": 12944}, {"type": "sparkle", "interval": 16300}]},
       musicParams: {"key": "Am", "chordNotes": [110.0, 130.81, 164.81, 220.0], "padType": "resonant", "padGain": 0.05, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.01, "droneFreq": 55.0, "droneGain": 0.03, "melodyNotes": [220.0, 261.62, 329.62, 293.66], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [55.0, 82.41, 65.41], "bassInterval": 6000, "counterNotes": [327.02, 412.02, 275.0], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "windGust", "interval": 20000}, {"type": "chimes", "interval": 15000}, {"type": "leaves", "interval": 25000}]},
       audio_variants: [
         { voice: "female_1_hi", url: "/audio/pre-gen/gen-0027_female_1_hi.mp3", duration_seconds: 103.15 },
