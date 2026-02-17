@@ -72,12 +72,13 @@ export default function Home() {
         seedByTitle[s.title] = s;
       }
       // Enrich API items with seed-only fields (cover, audio_variants, musicParams, addedAt)
+      const hasRealCover = (c) => c && !c.includes('default.svg');
       const enriched = apiItems.map((item) => {
         const seed = seedById[item.id] || seedByTitle[item.title];
         if (!seed) return item;
         return {
           ...item,
-          cover: item.cover || seed.cover,
+          cover: hasRealCover(item.cover) ? item.cover : (seed.cover || item.cover),
           audio_variants: item.audio_variants || seed.audio_variants,
           musicParams: item.musicParams || seed.musicParams,
           musicProfile: item.musicProfile || seed.musicProfile,
