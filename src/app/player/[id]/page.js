@@ -372,13 +372,24 @@ export default function PlayerPage() {
       try {
         const data = await contentApi.getContentById(params.id);
         if (data && data.title) {
-          // Merge: seed data has all 7 audio variants; API may only have 3.
+          // Merge seed-only fields: seed data has audio variants, musicParams, cover, etc.
           // Match by title since API uses UUIDs but seedData uses slug IDs.
           const seedMatch = getStories(lang).find(
-            (s) => s.title === data.title
+            (s) => s.title === data.title || s.id === data.id
           );
-          if (seedMatch && seedMatch.audio_variants && seedMatch.audio_variants.length > (data.audio_variants || []).length) {
-            data.audio_variants = seedMatch.audio_variants;
+          if (seedMatch) {
+            if (seedMatch.audio_variants && seedMatch.audio_variants.length > (data.audio_variants || []).length) {
+              data.audio_variants = seedMatch.audio_variants;
+            }
+            if (!data.musicParams && seedMatch.musicParams) {
+              data.musicParams = seedMatch.musicParams;
+            }
+            if (!data.musicProfile && seedMatch.musicProfile) {
+              data.musicProfile = seedMatch.musicProfile;
+            }
+            if ((!data.cover || data.cover.includes('default.svg')) && seedMatch.cover) {
+              data.cover = seedMatch.cover;
+            }
           }
           setContent(data);
           setIsLiked(data.is_liked || false);
