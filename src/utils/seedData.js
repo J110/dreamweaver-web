@@ -567,7 +567,7 @@ export const SEED_STORIES = {
       type: "story",
       title: "Pina and the Whispering Lighthouse",
       description: "A curious girl follows a trail of seashells to an old lighthouse, where she discovers a lantern and a letter from her great-grandmother.",
-      cover: "/covers/default.svg",
+      cover: "/covers/whispering-lighthouse.svg",
       text: "Pina pressed her nose against the window of her grandmother's cottage and stared at the old lighthouse perched on the cliff. Its light hadn't worked in years, but tonight, something flickered behind the glass.\n\n\"Abuela, did you see that?\" Pina whispered. But her grandmother was already asleep in her rocking chair, a book open on her lap.\n\nPina pulled on her boots and stepped into the salty night air. The path to the lighthouse was lined with smooth stones that glowed faintly under the moon. She noticed something odd. Every third stone had a tiny seashell placed on top of it, like someone was leaving a trail.\n\nShe followed the shells up the winding cliff path, counting as she went. Twelve shells led her to the lighthouse door, which was slightly open. Inside, the spiral staircase smelled of old wood and sea salt.\n\nAt the top, Pina found a small room with windows all around. On the floor sat an old brass lantern, polished until it gleamed. Beside it lay a folded note that read, \"For the one curious enough to follow the shells. This lantern belonged to your great-grandmother. She was the last lighthouse keeper. Light it when you need courage.\"\n\nPina smiled and held the lantern close. Through the windows, she could see the whole coastline, the fishing boats bobbing gently, the stars reflected in the calm sea.\n\nShe lit the lantern with a match from the shelf. A warm golden light filled the room, and for a moment, she felt as though her great-grandmother was standing right beside her.\n\nPina carried the lantern carefully back down the spiral stairs and along the moonlit path. When she reached the cottage, she placed it on the windowsill where it glowed softly through the night.\n\nShe climbed into bed and pulled the covers up to her chin. Outside, the waves whispered against the cliffs, and the lantern's light kept watch over her dreams.",
       target_age: 7,
       duration: 5,
@@ -577,6 +577,7 @@ export const SEED_STORIES = {
       categories: ["Mystery", "Family", "Discovery"],
       theme: "mystery",
       musicProfile: "moonlit-meadow",
+      musicParams: {"key": "A", "chordNotes": [110.0, 138.59, 164.81, 220.0], "padType": "fm", "padGain": 0.0406, "padFilter": 852, "padLfo": 0.0824, "noiseType": "pink", "noiseGain": 0.0122, "droneFreq": 55.0, "droneGain": 0.0316, "melodyNotes": [220.0, 277.18, 329.62, 293.66], "melodyInterval": 3329, "melodyGain": 0.0177, "bassNotes": [55.0, 82.41, 69.3], "bassInterval": 6434, "counterNotes": [346.48, 412.02, 275.0], "counterInterval": 4778, "events": [{"type": "sparkle", "interval": 8886}, {"type": "windGust", "interval": 12932}, {"type": "cricket", "interval": 16162}]},
       musicParams: {"key": "Am", "chordNotes": [110.0, 130.81, 164.81, 220.0], "padType": "resonant", "padGain": 0.045, "padFilter": 800, "padLfo": 0.08, "noiseType": "brown", "noiseGain": 0.01, "droneFreq": 55.0, "droneGain": 0.03, "melodyNotes": [220.0, 261.62, 329.62, 293.66], "melodyInterval": 4000, "melodyGain": 0.018, "bassNotes": [55.0, 82.41, 65.41], "bassInterval": 6000, "counterNotes": [327.02, 412.02, 275.0], "counterInterval": 5000, "events": [{"type": "starTwinkle", "interval": 12000}, {"type": "chimes", "interval": 18000}, {"type": "windGust", "interval": 22000}]},
       audio_variants: [
         { voice: "female_1", url: "/audio/pre-gen/gen-5869_female_1.mp3", duration_seconds: 167.13 },
@@ -593,7 +594,7 @@ export const SEED_STORIES = {
       type: "poem",
       title: "Pina's Blanket of Stars",
       description: "A warm bedtime poem about a girl and her mother sharing a quiet moment beneath the stars.",
-      cover: "/covers/default.svg",
+      cover: "/covers/blanket-stars.svg",
       text: "Pina sits upon her bed,\na blanket pulled above her head.\nHer mother's voice is warm and low,\nlike candlelight with golden glow.\n\n\"Tell me, Mama, what do stars do\nwhen little girls like me sleep through?\"\nHer mother smiles and tucks her tight,\n\"They weave your dreams all through the night.\"\n\n\"They spin the clouds to pillows soft,\nand hang the moon up high aloft.\nThey hum a tune you cannot hear,\na lullaby for those held dear.\"\n\nPina peeks out from the sheet\nand wiggles her pajama feet.\n\"Do stars know that I love them too?\"\n\"Of course, my darling. Yes, they do.\"\n\nHer mother kisses Pina's cheek,\nthe floorboards give a gentle creak.\n\"Goodnight, my brave and curious one,\ntomorrow brings another sun.\"\n\nPina yawns and shuts her eyes,\nbeneath a blanket made of skies.\nThe stars above begin to gleam,\nand carry Pina to her dream.",
       target_age: 7,
       duration: 3,
@@ -603,6 +604,7 @@ export const SEED_STORIES = {
       categories: ["Family", "Bedtime", "Love"],
       theme: "family",
       musicProfile: "dreamy-clouds",
+      musicParams: {"key": "A", "chordNotes": [110.0, 138.59, 164.81, 220.0], "padType": "simple", "padGain": 0.0406, "padFilter": 663, "padLfo": 0.0824, "noiseType": "pink", "noiseGain": 0.0122, "droneFreq": 55.0, "droneGain": 0.0316, "melodyNotes": [220.0, 277.18, 329.62, 293.66], "melodyInterval": 3329, "melodyGain": 0.0177, "bassNotes": [55.0, 82.41, 69.3], "bassInterval": 5939, "counterNotes": [346.48, 412.02, 275.0], "counterInterval": 4778, "events": [{"type": "heartbeat", "interval": 8886}, {"type": "chimes", "interval": 12932}, {"type": "sparkle", "interval": 17958}]},
       musicParams: {"key": "Cm", "chordNotes": [130.81, 155.56, 196.0, 261.62], "padType": "chorus", "padGain": 0.0527, "padFilter": 656, "padLfo": 0.0777, "noiseType": "brown", "noiseGain": 0.012, "droneFreq": 65.41, "droneGain": 0.0391, "melodyNotes": [261.62, 311.12, 392.0, 349.22], "melodyInterval": 4951, "melodyGain": 0.0182, "bassNotes": [65.41, 98.0, 77.78], "bassInterval": 7370, "counterNotes": [388.9, 490.0, 327.02], "counterInterval": 5156, "events": [{"type": "heartbeat", "interval": 7668}, {"type": "starTwinkle", "interval": 23693}, {"type": "chimes", "interval": 14527}]},
       audio_variants: [
         { voice: "female_1", url: "/audio/pre-gen/gen-1a5a_female_1.mp3", duration_seconds: 94.42 },

@@ -1,0 +1,469 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Sky gradient: deep teal-navy night -->
+    <linearGradient id="wl-skyGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a1628" stop-opacity="1"/>
+      <stop offset="35%" stop-color="#0f2a40" stop-opacity="1"/>
+      <stop offset="70%" stop-color="#1a3d5c" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#2a5a6e" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- Lighthouse beam gradient -->
+    <linearGradient id="wl-beamGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffeebb" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#ffeebb" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Moon glow -->
+    <radialGradient id="wl-moonGlow" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#fef8d8" stop-opacity="0.7"/>
+      <stop offset="50%" stop-color="#f5d890" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#d8a850" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Lantern glow -->
+    <radialGradient id="wl-lanternGlow" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#ffdd66" stop-opacity="0.8"/>
+      <stop offset="40%" stop-color="#ffaa33" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#ff8800" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Cliff gradient -->
+    <linearGradient id="wl-cliffGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3a4a3a" stop-opacity="1"/>
+      <stop offset="50%" stop-color="#2a3a2a" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#1a2a1a" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- Ocean gradient -->
+    <linearGradient id="wl-oceanGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a3a5e" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#0a2a3e" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- Lighthouse body gradient -->
+    <linearGradient id="wl-lighthouseGradient" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#e8e0d0" stop-opacity="1"/>
+      <stop offset="50%" stop-color="#f5f0e5" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#d8d0c0" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- Character warm glow -->
+    <radialGradient id="wl-charGlow" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#ffdd88" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#ffdd88" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Vignette -->
+    <radialGradient id="wl-vignette">
+      <stop offset="50%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.5"/>
+    </radialGradient>
+
+    <!-- Soft glow filter -->
+    <filter id="wl-softGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Medium glow filter -->
+    <filter id="wl-medGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Strong glow filter -->
+    <filter id="wl-strongGlow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    /* Star twinkling */
+    @keyframes wl-twinkle1 {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    @keyframes wl-twinkle2 {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.9; }
+    }
+    @keyframes wl-twinkle3 {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.95; }
+    }
+
+    /* Lighthouse beam rotation */
+    @keyframes wl-beamSweep {
+      0% { transform: rotate(-8deg); opacity: 0.3; }
+      25% { opacity: 0.6; }
+      50% { transform: rotate(8deg); opacity: 0.3; }
+      75% { opacity: 0.6; }
+      100% { transform: rotate(-8deg); opacity: 0.3; }
+    }
+
+    /* Lighthouse light pulse */
+    @keyframes wl-lightPulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    /* Wave undulation */
+    @keyframes wl-wave1 {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(3px); }
+    }
+    @keyframes wl-wave2 {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-2.5px); }
+    }
+    @keyframes wl-wave3 {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(2px); }
+    }
+
+    /* Character breathing */
+    @keyframes wl-breathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    /* Lantern sway */
+    @keyframes wl-lanternSway {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(3deg); }
+    }
+
+    /* Hair flutter */
+    @keyframes wl-hairFlutter {
+      0%, 100% { transform: skewX(-2deg); }
+      50% { transform: skewX(2deg); }
+    }
+
+    /* Sparkle drift (seashell shimmer) */
+    @keyframes wl-sparkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.9; }
+    }
+
+    /* Cloud drift */
+    @keyframes wl-cloudDrift1 {
+      0%, 100% { transform: translateX(0px); }
+      50% { transform: translateX(30px); }
+    }
+    @keyframes wl-cloudDrift2 {
+      0%, 100% { transform: translateX(0px); }
+      50% { transform: translateX(-25px); }
+    }
+
+    /* Eye blink */
+    @keyframes wl-eyeBlink {
+      0%, 42%, 48%, 100% { transform: scaleY(1); }
+      45% { transform: scaleY(0.05); }
+    }
+
+    /* Moon reflection shimmer */
+    @keyframes wl-moonReflect {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Grass sway */
+    @keyframes wl-grassSway {
+      0%, 100% { transform: skewX(-2deg); }
+      50% { transform: skewX(2deg); }
+    }
+
+    /* Assignments */
+    .wl-star1 { animation: wl-twinkle1 3s ease-in-out infinite; }
+    .wl-star2 { animation: wl-twinkle2 3.5s ease-in-out infinite 0.4s; }
+    .wl-star3 { animation: wl-twinkle3 2.8s ease-in-out infinite 0.9s; }
+    .wl-star4 { animation: wl-twinkle1 4s ease-in-out infinite 1.3s; }
+    .wl-star5 { animation: wl-twinkle2 3.2s ease-in-out infinite 0.6s; }
+    .wl-star6 { animation: wl-twinkle3 3.8s ease-in-out infinite 1.7s; }
+    .wl-star7 { animation: wl-twinkle1 4.2s ease-in-out infinite 0.2s; }
+    .wl-star8 { animation: wl-twinkle2 3.6s ease-in-out infinite 1.1s; }
+    .wl-star9 { animation: wl-twinkle3 4.5s ease-in-out infinite 1.5s; }
+    .wl-star10 { animation: wl-twinkle1 3.4s ease-in-out infinite 0.8s; }
+    .wl-star11 { animation: wl-twinkle2 3.9s ease-in-out infinite 1.9s; }
+    .wl-star12 { animation: wl-twinkle3 4.1s ease-in-out infinite 0.5s; }
+
+    .wl-beam {
+      transform-origin: 380px 140px;
+      animation: wl-beamSweep 7s ease-in-out infinite;
+    }
+
+    .wl-lightGlow {
+      animation: wl-lightPulse 2.5s ease-in-out infinite;
+    }
+
+    .wl-wave1 { animation: wl-wave1 3s ease-in-out infinite; }
+    .wl-wave2 { animation: wl-wave2 3.5s ease-in-out infinite 0.3s; }
+    .wl-wave3 { animation: wl-wave3 3.2s ease-in-out infinite 0.6s; }
+
+    .wl-child {
+      transform-origin: 220px 310px;
+      animation: wl-breathe 5s ease-in-out infinite;
+    }
+
+    .wl-lantern {
+      transform-origin: 195px 285px;
+      animation: wl-lanternSway 4s ease-in-out infinite;
+    }
+
+    .wl-hair {
+      transform-origin: 220px 260px;
+      animation: wl-hairFlutter 5s ease-in-out infinite;
+    }
+
+    .wl-sparkle1 { animation: wl-sparkle 2.5s ease-in-out infinite; }
+    .wl-sparkle2 { animation: wl-sparkle 3s ease-in-out infinite 0.5s; }
+    .wl-sparkle3 { animation: wl-sparkle 2.8s ease-in-out infinite 1s; }
+    .wl-sparkle4 { animation: wl-sparkle 3.2s ease-in-out infinite 1.5s; }
+    .wl-sparkle5 { animation: wl-sparkle 2.6s ease-in-out infinite 0.3s; }
+
+    .wl-cloud1 { animation: wl-cloudDrift1 14s ease-in-out infinite; }
+    .wl-cloud2 { animation: wl-cloudDrift2 16s ease-in-out infinite; }
+
+    .wl-eyelid {
+      transform-origin: 220px 268px;
+      animation: wl-eyeBlink 5s ease-in-out infinite;
+    }
+
+    .wl-moonReflect { animation: wl-moonReflect 4s ease-in-out infinite; }
+
+    .wl-grass1 {
+      transform-origin: 120px 380px;
+      animation: wl-grassSway 4s ease-in-out infinite;
+    }
+    .wl-grass2 {
+      transform-origin: 170px 370px;
+      animation: wl-grassSway 4.3s ease-in-out infinite 0.4s;
+    }
+    .wl-grass3 {
+      transform-origin: 280px 365px;
+      animation: wl-grassSway 4.1s ease-in-out infinite 0.8s;
+    }
+  </style>
+
+  <!-- LAYER 1: Background sky -->
+  <rect width="512" height="512" fill="url(#wl-skyGradient)"/>
+
+  <!-- LAYER 2: Far background — Moon and stars -->
+  <!-- Moon (upper right) -->
+  <circle cx="420" cy="80" r="60" fill="url(#wl-moonGlow)" opacity="0.5"/>
+  <circle cx="420" cy="80" r="45" fill="url(#wl-moonGlow)" opacity="0.4"/>
+  <circle cx="420" cy="80" r="32" fill="#fef5d9" filter="url(#wl-softGlow)"/>
+  <!-- Moon craters -->
+  <circle cx="412" cy="72" r="5" fill="#e8d890" opacity="0.3"/>
+  <circle cx="428" cy="78" r="4" fill="#e8d890" opacity="0.25"/>
+  <circle cx="418" cy="90" r="3.5" fill="#e8d890" opacity="0.28"/>
+
+  <!-- Stars -->
+  <circle class="wl-star1" cx="60" cy="45" r="1.2" fill="#ffffff"/>
+  <circle class="wl-star2" cx="110" cy="30" r="0.8" fill="#ffffff"/>
+  <circle class="wl-star3" cx="170" cy="55" r="1" fill="#e8e8ff"/>
+  <circle class="wl-star4" cx="250" cy="25" r="1.3" fill="#ffffff"/>
+  <circle class="wl-star5" cx="320" cy="50" r="0.9" fill="#e8e8ff"/>
+  <circle class="wl-star6" cx="480" cy="40" r="1.1" fill="#ffffff"/>
+  <!-- 4-pointed sparkle stars -->
+  <g class="wl-star7">
+    <line x1="90" y1="85" x2="90" y2="93" stroke="#ffffff" stroke-width="0.6" opacity="0.5"/>
+    <line x1="86" y1="89" x2="94" y2="89" stroke="#ffffff" stroke-width="0.6" opacity="0.5"/>
+  </g>
+  <g class="wl-star8">
+    <line x1="300" y1="75" x2="300" y2="83" stroke="#ffffff" stroke-width="0.6" opacity="0.5"/>
+    <line x1="296" y1="79" x2="304" y2="79" stroke="#ffffff" stroke-width="0.6" opacity="0.5"/>
+  </g>
+  <circle class="wl-star9" cx="460" cy="100" r="1" fill="#ffffff"/>
+  <circle class="wl-star10" cx="40" cy="110" r="0.7" fill="#e8e8ff"/>
+  <circle class="wl-star11" cx="200" cy="95" r="0.9" fill="#ffffff"/>
+  <g class="wl-star12">
+    <line x1="140" y1="120" x2="140" y2="128" stroke="#ffffff" stroke-width="0.6" opacity="0.4"/>
+    <line x1="136" y1="124" x2="144" y2="124" stroke="#ffffff" stroke-width="0.6" opacity="0.4"/>
+  </g>
+
+  <!-- Wispy clouds -->
+  <g class="wl-cloud1" opacity="0.25">
+    <ellipse cx="100" cy="130" rx="40" ry="10" fill="#4a6a8a"/>
+    <ellipse cx="130" cy="125" rx="30" ry="8" fill="#5a7a9a"/>
+  </g>
+  <g class="wl-cloud2" opacity="0.2">
+    <ellipse cx="350" cy="110" rx="35" ry="9" fill="#4a6a8a"/>
+    <ellipse cx="380" cy="105" rx="28" ry="7" fill="#5a7a9a"/>
+  </g>
+
+  <!-- LAYER 3: Mid background — Lighthouse on distant cliff -->
+  <!-- Distant cliff (right side) -->
+  <path d="M 340 400 L 350 300 Q 370 260 400 250 Q 430 260 440 300 L 512 350 L 512 512 L 340 512 Z" fill="#2a3a3a" opacity="0.7"/>
+  <path d="M 355 350 Q 380 270 400 255 Q 420 270 435 330 L 512 370 L 512 400 L 340 400 Z" fill="#354535" opacity="0.5"/>
+
+  <!-- Lighthouse tower -->
+  <rect x="385" y="150" width="30" height="105" fill="url(#wl-lighthouseGradient)"/>
+  <!-- Red stripe bands -->
+  <rect x="385" y="170" width="30" height="10" fill="#c85a3a" opacity="0.9"/>
+  <rect x="385" y="200" width="30" height="10" fill="#c85a3a" opacity="0.9"/>
+  <rect x="385" y="230" width="30" height="10" fill="#c85a3a" opacity="0.9"/>
+  <!-- Lighthouse top/lantern room -->
+  <rect x="382" y="138" width="36" height="16" fill="#4a4a4a"/>
+  <rect x="387" y="140" width="26" height="12" fill="#ffdd66" opacity="0.9"/>
+  <!-- Lighthouse roof -->
+  <polygon points="400,120 380,138 420,138" fill="#5a5a5a"/>
+  <!-- Lighthouse base -->
+  <rect x="380" y="252" width="40" height="8" fill="#4a5a4a"/>
+
+  <!-- Lighthouse beam -->
+  <g class="wl-beam">
+    <path d="M 400 140 L 300 50 L 340 50 Z" fill="url(#wl-beamGradient)" opacity="0.3"/>
+    <path d="M 400 140 L 460 50 L 500 50 Z" fill="url(#wl-beamGradient)" opacity="0.3"/>
+  </g>
+
+  <!-- Lighthouse glow -->
+  <circle class="wl-lightGlow" cx="400" cy="145" r="15" fill="#ffdd66" opacity="0.5" filter="url(#wl-medGlow)"/>
+
+  <!-- LAYER 3b: Ocean -->
+  <rect x="0" y="380" width="340" height="132" fill="url(#wl-oceanGradient)"/>
+  <path d="M 340 380 L 340 400 L 512 420 L 512 512 L 340 512 Z" fill="url(#wl-oceanGradient)" opacity="0.6"/>
+
+  <!-- Moon reflection on water -->
+  <rect class="wl-moonReflect" x="410" y="385" width="18" height="30" fill="#fef8d8" opacity="0.2" rx="2"/>
+  <rect class="wl-moonReflect" x="412" y="420" width="14" height="25" fill="#fef8d8" opacity="0.15" rx="2"/>
+
+  <!-- Waves -->
+  <path class="wl-wave1" d="M 0 395 Q 50 390 100 395 T 200 395 T 300 395 T 340 395" fill="none" stroke="#2a6a9e" stroke-width="1.5" opacity="0.5"/>
+  <path class="wl-wave2" d="M 0 415 Q 60 408 120 415 T 240 415 T 340 415" fill="none" stroke="#1a5a8e" stroke-width="1.5" opacity="0.4"/>
+  <path class="wl-wave3" d="M 0 440 Q 70 433 140 440 T 280 440 T 340 440" fill="none" stroke="#2a6a9e" stroke-width="1" opacity="0.35"/>
+  <!-- Wave foam -->
+  <path d="M 0 395 Q 50 390 100 395 T 200 395 T 300 395" fill="none" stroke="#ffffff" stroke-width="0.6" opacity="0.15"/>
+
+  <!-- LAYER 4: Middle ground — Rocky cliff path (left/center foreground) -->
+  <path d="M 0 360 Q 50 340 130 345 Q 200 350 260 360 Q 300 370 340 380 L 340 512 L 0 512 Z" fill="url(#wl-cliffGradient)"/>
+  <!-- Cliff edge rocky detail -->
+  <path d="M 130 345 Q 145 340 160 348 Q 180 343 200 350 Q 230 356 260 360" fill="none" stroke="#4a5a4a" stroke-width="1.5" opacity="0.5"/>
+  <!-- Path on cliff (winding trail of seashells) -->
+  <path d="M 80 400 Q 130 380 180 370 Q 230 365 280 370" fill="none" stroke="#5a6a5a" stroke-width="8" opacity="0.3" stroke-linecap="round"/>
+
+  <!-- Cliff grass tufts -->
+  <g class="wl-grass1">
+    <line x1="118" y1="348" x2="115" y2="338" stroke="#6a8a6a" stroke-width="1.2" stroke-linecap="round"/>
+    <line x1="122" y1="347" x2="125" y2="336" stroke="#5a7a5a" stroke-width="1" stroke-linecap="round"/>
+    <line x1="126" y1="348" x2="128" y2="340" stroke="#7a9a7a" stroke-width="1" stroke-linecap="round"/>
+  </g>
+  <g class="wl-grass2">
+    <line x1="168" y1="348" x2="165" y2="338" stroke="#6a8a6a" stroke-width="1.2" stroke-linecap="round"/>
+    <line x1="172" y1="347" x2="175" y2="336" stroke="#5a7a5a" stroke-width="1" stroke-linecap="round"/>
+  </g>
+  <g class="wl-grass3">
+    <line x1="278" y1="363" x2="276" y2="353" stroke="#6a8a6a" stroke-width="1.2" stroke-linecap="round"/>
+    <line x1="282" y1="362" x2="285" y2="351" stroke="#5a7a5a" stroke-width="1" stroke-linecap="round"/>
+  </g>
+
+  <!-- Seashells along path (glowing) -->
+  <ellipse class="wl-sparkle1" cx="130" cy="378" rx="4" ry="3" fill="#ffeedd" opacity="0.6" filter="url(#wl-softGlow)"/>
+  <ellipse class="wl-sparkle2" cx="165" cy="370" rx="3.5" ry="2.5" fill="#ffeedd" opacity="0.5" filter="url(#wl-softGlow)"/>
+  <ellipse class="wl-sparkle3" cx="200" cy="367" rx="4" ry="3" fill="#ffeedd" opacity="0.6" filter="url(#wl-softGlow)"/>
+  <ellipse class="wl-sparkle4" cx="235" cy="365" rx="3" ry="2.5" fill="#ffeedd" opacity="0.5" filter="url(#wl-softGlow)"/>
+  <ellipse class="wl-sparkle5" cx="260" cy="365" rx="3.5" ry="2.5" fill="#ffeedd" opacity="0.55" filter="url(#wl-softGlow)"/>
+
+  <!-- LAYER 5: Primary character — Pina -->
+  <!-- Character warm aura -->
+  <circle cx="220" cy="300" r="55" fill="url(#wl-charGlow)"/>
+
+  <g class="wl-child">
+    <!-- Dress / body (a-line dress, teal with pattern) -->
+    <path d="M 210 290 L 200 340 L 240 340 L 230 290 Z" fill="#3a8a8a" stroke="#2a7a7a" stroke-width="0.8"/>
+    <!-- Dress pattern dots -->
+    <circle cx="215" cy="310" r="1.5" fill="#5ababa" opacity="0.6"/>
+    <circle cx="225" cy="305" r="1.2" fill="#5ababa" opacity="0.5"/>
+    <circle cx="218" cy="325" r="1.3" fill="#5ababa" opacity="0.6"/>
+    <circle cx="228" cy="320" r="1" fill="#5ababa" opacity="0.5"/>
+
+    <!-- Left arm (reaching slightly toward lighthouse) -->
+    <line x1="210" y1="295" x2="195" y2="285" stroke="#f4b5a0" stroke-width="6" stroke-linecap="round"/>
+
+    <!-- Right arm (holding lantern handle) -->
+    <line x1="230" y1="295" x2="240" y2="285" stroke="#f4b5a0" stroke-width="6" stroke-linecap="round"/>
+
+    <!-- Legs / shoes -->
+    <line x1="213" y1="340" x2="210" y2="355" stroke="#f4b5a0" stroke-width="5" stroke-linecap="round"/>
+    <line x1="227" y1="340" x2="230" y2="355" stroke="#f4b5a0" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="210" cy="357" rx="5" ry="3" fill="#4a3a2a"/>
+    <ellipse cx="230" cy="357" rx="5" ry="3" fill="#4a3a2a"/>
+
+    <!-- Head -->
+    <circle cx="220" cy="270" r="20" fill="#f4b5a0" filter="url(#wl-softGlow)"/>
+
+    <!-- Hair (dark brown, flowing) -->
+    <g class="wl-hair">
+      <ellipse cx="220" cy="258" rx="22" ry="10" fill="#3a2a1a"/>
+      <ellipse cx="205" cy="270" rx="8" ry="18" fill="#3a2a1a"/>
+      <ellipse cx="237" cy="268" rx="7" ry="16" fill="#3a2a1a"/>
+      <!-- Hair flowing strand -->
+      <path d="M 237 268 Q 245 280 242 295" stroke="#3a2a1a" stroke-width="4" fill="none" stroke-linecap="round"/>
+    </g>
+
+    <!-- Eyes (wondering expression) -->
+    <!-- Left eye -->
+    <circle cx="213" cy="268" r="5" fill="#ffffff"/>
+    <circle cx="214" cy="269" r="3.5" fill="#5a8a5a"/>
+    <circle cx="214" cy="270" r="2" fill="#2a3a2a"/>
+    <circle cx="215.5" cy="267" r="1.2" fill="#ffffff" opacity="0.9"/>
+    <circle cx="212" cy="271" r="0.7" fill="#ffffff" opacity="0.5"/>
+
+    <!-- Right eye -->
+    <circle cx="227" cy="268" r="5" fill="#ffffff"/>
+    <circle cx="228" cy="269" r="3.5" fill="#5a8a5a"/>
+    <circle cx="228" cy="270" r="2" fill="#2a3a2a"/>
+    <circle cx="229.5" cy="267" r="1.2" fill="#ffffff" opacity="0.9"/>
+    <circle cx="226" cy="271" r="0.7" fill="#ffffff" opacity="0.5"/>
+
+    <!-- Eyelids (blink animation) -->
+    <ellipse class="wl-eyelid" cx="213" cy="266" rx="6" ry="4" fill="#f4b5a0"/>
+    <ellipse class="wl-eyelid" cx="227" cy="266" rx="6" ry="4" fill="#f4b5a0"/>
+
+    <!-- Small wondering mouth -->
+    <ellipse cx="220" cy="278" rx="3" ry="2" fill="#e8a090" opacity="0.8"/>
+
+    <!-- Rosy cheeks -->
+    <circle cx="207" cy="274" r="3" fill="#ffb6c1" opacity="0.45"/>
+    <circle cx="233" cy="274" r="3" fill="#ffb6c1" opacity="0.45"/>
+  </g>
+
+  <!-- Lantern (held by Pina) -->
+  <g class="wl-lantern">
+    <!-- Lantern glow aura -->
+    <circle cx="195" cy="280" r="25" fill="url(#wl-lanternGlow)" filter="url(#wl-medGlow)"/>
+    <!-- Lantern handle -->
+    <path d="M 190 270 Q 195 265 200 270" stroke="#8a7a5a" stroke-width="1.5" fill="none"/>
+    <!-- Lantern body -->
+    <rect x="188" y="270" width="14" height="18" fill="#8a7a5a" rx="2" opacity="0.9"/>
+    <!-- Lantern glass (glowing) -->
+    <rect x="190" y="272" width="10" height="14" fill="#ffdd66" rx="1" opacity="0.8" filter="url(#wl-softGlow)"/>
+    <!-- Lantern bottom -->
+    <rect x="187" y="288" width="16" height="3" fill="#6a5a3a" rx="1"/>
+  </g>
+
+  <!-- LAYER 6: Foreground sparkles and particles -->
+  <!-- Floating golden sparkles near Pina -->
+  <circle cx="180" cy="295" r="1.5" fill="#ffd700" opacity="0.6" class="wl-sparkle1"/>
+  <circle cx="250" cy="280" r="1" fill="#ffd700" opacity="0.5" class="wl-sparkle2"/>
+  <circle cx="170" cy="310" r="1.2" fill="#ffe4b5" opacity="0.5" class="wl-sparkle3"/>
+  <circle cx="260" cy="305" r="0.8" fill="#ffd700" opacity="0.4" class="wl-sparkle4"/>
+
+  <!-- Foreground rocks (bottom) -->
+  <ellipse cx="50" cy="480" rx="40" ry="15" fill="#2a3a2a" opacity="0.6"/>
+  <ellipse cx="310" cy="490" rx="30" ry="12" fill="#2a3a2a" opacity="0.5"/>
+
+  <!-- LAYER 7: Vignette overlay -->
+  <rect width="512" height="512" fill="url(#wl-vignette)" opacity="0.4"/>
+</svg>

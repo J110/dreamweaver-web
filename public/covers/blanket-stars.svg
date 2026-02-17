@@ -1,0 +1,481 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Sky/room gradient: warm indigo-plum night -->
+    <linearGradient id="bs-skyGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a1040" stop-opacity="1"/>
+      <stop offset="40%" stop-color="#2a1858" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#3a2060" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- Window glow gradient (moonlight coming through) -->
+    <radialGradient id="bs-windowGlow" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#e8e0ff" stop-opacity="0.6"/>
+      <stop offset="50%" stop-color="#c8b8e8" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#8878a8" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Blanket gradient: deep blue-purple -->
+    <linearGradient id="bs-blanketGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4a3a8e" stop-opacity="1"/>
+      <stop offset="50%" stop-color="#5a4a9e" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#3a2a7e" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- Pillow gradient -->
+    <linearGradient id="bs-pillowGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8f0e8" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#e8ddd5" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- Warm glow around bed (from nightlight) -->
+    <radialGradient id="bs-warmGlow" cx="50%" cy="60%">
+      <stop offset="0%" stop-color="#ffdd88" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#ffdd88" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Character glow -->
+    <radialGradient id="bs-charGlow" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#ffe8cc" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#ffe8cc" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Star trail gradient -->
+    <radialGradient id="bs-starTrail" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#ffd700" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Vignette -->
+    <radialGradient id="bs-vignette">
+      <stop offset="50%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.5"/>
+    </radialGradient>
+
+    <!-- Soft glow filter -->
+    <filter id="bs-softGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Medium glow -->
+    <filter id="bs-medGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Strong glow -->
+    <filter id="bs-strongGlow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    /* Star twinkling */
+    @keyframes bs-twinkle1 {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    @keyframes bs-twinkle2 {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.9; }
+    }
+    @keyframes bs-twinkle3 {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.95; }
+    }
+
+    /* Floating star drift (stars coming from window) */
+    @keyframes bs-starFloat1 {
+      0%, 100% { transform: translateY(0px) translateX(0px); }
+      50% { transform: translateY(-8px) translateX(5px); }
+    }
+    @keyframes bs-starFloat2 {
+      0%, 100% { transform: translateY(0px) translateX(0px); }
+      50% { transform: translateY(-6px) translateX(-4px); }
+    }
+    @keyframes bs-starFloat3 {
+      0%, 100% { transform: translateY(0px) translateX(0px); }
+      50% { transform: translateY(-10px) translateX(3px); }
+    }
+
+    /* Child breathing (sleeping) */
+    @keyframes bs-breathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    /* Mother breathing (gentle) */
+    @keyframes bs-momBreathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.015); }
+    }
+
+    /* Blanket star shimmer */
+    @keyframes bs-blanketStar {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.9; }
+    }
+
+    /* Window curtain sway */
+    @keyframes bs-curtainSway {
+      0%, 100% { transform: skewX(-1deg); }
+      50% { transform: skewX(1deg); }
+    }
+
+    /* Nightlight pulse */
+    @keyframes bs-nightlight {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.8; }
+    }
+
+    /* Moonbeam shimmer */
+    @keyframes bs-moonbeam {
+      0%, 100% { opacity: 0.08; }
+      50% { opacity: 0.18; }
+    }
+
+    /* Mobile rotation (hanging stars mobile) */
+    @keyframes bs-mobileRotate {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(3deg); }
+    }
+
+    /* Sparkle dust falling */
+    @keyframes bs-dustFall {
+      0% { transform: translateY(0px); opacity: 0.7; }
+      100% { transform: translateY(15px); opacity: 0; }
+    }
+
+    /* Eye blink for mother */
+    @keyframes bs-eyeBlink {
+      0%, 42%, 48%, 100% { transform: scaleY(1); }
+      45% { transform: scaleY(0.05); }
+    }
+
+    /* Assignments */
+    .bs-star1 { animation: bs-twinkle1 3s ease-in-out infinite; }
+    .bs-star2 { animation: bs-twinkle2 3.5s ease-in-out infinite 0.4s; }
+    .bs-star3 { animation: bs-twinkle3 2.8s ease-in-out infinite 0.9s; }
+    .bs-star4 { animation: bs-twinkle1 4s ease-in-out infinite 1.3s; }
+    .bs-star5 { animation: bs-twinkle2 3.2s ease-in-out infinite 0.6s; }
+    .bs-star6 { animation: bs-twinkle3 3.8s ease-in-out infinite 1.7s; }
+    .bs-star7 { animation: bs-twinkle1 4.2s ease-in-out infinite 0.2s; }
+    .bs-star8 { animation: bs-twinkle2 3.6s ease-in-out infinite 1.1s; }
+    .bs-star9 { animation: bs-twinkle3 4.5s ease-in-out infinite 1.5s; }
+    .bs-star10 { animation: bs-twinkle1 3.4s ease-in-out infinite 0.8s; }
+
+    .bs-floatStar1 { animation: bs-starFloat1 6s ease-in-out infinite; }
+    .bs-floatStar2 { animation: bs-starFloat2 7s ease-in-out infinite 0.5s; }
+    .bs-floatStar3 { animation: bs-starFloat3 6.5s ease-in-out infinite 1s; }
+    .bs-floatStar4 { animation: bs-starFloat1 7.5s ease-in-out infinite 1.5s; }
+    .bs-floatStar5 { animation: bs-starFloat2 6.8s ease-in-out infinite 2s; }
+
+    .bs-child {
+      transform-origin: 240px 310px;
+      animation: bs-breathe 5s ease-in-out infinite;
+    }
+
+    .bs-mother {
+      transform-origin: 340px 280px;
+      animation: bs-momBreathe 6s ease-in-out infinite;
+    }
+
+    .bs-blanketStar1 { animation: bs-blanketStar 2.5s ease-in-out infinite; }
+    .bs-blanketStar2 { animation: bs-blanketStar 3s ease-in-out infinite 0.5s; }
+    .bs-blanketStar3 { animation: bs-blanketStar 2.8s ease-in-out infinite 1s; }
+    .bs-blanketStar4 { animation: bs-blanketStar 3.2s ease-in-out infinite 1.5s; }
+    .bs-blanketStar5 { animation: bs-blanketStar 2.6s ease-in-out infinite 0.3s; }
+    .bs-blanketStar6 { animation: bs-blanketStar 3.1s ease-in-out infinite 0.8s; }
+
+    .bs-curtain {
+      transform-origin: 410px 80px;
+      animation: bs-curtainSway 5s ease-in-out infinite;
+    }
+
+    .bs-nightlightGlow {
+      animation: bs-nightlight 3s ease-in-out infinite;
+    }
+
+    .bs-moonbeam {
+      animation: bs-moonbeam 5s ease-in-out infinite;
+    }
+
+    .bs-mobile {
+      transform-origin: 200px 60px;
+      animation: bs-mobileRotate 6s ease-in-out infinite;
+    }
+
+    .bs-dust1 { animation: bs-dustFall 7s ease-in-out infinite; }
+    .bs-dust2 { animation: bs-dustFall 8s ease-in-out infinite 1s; }
+    .bs-dust3 { animation: bs-dustFall 7.5s ease-in-out infinite 2s; }
+    .bs-dust4 { animation: bs-dustFall 6.5s ease-in-out infinite 3s; }
+
+    .bs-momEyelid {
+      transform-origin: 340px 262px;
+      animation: bs-eyeBlink 6s ease-in-out infinite;
+    }
+  </style>
+
+  <!-- LAYER 1: Background — room walls/night sky through window -->
+  <rect width="512" height="512" fill="url(#bs-skyGradient)"/>
+
+  <!-- Subtle room wall texture -->
+  <rect x="0" y="0" width="512" height="512" fill="#2a1848" opacity="0.3"/>
+
+  <!-- LAYER 2: Far background — Window with moonlit sky -->
+  <!-- Window frame -->
+  <rect x="350" y="60" width="120" height="160" fill="#1a1040" rx="5"/>
+  <rect x="355" y="65" width="110" height="150" fill="#1a2050" rx="3"/>
+
+  <!-- Moonlit sky through window -->
+  <rect x="358" y="68" width="104" height="144" fill="#1a2a5a" rx="2"/>
+
+  <!-- Moon through window (upper right) -->
+  <circle cx="430" cy="100" r="18" fill="#fef5d9" opacity="0.9" filter="url(#bs-softGlow)"/>
+  <circle cx="428" cy="98" r="4" fill="#e8d890" opacity="0.2"/>
+
+  <!-- Stars through window -->
+  <circle class="bs-star1" cx="370" cy="85" r="1" fill="#ffffff"/>
+  <circle class="bs-star2" cx="390" cy="75" r="0.8" fill="#ffffff"/>
+  <circle class="bs-star3" cx="380" cy="110" r="0.7" fill="#e8e8ff"/>
+  <circle class="bs-star4" cx="450" cy="130" r="0.9" fill="#ffffff"/>
+  <circle class="bs-star5" cx="405" cy="145" r="0.8" fill="#e8e8ff"/>
+  <circle class="bs-star6" cx="440" cy="160" r="1" fill="#ffffff"/>
+
+  <!-- Window cross bars -->
+  <line x1="410" y1="68" x2="410" y2="212" stroke="#3a2a5a" stroke-width="3"/>
+  <line x1="358" y1="140" x2="462" y2="140" stroke="#3a2a5a" stroke-width="3"/>
+
+  <!-- Window glow spilling into room -->
+  <ellipse cx="410" cy="140" rx="100" ry="80" fill="url(#bs-windowGlow)" opacity="0.3"/>
+
+  <!-- Moonbeam on floor -->
+  <path class="bs-moonbeam" d="M 358 212 L 300 380 L 460 380 L 462 212 Z" fill="#c8b8e8" opacity="0.08"/>
+
+  <!-- Curtains -->
+  <g class="bs-curtain">
+    <path d="M 350 60 Q 340 120 345 180 Q 348 200 350 220" fill="#5a3a7a" opacity="0.7" stroke="#4a2a6a" stroke-width="0.5"/>
+    <path d="M 470 60 Q 480 120 475 180 Q 472 200 470 220" fill="#5a3a7a" opacity="0.7" stroke="#4a2a6a" stroke-width="0.5"/>
+  </g>
+
+  <!-- LAYER 2b: Stars visible outside window drifting into room -->
+  <circle class="bs-star7" cx="30" cy="50" r="1.2" fill="#ffffff"/>
+  <circle class="bs-star8" cx="120" cy="35" r="0.9" fill="#e8e8ff"/>
+  <circle class="bs-star9" cx="280" cy="45" r="1" fill="#ffffff"/>
+  <circle class="bs-star10" cx="500" cy="30" r="0.8" fill="#ffffff"/>
+
+  <!-- LAYER 3: Mid background — Bedroom furniture -->
+  <!-- Headboard -->
+  <path d="M 120 230 Q 130 200 200 190 Q 280 180 340 195 Q 370 205 375 230 Z" fill="#6a4a3a" stroke="#5a3a2a" stroke-width="1.5" rx="5"/>
+  <!-- Headboard scroll detail -->
+  <path d="M 160 220 Q 200 205 250 200 Q 300 205 335 220" fill="none" stroke="#8a6a5a" stroke-width="1" opacity="0.5"/>
+
+  <!-- Nightstand -->
+  <rect x="80" y="260" width="35" height="50" fill="#6a4a3a" rx="2"/>
+  <rect x="78" y="258" width="39" height="5" fill="#7a5a4a" rx="1"/>
+  <!-- Nightlight on nightstand -->
+  <ellipse cx="97" cy="255" rx="8" ry="10" fill="#ffdd88" opacity="0.6" filter="url(#bs-medGlow)"/>
+  <circle class="bs-nightlightGlow" cx="97" cy="250" r="20" fill="#ffdd88" opacity="0.15" filter="url(#bs-strongGlow)"/>
+  <rect x="93" y="252" width="8" height="6" fill="#e8d8b8" rx="2"/>
+
+  <!-- Hanging star mobile above bed -->
+  <g class="bs-mobile">
+    <!-- Mobile bar -->
+    <line x1="170" y1="60" x2="230" y2="60" stroke="#8a7a6a" stroke-width="1.5"/>
+    <!-- Hanging strings and stars -->
+    <line x1="180" y1="60" x2="180" y2="80" stroke="#c8b898" stroke-width="0.5"/>
+    <polygon points="180,80 177,87 172,84 175,90 170,93 177,92 180,98 183,92 190,93 185,90 188,84 183,87" fill="#ffd700" opacity="0.7" transform="scale(0.5) translate(180,80)"/>
+
+    <line x1="200" y1="60" x2="200" y2="90" stroke="#c8b898" stroke-width="0.5"/>
+    <polygon points="200,90 197,97 192,94 195,100 190,103 197,102 200,108 203,102 210,103 205,100 208,94 203,97" fill="#ffd700" opacity="0.6" transform="scale(0.5) translate(200,100)"/>
+
+    <line x1="220" y1="60" x2="220" y2="75" stroke="#c8b898" stroke-width="0.5"/>
+    <polygon points="220,75 217,82 212,79 215,85 210,88 217,87 220,93 223,87 230,88 225,85 228,79 223,82" fill="#ffd700" opacity="0.7" transform="scale(0.5) translate(220,70)"/>
+  </g>
+
+  <!-- LAYER 4: Middle ground — Bed and blanket -->
+  <!-- Bed frame bottom -->
+  <rect x="110" y="340" width="280" height="20" fill="#6a4a3a" rx="3"/>
+  <rect x="105" y="356" width="290" height="8" fill="#5a3a2a" rx="2"/>
+
+  <!-- Mattress -->
+  <rect x="115" y="280" width="270" height="65" fill="#e8e0d8" rx="5" opacity="0.3"/>
+
+  <!-- Blanket (the star blanket — key visual element) -->
+  <path d="M 120 290 Q 125 280 200 275 Q 300 270 370 285 L 375 340 L 115 340 Z" fill="url(#bs-blanketGradient)"/>
+  <!-- Blanket folds -->
+  <path d="M 150 295 Q 200 288 250 290 Q 300 292 350 300" fill="none" stroke="#6a5aae" stroke-width="1" opacity="0.3"/>
+  <path d="M 140 315 Q 200 308 260 312 Q 320 316 360 325" fill="none" stroke="#6a5aae" stroke-width="0.8" opacity="0.25"/>
+
+  <!-- Stars embroidered/glowing on blanket -->
+  <g>
+    <!-- 5-pointed star shapes on blanket -->
+    <circle class="bs-blanketStar1" cx="155" cy="305" r="2.5" fill="#ffd700" opacity="0.6"/>
+    <circle class="bs-blanketStar2" cx="190" cy="298" r="2" fill="#ffe4b5" opacity="0.5"/>
+    <circle class="bs-blanketStar3" cx="230" cy="295" r="2.5" fill="#ffd700" opacity="0.7"/>
+    <circle class="bs-blanketStar4" cx="270" cy="300" r="2" fill="#ffe4b5" opacity="0.5"/>
+    <circle class="bs-blanketStar5" cx="310" cy="305" r="2.5" fill="#ffd700" opacity="0.6"/>
+    <circle class="bs-blanketStar6" cx="340" cy="315" r="2" fill="#ffe4b5" opacity="0.5"/>
+    <!-- Smaller accent stars -->
+    <circle class="bs-blanketStar1" cx="170" cy="320" r="1.5" fill="#ffd700" opacity="0.4"/>
+    <circle class="bs-blanketStar3" cx="210" cy="325" r="1.5" fill="#ffe4b5" opacity="0.4"/>
+    <circle class="bs-blanketStar5" cx="260" cy="320" r="1.5" fill="#ffd700" opacity="0.4"/>
+    <circle class="bs-blanketStar2" cx="300" cy="328" r="1.5" fill="#ffe4b5" opacity="0.4"/>
+  </g>
+
+  <!-- Pillow -->
+  <ellipse cx="200" cy="268" rx="55" ry="18" fill="url(#bs-pillowGradient)" filter="url(#bs-softGlow)"/>
+  <path d="M 155 268 Q 200 260 245 268" fill="none" stroke="#d8ccc0" stroke-width="0.8" opacity="0.4"/>
+
+  <!-- LAYER 5: Primary characters — Sleeping Pina and Mother -->
+
+  <!-- Pina (sleeping child, center of bed) -->
+  <g class="bs-child">
+    <!-- Body under blanket (just head visible) -->
+    <!-- Head -->
+    <circle cx="210" cy="258" r="18" fill="#f4b5a0" filter="url(#bs-softGlow)"/>
+
+    <!-- Hair (dark brown, spread on pillow) -->
+    <ellipse cx="210" cy="250" rx="20" ry="8" fill="#3a2a1a"/>
+    <ellipse cx="195" cy="258" rx="7" ry="14" fill="#3a2a1a"/>
+    <ellipse cx="226" cy="256" rx="6" ry="12" fill="#3a2a1a"/>
+    <!-- Hair spread on pillow -->
+    <path d="M 195 262 Q 185 270 180 275" stroke="#3a2a1a" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M 226 260 Q 235 268 240 272" stroke="#3a2a1a" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+    <!-- Closed eyes (sleeping, peaceful arcs) -->
+    <path d="M 202 256 Q 205 259 208 256" stroke="#3a2a1a" stroke-width="1" fill="none" stroke-linecap="round"/>
+    <!-- Tiny lashes -->
+    <line x1="202" y1="256" x2="201" y2="255" stroke="#3a2a1a" stroke-width="0.5" opacity="0.6"/>
+    <line x1="205" y1="257" x2="205" y2="255.5" stroke="#3a2a1a" stroke-width="0.5" opacity="0.6"/>
+
+    <path d="M 214 256 Q 217 259 220 256" stroke="#3a2a1a" stroke-width="1" fill="none" stroke-linecap="round"/>
+    <line x1="217" y1="257" x2="217" y2="255.5" stroke="#3a2a1a" stroke-width="0.5" opacity="0.6"/>
+    <line x1="220" y1="256" x2="221" y2="255" stroke="#3a2a1a" stroke-width="0.5" opacity="0.6"/>
+
+    <!-- Gentle sleeping smile -->
+    <path d="M 207 264 Q 211 266 215 264" stroke="#3a2a1a" stroke-width="0.7" fill="none" stroke-linecap="round"/>
+
+    <!-- Rosy cheeks -->
+    <circle cx="200" cy="261" r="3" fill="#ffb6c1" opacity="0.45"/>
+    <circle cx="222" cy="261" r="3" fill="#ffb6c1" opacity="0.45"/>
+
+    <!-- Small hand peeking from blanket -->
+    <circle cx="260" cy="278" r="5" fill="#f4b5a0"/>
+    <circle cx="257" cy="276" r="2" fill="#f4b5a0"/>
+    <circle cx="263" cy="276" r="2" fill="#f4b5a0"/>
+  </g>
+
+  <!-- Mother (sitting beside bed, gentle pose) -->
+  <g class="bs-mother">
+    <!-- Character glow -->
+    <circle cx="340" cy="270" r="50" fill="url(#bs-charGlow)"/>
+
+    <!-- Mother's body (sitting, gentle pose) -->
+    <path d="M 325 290 Q 320 320 315 350 L 365 350 Q 360 320 355 290 Z" fill="#7a5a8a" stroke="#6a4a7a" stroke-width="0.8"/>
+    <!-- Dress pattern -->
+    <circle cx="335" cy="310" r="1.5" fill="#9a7aaa" opacity="0.4"/>
+    <circle cx="345" cy="320" r="1.2" fill="#9a7aaa" opacity="0.3"/>
+    <circle cx="330" cy="330" r="1" fill="#9a7aaa" opacity="0.4"/>
+
+    <!-- Mother's arm reaching toward Pina -->
+    <path d="M 325 295 Q 300 290 275 280" stroke="#D4A574" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <!-- Hand on blanket near Pina -->
+    <circle cx="275" cy="280" r="5" fill="#D4A574"/>
+
+    <!-- Mother's head -->
+    <circle cx="340" cy="255" r="22" fill="#D4A574" filter="url(#bs-softGlow)"/>
+
+    <!-- Mother's hair (long, dark, graceful) -->
+    <ellipse cx="340" cy="243" rx="24" ry="10" fill="#2a1a0a"/>
+    <ellipse cx="322" cy="258" rx="8" ry="20" fill="#2a1a0a"/>
+    <ellipse cx="360" cy="256" rx="7" ry="18" fill="#2a1a0a"/>
+    <!-- Hair flowing down -->
+    <path d="M 360 268 Q 365 290 362 310" stroke="#2a1a0a" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M 322 270 Q 318 290 320 305" stroke="#2a1a0a" stroke-width="4" fill="none" stroke-linecap="round"/>
+
+    <!-- Eyes (gentle, looking at Pina, half-open loving look) -->
+    <!-- Left eye -->
+    <circle cx="333" cy="253" r="4" fill="#ffffff"/>
+    <circle cx="332" cy="254" r="2.8" fill="#6a4a3a"/>
+    <circle cx="332" cy="254.5" r="1.5" fill="#2a1a1a"/>
+    <circle cx="333.5" cy="252" r="1" fill="#ffffff" opacity="0.9"/>
+
+    <!-- Right eye -->
+    <circle cx="347" cy="253" r="4" fill="#ffffff"/>
+    <circle cx="346" cy="254" r="2.8" fill="#6a4a3a"/>
+    <circle cx="346" cy="254.5" r="1.5" fill="#2a1a1a"/>
+    <circle cx="347.5" cy="252" r="1" fill="#ffffff" opacity="0.9"/>
+
+    <!-- Eyelids -->
+    <ellipse class="bs-momEyelid" cx="333" cy="251" rx="5" ry="3.5" fill="#D4A574"/>
+    <ellipse class="bs-momEyelid" cx="347" cy="251" rx="5" ry="3.5" fill="#D4A574"/>
+
+    <!-- Gentle smile -->
+    <path d="M 334 263 Q 340 267 346 263" stroke="#8a6a5a" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+
+    <!-- Rosy cheeks -->
+    <circle cx="327" cy="260" r="3.5" fill="#ffb6c1" opacity="0.35"/>
+    <circle cx="353" cy="260" r="3.5" fill="#ffb6c1" opacity="0.35"/>
+  </g>
+
+  <!-- LAYER 6: Foreground — floating stars and sparkle dust -->
+  <!-- Magical stars floating from window toward bed -->
+  <g class="bs-floatStar1">
+    <circle cx="320" cy="160" r="3" fill="#ffd700" opacity="0.7" filter="url(#bs-softGlow)"/>
+    <line x1="320" y1="155" x2="320" y2="165" stroke="#ffd700" stroke-width="0.5" opacity="0.4"/>
+    <line x1="315" y1="160" x2="325" y2="160" stroke="#ffd700" stroke-width="0.5" opacity="0.4"/>
+  </g>
+  <g class="bs-floatStar2">
+    <circle cx="280" cy="180" r="2.5" fill="#ffe4b5" opacity="0.6" filter="url(#bs-softGlow)"/>
+    <line x1="280" y1="176" x2="280" y2="184" stroke="#ffe4b5" stroke-width="0.5" opacity="0.3"/>
+    <line x1="276" y1="180" x2="284" y2="180" stroke="#ffe4b5" stroke-width="0.5" opacity="0.3"/>
+  </g>
+  <g class="bs-floatStar3">
+    <circle cx="250" cy="200" r="2" fill="#ffd700" opacity="0.5" filter="url(#bs-softGlow)"/>
+  </g>
+  <g class="bs-floatStar4">
+    <circle cx="300" cy="140" r="2.5" fill="#ffe4b5" opacity="0.5" filter="url(#bs-softGlow)"/>
+    <line x1="300" y1="136" x2="300" y2="144" stroke="#ffe4b5" stroke-width="0.5" opacity="0.3"/>
+    <line x1="296" y1="140" x2="304" y2="140" stroke="#ffe4b5" stroke-width="0.5" opacity="0.3"/>
+  </g>
+  <g class="bs-floatStar5">
+    <circle cx="350" cy="195" r="2" fill="#ffd700" opacity="0.6" filter="url(#bs-softGlow)"/>
+  </g>
+
+  <!-- Sparkle dust particles falling gently -->
+  <circle class="bs-dust1" cx="230" cy="180" r="1" fill="#ffd700" opacity="0.5"/>
+  <circle class="bs-dust2" cx="280" cy="170" r="0.8" fill="#ffe4b5" opacity="0.4"/>
+  <circle class="bs-dust3" cx="310" cy="190" r="1" fill="#ffd700" opacity="0.5"/>
+  <circle class="bs-dust4" cx="260" cy="185" r="0.7" fill="#ffe4b5" opacity="0.4"/>
+
+  <!-- Small stuffed bunny on floor -->
+  <g opacity="0.6">
+    <ellipse cx="100" cy="380" rx="10" ry="12" fill="#e8d8c8"/>
+    <circle cx="100" cy="370" r="8" fill="#e8d8c8"/>
+    <ellipse cx="95" cy="362" rx="3" ry="7" fill="#e8d8c8"/>
+    <ellipse cx="105" cy="362" rx="3" ry="7" fill="#e8d8c8"/>
+    <ellipse cx="95" cy="364" rx="1.5" ry="4" fill="#f5c8c8"/>
+    <ellipse cx="105" cy="364" rx="1.5" ry="4" fill="#f5c8c8"/>
+    <circle cx="96" cy="368" r="1" fill="#2a2a2a"/>
+    <circle cx="104" cy="368" r="1" fill="#2a2a2a"/>
+    <circle cx="100" cy="372" r="1.5" fill="#f5a5a5"/>
+  </g>
+
+  <!-- Rug on floor -->
+  <ellipse cx="250" cy="400" rx="130" ry="25" fill="#5a3a6a" opacity="0.3"/>
+  <ellipse cx="250" cy="400" rx="110" ry="18" fill="#6a4a7a" opacity="0.2"/>
+
+  <!-- LAYER 7: Vignette overlay -->
+  <rect width="512" height="512" fill="url(#bs-vignette)" opacity="0.4"/>
+</svg>
