@@ -1842,10 +1842,337 @@ export class AmbientMusicEngine {
 
 
   // ════════════════════════════════════════════════════════════════════════════
+  // PARAMETERIZED BUILDER — generates unique soundscapes from a params object
+  // ════════════════════════════════════════════════════════════════════════════
+
+  /**
+   * Build a unique soundscape from a musicParams object.
+   * This allows each story to have its own distinct ambient music.
+   *
+   * @param {Object} params - Music parameters:
+   *   - padType: 'fm' | 'chorus' | 'resonant' | 'plucked' | 'simple' (default: 'chorus')
+   *   - chordNotes: number[] — base frequencies for the pad (e.g. [130.81, 164.81, 196.00])
+   *   - padGain: number (default: 0.045)
+   *   - padFilter: number — lowpass frequency (default: 800)
+   *   - padLfo: number — LFO rate (default: 0.06)
+   *   - noiseType: 'pink' | 'brown' | 'white' (default: 'pink')
+   *   - noiseGain: number (default: 0.01)
+   *   - droneFreq: number — drone bass frequency (default: first of chordNotes or 65.41)
+   *   - droneGain: number (default: 0.035)
+   *   - melodyNotes: number[] — main melody (default: chordNotes shifted up an octave)
+   *   - melodyInterval: number — ms between melody notes (default: 3500)
+   *   - melodyGain: number (default: 0.018)
+   *   - bassNotes: number[] — bass line (default: derived from chordNotes)
+   *   - bassInterval: number — ms between bass notes (default: 6000)
+   *   - counterNotes: number[] — counter melody notes
+   *   - counterInterval: number — ms between counter notes (default: 4500)
+   *   - events: Array<{type, interval, ...}> — scheduled ambient events
+   */
+  _buildFromParams(params = {}) {
+    const p = params;
+
+    // 1. PAD — the sustained harmonic base
+    const chordNotes = p.chordNotes || [130.81, 164.81, 196.00, 261.63];
+    const padGain = p.padGain ?? 0.045;
+    const padFilter = p.padFilter ?? 800;
+    const padLfo = p.padLfo ?? 0.06;
+    const padType = p.padType || 'chorus';
+
+    if (padType === 'fm') {
+      this._createFMPad(
+        chordNotes[0],
+        chordNotes[0] * 2,
+        25,
+        { carrierType: 'sine', modulatorType: 'sine', gain: padGain, filterFreq: padFilter, lfoRate: padLfo, lfoDepth: 50 }
+      );
+    } else if (padType === 'resonant') {
+      this._createResonantNoisePad(
+        chordNotes,
+        { noiseType: p.noiseType || 'brown', gain: padGain, Q: 10, lfoRate: padLfo, lfoDepth: 0.03 }
+      );
+    } else if (padType === 'plucked') {
+      this._createPluckedPad(
+        chordNotes.map(f => f * 2), // shift up an octave
+        2000,
+        { gain: padGain, Q: 20 }
+      );
+    } else if (padType === 'simple') {
+      this._createPad(
+        chordNotes,
+        { type: 'sine', gain: padGain, filterFreq: padFilter, lfoRate: padLfo, lfoDepth: 50 }
+      );
+    } else {
+      // default: chorus
+      this._createChorusPad(
+        chordNotes, 4, 12,
+        { type: 'sine', gain: padGain, filterFreq: padFilter, lfoRate: padLfo, lfoDepth: 50 }
+      );
+    }
+
+    // 2. AMBIENT NOISE texture
+    const noiseType = p.noiseType || 'pink';
+    const noiseGain = p.noiseGain ?? 0.01;
+    if (noiseGain > 0) {
+      this._createAmbientNoise({ type: noiseType, gain: noiseGain, filterFreq: padFilter * 0.6 });
+    }
+
+    // 3. DRONE — deep bass
+    const droneFreq = p.droneFreq ?? chordNotes[0] / 2;
+    const droneGain = p.droneGain ?? 0.035;
+    if (droneGain > 0) {
+      this._createDrone(droneFreq, { type: 'sine', gain: droneGain, filterFreq: 200 });
+    }
+
+    // 4. MELODY LAYER A — primary
+    const melodyNotes = p.melodyNotes || chordNotes.map(f => f * 2);
+    const melodyInterval = p.melodyInterval ?? 3500;
+    const melodyGain = p.melodyGain ?? 0.018;
+    let melIdx = 0;
+    this._scheduleRepeating(() => {
+      const note = melodyNotes[melIdx % melodyNotes.length];
+      melIdx++;
+      this._playTone(note, {
+        type: 'sine', gain: melodyGain, attack: 0.1, decay: 2.5,
+        filterFreq: padFilter * 1.5, detune: (Math.random() - 0.5) * 6,
+      });
+    }, melodyInterval, 0.15, melodyInterval * 1.5);
+
+    // 5. MELODY LAYER B — bass walking
+    const bassNotes = p.bassNotes || chordNotes.slice(0, 4).map(f => f / 2);
+    const bassInterval = p.bassInterval ?? 6000;
+    let bassIdx = 0;
+    this._scheduleRepeating(() => {
+      const note = bassNotes[bassIdx % bassNotes.length];
+      bassIdx++;
+      this._playTone(note, {
+        type: 'triangle', gain: melodyGain * 0.8, attack: 0.2, decay: 5.5,
+        filterFreq: 250, pan: -0.1,
+      });
+    }, bassInterval, 0.2, bassInterval * 1.2);
+
+    // 6. MELODY LAYER C — counter melody (optional)
+    const counterNotes = p.counterNotes || melodyNotes.map(f => f * 1.25); // major third
+    const counterInterval = p.counterInterval ?? 4500;
+    let cIdx = 0;
+    this._scheduleRepeating(() => {
+      const note = counterNotes[cIdx % counterNotes.length];
+      cIdx++;
+      this._playTone(note, {
+        type: 'sine', gain: melodyGain * 0.6,
+        attack: 0.15, decay: 3.2,
+        filterFreq: padFilter * 1.2,
+        pan: 0.15,
+      });
+    }, counterInterval, 0.2, counterInterval * 1.4);
+
+    // 7. EVENTS — scheduled ambient sound effects
+    const events = p.events || [];
+    for (const evt of events) {
+      this._buildEvent(evt);
+    }
+  }
+
+  /** Build a single ambient event based on type */
+  _buildEvent(evt) {
+    const interval = evt.interval || 10000;
+    const gain = evt.gain ?? 1.0; // gain multiplier
+
+    switch (evt.type) {
+      case 'sparkle':
+        this._scheduleRepeating(() => {
+          for (let i = 0; i < 5; i++) {
+            setTimeout(() => {
+              if (!this._playing) return;
+              this._playTone(2000 + i * 300 + Math.random() * 200, {
+                type: 'sine', gain: 0.006 * gain, attack: 0.005, decay: 0.8,
+                filterFreq: 5000, pan: (Math.random() - 0.5) * 1.6,
+              });
+            }, i * 150);
+          }
+        }, interval, 0.3, interval * 0.5);
+        break;
+
+      case 'windGust':
+        this._scheduleRepeating(() => {
+          this._playNoiseBurst({
+            noiseType: 'pink', duration: 3 + Math.random() * 2,
+            gain: 0.008 * gain, filterFreq: 300 + Math.random() * 200,
+            pan: (Math.random() - 0.5) * 1.0,
+          });
+        }, interval, 0.4, interval * 0.6);
+        break;
+
+      case 'cricket':
+        this._scheduleRepeating(() => {
+          const baseFreq = 3800 + Math.random() * 600;
+          const numChirps = 4 + Math.floor(Math.random() * 5);
+          for (let i = 0; i < numChirps; i++) {
+            setTimeout(() => {
+              if (!this._playing) return;
+              this._playTone(baseFreq + (Math.random() - 0.5) * 300, {
+                type: 'sine', gain: 0.005 * gain,
+                attack: 0.003, decay: 0.06,
+                filterFreq: 6000, pan: (Math.random() - 0.5) * 1.4,
+              });
+            }, i * (100 + Math.random() * 60));
+          }
+        }, interval, 0.4, interval * 0.7);
+        break;
+
+      case 'frog':
+        this._scheduleRepeating(() => {
+          const frogFreq = 180 + Math.random() * 60;
+          const pan = (Math.random() - 0.5) * 1.4;
+          this._playTone(frogFreq, {
+            type: 'square', gain: 0.008 * gain, attack: 0.01, decay: 0.15,
+            filterFreq: 500, filterQ: 3, pan,
+          });
+          setTimeout(() => {
+            if (!this._playing) return;
+            this._playTone(frogFreq * 1.3, {
+              type: 'square', gain: 0.006 * gain, attack: 0.01, decay: 0.12,
+              filterFreq: 600, filterQ: 3, pan,
+            });
+          }, 200);
+        }, interval, 0.5, interval * 0.7);
+        break;
+
+      case 'owl':
+        this._scheduleRepeating(() => {
+          const pan = (Math.random() - 0.5) * 1.0;
+          this._playTone(340, {
+            type: 'sine', gain: 0.008 * gain, attack: 0.05, decay: 0.5,
+            filterFreq: 500, filterQ: 2, pan,
+          });
+          setTimeout(() => {
+            if (!this._playing) return;
+            this._playTone(390, {
+              type: 'sine', gain: 0.012 * gain, attack: 0.05, decay: 0.7,
+              filterFreq: 600, filterQ: 2, pan,
+            });
+          }, 600);
+        }, interval, 0.4, interval * 0.6);
+        break;
+
+      case 'waterDrop':
+        this._scheduleRepeating(() => {
+          const freq = 1200 + Math.random() * 800;
+          this._playTone(freq, {
+            type: 'sine', gain: 0.01 * gain, attack: 0.002, decay: 0.3,
+            filterFreq: 3000, pan: (Math.random() - 0.5) * 1.5,
+          });
+        }, interval, 0.5, interval * 0.3);
+        break;
+
+      case 'waveCycle':
+        this._scheduleRepeating(() => {
+          this._playNoiseBurst({
+            noiseType: 'brown', duration: 4 + Math.random() * 3,
+            gain: 0.012 * gain, filterFreq: 400 + Math.random() * 200,
+            pan: (Math.random() - 0.5) * 0.6,
+          });
+        }, interval, 0.3, interval * 0.5);
+        break;
+
+      case 'starTwinkle':
+        this._scheduleRepeating(() => {
+          this._playTone(3000 + Math.random() * 2000, {
+            type: 'sine', gain: 0.004 * gain, attack: 0.01, decay: 1.5,
+            filterFreq: 6000, pan: (Math.random() - 0.5) * 1.8,
+          });
+        }, interval, 0.5, interval * 0.4);
+        break;
+
+      case 'birdChirp':
+        this._scheduleRepeating(() => {
+          const baseNote = 2000 + Math.random() * 1000;
+          const pan = (Math.random() - 0.5) * 1.2;
+          for (let i = 0; i < 3; i++) {
+            setTimeout(() => {
+              if (!this._playing) return;
+              this._playTone(baseNote + i * 150, {
+                type: 'sine', gain: 0.006 * gain, attack: 0.01, decay: 0.15,
+                filterFreq: 5000, pan,
+              });
+            }, i * 120);
+          }
+        }, interval, 0.4, interval * 0.5);
+        break;
+
+      case 'whaleCall':
+        this._scheduleRepeating(() => {
+          const startFreq = 80 + Math.random() * 40;
+          this._playTone(startFreq, {
+            type: 'sine', gain: 0.015 * gain, attack: 0.5, decay: 4.0,
+            filterFreq: 300, pan: (Math.random() - 0.5) * 0.5,
+          });
+        }, interval, 0.3, interval * 0.6);
+        break;
+
+      case 'heartbeat':
+        this._scheduleRepeating(() => {
+          this._playTone(55, { type: 'sine', gain: 0.018 * gain, attack: 0.02, decay: 0.4, filterFreq: 150 });
+          setTimeout(() => {
+            if (!this._playing) return;
+            this._playTone(50, { type: 'sine', gain: 0.012 * gain, attack: 0.02, decay: 0.3, filterFreq: 120 });
+          }, 250);
+        }, interval, 0.1, interval * 0.5);
+        break;
+
+      case 'chimes':
+        this._scheduleRepeating(() => {
+          const chimeNotes = [1046.50, 1174.66, 1318.51, 1396.91, 1567.98, 1760.00];
+          const numChimes = 2 + Math.floor(Math.random() * 3);
+          for (let i = 0; i < numChimes; i++) {
+            setTimeout(() => {
+              if (!this._playing) return;
+              const note = chimeNotes[Math.floor(Math.random() * chimeNotes.length)];
+              this._playTone(note, {
+                type: 'sine', gain: 0.012 * gain,
+                attack: 0.005, decay: 3.0,
+                filterFreq: 4000, detune: (Math.random() - 0.5) * 15,
+                pan: (Math.random() - 0.5) * 1.4,
+              });
+            }, i * (200 + Math.random() * 400));
+          }
+        }, interval, 0.4, interval * 0.4);
+        break;
+
+      case 'leaves':
+        this._scheduleRepeating(() => {
+          this._playNoiseBurst({
+            noiseType: 'white', duration: 1 + Math.random(),
+            gain: 0.004 * gain, filterFreq: 2000 + Math.random() * 1000,
+            pan: (Math.random() - 0.5) * 1.6,
+          });
+        }, interval, 0.5, interval * 0.4);
+        break;
+
+      case 'radarPing':
+        this._scheduleRepeating(() => {
+          this._playTone(1800 + Math.random() * 400, {
+            type: 'sine', gain: 0.006 * gain, attack: 0.005, decay: 1.2,
+            filterFreq: 3000, pan: (Math.random() - 0.5) * 0.8,
+          });
+        }, interval, 0.3, interval * 0.5);
+        break;
+
+      default:
+        console.warn(`AmbientMusic: unknown event type "${evt.type}"`);
+    }
+  }
+
+
+  // ════════════════════════════════════════════════════════════════════════════
   // PUBLIC API
   // ════════════════════════════════════════════════════════════════════════════
 
-  async play(profileName) {
+  /**
+   * Start playing ambient music.
+   * @param {string|Object} profileOrParams - Either a profile name string (e.g. 'dreamy-clouds')
+   *   or a musicParams object for a custom per-story soundscape.
+   */
+  async play(profileOrParams) {
     if (this._playing) this.stop();
 
     const builders = {
@@ -1859,10 +2186,21 @@ export class AmbientMusicEngine {
       'ocean-drift':        () => this._buildOceanDrift(),
     };
 
-    const builder = builders[profileName];
-    if (!builder) {
-      console.warn(`AmbientMusic: unknown profile "${profileName}"`);
-      return;
+    let builder;
+    let profileLabel;
+
+    if (typeof profileOrParams === 'object' && profileOrParams !== null) {
+      // Custom musicParams object
+      builder = () => this._buildFromParams(profileOrParams);
+      profileLabel = 'custom-params';
+    } else {
+      // Named profile string
+      builder = builders[profileOrParams];
+      profileLabel = profileOrParams;
+      if (!builder) {
+        console.warn(`AmbientMusic: unknown profile "${profileOrParams}"`);
+        return;
+      }
     }
 
     // Wait for AudioContext to be fully running before creating any nodes.
@@ -1871,7 +2209,7 @@ export class AmbientMusicEngine {
     await this._waitForContext();
 
     this._playing = true;
-    this._currentProfile = profileName;
+    this._currentProfile = profileLabel;
 
     builder();
 

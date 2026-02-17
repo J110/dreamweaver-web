@@ -10,6 +10,8 @@ import { getAmbientMusic } from '@/utils/ambientMusic';
 import { useI18n } from '@/utils/i18n';
 import { useVoicePreferences } from '@/utils/voicePreferences';
 import { VOICES, getVoiceId, getVoiceLabel } from '@/utils/voiceConfig';
+import { stripEmotionMarkers } from '@/utils/textUtils';
+import { recordListen, markCompleted } from '@/utils/listeningHistory';
 import styles from './page.module.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -39,6 +41,7 @@ export default function PlayerPage() {
   const progressIntervalRef = useRef(null);
   const musicRef = useRef(null);
   const musicStartedRef = useRef(false);
+  const lastHistoryRecordRef = useRef(0); // throttle history writes
 
   // Initialize music engine
   useEffect(() => {
@@ -80,9 +83,10 @@ export default function PlayerPage() {
     voiceInitializedRef.current = true;
   }, [content, lang, getDefaultVoice, voicePrefs]);
 
-  // Auto-start ambient music
+  // Auto-start ambient music — prefer musicParams (per-story unique), fallback to musicProfile (shared)
+  const musicSource = content?.musicParams || content?.musicProfile;
   useEffect(() => {
-    if (!content?.musicProfile) return;
+    if (!musicSource) return;
 
     let cancelled = false;
     let retryTimer = null;
@@ -90,11 +94,10 @@ export default function PlayerPage() {
 
     const startMusic = async () => {
       if (musicStartedRef.current || cancelled) return true;
-      const profile = content.musicProfile;
-      if (!profile || !musicRef.current) return false;
+      if (!musicSource || !musicRef.current) return false;
       try {
         musicRef.current.setVolume(musicVolume / 100);
-        await musicRef.current.play(profile);
+        await musicRef.current.play(musicSource);
         if (!cancelled) {
           setMusicPlaying(true);
           musicStartedRef.current = true;
@@ -142,7 +145,7 @@ export default function PlayerPage() {
       if (retryTimer) clearTimeout(retryTimer);
       removeGestureListeners();
     };
-  }, [content?.musicProfile, musicVolume]);
+  }, [musicSource, musicVolume]);
 
   // Resolve audio source
   const getAudioSource = useCallback(() => {
@@ -180,12 +183,22 @@ export default function PlayerPage() {
     progressIntervalRef.current = setInterval(() => {
       const audio = audioRef.current;
       if (audio && audio.duration && !isNaN(audio.duration)) {
-        setCurrentTime(audio.currentTime);
-        setDuration(audio.duration);
-        setProgress((audio.currentTime / audio.duration) * 100);
+        const now = audio.currentTime;
+        const dur = audio.duration;
+        setCurrentTime(now);
+        setDuration(dur);
+        const pct = (now / dur) * 100;
+        setProgress(pct);
+
+        // Record listening history (throttled: every 10s)
+        const ts = Date.now();
+        if (params?.id && ts - lastHistoryRecordRef.current > 10000) {
+          lastHistoryRecordRef.current = ts;
+          recordListen(params.id, pct);
+        }
       }
     }, 250);
-  }, []);
+  }, [params?.id]);
 
   const stopProgressTracking = useCallback(() => {
     if (progressIntervalRef.current) {
@@ -254,6 +267,7 @@ export default function PlayerPage() {
         setIsPlaying(false);
         setProgress(100);
         stopProgressTracking();
+        if (params?.id) markCompleted(params.id);
       });
 
       audio.addEventListener('error', () => {
@@ -680,27 +694,27 @@ export default function PlayerPage() {
         <div className={styles.storySection}>
           <h2 className={styles.sectionTitle}>{t('playerStory')}</h2>
           <div className={styles.storyText}>
-            {content.text || content.content || t('playerNoContent')}
+            {stripEmotionMarkers(content.text || content.content) || t('playerNoContent')}
           </div>
 
           {content.poems && (
             <div className={styles.extraSection}>
               <h3 className={styles.extraTitle}>📖 {t('playerPoems')}</h3>
-              <div className={styles.extraText}>{content.poems}</div>
+              <div className={styles.extraText}>{stripEmotionMarkers(content.poems)}</div>
             </div>
           )}
 
           {content.songs && (
             <div className={styles.extraSection}>
               <h3 className={styles.extraTitle}>🎵 {t('playerSongs')}</h3>
-              <div className={styles.extraText}>{content.songs}</div>
+              <div className={styles.extraText}>{stripEmotionMarkers(content.songs)}</div>
             </div>
           )}
 
           {content.qa && (
             <div className={styles.extraSection}>
               <h3 className={styles.extraTitle}>❓ {t('playerQA')}</h3>
-              <div className={styles.extraText}>{content.qa}</div>
+              <div className={styles.extraText}>{stripEmotionMarkers(content.qa)}</div>
             </div>
           )}
         </div>

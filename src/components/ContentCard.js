@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { getAmbientMusic } from '@/utils/ambientMusic';
+import { isListened } from '@/utils/listeningHistory';
 import styles from './ContentCard.module.css';
 
 export default function ContentCard({ content, onClick }) {
@@ -56,6 +57,7 @@ export default function ContentCard({ content, onClick }) {
   };
 
   const ageLabel = getAgeLabel();
+  const isNew = !isListened(content.id);
 
   const cardContent = (
     <>
@@ -73,6 +75,9 @@ export default function ContentCard({ content, onClick }) {
             {content.type?.toLowerCase() === 'song' && '🎵'}
             {content.type?.toLowerCase() === 'story' && '✨'}
           </div>
+        )}
+        {isNew && (
+          <span className={styles.newBadge}>NEW</span>
         )}
         {ageLabel && (
           <span className={styles.ageBadge}>

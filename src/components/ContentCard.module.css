@@ -53,6 +53,23 @@
   left: 0;
 }
 
+.newBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 3;
+  background: linear-gradient(135deg, #FF6B9D, #FF3D7F);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  line-height: 1.2;
+  box-shadow: 0 2px 8px rgba(255, 61, 127, 0.4);
+}
+
 .ageBadge {
   position: absolute;
   bottom: 8px;

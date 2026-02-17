@@ -7,6 +7,7 @@ import { isLoggedIn, getUser } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
 import { trendingApi } from '@/utils/api';
 import { getStories } from '@/utils/seedData';
+import { sortByDiscovery } from '@/utils/listeningHistory';
 import styles from './page.module.css';
 
 const THEMES = [
@@ -80,9 +81,9 @@ export default function Home() {
     ? stories
     : stories.filter((s) => s.theme === activeTheme);
 
-  const storyItems = filteredStories.filter((s) => s.type === 'story');
-  const poemItems = filteredStories.filter((s) => s.type === 'poem');
-  const songItems = filteredStories.filter((s) => s.type === 'song');
+  const storyItems = sortByDiscovery(filteredStories.filter((s) => s.type === 'story'));
+  const poemItems = sortByDiscovery(filteredStories.filter((s) => s.type === 'poem'));
+  const songItems = sortByDiscovery(filteredStories.filter((s) => s.type === 'song'));
 
   const appName = lang === 'hi' ? 'Sapno ki Duniya' : 'Dream Valley';
   const logoSrc = lang === 'hi' ? '/logo-hi.svg' : '/logo-new.svg';
