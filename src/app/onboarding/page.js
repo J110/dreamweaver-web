@@ -8,14 +8,14 @@ import { useVoicePreferences } from '@/utils/voicePreferences';
 import { VOICES, getVoicesForGender, getSampleUrl, getVoiceLabel } from '@/utils/voiceConfig';
 import styles from './page.module.css';
 
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 3; // Hindi hidden for now — lang step skipped
 
 export default function OnboardingPage() {
   const router = useRouter();
   const { lang, setLang, t } = useI18n();
   const { setVoicePrefs } = useVoicePreferences();
   const [step, setStep] = useState(0);
-  const [selectedLang, setSelectedLang] = useState(null);
+  const [selectedLang, setSelectedLang] = useState('en'); // Hindi hidden for now
 
   // Voice state (step 3 — single combined page)
   const [playingVoice, setPlayingVoice] = useState(null);
@@ -95,12 +95,13 @@ export default function OnboardingPage() {
   };
 
   const handleContinue = () => {
-    if (step < 2) {
+    if (step < 1) {
       setStep(step + 1);
-    } else if (step === 2 && selectedLang) {
-      setLang(selectedLang);
-      setStep(3);
-    } else if (step === 3) {
+    } else if (step === 1) {
+      // Skip language selection — force English
+      setLang('en');
+      setStep(2);
+    } else if (step === 2) {
       // Gender selection auto-picks defaults, so voices are always complete
       stopAudio();
       setVoicePrefs({ preferredGender, primaryVoice, secondaryVoice, alternateVoice });
@@ -163,50 +164,9 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Step 2: Language Selection */}
+        {/* Step 2: Voice Selection (matches settings page layout) */}
+        {/* Language selection step hidden — Hindi content temporarily disabled */}
         {step === 2 && (
-          <div className={styles.slide}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={selectedLang === 'hi' ? '/logo-hi.svg' : '/logo-new.svg'}
-              alt={selectedLang === 'hi' ? 'Sapno ki Duniya' : 'Dream Valley'}
-              className={styles.logoImageSmall}
-            />
-            <h1 className={styles.title}>Choose Your Language</h1>
-            <p className={styles.subtitle}>Apni bhasha chuniye</p>
-
-            <div className={styles.langOptions}>
-              <button
-                onClick={() => setSelectedLang('en')}
-                className={`${styles.langCard} ${selectedLang === 'en' ? styles.langCardActive : ''}`}
-              >
-                <span className={styles.langFlag}>🇬🇧</span>
-                <span className={styles.langName}>English</span>
-                <span className={styles.langSample}>Dream Valley</span>
-              </button>
-
-              <button
-                onClick={() => setSelectedLang('hi')}
-                className={`${styles.langCard} ${selectedLang === 'hi' ? styles.langCardActive : ''}`}
-              >
-                <span className={styles.langFlag}>🇮🇳</span>
-                <span className={styles.langName}>Hindi</span>
-                <span className={styles.langSample}>Sapno ki Duniya</span>
-              </button>
-            </div>
-
-            <button
-              onClick={handleContinue}
-              disabled={!selectedLang}
-              className={styles.startBtn}
-            >
-              {selectedLang === 'hi' ? 'Aage Badhein' : 'Continue'}
-            </button>
-          </div>
-        )}
-
-        {/* Step 3: Voice Selection (matches settings page layout) */}
-        {step === 3 && (
           <div className={`${styles.slide} ${styles.slideWide}`}>
             <div className={styles.iconLarge} style={{ fontSize: '48px', marginBottom: '8px' }}>🎙️</div>
             <h1 className={styles.title} style={{ fontSize: '24px' }}>{t('voicePreviewTitle')}</h1>
@@ -234,9 +194,7 @@ export default function OnboardingPage() {
             {/* Primary Voice */}
             {preferredGender && (
               <>
-                <p className={styles.subStepLabel}>
-                  {voiceLang === 'hi' ? 'प्राथमिक आवाज़' : 'Primary Voice'}
-                </p>
+                <p className={styles.subStepLabel}>Primary Voice</p>
                 <div className={styles.voiceGrid}>
                   {getVoicesForGender(preferredGender).map(([id, meta]) => {
                     const isActive = primaryVoice === id;
@@ -261,9 +219,7 @@ export default function OnboardingPage() {
             {/* Secondary Voice */}
             {preferredGender && (
               <>
-                <p className={styles.subStepLabel}>
-                  {voiceLang === 'hi' ? 'द्वितीय आवाज़' : 'Secondary Voice'}
-                </p>
+                <p className={styles.subStepLabel}>Secondary Voice</p>
                 <div className={styles.voiceGrid}>
                   {getVoicesForGender(preferredGender).map(([id, meta]) => {
                     const isActive = secondaryVoice === id;
@@ -288,9 +244,7 @@ export default function OnboardingPage() {
             {/* Alternate Voice */}
             {preferredGender && (
               <>
-                <p className={styles.subStepLabel}>
-                  {voiceLang === 'hi' ? 'वैकल्पिक आवाज़' : 'Alternate Voice'}
-                </p>
+                <p className={styles.subStepLabel}>Alternate Voice</p>
                 <div className={styles.voiceGrid}>
                   {getVoicesForGender(otherGender).map(([id, meta]) => {
                     const isActive = alternateVoice === id;
@@ -317,7 +271,7 @@ export default function OnboardingPage() {
               className={styles.startBtn}
               disabled={!preferredGender}
             >
-              {voiceLang === 'hi' ? 'Shuru Karein' : t('getStarted')}
+              {t('getStarted')}
             </button>
           </div>
         )}

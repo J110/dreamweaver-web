@@ -118,7 +118,7 @@ export default function ProfilePage() {
     setTimeout(() => setSaved(false), 2000);
   };
 
-  const appName = lang === 'hi' ? 'Sapno ki Duniya' : 'Dream Valley';
+  const appName = 'Dream Valley';
   const otherGender = preferredGender === 'female' ? 'male' : 'female';
   const primaryGenderVoices = getVoicesForGender(preferredGender);
   const alternateGenderVoices = getVoicesForGender(otherGender);
@@ -142,26 +142,7 @@ export default function ProfilePage() {
         </div>
 
         <div className={styles.settings}>
-          {/* Language Selector */}
-          <div className={styles.settingCard}>
-            <div className={styles.settingLabel}>
-              🌍 {t('profileLanguage')}
-            </div>
-            <div className={styles.langSwitch}>
-              <button
-                onClick={() => handleLanguageChange('en')}
-                className={`${styles.langBtn} ${lang === 'en' ? styles.langBtnActive : ''}`}
-              >
-                English
-              </button>
-              <button
-                onClick={() => handleLanguageChange('hi')}
-                className={`${styles.langBtn} ${lang === 'hi' ? styles.langBtnActive : ''}`}
-              >
-                Hindi
-              </button>
-            </div>
-          </div>
+          {/* Language Selector — hidden while Hindi content is being curated */}
 
           {/* Voice Settings — inline collapsible */}
           <div className={styles.voiceSettingsCard}>
@@ -203,7 +184,7 @@ export default function ProfilePage() {
                 {/* Primary Voice */}
                 <div className={styles.voiceSection}>
                   <h3 className={styles.voiceSectionTitle}>
-                    {lang === 'hi' ? 'प्राथमिक आवाज़' : 'Primary Voice'}
+                    Primary Voice
                   </h3>
                   <div className={styles.voiceGrid}>
                     {primaryGenderVoices.map(([id, meta]) => (
@@ -223,7 +204,7 @@ export default function ProfilePage() {
                 {/* Secondary Voice */}
                 <div className={styles.voiceSection}>
                   <h3 className={styles.voiceSectionTitle}>
-                    {lang === 'hi' ? 'द्वितीय आवाज़' : 'Secondary Voice'}
+                    Secondary Voice
                   </h3>
                   <div className={styles.voiceGrid}>
                     {primaryGenderVoices.map(([id, meta]) => (
@@ -243,7 +224,7 @@ export default function ProfilePage() {
                 {/* Alternate Voice */}
                 <div className={styles.voiceSection}>
                   <h3 className={styles.voiceSectionTitle}>
-                    {lang === 'hi' ? 'वैकल्पिक आवाज़' : 'Alternate Voice'}
+                    Alternate Voice
                   </h3>
                   <div className={styles.voiceGrid}>
                     {alternateGenderVoices.map(([id, meta]) => (
@@ -262,10 +243,7 @@ export default function ProfilePage() {
 
                 {/* Save Button */}
                 <button onClick={handleSaveVoice} className={styles.saveVoiceBtn}>
-                  {saved
-                    ? (lang === 'hi' ? 'Save ho gaya ✓' : 'Saved ✓')
-                    : (lang === 'hi' ? 'Save Karein' : 'Save Preferences')
-                  }
+                  {saved ? 'Saved ✓' : 'Save Preferences'}
                 </button>
               </div>
             )}

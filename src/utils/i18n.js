@@ -244,16 +244,20 @@ export function I18nProvider({ children }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    // Force English — Hindi content temporarily disabled for curation
     const saved = localStorage.getItem(LANG_KEY);
-    if (saved && (saved === 'en' || saved === 'hi')) {
-      setLangState(saved);
+    if (saved === 'hi') {
+      localStorage.setItem(LANG_KEY, 'en');
     }
+    setLangState('en');
     setReady(true);
   }, []);
 
   const setLang = (newLang) => {
-    setLangState(newLang);
-    localStorage.setItem(LANG_KEY, newLang);
+    // Force English — Hindi content temporarily disabled
+    const safeLang = 'en';
+    setLangState(safeLang);
+    localStorage.setItem(LANG_KEY, safeLang);
   };
 
   const t = (key) => {
