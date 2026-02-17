@@ -6,6 +6,7 @@ import StarField from '@/components/StarField';
 import ContentCard from '@/components/ContentCard';
 import { contentApi } from '@/utils/api';
 import { getStories } from '@/utils/seedData';
+import { sortByDiscovery } from '@/utils/listeningHistory';
 import { useI18n } from '@/utils/i18n';
 import styles from './page.module.css';
 
@@ -27,6 +28,7 @@ const THEMES = [
   { id: 'science', emoji: '🔬', en: 'Science', hi: 'Vigyan' },
   { id: 'friendship', emoji: '🤝', en: 'Friendship', hi: 'Dosti' },
   { id: 'family', emoji: '👨‍👩‍👧', en: 'Family', hi: 'Parivar' },
+  { id: 'mystery', emoji: '🔍', en: 'Mystery', hi: 'Rahasya' },
   { id: 'dreamy', emoji: '🌙', en: 'Dreamy', hi: 'Sapne' },
 ];
 
@@ -52,7 +54,27 @@ function ExploreContent() {
         const result = await contentApi.getContent(filters);
         const items = result.content || [];
         if (items.length > 0) {
-          setContent(items);
+          // Enrich API items with seed-only fields (cover, audio_variants, musicParams)
+          const seedItems = getStories(lang);
+          const seedById = {};
+          const seedByTitle = {};
+          for (const s of seedItems) {
+            seedById[s.id] = s;
+            seedByTitle[s.title] = s;
+          }
+          const enriched = items.map((item) => {
+            const seed = seedById[item.id] || seedByTitle[item.title];
+            if (!seed) return item;
+            return {
+              ...item,
+              cover: item.cover || seed.cover,
+              audio_variants: item.audio_variants || seed.audio_variants,
+              musicParams: item.musicParams || seed.musicParams,
+              musicProfile: item.musicProfile || seed.musicProfile,
+              addedAt: item.addedAt || seed.addedAt,
+            };
+          });
+          setContent(enriched);
         } else {
           let fallback = getStories(lang);
           if (filterType !== 'all') fallback = fallback.filter((s) => s.type === filterType);
@@ -121,7 +143,7 @@ function ExploreContent() {
         <div className={styles.loadingMsg}>{t('loading')}</div>
       ) : content.length > 0 ? (
         <div className={styles.grid}>
-          {content.map((item) => (
+          {sortByDiscovery(content).map((item) => (
             <ContentCard key={item.id} content={item} />
           ))}
         </div>

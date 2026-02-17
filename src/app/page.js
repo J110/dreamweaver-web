@@ -23,6 +23,7 @@ const THEMES = [
   { id: 'bedtime', emoji: '🛏️' },
   { id: 'friendship', emoji: '🤝' },
   { id: 'family', emoji: '👨‍👩‍👧' },
+  { id: 'mystery', emoji: '🔍' },
   { id: 'science', emoji: '🔬' },
 ];
 
@@ -39,6 +40,7 @@ const THEME_LABELS = {
   bedtime: { en: 'Bedtime', hi: 'Sone ka Samay' },
   friendship: { en: 'Friendship', hi: 'Dosti' },
   family: { en: 'Family', hi: 'Parivar' },
+  mystery: { en: 'Mystery', hi: 'Rahasya' },
   science: { en: 'Science', hi: 'Vigyan' },
 };
 
@@ -62,13 +64,33 @@ export default function Home() {
       const data = await trendingApi.getTrending(40, lang);
       const apiItems = data.content || [];
       const seedItems = getStories(lang);
-      // Merge: use API items as base, then add any seedData stories not already present
+      // Build seed lookup by id and title for enrichment
+      const seedById = {};
+      const seedByTitle = {};
+      for (const s of seedItems) {
+        seedById[s.id] = s;
+        seedByTitle[s.title] = s;
+      }
+      // Enrich API items with seed-only fields (cover, audio_variants, musicParams, addedAt)
+      const enriched = apiItems.map((item) => {
+        const seed = seedById[item.id] || seedByTitle[item.title];
+        if (!seed) return item;
+        return {
+          ...item,
+          cover: item.cover || seed.cover,
+          audio_variants: item.audio_variants || seed.audio_variants,
+          musicParams: item.musicParams || seed.musicParams,
+          musicProfile: item.musicProfile || seed.musicProfile,
+          addedAt: item.addedAt || seed.addedAt,
+        };
+      });
+      // Add seed items not already present via API
       const apiIds = new Set(apiItems.map((s) => s.id));
       const titleMap = new Set(apiItems.map((s) => s.title));
       const extras = seedItems.filter(
         (s) => !apiIds.has(s.id) && !titleMap.has(s.title)
       );
-      const merged = [...apiItems, ...extras];
+      const merged = [...enriched, ...extras];
       setStories(merged.length > 0 ? merged : seedItems);
     } catch (err) {
       setStories(getStories(lang));

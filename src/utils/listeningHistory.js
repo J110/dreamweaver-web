@@ -100,7 +100,9 @@ export function getHistoryEntry(storyId) {
 }
 
 /**
- * Sort stories: unlistened first (in original order), then listened (oldest listen first).
+ * Sort stories: unlistened first (newest first by addedAt), then listened (oldest listen first).
+ * This ensures newly added content surfaces at the top for discovery, while
+ * already-listened content sinks to the bottom.
  * @param {Array} stories - Array of story objects with 'id' field
  * @returns {Array} Sorted copy
  */
@@ -120,6 +122,13 @@ export function sortByDiscovery(stories) {
       unlistened.push(story);
     }
   }
+
+  // Unlistened: newest first (by addedAt date), stories without addedAt go after
+  unlistened.sort((a, b) => {
+    const dateA = a.addedAt ? new Date(a.addedAt).getTime() : 0;
+    const dateB = b.addedAt ? new Date(b.addedAt).getTime() : 0;
+    return dateB - dateA;
+  });
 
   // Listened: sort by oldest listen first (so most recently listened are at the very end)
   listened.sort((a, b) => a.lastPlayedAt - b.lastPlayedAt);
