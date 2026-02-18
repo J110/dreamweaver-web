@@ -555,4 +555,148 @@ Before merging a new music profile, verify:
 
 ---
 
+## 14. Per-Story musicParams (Unique Ambient Music)
+
+### 14.1 Two-Layer Music System
+
+Every story has **two** music identifiers:
+
+| Field | Type | Purpose |
+|-------|------|---------|
+| `musicProfile` | String | Named base profile (e.g., `"dreamy-clouds"`) — shared fallback |
+| `musicParams` | Object | Per-story unique parameters — **always preferred** when present |
+
+The player uses `musicParams` first; `musicProfile` is only used when `musicParams` is missing.
+
+### 14.2 musicParams Object Structure
+
+```json
+{
+  "key": "Am",
+  "chordNotes": [110.0, 130.81, 164.81, 220.0],
+  "padType": "fm",
+  "padGain": 0.0463,
+  "padFilter": 804,
+  "padLfo": 0.0819,
+  "noiseType": "pink",
+  "noiseGain": 0.0112,
+  "droneFreq": 55.0,
+  "droneGain": 0.0316,
+  "melodyNotes": [220.0, 261.62, 329.62, 293.66],
+  "melodyInterval": 3026,
+  "melodyGain": 0.0177,
+  "bassNotes": [55.0, 82.41, 69.3],
+  "bassInterval": 5496,
+  "counterNotes": [245.02, 308.18, 275.0],
+  "counterInterval": 4260,
+  "events": [
+    {"type": "birdChirp", "interval": 7042},
+    {"type": "leaves", "interval": 11201},
+    {"type": "sparkle", "interval": 18733}
+  ]
+}
+```
+
+### 14.3 Generation via Mistral AI
+
+Per-story musicParams are generated using `scripts/generate_music_params.py` (v2 diversity-enforced):
+
+```bash
+# Generate for ALL stories (replaces existing params)
+python3 scripts/generate_music_params.py
+
+# Generate for a specific story
+python3 scripts/generate_music_params.py --id gen-586908c26fc2
+
+# Generate only for stories missing musicParams
+python3 scripts/generate_music_params.py --new-only
+
+# Preview assignments without calling API
+python3 scripts/generate_music_params.py --dry-run
+```
+
+The script:
+1. Reads all stories from `seed_output/content.json`
+2. Uses a `DiversityTracker` to enforce variety across pad types, keys, noise types, and events
+3. Sends each story's theme, description, and age to Mistral with mandatory constraints
+4. Applies programmatic jitter (±10-15%) to prevent identical values
+5. Writes results to both `content.json` and `seedData.js`
+
+### 14.4 Diversity Enforcement Rules (CRITICAL)
+
+These rules MUST be followed to prevent stories sounding the same:
+
+#### Pad Type Balance
+The 5 pad types must be evenly distributed:
+
+| Pad Type | Character | Target % |
+|----------|-----------|----------|
+| `fm` | Warm evolving FM bells — dreamy, cosmic | ~20% |
+| `chorus` | Lush detuned string pad — warm, rich | ~20% |
+| `resonant` | Organic breathy filtered noise — earthy | ~20% |
+| `plucked` | Magical kalimba/harp plucks — fairy, bright | ~20% |
+| `simple` | Clean pure sine tones — minimal, peaceful | ~20% |
+
+**NEVER** allow more than 30% of stories to use the same pad type.
+
+#### Key Diversity
+- **NEVER** assign the same key to more than 4 stories out of 42
+- Use all 14 available keys: C, Cm, D, Dm, E, Em, F, Fm, G, Gm, A, Am, Bb, Bbm
+- No two consecutive stories (in seed order) should share the same key
+
+#### Parameter Ranges (Use the FULL range)
+
+| Parameter | Min | Max | NEVER cluster at |
+|-----------|-----|-----|-----------------|
+| `padFilter` | 400 | 1400 | 800 (the old default) |
+| `padLfo` | 0.02 | 0.14 | 0.08 (the old default) |
+| `melodyInterval` | 2500 | 5500 | 4000 (the old default) |
+| `bassInterval` | 4000 | 9000 | 6000 (the old default) |
+| `counterInterval` | 3000 | 7000 | 5000 (the old default) |
+
+**The most common bug**: When musicParams are created manually or by a template, they default to `melodyInterval: 4000, bassInterval: 6000, counterInterval: 5000, padFilter: 800, padType: "resonant"`. This makes ALL stories sound identical. Always use the generation script or ensure manual params use diverse values.
+
+#### Event Diversity
+- Choose 2-4 events per story from the 14 available types
+- Match events to story theme (crickets for nature, radarPing for space, etc.)
+- Don't overuse `starTwinkle` — it should only appear in night sky/space stories
+- Don't overuse `sparkle` — limit to magical/fairy themes
+
+### 14.5 Adding Music to a New Story
+
+When adding a new story to the app:
+
+1. Add the story to `seed_output/content.json` with at minimum: `id`, `title`, `description`, `theme`, `target_age`, `type`, `lang`
+2. Run: `python3 scripts/generate_music_params.py --id <story-id>`
+3. The script will:
+   - Generate unique musicParams via Mistral AI
+   - Update `content.json` with the new params
+   - Update `seedData.js` with the new params
+4. Verify the result: check that pad type, key, and intervals differ from neighboring stories
+5. Listen to the story in the player for 60+ seconds to confirm it sounds distinct
+
+### 14.6 Syncing musicParams Between Files
+
+musicParams lives in TWO places:
+- `dreamweaver-backend/seed_output/content.json` — source of truth for the API
+- `dreamweaver-web/src/utils/seedData.js` — frontend seed data for offline/fallback
+
+After generating new params, both files must be in sync. The generation script handles this, but if titles don't match between files (common with Hindi stories), use title-based matching to manually sync.
+
+The frontend player has enrichment logic that merges seed data `musicParams` onto API responses when the API returns null. This ensures the unique music plays even if the backend hasn't restarted.
+
+### 14.7 Validation Checklist
+
+Before pushing new musicParams:
+
+- [ ] No two stories share identical `padType` + `key` + `padFilter` combination
+- [ ] `padType` distribution is within 15-25% per type
+- [ ] No `melodyInterval`, `bassInterval`, or `counterInterval` is exactly 4000, 6000, or 5000
+- [ ] Each story has 2-4 events, matched to its theme
+- [ ] Events don't repeat the exact same combination as another story
+- [ ] Both `content.json` and `seedData.js` have been updated
+- [ ] Listened to at least 3 stories to confirm audible diversity
+
+---
+
 *This guide is maintained alongside the codebase. Update it when adding new profiles or changing the sound design system.*
