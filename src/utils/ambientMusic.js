@@ -92,6 +92,7 @@ export class AmbientMusicEngine {
     this._currentProfile = null;
     this._volume = 0.3;
     this._fadeTime = 3;
+    this._playGeneration = 0; // increments on each play() call to cancel stale async plays
   }
 
   _ensureContext() {
@@ -2175,6 +2176,10 @@ export class AmbientMusicEngine {
   async play(profileOrParams) {
     if (this._playing) this.stop();
 
+    // Increment generation so any in-flight async play() from a previous call
+    // will see its generation is stale and abort after _waitForContext resolves.
+    const myGeneration = ++this._playGeneration;
+
     const builders = {
       'dreamy-clouds':      () => this._buildDreamyClouds(),
       'forest-night':       () => this._buildForestNight(),
@@ -2207,6 +2212,12 @@ export class AmbientMusicEngine {
     // This avoids the race condition where oscillators are created on a
     // suspended context and never produce sound.
     await this._waitForContext();
+
+    // After the async wait, check if a newer play() call has been made.
+    // If so, this call is stale — abort to avoid clobbering the new music.
+    if (myGeneration !== this._playGeneration) {
+      return;
+    }
 
     this._playing = true;
     this._currentProfile = profileLabel;

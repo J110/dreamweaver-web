@@ -93,6 +93,7 @@ export default function PlayerPage() {
   musicVolumeRef.current = musicVolume;
   const musicContentIdRef = useRef(null); // tracks which story's music source is loaded
   const musicStartAttemptedRef = useRef(false); // prevents duplicate start attempts
+  const retryTimerRef = useRef(null); // holds retry interval ID for cleanup
 
   // Render-phase logic: detect story changes and update music source ref.
   // This MUST run before effects so the music-start effect sees the correct source.
@@ -100,8 +101,13 @@ export default function PlayerPage() {
   const currentContentId = content?.id;
   if (currentContentId && currentContentId !== musicContentIdRef.current) {
     if (musicContentIdRef.current) {
-      // Actually switching stories (not first load) — reset music state
-      // so the music-start effect will re-attempt for the new story
+      // Actually switching stories (not first load) — stop old music immediately
+      // and reset state so the music-start effect will re-attempt for the new story.
+      // We stop here (render phase) rather than in an effect to ensure cleanup
+      // happens before ANY effect runs in this render cycle.
+      if (musicRef.current) {
+        musicRef.current.stop(false); // immediate stop, no fade
+      }
       musicStartAttemptedRef.current = false;
       musicStartedRef.current = false;
     }
@@ -114,19 +120,32 @@ export default function PlayerPage() {
 
   // Music start effect — fires when content?.id changes (new story loaded).
   // Uses refs exclusively for source/volume so it doesn't re-trigger on object reference changes.
+  //
+  // IMPORTANT: play() is async (waits for AudioContext). We must await it before
+  // marking musicStartedRef = true, otherwise retries stop prematurely while
+  // the AudioContext is still suspended and no sound has been produced.
   useEffect(() => {
-    // Poll for musicSourceRef to be set (it gets set during render above)
-    // We use an interval because the ref is set synchronously during render
-    // but this effect only runs after mount. Once source appears, start music.
     if (musicStartAttemptedRef.current) return;
 
-    const tryStart = () => {
+    // Capture the content ID at effect start. If it changes mid-flight
+    // (user switched stories), we abort to avoid starting stale music.
+    const effectContentId = musicContentIdRef.current;
+    let cancelled = false;
+
+    const tryStart = async () => {
       const source = musicSourceRef.current;
       if (!source || !musicRef.current) return false;
       if (musicStartedRef.current) return true;
+      if (cancelled) return false;
       try {
         musicRef.current.setVolume(musicVolumeRef.current / 100);
-        musicRef.current.play(source);
+        // play() is async — it awaits AudioContext readiness.
+        // The engine uses a generation counter internally so stale calls are no-ops.
+        await musicRef.current.play(source);
+        // After await: check if this effect is still for the current story
+        if (cancelled || musicContentIdRef.current !== effectContentId) {
+          return false;
+        }
         setMusicPlaying(true);
         musicStartedRef.current = true;
         return true;
@@ -136,32 +155,41 @@ export default function PlayerPage() {
       }
     };
 
-    // Try immediately, then retry a few times
-    if (tryStart()) {
-      musicStartAttemptedRef.current = true;
-      return;
-    }
-
-    let retryCount = 0;
-    const retryTimer = setInterval(() => {
-      retryCount++;
-      if (musicStartedRef.current || retryCount > 20) {
-        clearInterval(retryTimer);
+    // Try immediately
+    (async () => {
+      if (await tryStart()) {
         musicStartAttemptedRef.current = true;
         return;
       }
-      tryStart();
-    }, 300);
+
+      // Retry loop — check every 300ms for up to 6s
+      let retryCount = 0;
+      const retryTimer = setInterval(async () => {
+        retryCount++;
+        if (cancelled || musicStartedRef.current || retryCount > 20) {
+          clearInterval(retryTimer);
+          if (!cancelled) musicStartAttemptedRef.current = true;
+          return;
+        }
+        if (await tryStart()) {
+          clearInterval(retryTimer);
+          musicStartAttemptedRef.current = true;
+        }
+      }, 300);
+
+      // Store timer ID so cleanup can clear it
+      retryTimerRef.current = retryTimer;
+    })();
 
     // Gesture listener for autoplay-blocked browsers
-    const onGesture = () => {
-      if (musicStartedRef.current) {
+    const onGesture = async () => {
+      if (cancelled || musicStartedRef.current) {
         removeGestureListeners();
         return;
       }
-      if (tryStart()) {
+      if (await tryStart()) {
         removeGestureListeners();
-        clearInterval(retryTimer);
+        if (retryTimerRef.current) clearInterval(retryTimerRef.current);
         musicStartAttemptedRef.current = true;
       }
     };
@@ -177,7 +205,11 @@ export default function PlayerPage() {
     document.addEventListener('keydown', onGesture, true);
 
     return () => {
-      clearInterval(retryTimer);
+      cancelled = true;
+      if (retryTimerRef.current) {
+        clearInterval(retryTimerRef.current);
+        retryTimerRef.current = null;
+      }
       removeGestureListeners();
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -366,9 +398,11 @@ export default function PlayerPage() {
       setMusicPlaying(false);
     } else {
       musicRef.current.setVolume(musicVolume / 100);
-      if (musicStartedRef.current) {
+      if (musicStartedRef.current && musicRef.current.isPlaying) {
+        // Music was paused (AudioContext suspended) — resume it
         musicRef.current.resume();
       } else {
+        // Music was stopped or never started — start fresh
         await musicRef.current.play(source);
         musicStartedRef.current = true;
       }
@@ -391,9 +425,8 @@ export default function PlayerPage() {
   }, [musicVolume]);
 
   // Stop narration audio when content changes (e.g., navigating to a different story).
-  // Music is NOT stopped here — the render-phase ref reset + music-start effect handle
-  // the music transition. Stopping music here would kill the new story's music that
-  // the music-start effect already started (both effects fire in the same render cycle).
+  // Music cleanup is handled in the render phase above (before effects run) to avoid
+  // race conditions between the music-start effect and this cleanup effect.
   const prevContentIdRef = useRef(null);
   useEffect(() => {
     const currentId = content?.id;
@@ -413,11 +446,9 @@ export default function PlayerPage() {
       audioRef.current = null;
       setTimeout(() => { audioDisposingRef.current = false; }, 50);
     }
-    // Note: music refs are reset in render phase above. We do NOT call
-    // musicRef.current.stop() here because the music-start effect (which runs
-    // before this effect) has already started the new story's music.
-    // Do NOT setMusicPlaying(false) here — the music-start effect (which runs
-    // before this one in the same render cycle) already set it to true.
+    // Music is stopped in render phase above, and musicPlaying state
+    // will be set to true by the async music-start effect when new music begins.
+    setMusicPlaying(false);
     setIsPlaying(false);
     setProgress(0);
     setCurrentTime(0);
