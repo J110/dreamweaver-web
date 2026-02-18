@@ -16,6 +16,7 @@ const COVERS = {
   sailingDreamland: '/covers/sailing-dreamland.svg',
   whisperingLighthouse: '/covers/whispering-lighthouse.svg',
   blanketStars: '/covers/blanket-stars.svg',
+  frozenMelody: '/covers/frozen-melody.svg',
 };
 
 export const SEED_STORIES = {
@@ -600,7 +601,7 @@ export const SEED_STORIES = {
       type: "poem",
       title: "Finn's Frozen Melody",
       description: "A young dolphin discovers the magic of Arctic ice melodies and forges an unlikely friendship with a lonely narwhal, learning that true passion can bridge even the coldest divides.",
-      cover: "/covers/default.svg",
+      cover: "/covers/frozen-melody.svg",
       text: "[RHYTHMIC]Beneath the Northern Lights so bright,\nFinn danced through waves of silver light.\nHis clicks and songs, a joyful art,\nEchoed soft through icy heart.\n[PAUSE]\n\n[GENTLE]One eve he heard a mournful tune,\nA lonely hum beneath the moon.\nA narwhal’s horn, so tall and grand,\nPlayed melodies of frozen land.\n[PAUSE]\n\n[JOYFUL]Finn swam close with curious cheer,\n\"Your music’s magic—can I hear?\"\nThe narwhal sighed, \"It’s cold up here,\nNo friend to sing, no one to near.\"\n[PAUSE]\n\n[CALM]So Finn shared his ocean’s song,\nWarm and deep, a thrilling throng.\nThe narwhal laughed, his horn did gleam,\nTheir voices wove a shared dream.\n[PAUSE]\n\n[WHISPERING]Now side by side, they sing and play,\nThrough endless night and Arctic day.\nFor passions shared can melt the snow,\nAnd friendships bloom where hearts still glow.\n[PAUSE]\n\n[SLEEPY]So rest, young dreamer, soft and deep,\nWhere Arctic winds their lullabies keep.",
       target_age: 10,
       duration: 5,
