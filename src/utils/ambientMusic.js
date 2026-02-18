@@ -93,6 +93,7 @@ export class AmbientMusicEngine {
     this._volume = 0.3;
     this._fadeTime = 3;
     this._playGeneration = 0; // increments on each play() call to cancel stale async plays
+    this._fadeCleanupTimer = null; // pending fade-out cleanup timeout from stop(true)
   }
 
   _ensureContext() {
@@ -2174,6 +2175,15 @@ export class AmbientMusicEngine {
    *   or a musicParams object for a custom per-story soundscape.
    */
   async play(profileOrParams) {
+    // Cancel any pending fade-out cleanup from a previous stop(true).
+    // Without this, the delayed _cleanup() would destroy our new nodes.
+    if (this._fadeCleanupTimer) {
+      clearTimeout(this._fadeCleanupTimer);
+      this._fadeCleanupTimer = null;
+      // Run cleanup immediately for the old music before starting new
+      this._cleanup();
+    }
+
     if (this._playing) this.stop();
 
     // Increment generation so any in-flight async play() from a previous call
@@ -2251,8 +2261,17 @@ export class AmbientMusicEngine {
       this._masterGain.gain.cancelScheduledValues(now);
       this._masterGain.gain.setValueAtTime(this._masterGain.gain.value, now);
       this._masterGain.gain.linearRampToValueAtTime(0, now + this._fadeTime);
-      setTimeout(() => this._cleanup(), this._fadeTime * 1000 + 200);
+      // Save timer ID so play() can cancel it if called before fade completes
+      this._fadeCleanupTimer = setTimeout(() => {
+        this._fadeCleanupTimer = null;
+        this._cleanup();
+      }, this._fadeTime * 1000 + 200);
     } else {
+      // Cancel any pending fade cleanup from a prior stop(true)
+      if (this._fadeCleanupTimer) {
+        clearTimeout(this._fadeCleanupTimer);
+        this._fadeCleanupTimer = null;
+      }
       this._masterGain.gain.setValueAtTime(0, now);
       this._cleanup();
     }
