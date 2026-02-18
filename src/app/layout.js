@@ -17,6 +17,7 @@ export const viewport = {
 };
 
 export const metadata = {
+  metadataBase: new URL('https://dreamvalley.app'),
   title: 'Dream Valley - Magical Bedtime Stories for Kids',
   description: 'Personalized AI-generated bedtime stories, poems, and songs for children.',
   keywords: 'bedtime stories, children stories, AI stories, dream stories, lullabies, dream valley',
@@ -29,6 +30,22 @@ export const metadata = {
     title: 'Dream Valley - Magical Bedtime Stories',
     description: 'Personalized AI-generated bedtime stories, poems, and songs for children.',
     type: 'website',
+    siteName: 'Dream Valley',
+    url: 'https://dreamvalley.app',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Dream Valley - Magical Bedtime Stories for Kids',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Dream Valley - Magical Bedtime Stories',
+    description: 'Personalized AI-generated bedtime stories, poems, and songs for children.',
+    images: ['/og-image.png'],
   },
 };
 
