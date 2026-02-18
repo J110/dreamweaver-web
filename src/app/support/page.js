@@ -42,11 +42,11 @@ export default function SupportPage() {
               <ul className={styles.list}>
                 <li>
                   <span className={styles.bold}>General Support:</span>{' '}
-                  <a href="mailto:support@vervetogether.com" style={{ color: '#6B4CE6' }}>support@vervetogether.com</a>
+                  <a href="mailto:support@dreamvalley.app" style={{ color: '#6B4CE6' }}>support@dreamvalley.app</a>
                 </li>
                 <li>
                   <span className={styles.bold}>Privacy Concerns:</span>{' '}
-                  <a href="mailto:privacy@vervetogether.com" style={{ color: '#6B4CE6' }}>privacy@vervetogether.com</a>
+                  <a href="mailto:privacy@dreamvalley.app" style={{ color: '#6B4CE6' }}>privacy@dreamvalley.app</a>
                 </li>
               </ul>
               <div className={styles.highlight}>
@@ -103,7 +103,7 @@ export default function SupportPage() {
               <p>
                 If you find any issue with a story &mdash; such as audio problems, content
                 concerns, or technical glitches &mdash; please email us at{' '}
-                <a href="mailto:support@vervetogether.com" style={{ color: '#6B4CE6' }}>support@vervetogether.com</a>{' '}
+                <a href="mailto:support@dreamvalley.app" style={{ color: '#6B4CE6' }}>support@dreamvalley.app</a>{' '}
                 with the story name and a description of the issue.
               </p>
             </div>
@@ -119,7 +119,7 @@ export default function SupportPage() {
               <p className={styles.bold}>How do I delete my account?</p>
               <p>
                 To delete your account and all associated data, please email{' '}
-                <a href="mailto:privacy@vervetogether.com" style={{ color: '#6B4CE6' }}>privacy@vervetogether.com</a>{' '}
+                <a href="mailto:privacy@dreamvalley.app" style={{ color: '#6B4CE6' }}>privacy@dreamvalley.app</a>{' '}
                 with the subject line &quot;Account Deletion Request.&quot; We will process your
                 request within 30 days.
               </p>
@@ -138,7 +138,7 @@ export default function SupportPage() {
                   <span className={styles.bold}>Parents:</span> If you have concerns about your
                   child&apos;s data or want to exercise your parental rights under COPPA, please
                   contact us at{' '}
-                  <a href="mailto:privacy@vervetogether.com" style={{ color: '#6B4CE6' }}>privacy@vervetogether.com</a>.
+                  <a href="mailto:privacy@dreamvalley.app" style={{ color: '#6B4CE6' }}>privacy@dreamvalley.app</a>.
                 </p>
               </div>
             </div>
@@ -174,7 +174,7 @@ export default function SupportPage() {
               <div className={styles.highlight}>
                 <p>
                   If none of these steps resolve your issue, please email us at{' '}
-                  <a href="mailto:support@vervetogether.com" style={{ color: '#6B4CE6' }}>support@vervetogether.com</a>{' '}
+                  <a href="mailto:support@dreamvalley.app" style={{ color: '#6B4CE6' }}>support@dreamvalley.app</a>{' '}
                   with details about the problem and your device information.
                 </p>
               </div>
@@ -184,8 +184,8 @@ export default function SupportPage() {
           {/* Contact Card */}
           <div className={styles.contactCard}>
             <p className={styles.contactTitle}>Need More Help?</p>
-            <a href="mailto:support@vervetogether.com" className={styles.contactEmail}>
-              support@vervetogether.com
+            <a href="mailto:support@dreamvalley.app" className={styles.contactEmail}>
+              support@dreamvalley.app
             </a>
             <p className={styles.contactNote}>
               We aim to respond to all inquiries within 1&ndash;2 business days.
