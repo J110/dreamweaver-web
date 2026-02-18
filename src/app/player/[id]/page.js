@@ -84,31 +84,51 @@ export default function PlayerPage() {
   }, [content, lang, getDefaultVoice, voicePrefs]);
 
   // Auto-start ambient music — prefer musicParams (per-story unique), fallback to musicProfile (shared)
-  // Stabilize musicSource in a ref to prevent re-triggering when content object reference changes
+  //
+  // Design: Music should start once per story and never be interrupted by React re-renders.
+  // All music state lives in refs (not state) to avoid useEffect dependency issues.
+  // The render phase detects story changes and resets refs BEFORE effects run.
   const musicSourceRef = useRef(null);
+  const musicVolumeRef = useRef(musicVolume);
+  musicVolumeRef.current = musicVolume;
+  const musicContentIdRef = useRef(null); // tracks which story's music source is loaded
+  const musicStartAttemptedRef = useRef(false); // prevents duplicate start attempts
+
+  // Render-phase logic: detect story changes and update music source ref.
+  // This MUST run before effects so the music-start effect sees the correct source.
   const musicSource = content?.musicParams || content?.musicProfile;
+  const currentContentId = content?.id;
+  if (currentContentId && currentContentId !== musicContentIdRef.current) {
+    if (musicContentIdRef.current) {
+      // Actually switching stories (not first load) — reset music state
+      // so the music-start effect will re-attempt for the new story
+      musicStartAttemptedRef.current = false;
+      musicStartedRef.current = false;
+    }
+    musicSourceRef.current = null;
+    musicContentIdRef.current = currentContentId;
+  }
   if (musicSource && !musicSourceRef.current) {
     musicSourceRef.current = musicSource;
   }
 
+  // Music start effect — fires when content?.id changes (new story loaded).
+  // Uses refs exclusively for source/volume so it doesn't re-trigger on object reference changes.
   useEffect(() => {
-    const source = musicSourceRef.current;
-    if (!source) return;
+    // Poll for musicSourceRef to be set (it gets set during render above)
+    // We use an interval because the ref is set synchronously during render
+    // but this effect only runs after mount. Once source appears, start music.
+    if (musicStartAttemptedRef.current) return;
 
-    let cancelled = false;
-    let retryTimer = null;
-    let retryCount = 0;
-
-    const startMusic = async () => {
-      if (musicStartedRef.current || cancelled) return true;
+    const tryStart = () => {
+      const source = musicSourceRef.current;
       if (!source || !musicRef.current) return false;
+      if (musicStartedRef.current) return true;
       try {
-        musicRef.current.setVolume(musicVolume / 100);
-        await musicRef.current.play(source);
-        if (!cancelled) {
-          setMusicPlaying(true);
-          musicStartedRef.current = true;
-        }
+        musicRef.current.setVolume(musicVolumeRef.current / 100);
+        musicRef.current.play(source);
+        setMusicPlaying(true);
+        musicStartedRef.current = true;
         return true;
       } catch (err) {
         console.error('[Music] Failed to start:', err);
@@ -116,26 +136,34 @@ export default function PlayerPage() {
       }
     };
 
-    startMusic().then((ok) => {
-      if (ok || cancelled) return;
-      const retry = () => {
-        if (musicStartedRef.current || cancelled) return;
-        retryCount++;
-        if (retryCount > 5) return;
-        startMusic();
-        retryTimer = setTimeout(retry, 500);
-      };
-      retryTimer = setTimeout(retry, 300);
-    });
+    // Try immediately, then retry a few times
+    if (tryStart()) {
+      musicStartAttemptedRef.current = true;
+      return;
+    }
 
+    let retryCount = 0;
+    const retryTimer = setInterval(() => {
+      retryCount++;
+      if (musicStartedRef.current || retryCount > 20) {
+        clearInterval(retryTimer);
+        musicStartAttemptedRef.current = true;
+        return;
+      }
+      tryStart();
+    }, 300);
+
+    // Gesture listener for autoplay-blocked browsers
     const onGesture = () => {
       if (musicStartedRef.current) {
         removeGestureListeners();
         return;
       }
-      startMusic().then((ok) => {
-        if (ok) removeGestureListeners();
-      });
+      if (tryStart()) {
+        removeGestureListeners();
+        clearInterval(retryTimer);
+        musicStartAttemptedRef.current = true;
+      }
     };
 
     const removeGestureListeners = () => {
@@ -149,11 +177,18 @@ export default function PlayerPage() {
     document.addEventListener('keydown', onGesture, true);
 
     return () => {
-      cancelled = true;
-      if (retryTimer) clearTimeout(retryTimer);
+      clearInterval(retryTimer);
       removeGestureListeners();
     };
-  }, [musicSource, musicVolume]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [content?.id]); // re-check when content loads (musicSourceRef gets populated during render)
+
+  // Volume sync — update music volume without restarting playback
+  useEffect(() => {
+    if (musicRef.current && musicStartedRef.current) {
+      musicRef.current.setVolume(musicVolume / 100);
+    }
+  }, [musicVolume]);
 
   // Resolve audio source
   const getAudioSource = useCallback(() => {
@@ -324,22 +359,22 @@ export default function PlayerPage() {
   }, []);
 
   const handleMusicPlayPause = useCallback(async () => {
-    if (!musicRef.current || !content?.musicProfile) return;
+    const source = musicSourceRef.current || content?.musicParams || content?.musicProfile;
+    if (!musicRef.current || !source) return;
     if (musicPlaying) {
       musicRef.current.pause();
       setMusicPlaying(false);
     } else {
-      const profile = content.musicProfile;
       musicRef.current.setVolume(musicVolume / 100);
       if (musicStartedRef.current) {
         musicRef.current.resume();
       } else {
-        await musicRef.current.play(profile);
+        await musicRef.current.play(source);
         musicStartedRef.current = true;
       }
       setMusicPlaying(true);
     }
-  }, [musicPlaying, content?.musicProfile, musicVolume]);
+  }, [musicPlaying, content?.musicParams, content?.musicProfile, musicVolume]);
 
   const handleMusicMuteToggle = useCallback(() => {
     setMusicMuted(prev => {
@@ -355,8 +390,10 @@ export default function PlayerPage() {
     });
   }, [musicVolume]);
 
-  // Stop audio when content changes (e.g., navigating to a different story)
-  // Skip the initial load (null → first content) to avoid killing music that just started
+  // Stop narration audio when content changes (e.g., navigating to a different story).
+  // Music is NOT stopped here — the render-phase ref reset + music-start effect handle
+  // the music transition. Stopping music here would kill the new story's music that
+  // the music-start effect already started (both effects fire in the same render cycle).
   const prevContentIdRef = useRef(null);
   useEffect(() => {
     const currentId = content?.id;
@@ -368,7 +405,7 @@ export default function PlayerPage() {
     if (currentId === prevContentIdRef.current) return; // same story, no-op
     prevContentIdRef.current = currentId;
 
-    // Actually changing stories — stop everything
+    // Stop narration audio
     if (audioRef.current) {
       audioDisposingRef.current = true;
       audioRef.current.pause();
@@ -376,10 +413,11 @@ export default function PlayerPage() {
       audioRef.current = null;
       setTimeout(() => { audioDisposingRef.current = false; }, 50);
     }
-    if (musicRef.current) musicRef.current.stop(false);
-    musicStartedRef.current = false;
-    musicSourceRef.current = null;
-    setMusicPlaying(false);
+    // Note: music refs are reset in render phase above. We do NOT call
+    // musicRef.current.stop() here because the music-start effect (which runs
+    // before this effect) has already started the new story's music.
+    // Do NOT setMusicPlaying(false) here — the music-start effect (which runs
+    // before this one in the same render cycle) already set it to true.
     setIsPlaying(false);
     setProgress(0);
     setCurrentTime(0);
@@ -673,7 +711,7 @@ export default function PlayerPage() {
           </div>
         </div>
 
-        {content.musicProfile && (
+        {(content.musicParams || content.musicProfile) && (
           <div className={styles.musicControls}>
             <button
               onClick={handleMusicPlayPause}
