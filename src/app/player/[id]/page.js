@@ -84,9 +84,16 @@ export default function PlayerPage() {
   }, [content, lang, getDefaultVoice, voicePrefs]);
 
   // Auto-start ambient music — prefer musicParams (per-story unique), fallback to musicProfile (shared)
+  // Stabilize musicSource in a ref to prevent re-triggering when content object reference changes
+  const musicSourceRef = useRef(null);
   const musicSource = content?.musicParams || content?.musicProfile;
+  if (musicSource && !musicSourceRef.current) {
+    musicSourceRef.current = musicSource;
+  }
+
   useEffect(() => {
-    if (!musicSource) return;
+    const source = musicSourceRef.current;
+    if (!source) return;
 
     let cancelled = false;
     let retryTimer = null;
@@ -94,16 +101,17 @@ export default function PlayerPage() {
 
     const startMusic = async () => {
       if (musicStartedRef.current || cancelled) return true;
-      if (!musicSource || !musicRef.current) return false;
+      if (!source || !musicRef.current) return false;
       try {
         musicRef.current.setVolume(musicVolume / 100);
-        await musicRef.current.play(musicSource);
+        await musicRef.current.play(source);
         if (!cancelled) {
           setMusicPlaying(true);
           musicStartedRef.current = true;
         }
         return true;
-      } catch {
+      } catch (err) {
+        console.error('[Music] Failed to start:', err);
         return false;
       }
     };
@@ -347,8 +355,20 @@ export default function PlayerPage() {
     });
   }, [musicVolume]);
 
-  // Stop audio when content changes
+  // Stop audio when content changes (e.g., navigating to a different story)
+  // Skip the initial load (null → first content) to avoid killing music that just started
+  const prevContentIdRef = useRef(null);
   useEffect(() => {
+    const currentId = content?.id;
+    if (!prevContentIdRef.current) {
+      // First content load — just record the ID, don't stop anything
+      prevContentIdRef.current = currentId;
+      return;
+    }
+    if (currentId === prevContentIdRef.current) return; // same story, no-op
+    prevContentIdRef.current = currentId;
+
+    // Actually changing stories — stop everything
     if (audioRef.current) {
       audioDisposingRef.current = true;
       audioRef.current.pause();
@@ -358,6 +378,7 @@ export default function PlayerPage() {
     }
     if (musicRef.current) musicRef.current.stop(false);
     musicStartedRef.current = false;
+    musicSourceRef.current = null;
     setMusicPlaying(false);
     setIsPlaying(false);
     setProgress(0);
@@ -381,7 +402,9 @@ export default function PlayerPage() {
             if (seedMatch.audio_variants && seedMatch.audio_variants.length > (data.audio_variants || []).length) {
               data.audio_variants = seedMatch.audio_variants;
             }
-            if (!data.musicParams && seedMatch.musicParams) {
+            // Always prefer seed musicParams — they are Mistral-generated unique params;
+            // API may have stale template values that make all stories sound the same
+            if (seedMatch.musicParams) {
               data.musicParams = seedMatch.musicParams;
             }
             if (!data.musicProfile && seedMatch.musicProfile) {
