@@ -54,12 +54,10 @@ export default function MyStoriesPage() {
   const loadUserContent = async () => {
     setLoading(true);
     try {
-      const [likesData, savesData] = await Promise.all([
-        interactionApi.getUserLikes().catch(() => ({ items: [] })),
-        interactionApi.getUserSaves().catch(() => ({ items: [] })),
-      ]);
-      setFavorites(likesData.items || likesData.content || []);
-      setSaved(savesData.items || savesData.content || []);
+      const savesData = await interactionApi.getUserSaves().catch(() => ({ items: [] }));
+      const items = savesData.items || [];
+      setFavorites(items);
+      setSaved(items);
     } catch (err) {
       console.error('Error loading content:', err);
     } finally {
@@ -89,7 +87,7 @@ export default function MyStoriesPage() {
 
   if (!user) return null;
 
-  const displayContent = activeTab === 'favorites' ? favorites : saved;
+  const displayContent = favorites;
   const filteredContent = getFilteredContent(displayContent);
 
   return (
@@ -105,9 +103,6 @@ export default function MyStoriesPage() {
         <div className={styles.tabs}>
           <button onClick={() => setActiveTab('favorites')} className={`${styles.tab} ${activeTab === 'favorites' ? styles.tabActive : ''}`}>
             ❤️ {t('myFavorites')}
-          </button>
-          <button onClick={() => setActiveTab('saved')} className={`${styles.tab} ${activeTab === 'saved' ? styles.tabActive : ''}`}>
-            📌 {t('mySaved')}
           </button>
           <button onClick={() => setActiveTab('preferences')} className={`${styles.tab} ${activeTab === 'preferences' ? styles.tabActive : ''}`}>
             ⚙️ {t('myPreferences')}
@@ -139,12 +134,12 @@ export default function MyStoriesPage() {
               </div>
             ) : (
               <div className={styles.emptyState}>
-                <div className={styles.emptyIcon}>{activeTab === 'favorites' ? '❤️' : '📌'}</div>
+                <div className={styles.emptyIcon}>❤️</div>
                 <h3 className={styles.emptyTitle}>
-                  {activeTab === 'favorites' ? t('myEmptyFavorites') : t('myEmptySaved')}
+                  {t('myEmptyFavorites')}
                 </h3>
                 <p className={styles.emptyText}>
-                  {activeTab === 'favorites' ? t('myEmptyFavoritesText') : t('myEmptySavedText')}
+                  {t('myEmptyFavoritesText')}
                 </p>
                 <button onClick={() => router.push('/explore')} className="btn btn-primary">
                   {t('myExplore')}
