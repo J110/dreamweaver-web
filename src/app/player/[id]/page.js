@@ -545,10 +545,10 @@ export default function PlayerPage() {
     if (!reportIssueType) return;
     setReportSubmitting(true);
     try {
-      const voiceLabel = selectedVoice
-        ? (lang === 'hi'
-            ? (VOICES[selectedVoice]?.labelHi || selectedVoice)
-            : (VOICES[selectedVoice]?.label || selectedVoice))
+      const voiceMeta = selectedVoice ? VOICES[selectedVoice] : null;
+      const genderStr = voiceMeta?.gender === 'female' ? 'Female' : voiceMeta?.gender === 'male' ? 'Male' : '';
+      const voiceLabel = voiceMeta
+        ? `${voiceMeta.label} ${genderStr}`.trim()
         : 'Not selected';
 
       await feedbackApi.submitReport({
