@@ -843,7 +843,7 @@ export default function PlayerPage() {
             onClick={handleSave}
             className={`${styles.actionButton} ${isSaved ? styles.actionButtonActive : ''}`}
           >
-            ❤️ {isSaved ? t('playerSaved') : t('playerSave')}
+            ❤️ {content.like_count || 0}
           </button>
           <button onClick={handleReportOpen} className={styles.actionButton}>
             ⚠️ {t('playerReport')}
