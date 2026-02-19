@@ -10,20 +10,27 @@ import BottomNav from './BottomNav';
 const NO_NAV_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy'];
 const PUBLIC_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy'];
 
+function isPublicRoute(pathname) {
+  // Static public routes + shared story links (/player/*)
+  return PUBLIC_ROUTES.includes(pathname) || pathname.startsWith('/player/');
+}
+
 export default function AppShell({ children }) {
   const pathname = usePathname();
   const router = useRouter();
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    // Check onboarding completion — skip for public/static pages
-    if (!hasCompletedOnboarding() && !PUBLIC_ROUTES.includes(pathname)) {
+    const isPublic = isPublicRoute(pathname);
+
+    // Check onboarding completion — skip for public/static pages and shared story links
+    if (!hasCompletedOnboarding() && !isPublic) {
       router.replace('/onboarding');
       return;
     }
 
-    // Check login for protected routes
-    if (!PUBLIC_ROUTES.includes(pathname) && !isLoggedIn()) {
+    // Check login for protected routes — shared story links are accessible without login
+    if (!isPublic && !isLoggedIn()) {
       router.replace('/login');
       return;
     }
@@ -31,7 +38,8 @@ export default function AppShell({ children }) {
     setChecked(true);
   }, [pathname, router]);
 
-  const showNav = !NO_NAV_ROUTES.includes(pathname) && checked;
+  // Hide nav on public routes, player pages, and while checking auth
+  const showNav = !NO_NAV_ROUTES.includes(pathname) && !pathname.startsWith('/player/') && checked;
 
   return (
     <I18nProvider>

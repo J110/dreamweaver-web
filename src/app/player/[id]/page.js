@@ -7,8 +7,9 @@ import StarField from '@/components/StarField';
 import { contentApi, interactionApi } from '@/utils/api';
 import { getStories } from '@/utils/seedData';
 import { getAmbientMusic } from '@/utils/ambientMusic';
-import { useI18n } from '@/utils/i18n';
+import { useI18n, hasCompletedOnboarding } from '@/utils/i18n';
 import { useVoicePreferences } from '@/utils/voicePreferences';
+import { isLoggedIn } from '@/utils/auth';
 import { VOICES, getVoiceId, getVoiceLabel } from '@/utils/voiceConfig';
 import { stripEmotionMarkers } from '@/utils/textUtils';
 import { recordListen, markCompleted } from '@/utils/listeningHistory';
@@ -36,6 +37,7 @@ export default function PlayerPage() {
   const [musicMuted, setMusicMuted] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState(null);
+  const [shareCopied, setShareCopied] = useState(false);
   const audioRef = useRef(null);
   const audioDisposingRef = useRef(false);
   const progressIntervalRef = useRef(null);
@@ -544,6 +546,42 @@ export default function PlayerPage() {
     }
   };
 
+  const handleShare = async () => {
+    if (!content) return;
+    const shareUrl = `https://dreamvalley.app/player/${params.id}`;
+    const shareData = {
+      title: content.title,
+      text: content.description || `Listen to "${content.title}" on Dream Valley`,
+      url: shareUrl,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        setShareCopied(true);
+        setTimeout(() => setShareCopied(false), 2000);
+      }
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        try {
+          await navigator.clipboard.writeText(shareUrl);
+          setShareCopied(true);
+          setTimeout(() => setShareCopied(false), 2000);
+        } catch { /* ignore */ }
+      }
+    }
+  };
+
+  const handleBack = () => {
+    if (!hasCompletedOnboarding() || !isLoggedIn()) {
+      router.push('/onboarding');
+    } else {
+      router.back();
+    }
+  };
+
   const handleSeek = useCallback((e) => {
     if (!audioRef.current || !audioRef.current.duration) return;
     const rect = e.currentTarget.getBoundingClientRect();
@@ -657,7 +695,7 @@ export default function PlayerPage() {
     <>
       <StarField />
       <div className={styles.app}>
-        <button onClick={() => router.back()} className={styles.backButton}>
+        <button onClick={handleBack} className={styles.backButton}>
           ← {t('playerBack')}
         </button>
 
@@ -789,8 +827,8 @@ export default function PlayerPage() {
           >
             📌 {isSaved ? t('playerSaved') : t('playerSave')}
           </button>
-          <button className={styles.actionButton}>
-            🔗 {t('playerShare')}
+          <button onClick={handleShare} className={styles.actionButton}>
+            🔗 {shareCopied ? t('playerShareCopied') : t('playerShare')}
           </button>
         </div>
 
