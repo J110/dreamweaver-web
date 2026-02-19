@@ -519,19 +519,33 @@ export default function PlayerPage() {
 
   const handleSave = async () => {
     if (!content) return;
+    const wasSaved = isSaved;
+    // Optimistic UI update
+    setIsSaved(!wasSaved);
+    setContent({
+      ...content,
+      like_count: wasSaved
+        ? Math.max(0, (content.like_count || 1) - 1)
+        : (content.like_count || 0) + 1,
+    });
+    setSaveToast(wasSaved ? t('playerRemovedFromSaved') : t('playerSavedToProfile'));
+    setTimeout(() => setSaveToast(null), 2500);
     try {
-      if (isSaved) {
+      if (wasSaved) {
         await interactionApi.unsaveContent(content.id);
-        setIsSaved(false);
-        setSaveToast(t('playerRemovedFromSaved'));
       } else {
         await interactionApi.saveContent(content.id);
-        setIsSaved(true);
-        setSaveToast(t('playerSavedToProfile'));
       }
-      setTimeout(() => setSaveToast(null), 2500);
     } catch (err) {
+      // Revert on failure
       console.error('Error updating save:', err);
+      setIsSaved(wasSaved);
+      setContent({
+        ...content,
+        like_count: wasSaved
+          ? (content.like_count || 0)
+          : Math.max(0, (content.like_count || 1) - 1),
+      });
     }
   };
 
