@@ -596,3 +596,235 @@
   text-decoration: none;
 }
 
+/* ─── Toast notification ─────────────────────────────────── */
+
+.toast {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(30, 24, 84, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(107, 76, 230, 0.3);
+  border-radius: 14px;
+  padding: 12px 24px;
+  color: var(--color-text-light);
+  font-family: 'Quicksand', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 1000;
+  animation: toastSlideUp 0.3s ease-out;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+}
+
+@keyframes toastSlideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* ─── Report modal ───────────────────────────────────────── */
+
+.reportOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.reportModal {
+  background: rgba(30, 24, 84, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(107, 76, 230, 0.3);
+  border-radius: 20px;
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
+  max-height: 85vh;
+  overflow-y: auto;
+  animation: modalSlideUp 0.3s ease-out;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reportHeader {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text-light);
+  margin: 0 0 16px 0;
+  text-align: center;
+}
+
+.reportInfo {
+  background: rgba(107, 76, 230, 0.1);
+  border: 1px solid rgba(107, 76, 230, 0.15);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.reportInfoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.reportInfoLabel {
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.reportInfoValue {
+  color: var(--color-text-light);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: right;
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reportSectionLabel {
+  color: var(--color-text-muted);
+  font-size: 13px;
+  margin: 0 0 8px 0;
+}
+
+.reportOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.reportOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(107, 76, 230, 0.08);
+  border: 1px solid rgba(107, 76, 230, 0.15);
+  border-radius: 10px;
+  color: var(--color-text-light);
+  font-family: 'Quicksand', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: left;
+}
+
+.reportOption:active {
+  transform: scale(0.98);
+}
+
+.reportOptionActive {
+  border-color: var(--color-primary-pink);
+  background: rgba(255, 107, 157, 0.15);
+  color: #FFB3D4;
+}
+
+.reportTextarea {
+  width: 100%;
+  min-height: 70px;
+  padding: 10px 12px;
+  background: rgba(107, 76, 230, 0.08);
+  border: 1px solid rgba(107, 76, 230, 0.15);
+  border-radius: 10px;
+  color: var(--color-text-light);
+  font-family: 'Quicksand', sans-serif;
+  font-size: 13px;
+  resize: vertical;
+  outline: none;
+  margin-bottom: 16px;
+  transition: border-color var(--transition-fast);
+  box-sizing: border-box;
+}
+
+.reportTextarea::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
+.reportTextarea:focus {
+  border-color: rgba(107, 76, 230, 0.4);
+}
+
+.reportActions {
+  display: flex;
+  gap: 10px;
+}
+
+.reportCancelBtn {
+  flex: 1;
+  padding: 10px;
+  background: rgba(107, 76, 230, 0.1);
+  border: 1px solid rgba(107, 76, 230, 0.2);
+  border-radius: 12px;
+  color: var(--color-text-muted);
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.reportCancelBtn:active {
+  transform: scale(0.96);
+}
+
+.reportSubmitBtn {
+  flex: 1;
+  padding: 10px;
+  background: linear-gradient(135deg, var(--color-primary-purple), var(--color-primary-pink));
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.reportSubmitBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.reportSubmitBtn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+

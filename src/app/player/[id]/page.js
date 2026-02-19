@@ -4,7 +4,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import StarField from '@/components/StarField';
-import { contentApi, interactionApi } from '@/utils/api';
+import { contentApi, interactionApi, feedbackApi } from '@/utils/api';
 import { getStories } from '@/utils/seedData';
 import { getAmbientMusic } from '@/utils/ambientMusic';
 import { useI18n, hasCompletedOnboarding } from '@/utils/i18n';
@@ -29,8 +29,12 @@ export default function PlayerPage() {
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
-  const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [saveToast, setSaveToast] = useState(null);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportIssueType, setReportIssueType] = useState('');
+  const [reportDescription, setReportDescription] = useState('');
+  const [reportSubmitting, setReportSubmitting] = useState(false);
   const [audioLoading, setAudioLoading] = useState(false);
   const [audioError, setAudioError] = useState(null);
   const [musicVolume, setMusicVolume] = useState(100);
@@ -486,7 +490,6 @@ export default function PlayerPage() {
             }
           }
           setContent(data);
-          setIsLiked(data.is_liked || false);
           setIsSaved(data.is_saved || false);
         } else {
           const seedMatch = getStories(lang).find((s) => s.id === params.id);
@@ -514,35 +517,56 @@ export default function PlayerPage() {
     }
   }, [params.id, lang]);
 
-  const handleLike = async () => {
-    if (!content) return;
-    try {
-      if (isLiked) {
-        await interactionApi.unlikeContent(content.id);
-        setIsLiked(false);
-        setContent({ ...content, like_count: (content.like_count || 1) - 1 });
-      } else {
-        await interactionApi.likeContent(content.id);
-        setIsLiked(true);
-        setContent({ ...content, like_count: (content.like_count || 0) + 1 });
-      }
-    } catch (err) {
-      console.error('Error updating like:', err);
-    }
-  };
-
   const handleSave = async () => {
     if (!content) return;
     try {
       if (isSaved) {
         await interactionApi.unsaveContent(content.id);
         setIsSaved(false);
+        setSaveToast(t('playerRemovedFromSaved'));
       } else {
         await interactionApi.saveContent(content.id);
         setIsSaved(true);
+        setSaveToast(t('playerSavedToProfile'));
       }
+      setTimeout(() => setSaveToast(null), 2500);
     } catch (err) {
       console.error('Error updating save:', err);
+    }
+  };
+
+  const handleReportOpen = () => {
+    setReportIssueType('');
+    setReportDescription('');
+    setShowReportModal(true);
+  };
+
+  const handleReportSubmit = async () => {
+    if (!reportIssueType) return;
+    setReportSubmitting(true);
+    try {
+      const voiceLabel = selectedVoice
+        ? (lang === 'hi'
+            ? (VOICES[selectedVoice]?.labelHi || selectedVoice)
+            : (VOICES[selectedVoice]?.label || selectedVoice))
+        : 'Not selected';
+
+      await feedbackApi.submitReport({
+        content_id: content.id,
+        content_title: content.title,
+        voice: voiceLabel,
+        issue_type: reportIssueType,
+        description: reportDescription || null,
+      });
+      setShowReportModal(false);
+      setSaveToast(t('playerReportSent'));
+      setTimeout(() => setSaveToast(null), 3000);
+    } catch (err) {
+      console.error('Error submitting report:', err);
+      setSaveToast(t('playerReportError'));
+      setTimeout(() => setSaveToast(null), 3000);
+    } finally {
+      setReportSubmitting(false);
     }
   };
 
@@ -816,16 +840,13 @@ export default function PlayerPage() {
 
         <div className={styles.actions}>
           <button
-            onClick={handleLike}
-            className={`${styles.actionButton} ${isLiked ? styles.actionButtonActive : ''}`}
-          >
-            ❤️ {content.like_count || 0}
-          </button>
-          <button
             onClick={handleSave}
             className={`${styles.actionButton} ${isSaved ? styles.actionButtonActive : ''}`}
           >
-            📌 {isSaved ? t('playerSaved') : t('playerSave')}
+            ❤️ {isSaved ? t('playerSaved') : t('playerSave')}
+          </button>
+          <button onClick={handleReportOpen} className={styles.actionButton}>
+            ⚠️ {t('playerReport')}
           </button>
           <button onClick={handleShare} className={styles.actionButton}>
             🔗 {shareCopied ? t('playerShareCopied') : t('playerShare')}
@@ -860,6 +881,82 @@ export default function PlayerPage() {
           )}
         </div>
       </div>
+
+      {/* Save / Report toast notification */}
+      {saveToast && (
+        <div className={styles.toast}>
+          {saveToast}
+        </div>
+      )}
+
+      {/* Report modal */}
+      {showReportModal && (
+        <div className={styles.reportOverlay} onClick={() => setShowReportModal(false)}>
+          <div className={styles.reportModal} onClick={(e) => e.stopPropagation()}>
+            <h3 className={styles.reportHeader}>{t('playerReportTitle')}</h3>
+
+            {/* Story info */}
+            <div className={styles.reportInfo}>
+              <div className={styles.reportInfoRow}>
+                <span className={styles.reportInfoLabel}>{t('playerReportStory')}</span>
+                <span className={styles.reportInfoValue}>{content?.title}</span>
+              </div>
+              <div className={styles.reportInfoRow}>
+                <span className={styles.reportInfoLabel}>{t('playerReportVoice')}</span>
+                <span className={styles.reportInfoValue}>
+                  {selectedVoice ? getVoiceLabel(selectedVoice, lang) : '—'}
+                </span>
+              </div>
+            </div>
+
+            {/* Issue type options */}
+            <p className={styles.reportSectionLabel}>{t('playerReportIssueType')}</p>
+            <div className={styles.reportOptions}>
+              {[
+                { key: 'audio_quality', icon: '🔊', label: t('playerReportAudioQuality') },
+                { key: 'story_content', icon: '📖', label: t('playerReportStoryContent') },
+                { key: 'background_music', icon: '🎵', label: t('playerReportBackgroundMusic') },
+                { key: 'voice_mismatch', icon: '🗣️', label: t('playerReportVoiceMismatch') },
+                { key: 'other', icon: '🐛', label: t('playerReportOther') },
+              ].map(opt => (
+                <button
+                  key={opt.key}
+                  className={`${styles.reportOption} ${reportIssueType === opt.key ? styles.reportOptionActive : ''}`}
+                  onClick={() => setReportIssueType(opt.key)}
+                >
+                  <span>{opt.icon}</span> {opt.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Optional description */}
+            <textarea
+              className={styles.reportTextarea}
+              placeholder={t('playerReportDescription')}
+              value={reportDescription}
+              onChange={(e) => setReportDescription(e.target.value)}
+              rows={3}
+            />
+
+            {/* Actions */}
+            <div className={styles.reportActions}>
+              <button
+                className={styles.reportCancelBtn}
+                onClick={() => setShowReportModal(false)}
+              >
+                {t('playerReportCancel')}
+              </button>
+              <button
+                className={styles.reportSubmitBtn}
+                onClick={handleReportSubmit}
+                disabled={!reportIssueType || reportSubmitting}
+              >
+                {reportSubmitting ? '...' : t('playerReportSubmit')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

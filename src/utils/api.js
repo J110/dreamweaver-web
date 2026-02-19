@@ -261,6 +261,19 @@ export const interactionApi = {
   },
 };
 
+// ─── Feedback API ───────────────────────────────────────────
+// Backend: /api/v1/feedback/report
+
+export const feedbackApi = {
+  submitReport: async (data) => {
+    const res = await fetchApi('/api/v1/feedback/report', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    return res;
+  },
+};
+
 // ─── Audio API ──────────────────────────────────────────────
 // Backend: /api/v1/audio/voices, /api/v1/audio/{content_id}
 
