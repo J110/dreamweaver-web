@@ -1,0 +1,156 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<defs>
+    <radialGradient id="ta-skyGrad" cx="50%" cy="50%" r="70%">
+        <stop offset="0%" stop-color="#0a1a2a"/>
+        <stop offset="50%" stop-color="#1a2a4a"/>
+        <stop offset="100%" stop-color="#0a0a1a"/>
+    </radialGradient>
+
+    <linearGradient id="ta-snowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#e6f0ff" stop-opacity="0.8"/>
+        <stop offset="100%" stop-color="#b3d9ff" stop-opacity="0.3"/>
+    </linearGradient>
+
+    <linearGradient id="ta-auroraGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#00f2ff" stop-opacity="0.8"/>
+        <stop offset="50%" stop-color="#ff00f2" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="#00ff88" stop-opacity="0.8"/>
+    </linearGradient>
+
+    <filter id="ta-softGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="2" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="ta-mediumGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="4" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="ta-strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="6" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <radialGradient id="ta-vignette" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#000000" stop-opacity="0"/>
+        <stop offset="100%" stop-color="#000000" stop-opacity="1"/>
+    </radialGradient>
+
+    <filter id="ta-sparkleGlow" x="-100%" y="-100%" width="300%" height="300%">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+        <feSpecularLighting result="specOut" in="blur" specularConstant="1" specularExponent="20" lighting-color="#ffd700">
+            <fePointLight x="0" y="0" z="200"/>
+        </feSpecularLighting>
+        <feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+    </filter>
+</defs>
+
+<style>
+    @keyframes ta-twinkle {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 1; }
+    }
+    @keyframes ta-bobbing {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+    }
+    @keyframes ta-cloudDrift {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(10px); }
+    }
+    @keyframes ta-auroraWave {
+        0%, 100% { transform: translateX(0) scaleY(1); }
+        50% { transform: translateX(15px) scaleY(1.1); }
+    }
+    @keyframes ta-sparkleDrift {
+        0% { transform: translate(0, 0) rotate(0deg); }
+        100% { transform: translate(5px, 10px) rotate(360deg); }
+    }
+    @keyframes ta-glowPulse {
+        0%, 100% { filter: url(#ta-softGlow); }
+        50% { filter: url(#ta-mediumGlow); }
+    }
+    @keyframes ta-snowfall {
+        0% { transform: translateY(0) rotate(0deg); }
+        100% { transform: translateY(512px) rotate(360deg); }
+    }
+    .ta-star { animation: ta-twinkle 3s infinite ease-in-out; }
+    .ta-sparkle { animation: ta-twinkle 2s infinite ease-in-out, ta-sparkleDrift 8s infinite ease-in-out; }
+    .ta-tiko { animation: ta-bobbing 5s infinite ease-in-out, ta-glowPulse 4s infinite ease-in-out; }
+    .ta-cloud { animation: ta-cloudDrift 7s infinite ease-in-out; }
+    .ta-aurora { animation: ta-auroraWave 8s infinite ease-in-out; }
+    .ta-snowflake { animation: ta-snowfall 6s infinite linear; }
+</style>
+
+<rect width="512" height="512" fill="url(#ta-skyGrad)"/>
+
+<g id="ta-layer1-sky">
+    <circle class="ta-star" cx="50" cy="80" r="1.5" fill="#ffd700" filter="url(#ta-sparkleGlow)"/>
+    <circle class="ta-star" cx="120" cy="40" r="1" fill="#ffffff"/>
+    <circle class="ta-star" cx="200" cy="100" r="1.2" fill="#ffd700"/>
+    <circle class="ta-star" cx="350" cy="60" r="1.5" fill="#ffffff"/>
+    <circle class="ta-star" cx="450" cy="90" r="1" fill="#ffd700"/>
+    <circle class="ta-star" cx="80" cy="150" r="1.3" fill="#ffffff"/>
+    <circle class="ta-star" cx="280" cy="180" r="1.1" fill="#ffd700"/>
+    <circle class="ta-star" cx="400" cy="140" r="1.4" fill="#ffffff"/>
+    <circle class="ta-star" cx="150" cy="220" r="1" fill="#ffd700"/>
+    <circle class="ta-star" cx="320" cy="250" r="1.2" fill="#ffffff"/>
+    <circle class="ta-star" cx="480" cy="200" r="1.3" fill="#ffd700"/>
+    <circle class="ta-star" cx="100" cy="300" r="1.1" fill="#ffffff"/>
+    <circle class="ta-star" cx="250" cy="350" r="1.5" fill="#ffd700"/>
+    <circle class="ta-star" cx="420" cy="320" r="1" fill="#ffffff"/>
+    <circle class="ta-star" cx="180" cy="400" r="1.2" fill="#ffd700"/>
+    <circle class="ta-star" cx="380" cy="450" r="1.4" fill="#ffffff"/>
+</g>
+
+<g id="ta-layer2-farbg">
+    <path class="ta-aurora" d="M0,150 Q128,100 256,150 Q384,200 512,150 L512,0 L0,0 Z" fill="url(#ta-auroraGrad)" opacity="0.7"/>
+    <path class="ta-cloud" d="M50,200 Q100,180 150,200 Q200,220 250,200 Q300,180 350,200 Q400,220 450,200 Q500,180 512,200 L512,250 L0,250 Z" fill="#e6f0ff" opacity="0.6"/>
+    <path class="ta-cloud" d="M30,280 Q80,260 130,280 Q180,300 230,280 Q280,260 330,280 Q380,300 430,280 Q480,260 512,280 L512,320 L0,320 Z" fill="#ffffff" opacity="0.5"/>
+</g>
+
+<g id="ta-layer3-midbg">
+    <path d="M0,400 Q128,380 256,400 Q384,420 512,400 L512,512 L0,512 Z" fill="url(#ta-snowGrad)"/>
+    <circle cx="150" cy="450" r="30" fill="#ffffff" opacity="0.8"/>
+    <circle cx="350" cy="430" r="25" fill="#e6f0ff" opacity="0.7"/>
+    <path d="M100,480 Q150,460 200,480 Q250,500 300,480 Q350,460 400,480" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
+</g>
+
+<g id="ta-layer4-midground">
+    <rect x="180" y="350" width="150" height="100" rx="10" fill="#8b4513" opacity="0.8"/>
+    <rect x="200" y="380" width="110" height="60" rx="5" fill="#654321"/>
+    <circle cx="256" cy="360" r="20" fill="#ffd700" filter="url(#ta-mediumGlow)"/>
+    <path d="M230,350 Q256,330 282,350" stroke="#8b4513" stroke-width="3" fill="none"/>
+    <path d="M210,370 Q256,350 302,370" stroke="#8b4513" stroke-width="2" fill="none"/>
+</g>
+
+<g id="ta-layer5-mainchar" class="ta-tiko">
+    <circle cx="256" cy="240" r="30" fill="#ffd700" filter="url(#ta-softGlow)"/>
+    <path d="M240,230 Q256,220 272,230 Q272,250 256,260 Q240,250 240,230 Z" fill="#8b4513"/>
+    <circle cx="245" cy="235" r="3" fill="#000"/>
+    <circle cx="267" cy="235" r="3" fill="#000"/>
+    <path d="M248,245 Q256,250 264,245" stroke="#000" stroke-width="2" fill="none"/>
+    <path d="M230,260 Q256,280 282,260 L282,280 Q256,300 230,280 Z" fill="#4169e1"/>
+    <path d="M230,280 Q256,290 282,280" stroke="#000" stroke-width="2" fill="none"/>
+    <path d="M220,270 Q200,260 190,280" stroke="#8b4513" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M290,270 Q310,260 320,280" stroke="#8b4513" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M240,300 Q256,310 272,300" stroke="#8b4513" stroke-width="4" fill="none"/>
+</g>
+
+<g id="ta-layer6-particles">
+    <circle class="ta-sparkle" cx="200" cy="150" r="2" fill="#ffd700" filter="url(#ta-sparkleGlow)"/>
+    <circle class="ta-sparkle" cx="310" cy="180" r="1.5" fill="#ffffff"/>
+    <circle class="ta-sparkle" cx="180" cy="220" r="2" fill="#ffd700"/>
+    <circle class="ta-sparkle" cx="330" cy="250" r="1.5" fill="#ffffff"/>
+    <circle class="ta-sparkle" cx="220" cy="300" r="2" fill="#ffd700"/>
+    <circle class="ta-sparkle" cx="290" cy="320" r="1.5" fill="#ffffff"/>
+    <circle class="ta-snowflake" cx="50" cy="-10" r="2" fill="#ffffff" opacity="0.8"/>
+    <circle class="ta-snowflake" cx="150" cy="-20" r="1.5" fill="#e6f0ff" opacity="0.7"/>
+    <circle class="ta-snowflake" cx="250" cy="-5" r="2" fill="#ffffff" opacity="0.8"/>
+    <circle class="ta-snowflake" cx="350" cy="-15" r="1.5" fill="#e6f0ff" opacity="0.7"/>
+    <circle class="ta-snowflake" cx="450" cy="-10" r="2" fill="#ffffff" opacity="0.8"/>
+</g>
+
+<rect width="512" height="512" fill="url(#ta-vignette)" opacity="0.4"/>
+</svg>

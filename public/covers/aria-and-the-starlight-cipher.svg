@@ -1,0 +1,175 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<defs>
+    <radialGradient id="aa-skyGrad" cx="50%" cy="50%" r="70%">
+        <stop offset="0%" stop-color="#0a0e2a"/>
+        <stop offset="50%" stop-color="#1a103d"/>
+        <stop offset="100%" stop-color="#0a0e2a"/>
+    </radialGradient>
+
+    <linearGradient id="aa-cloudGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#e6e6fa" stop-opacity="0.8"/>
+        <stop offset="100%" stop-color="#f0f8ff" stop-opacity="0.6"/>
+    </linearGradient>
+
+    <linearGradient id="aa-floatGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#4169e1"/>
+        <stop offset="50%" stop-color="#6a5acd"/>
+        <stop offset="100%" stop-color="#483d8b"/>
+    </linearGradient>
+
+    <linearGradient id="aa-starlightGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ffd700" stop-opacity="0.8"/>
+        <stop offset="50%" stop-color="#ff69b4" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="#9370db" stop-opacity="0.8"/>
+    </linearGradient>
+
+    <linearGradient id="aa-characterGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ffd700"/>
+        <stop offset="50%" stop-color="#ff69b4"/>
+        <stop offset="100%" stop-color="#9370db"/>
+    </linearGradient>
+
+    <filter id="aa-softGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="2" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="aa-mediumGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="4" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="aa-strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="6" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <radialGradient id="aa-vignette" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="black" stop-opacity="0"/>
+        <stop offset="100%" stop-color="black" stop-opacity="0.8"/>
+    </radialGradient>
+
+    <pattern id="aa-stars" patternUnits="userSpaceOnUse" width="20" height="20">
+        <circle cx="10" cy="10" r="1" fill="white" opacity="0.8"/>
+    </pattern>
+</defs>
+
+<style>
+    @keyframes aa-twinkle {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 1; }
+    }
+    @keyframes aa-bob {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    @keyframes aa-cloudDrift {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(20px); }
+    }
+    @keyframes aa-particleDrift {
+        0% { transform: translate(0, 0) rotate(0deg); }
+        100% { transform: translate(30px, 20px) rotate(360deg); }
+    }
+    @keyframes aa-pulse {
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 1; }
+    }
+    @keyframes aa-floatSway {
+        0%, 100% { transform: rotate(-2deg); }
+        50% { transform: rotate(2deg); }
+    }
+    @keyframes aa-starlightPulse {
+        0%, 100% { r: 3; }
+        50% { r: 6; }
+    }
+
+    .aa-twinkle { animation: aa-twinkle 3s ease-in-out infinite; }
+    .aa-bob { animation: aa-bob 5s ease-in-out infinite; }
+    .aa-cloudDrift { animation: aa-cloudDrift 8s ease-in-out infinite; }
+    .aa-particleDrift { animation: aa-particleDrift 9s ease-in-out infinite; }
+    .aa-pulse { animation: aa-pulse 4s ease-in-out infinite; }
+    .aa-floatSway { animation: aa-floatSway 7s ease-in-out infinite; }
+    .aa-starlightPulse { animation: aa-starlightPulse 5s ease-in-out infinite; }
+</style>
+
+<!-- Layer 1: Sky/Background -->
+<rect width="512" height="512" fill="url(#aa-skyGrad)"/>
+<rect width="512" height="512" fill="url(#aa-stars)" opacity="0.5"/>
+
+<!-- Stars with twinkle animation -->
+<circle class="aa-twinkle" cx="50" cy="80" r="2" fill="white"/>
+<circle class="aa-twinkle" cx="150" cy="60" r="1.5" fill="#ffd700"/>
+<circle class="aa-twinkle" cx="250" cy="100" r="2" fill="white"/>
+<circle class="aa-twinkle" cx="350" cy="70" r="1.5" fill="#ffd700"/>
+<circle class="aa-twinkle" cx="450" cy="90" r="2" fill="white"/>
+<circle class="aa-twinkle" cx="100" cy="200" r="1.5" fill="#ffd700"/>
+<circle class="aa-twinkle" cx="300" cy="180" r="2" fill="white"/>
+<circle class="aa-twinkle" cx="400" cy="220" r="1.5" fill="#ffd700"/>
+
+<!-- Layer 2: Far Background -->
+<g class="aa-cloudDrift">
+    <ellipse cx="100" cy="400" rx="80" ry="30" fill="url(#aa-cloudGrad)" opacity="0.7"/>
+    <ellipse cx="400" cy="380" rx="100" ry="40" fill="url(#aa-cloudGrad)" opacity="0.6"/>
+    <ellipse cx="250" cy="420" rx="120" ry="35" fill="url(#aa-cloudGrad)" opacity="0.5"/>
+</g>
+
+<!-- Layer 3: Mid Background -->
+<g class="aa-floatSway">
+    <!-- Floating playground platforms -->
+    <rect x="150" y="300" width="80" height="15" rx="5" fill="url(#aa-floatGrad)" filter="url(#aa-softGlow)"/>
+    <rect x="280" y="280" width="100" height="20" rx="8" fill="url(#aa-floatGrad)" filter="url(#aa-softGlow)"/>
+    <rect x="50" y="350" width="60" height="12" rx="4" fill="url(#aa-floatGrad)" filter="url(#aa-softGlow)"/>
+
+    <!-- Starlight beams -->
+    <path d="M256,50 Q200,150 256,250" stroke="url(#aa-starlightGrad)" stroke-width="2" fill="none" opacity="0.7" filter="url(#aa-mediumGlow)"/>
+    <path d="M256,50 Q300,120 256,250" stroke="url(#aa-starlightGrad)" stroke-width="2" fill="none" opacity="0.7" filter="url(#aa-mediumGlow)"/>
+</g>
+
+<!-- Layer 4: Middle Ground -->
+<g>
+    <!-- Floating playground elements -->
+    <circle cx="190" cy="305" r="8" fill="#ffd700" filter="url(#aa-softGlow)"/>
+    <rect x="300" y="285" width="15" height="15" rx="3" fill="#9370db" filter="url(#aa-softGlow)"/>
+    <path d="M250,290 Q260,270 270,290" stroke="#ff69b4" stroke-width="3" fill="none" filter="url(#aa-softGlow)"/>
+
+    <!-- Starlight cipher puzzle -->
+    <circle cx="256" cy="200" r="15" fill="none" stroke="url(#aa-starlightGrad)" stroke-width="3" stroke-dasharray="5,3" filter="url(#aa-strongGlow)" class="aa-pulse"/>
+    <circle cx="256" cy="200" r="5" fill="url(#aa-starlightGrad)" filter="url(#aa-strongGlow)" class="aa-starlightPulse"/>
+</g>
+
+<!-- Layer 5: Main Character -->
+<g class="aa-bob" transform="translate(256, 240)">
+    <!-- Aria's body -->
+    <ellipse cx="0" cy="0" rx="20" ry="30" fill="#6a5acd" filter="url(#aa-softGlow)"/>
+    <!-- Aria's head -->
+    <circle cx="0" cy="-40" r="15" fill="#ffd700" filter="url(#aa-mediumGlow)"/>
+    <!-- Aria's hair -->
+    <path d="M-15,-45 Q0,-60 15,-45 Q0,-35 -15,-45" fill="#9370db"/>
+    <!-- Aria's eyes -->
+    <circle cx="-5" cy="-42" r="2" fill="black"/>
+    <circle cx="5" cy="-42" r="2" fill="black"/>
+    <!-- Aria's arms -->
+    <path d="M-20,-10 Q-30,0 -20,10" stroke="#ffd700" stroke-width="3" fill="none"/>
+    <path d="M20,-10 Q30,0 20,10" stroke="#ffd700" stroke-width="3" fill="none"/>
+    <!-- Aria's legs -->
+    <ellipse cx="-8" cy="30" rx="6" ry="12" fill="#6a5acd"/>
+    <ellipse cx="8" cy="30" rx="6" ry="12" fill="#6a5acd"/>
+    <!-- Aria's hands reaching for starlight -->
+    <circle cx="-30" cy="0" r="3" fill="#ffd700" filter="url(#aa-softGlow)"/>
+    <circle cx="30" cy="0" r="3" fill="#ffd700" filter="url(#aa-softGlow)"/>
+</g>
+
+<!-- Layer 6: Foreground Particles/Sparkles -->
+<g>
+    <circle class="aa-particleDrift aa-twinkle" cx="100" cy="150" r="2" fill="#ffd700" filter="url(#aa-softGlow)"/>
+    <circle class="aa-particleDrift aa-twinkle" cx="400" cy="120" r="1.5" fill="#ff69b4" filter="url(#aa-softGlow)"/>
+    <circle class="aa-particleDrift aa-twinkle" cx="150" cy="300" r="2" fill="#9370db" filter="url(#aa-softGlow)"/>
+    <circle class="aa-particleDrift aa-twinkle" cx="350" cy="250" r="1.5" fill="#ffd700" filter="url(#aa-softGlow)"/>
+    <circle class="aa-particleDrift aa-twinkle" cx="200" cy="100" r="2" fill="#ff69b4" filter="url(#aa-softGlow)"/>
+    <circle class="aa-particleDrift aa-twinkle" cx="300" cy="350" r="1.5" fill="#9370db" filter="url(#aa-softGlow)"/>
+</g>
+
+<!-- Layer 7: Vignette Overlay -->
+<rect width="512" height="512" fill="url(#aa-vignette)" opacity="0.4"/>
+</svg>

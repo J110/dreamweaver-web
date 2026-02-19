@@ -1,0 +1,183 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<defs>
+    <linearGradient id="pa-skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#0a0e2a"/>
+        <stop offset="50%" stop-color="#1a103d"/>
+        <stop offset="100%" stop-color="#0a0e2a"/>
+    </linearGradient>
+
+    <linearGradient id="pa-groundGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#2a1e3f"/>
+        <stop offset="100%" stop-color="#1a102d"/>
+    </linearGradient>
+
+    <radialGradient id="pa-moonGlow" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+        <stop offset="0%" stop-color="#ffd700" stop-opacity="0.8"/>
+        <stop offset="100%" stop-color="#ffd700" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="pa-willowGlow" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+        <stop offset="0%" stop-color="#a8e6cf" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="#a8e6cf" stop-opacity="0"/>
+    </radialGradient>
+
+    <filter id="pa-softGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="2" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="pa-mediumGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="4" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="pa-strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="6" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <pattern id="pa-stars" patternUnits="userSpaceOnUse" width="20" height="20">
+        <circle cx="10" cy="10" r="1" fill="white" opacity="0.8"/>
+    </pattern>
+
+    <linearGradient id="pa-vignette" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="black" stop-opacity="0"/>
+        <stop offset="100%" stop-color="black" stop-opacity="0.8"/>
+    </linearGradient>
+</defs>
+
+<style>
+    @keyframes pa-twinkle {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 1; }
+    }
+    .pa-star {
+        animation: pa-twinkle 3s infinite ease-in-out;
+    }
+
+    @keyframes pa-bob {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+    }
+    #pa-pebble {
+        animation: pa-bob 5s infinite ease-in-out;
+    }
+
+    @keyframes pa-cloudDrift {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(10px); }
+    }
+    .pa-cloud {
+        animation: pa-cloudDrift 8s infinite ease-in-out;
+    }
+
+    @keyframes pa-leafSway {
+        0%, 100% { transform: rotate(-5deg); }
+        50% { transform: rotate(5deg); }
+    }
+    .pa-leaf {
+        animation: pa-leafSway 6s infinite ease-in-out;
+    }
+
+    @keyframes pa-sparkleDrift {
+        0%, 100% { transform: translate(0, 0); opacity: 0; }
+        50% { transform: translate(5px, -10px); opacity: 1; }
+    }
+    .pa-sparkle {
+        animation: pa-sparkleDrift 7s infinite ease-in-out;
+    }
+
+    @keyframes pa-glowPulse {
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 0.9; }
+    }
+    #pa-moonGlow, #pa-willowGlow {
+        animation: pa-glowPulse 4s infinite ease-in-out;
+    }
+
+    @keyframes pa-waterRipple {
+        0%, 100% { transform: scale(1); opacity: 0.7; }
+        50% { transform: scale(1.05); opacity: 0.9; }
+    }
+    #pa-water {
+        animation: pa-waterRipple 8s infinite ease-in-out;
+    }
+</style>
+
+<!-- Layer 1: Sky/Background -->
+<rect width="512" height="512" fill="url(#pa-skyGrad)"/>
+<circle cx="100" cy="100" r="40" fill="#ffd700" filter="url(#pa-softGlow)" id="pa-moon"/>
+<circle cx="100" cy="100" r="80" fill="url(#pa-moonGlow)" id="pa-moonGlow"/>
+<rect width="512" height="512" fill="url(#pa-stars)" opacity="0.5"/>
+<circle class="pa-star" cx="50" cy="80" r="1.5" fill="white"/>
+<circle class="pa-star" cx="150" cy="60" r="1" fill="white"/>
+<circle class="pa-star" cx="250" cy="90" r="1.2" fill="white"/>
+<circle class="pa-star" cx="350" cy="70" r="1" fill="white"/>
+<circle class="pa-star" cx="450" cy="100" r="1.5" fill="white"/>
+<circle class="pa-star" cx="80" cy="150" r="1" fill="white"/>
+<circle class="pa-star" cx="200" cy="180" r="1.2" fill="white"/>
+<circle class="pa-star" cx="380" cy="160" r="1" fill="white"/>
+<circle class="pa-star" cx="480" cy="190" r="1.5" fill="white"/>
+
+<!-- Layer 2: Far Background -->
+<ellipse cx="256" cy="400" rx="300" ry="80" fill="#1a102d" opacity="0.8"/>
+<path d="M0,350 Q100,320 200,340 Q300,360 400,330 Q500,350 512,340 L512,512 L0,512 Z" fill="#2a1e3f" opacity="0.7"/>
+
+<!-- Layer 3: Mid Background -->
+<g class="pa-cloud">
+    <path d="M100,200 Q120,180 150,190 Q180,170 200,185 Q220,170 250,180 Q280,170 300,190 Q330,180 350,200" fill="white" opacity="0.6"/>
+</g>
+<g class="pa-cloud" style="animation-delay: -2s;">
+    <path d="M300,250 Q320,230 350,240 Q380,220 400,235 Q420,220 450,230 Q480,220 500,240" fill="white" opacity="0.5"/>
+</g>
+
+<!-- Layer 4: Middle Ground -->
+<path d="M0,400 Q100,380 200,390 Q300,400 400,385 Q500,395 512,390 L512,512 L0,512 Z" fill="url(#pa-groundGrad)"/>
+<ellipse cx="256" cy="450" rx="200" ry="30" fill="#3a2e4f" opacity="0.8"/>
+
+<!-- Willow Tree -->
+<path d="M350,200 Q370,150 400,180 Q430,150 450,200 Q470,150 500,190" stroke="#5a4a3a" stroke-width="8" fill="none" stroke-linecap="round"/>
+<g class="pa-leaf">
+    <path d="M400,180 Q420,160 440,170 Q460,160 480,180" stroke="#a8e6cf" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M380,190 Q400,170 420,180 Q440,170 460,190" stroke="#a8e6cf" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M420,200 Q440,180 460,190 Q480,180 500,200" stroke="#a8e6cf" stroke-width="3" fill="none" stroke-linecap="round"/>
+</g>
+<circle cx="450" cy="190" r="30" fill="url(#pa-willowGlow)" id="pa-willowGlow"/>
+
+<!-- Water -->
+<path d="M100,420 Q150,410 200,420 Q250,430 300,420 Q350,410 400,420" stroke="#6a5a8a" stroke-width="3" fill="none" stroke-linecap="round" id="pa-water"/>
+
+<!-- Layer 5: Main Character -->
+<g id="pa-pebble">
+    <!-- Tortoise Shell -->
+    <ellipse cx="256" cy="280" rx="40" ry="25" fill="#5a4a3a" filter="url(#pa-softGlow)"/>
+    <path d="M220,280 Q230,260 256,270 Q282,260 292,280 Q282,300 256,290 Q230,300 220,280" fill="#7a6a5a"/>
+    <path d="M230,270 Q240,255 256,265 Q272,255 282,270" fill="#8a7a6a" opacity="0.8"/>
+    <path d="M240,260 Q250,250 256,255 Q262,250 272,260" fill="#9a8a7a" opacity="0.6"/>
+
+    <!-- Head -->
+    <ellipse cx="210" cy="270" rx="12" ry="8" fill="#5a4a3a"/>
+    <circle cx="205" cy="268" r="2" fill="white"/>
+    <circle cx="206" cy="268" r="1" fill="black"/>
+
+    <!-- Legs -->
+    <ellipse cx="230" cy="295" rx="8" ry="5" fill="#5a4a3a"/>
+    <ellipse cx="280" cy="295" rx="8" ry="5" fill="#5a4a3a"/>
+    <ellipse cx="240" cy="290" rx="6" ry="4" fill="#5a4a3a"/>
+    <ellipse cx="270" cy="290" rx="6" ry="4" fill="#5a4a3a"/>
+
+    <!-- Tail -->
+    <path d="M295,285 Q300,290 298,295 Q300,300 295,298" fill="#5a4a3a"/>
+</g>
+
+<!-- Layer 6: Foreground Particles/Sparkles -->
+<circle class="pa-sparkle" cx="150" cy="200" r="1.5" fill="#ffd700" opacity="0" style="animation-delay: 0s;"/>
+<circle class="pa-sparkle" cx="350" cy="180" r="1.2" fill="#a8e6cf" opacity="0" style="animation-delay: 1s;"/>
+<circle class="pa-sparkle" cx="200" cy="250" r="1" fill="#ffd700" opacity="0" style="animation-delay: 2s;"/>
+<circle class="pa-sparkle" cx="400" cy="220" r="1.5" fill="#a8e6cf" opacity="0" style="animation-delay: 3s;"/>
+<circle class="pa-sparkle" cx="100" cy="300" r="1.2" fill="#ffd700" opacity="0" style="animation-delay: 4s;"/>
+<circle class="pa-sparkle" cx="450" cy="280" r="1" fill="#a8e6cf" opacity="0" style="animation-delay: 5s;"/>
+
+<!-- Layer 7: Vignette Overlay -->
+<rect width="512" height="512" fill="url(#pa-vignette)" opacity="0.4"/>
+</svg>
