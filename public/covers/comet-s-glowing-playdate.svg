@@ -1,0 +1,178 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="cg-skyGrad" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#0a0e2a"/>
+      <stop offset="50%" stop-color="#1a103d"/>
+      <stop offset="100%" stop-color="#0a0e2a"/>
+    </radialGradient>
+
+    <linearGradient id="cg-mountainGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3a2e4d"/>
+      <stop offset="100%" stop-color="#1a103d"/>
+    </linearGradient>
+
+    <linearGradient id="cg-cometBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd700"/>
+      <stop offset="50%" stop-color="#ffec8b"/>
+      <stop offset="100%" stop-color="#ffd700"/>
+    </linearGradient>
+
+    <linearGradient id="cg-cometTail" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#ff6b6b" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+    </linearGradient>
+
+    <filter id="cg-softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="cg-mediumGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="cg-strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <radialGradient id="cg-vignette" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="black" stop-opacity="0"/>
+      <stop offset="100%" stop-color="black" stop-opacity="0.8"/>
+    </radialGradient>
+
+    <filter id="cg-sparkleGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1" result="blur"/>
+      <feSpecularLighting result="specOut" in="blur" specularConstant="1" specularExponent="20" lighting-color="#fff">
+        <fePointLight x="0" y="0" z="200"/>
+      </feSpecularLighting>
+      <feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+    </filter>
+  </defs>
+
+  <style>
+    @keyframes cg-twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    @keyframes cg-bobbing {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes cg-cloudDrift {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(20px); }
+    }
+    @keyframes cg-tailWave {
+      0%, 100% { transform: rotate(-5deg); }
+      50% { transform: rotate(5deg); }
+    }
+    @keyframes cg-particleDrift {
+      0% { transform: translate(0, 0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translate(30px, 30px); opacity: 0; }
+    }
+    @keyframes cg-pulseGlow {
+      0%, 100% { filter: url(#cg-softGlow); }
+      50% { filter: url(#cg-mediumGlow); }
+    }
+    @keyframes cg-mountainShimmer {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.1); }
+    }
+    @keyframes cg-friendBob {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(2deg); }
+    }
+
+    .cg-star { animation: cg-twinkle 3s ease-in-out infinite; }
+    .cg-comet { animation: cg-bobbing 5s ease-in-out infinite, cg-pulseGlow 4s ease-in-out infinite; }
+    .cg-tail { animation: cg-tailWave 6s ease-in-out infinite; }
+    .cg-cloud { animation: cg-cloudDrift 8s ease-in-out infinite; }
+    .cg-particle { animation: cg-particleDrift 9s ease-in-out infinite; }
+    .cg-mountain { animation: cg-mountainShimmer 7s ease-in-out infinite; }
+    .cg-friend { animation: cg-friendBob 6s ease-in-out infinite; }
+  </style>
+
+  <!-- Layer 1: Sky/Background -->
+  <rect width="512" height="512" fill="url(#cg-skyGrad)"/>
+
+  <!-- Stars -->
+  <circle class="cg-star" cx="80" cy="120" r="1.5" fill="#fff" filter="url(#cg-sparkleGlow)"/>
+  <circle class="cg-star" cx="150" cy="80" r="1" fill="#fff" filter="url(#cg-sparkleGlow)"/>
+  <circle class="cg-star" cx="250" cy="50" r="1.2" fill="#fff" filter="url(#cg-sparkleGlow)"/>
+  <circle class="cg-star" cx="350" cy="90" r="1.8" fill="#fff" filter="url(#cg-sparkleGlow)"/>
+  <circle class="cg-star" cx="420" cy="150" r="1.3" fill="#fff" filter="url(#cg-sparkleGlow)"/>
+  <circle class="cg-star" cx="480" cy="70" r="1" fill="#fff" filter="url(#cg-sparkleGlow)"/>
+  <circle class="cg-star" cx="30" cy="200" r="1.5" fill="#fff" filter="url(#cg-sparkleGlow)"/>
+  <circle class="cg-star" cx="120" cy="250" r="1.2" fill="#fff" filter="url(#cg-sparkleGlow)"/>
+  <circle class="cg-star" cx="200" cy="300" r="1" fill="#fff" filter="url(#cg-sparkleGlow)"/>
+  <circle class="cg-star" cx="380" cy="280" r="1.7" fill="#fff" filter="url(#cg-sparkleGlow)"/>
+  <circle class="cg-star" cx="450" cy="350" r="1.1" fill="#fff" filter="url(#cg-sparkleGlow)"/>
+
+  <!-- Layer 2: Far Background -->
+  <g class="cg-cloud">
+    <path d="M50,200 Q100,180 150,200 Q200,180 250,200 Q300,180 350,200 L350,250 Q300,230 250,250 Q200,230 150,250 Q100,230 50,250 Z" fill="#a88fbc" opacity="0.6"/>
+  </g>
+  <g class="cg-cloud">
+    <path d="M400,150 Q450,130 500,150 Q550,130 600,150 L600,200 Q550,180 500,200 Q450,180 400,200 Z" fill="#a88fbc" opacity="0.4"/>
+  </g>
+
+  <!-- Layer 3: Mid Background -->
+  <g class="cg-mountain">
+    <path d="M0,400 L100,200 L200,300 L300,150 L400,250 L512,200 L512,512 Z" fill="url(#cg-mountainGrad)"/>
+    <path d="M50,450 L150,300 L250,350 L350,250 L450,350 L512,300 L512,512 Z" fill="#2a1e3d" opacity="0.8"/>
+  </g>
+
+  <!-- Layer 4: Middle Ground -->
+  <g>
+    <!-- Prehistoric trees -->
+    <path d="M100,400 Q120,350 140,400 Q160,350 180,400 L180,512 L100,512 Z" fill="#3a5f4d"/>
+    <path d="M120,380 L140,320 L160,380 Z" fill="#2a4a3a"/>
+    <path d="M250,420 Q270,370 290,420 Q310,370 330,420 L330,512 L250,512 Z" fill="#3a5f4d"/>
+    <path d="M270,400 L290,340 L310,400 Z" fill="#2a4a3a"/>
+    <path d="M400,390 Q420,340 440,390 Q460,340 480,390 L480,512 L400,512 Z" fill="#3a5f4d"/>
+    <path d="M420,370 L440,310 L460,370 Z" fill="#2a4a3a"/>
+
+    <!-- Friend character (dinosaur) -->
+    <g class="cg-friend" transform="translate(350, 320)">
+      <ellipse cx="0" cy="0" rx="30" ry="20" fill="#7dd3fc" filter="url(#cg-softGlow)"/>
+      <ellipse cx="-20" cy="-10" rx="15" ry="10" fill="#7dd3fc"/>
+      <circle cx="-35" cy="-15" r="5" fill="#333"/>
+      <path d="M-30,-20 Q-25,-25 -20,-20" stroke="#333" stroke-width="2" fill="none"/>
+      <path d="M-10,0 Q0,-10 10,0 Q0,10 -10,0" fill="#ff6b6b"/>
+      <path d="M-25,5 Q-20,10 -15,5" stroke="#333" stroke-width="2" fill="none"/>
+      <path d="M20,0 L40,10 L40,-10 Z" fill="#7dd3fc"/>
+    </g>
+  </g>
+
+  <!-- Layer 5: Main Character (Comet) -->
+  <g class="cg-comet" transform="translate(256, 240)">
+    <g class="cg-tail">
+      <ellipse cx="0" cy="0" rx="40" ry="20" fill="url(#cg-cometTail)" opacity="0.8" transform="rotate(-10)"/>
+      <ellipse cx="0" cy="0" rx="30" ry="15" fill="url(#cg-cometTail)" opacity="0.6" transform="rotate(-5)"/>
+    </g>
+    <circle cx="0" cy="0" r="25" fill="url(#cg-cometBody)" filter="url(#cg-strongGlow)"/>
+    <circle cx="-8" cy="-5" r="3" fill="#fff"/>
+    <path d="M-15,-10 Q-10,-15 -5,-10" stroke="#fff" stroke-width="2" fill="none"/>
+    <path d="M10,-5 Q15,0 10,5" stroke="#fff" stroke-width="2" fill="none"/>
+  </g>
+
+  <!-- Layer 6: Foreground Particles/Sparkles -->
+  <g>
+    <circle class="cg-particle" cx="150" cy="100" r="2" fill="#ffd700" filter="url(#cg-sparkleGlow)" style="animation-delay: 0s"/>
+    <circle class="cg-particle" cx="200" cy="150" r="1.5" fill="#ff6b6b" filter="url(#cg-sparkleGlow)" style="animation-delay: 1s"/>
+    <circle class="cg-particle" cx="300" cy="120" r="2.5" fill="#8b5cf6" filter="url(#cg-sparkleGlow)" style="animation-delay: 2s"/>
+    <circle class="cg-particle" cx="400" cy="180" r="1.8" fill="#ffd700" filter="url(#cg-sparkleGlow)" style="animation-delay: 3s"/>
+    <circle class="cg-particle" cx="100" cy="250" r="2" fill="#ff6b6b" filter="url(#cg-sparkleGlow)" style="animation-delay: 4s"/>
+    <circle class="cg-particle" cx="450" cy="220" r="1.5" fill="#8b5cf6" filter="url(#cg-sparkleGlow)" style="animation-delay: 5s"/>
+    <circle class="cg-particle" cx="250" cy="300" r="2.2" fill="#ffd700" filter="url(#cg-sparkleGlow)" style="animation-delay: 6s"/>
+    <circle class="cg-particle" cx="350" cy="280" r="1.7" fill="#ff6b6b" filter="url(#cg-sparkleGlow)" style="animation-delay: 7s"/>
+  </g>
+
+  <!-- Layer 7: Vignette Overlay -->
+  <rect width="512" height="512" fill="url(#cg-vignette)" opacity="0.4"/>
+</svg>

@@ -1,0 +1,203 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<defs>
+    <radialGradient id="pr-skyGrad" cx="50%" cy="50%" r="70%">
+        <stop offset="0%" stop-color="#0a0e2a"/>
+        <stop offset="50%" stop-color="#1a103d"/>
+        <stop offset="100%" stop-color="#0a0e2a"/>
+    </radialGradient>
+
+    <linearGradient id="pr-northernLights" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#00f2c3" stop-opacity="0.8"/>
+        <stop offset="50%" stop-color="#ffd700" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="#e91e63" stop-opacity="0.8"/>
+    </linearGradient>
+
+    <filter id="pr-softGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="2" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="pr-mediumGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="4" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="pr-strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="6" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <radialGradient id="pr-vignette" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#000000" stop-opacity="0"/>
+        <stop offset="100%" stop-color="#000000" stop-opacity="0.8"/>
+    </radialGradient>
+
+    <filter id="pr-sparkleGlow">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1" result="blur"/>
+        <feSpecularLighting result="specOut" in="blur" specularConstant="1" specularExponent="20" lighting-color="#ffd700">
+            <fePointLight x="0" y="0" z="200"/>
+        </feSpecularLighting>
+        <feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+    </filter>
+</defs>
+
+<style>
+    @keyframes pr-twinkle {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 1; }
+    }
+    @keyframes pr-bobbing {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+    }
+    @keyframes pr-cloudDrift {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(10px); }
+    }
+    @keyframes pr-particleDrift {
+        0% { transform: translate(0, 0) rotate(0deg); }
+        100% { transform: translate(15px, 20px) rotate(360deg); }
+    }
+    @keyframes pr-glowPulse {
+        0%, 100% { filter: url(#pr-softGlow); }
+        50% { filter: url(#pr-mediumGlow); }
+    }
+    @keyframes pr-snowfall {
+        0% { transform: translateY(0) rotate(0deg); }
+        100% { transform: translateY(512px) rotate(360deg); }
+    }
+    @keyframes pr-auroraWave {
+        0%, 100% { opacity: 0.6; transform: translateY(0); }
+        50% { opacity: 0.9; transform: translateY(-10px); }
+    }
+
+    .pr-star {
+        animation: pr-twinkle 3s infinite ease-in-out;
+    }
+    .pr-character {
+        animation: pr-bobbing 5s infinite ease-in-out;
+    }
+    .pr-cloud {
+        animation: pr-cloudDrift 8s infinite ease-in-out;
+    }
+    .pr-particle {
+        animation: pr-particleDrift 9s infinite ease-in-out;
+    }
+    .pr-glow {
+        animation: pr-glowPulse 4s infinite ease-in-out;
+    }
+    .pr-snowflake {
+        animation: pr-snowfall 12s infinite linear;
+    }
+    .pr-aurora {
+        animation: pr-auroraWave 7s infinite ease-in-out;
+    }
+</style>
+
+<!-- Layer 1: Sky/Background -->
+<rect width="512" height="512" fill="url(#pr-skyGrad)"/>
+
+<!-- Northern Lights -->
+<path class="pr-aurora" d="M0,150 Q128,100 256,150 T512,150 L512,0 L0,0 Z" fill="url(#pr-northernLights)" opacity="0.7"/>
+
+<!-- Stars -->
+<g>
+    <circle class="pr-star" cx="50" cy="80" r="1.5" fill="#ffffff"/>
+    <circle class="pr-star" cx="120" cy="40" r="1" fill="#ffffff"/>
+    <circle class="pr-star" cx="200" cy="90" r="1.2" fill="#ffffff"/>
+    <circle class="pr-star" cx="300" cy="30" r="1.8" fill="#ffffff"/>
+    <circle class="pr-star" cx="400" cy="70" r="1" fill="#ffffff"/>
+    <circle class="pr-star" cx="450" cy="120" r="1.5" fill="#ffffff"/>
+    <circle class="pr-star" cx="150" cy="150" r="1.2" fill="#ffffff"/>
+    <circle class="pr-star" cx="350" cy="180" r="1" fill="#ffffff"/>
+</g>
+
+<!-- Layer 2: Far Background -->
+<g class="pr-cloud">
+    <path d="M0,300 Q50,280 100,300 T200,300 L200,512 L0,512 Z" fill="#a8c8ec" opacity="0.3"/>
+    <path d="M300,280 Q350,260 400,280 T500,280 L500,512 L300,512 Z" fill="#a8c8ec" opacity="0.3"/>
+</g>
+
+<!-- Futuristic Arctic Village Silhouette -->
+<g opacity="0.7">
+    <rect x="50" y="400" width="30" height="80" fill="#5a6d8a"/>
+    <rect x="90" y="410" width="25" height="70" fill="#5a6d8a"/>
+    <rect x="130" y="405" width="35" height="75" fill="#5a6d8a"/>
+    <circle cx="180" cy="420" r="20" fill="#5a6d8a"/>
+    <rect x="210" y="400" width="30" height="80" fill="#5a6d8a"/>
+    <rect x="250" y="410" width="25" height="70" fill="#5a6d8a"/>
+    <rect x="290" y="405" width="35" height="75" fill="#5a6d8a"/>
+    <circle cx="340" cy="420" r="20" fill="#5a6d8a"/>
+    <rect x="370" y="400" width="30" height="80" fill="#5a6d8a"/>
+    <rect x="410" y="410" width="25" height="70" fill="#5a6d8a"/>
+</g>
+
+<!-- Layer 3: Mid Background -->
+<g>
+    <!-- Snowy Ground -->
+    <path d="M0,450 Q128,430 256,450 T512,450 L512,512 L0,512 Z" fill="#e6f0fa"/>
+
+    <!-- Icebergs -->
+    <path d="M50,420 Q80,400 120,420 T180,420 L180,512 L50,512 Z" fill="#b3d9ff" opacity="0.8"/>
+    <path d="M350,410 Q380,390 420,410 T480,410 L480,512 L350,512 Z" fill="#b3d9ff" opacity="0.8"/>
+</g>
+
+<!-- Layer 4: Middle Ground -->
+<g>
+    <!-- Snowflakes -->
+    <circle class="pr-snowflake" cx="100" cy="-10" r="2" fill="#ffffff" opacity="0.8"/>
+    <circle class="pr-snowflake" cx="200" cy="-20" r="1.5" fill="#ffffff" opacity="0.8" style="animation-delay: 1s"/>
+    <circle class="pr-snowflake" cx="300" cy="-5" r="2.5" fill="#ffffff" opacity="0.8" style="animation-delay: 2s"/>
+    <circle class="pr-snowflake" cx="400" cy="-15" r="1.8" fill="#ffffff" opacity="0.8" style="animation-delay: 3s"/>
+
+    <!-- Glowing Snowflakes -->
+    <circle class="pr-snowflake pr-glow" cx="150" cy="-30" r="3" fill="#ffd700" opacity="0.9" style="animation-delay: 0.5s"/>
+    <circle class="pr-snowflake pr-glow" cx="250" cy="-25" r="2.5" fill="#ffd700" opacity="0.9" style="animation-delay: 1.5s"/>
+    <circle class="pr-snowflake pr-glow" cx="350" cy="-35" r="3.5" fill="#ffd700" opacity="0.9" style="animation-delay: 2.5s"/>
+</g>
+
+<!-- Layer 5: Main Character -->
+<g class="pr-character" transform="translate(256, 240)">
+    <!-- Character Body -->
+    <ellipse cx="0" cy="40" rx="15" ry="25" fill="#ff9a9e"/>
+    <!-- Head -->
+    <circle cx="0" cy="0" r="20" fill="#ffd1dc"/>
+    <!-- Hair -->
+    <path d="M-15,-5 Q-20,-20 0,-25 Q20,-20 15,-5 Q10,5 0,10 Q-10,5 -15,-5" fill="#5a3e2b"/>
+    <!-- Eyes -->
+    <circle cx="-7" cy="-3" r="3" fill="#333"/>
+    <circle cx="7" cy="-3" r="3" fill="#333"/>
+    <!-- Cheeks -->
+    <circle cx="-10" cy="2" r="2" fill="#ff9a9e" opacity="0.7"/>
+    <circle cx="10" cy="2" r="2" fill="#ff9a9e" opacity="0.7"/>
+    <!-- Mouth -->
+    <path d="M-3,8 Q0,12 3,8" stroke="#333" stroke-width="1" fill="none"/>
+    <!-- Coat -->
+    <path d="M-15,20 Q-20,30 0,40 Q20,30 15,20 Q10,10 0,20 Q-10,10 -15,20" fill="#6a5acd"/>
+    <!-- Arms -->
+    <ellipse cx="-25" cy="30" rx="8" ry="5" fill="#ffd1dc" transform="rotate(-20 -25 30)"/>
+    <ellipse cx="25" cy="30" rx="8" ry="5" fill="#ffd1dc" transform="rotate(20 25 30)"/>
+    <!-- Holding glowing snowflake -->
+    <circle cx="30" cy="25" r="5" fill="#ffd700" filter="url(#pr-strongGlow)"/>
+    <!-- Legs -->
+    <ellipse cx="-8" cy="65" rx="5" ry="8" fill="#6a5acd"/>
+    <ellipse cx="8" cy="65" rx="5" ry="8" fill="#6a5acd"/>
+</g>
+
+<!-- Layer 6: Foreground Particles/Sparkles -->
+<g>
+    <!-- Floating particles -->
+    <circle class="pr-particle" cx="100" cy="150" r="1.5" fill="#ffd700" opacity="0.8"/>
+    <circle class="pr-particle" cx="400" cy="100" r="1.2" fill="#ffd700" opacity="0.8" style="animation-delay: 1s"/>
+    <circle class="pr-particle" cx="200" cy="200" r="2" fill="#ffd700" opacity="0.8" style="animation-delay: 2s"/>
+    <circle class="pr-particle" cx="350" cy="180" r="1.5" fill="#ffd700" opacity="0.8" style="animation-delay: 3s"/>
+
+    <!-- Sparkles -->
+    <path class="pr-particle" d="M50,200 L55,190 L60,200 L55,210 Z" fill="#ffffff" opacity="0.9" style="animation-duration: 5s"/>
+    <path class="pr-particle" d="M450,150 L455,140 L460,150 L455,160 Z" fill="#ffffff" opacity="0.9" style="animation-delay: 1s; animation-duration: 5s"/>
+    <path class="pr-particle" d="M250,100 L255,90 L260,100 L255,110 Z" fill="#ffffff" opacity="0.9" style="animation-delay: 2s; animation-duration: 5s"/>
+</g>
+
+<!-- Layer 7: Vignette Overlay -->
+<rect width="512" height="512" fill="url(#pr-vignette)" opacity="0.4"/>
+</svg>
