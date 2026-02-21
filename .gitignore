@@ -14,6 +14,9 @@ out
 build
 dist
 
+# Generated at build time (version check for auto-reload)
+public/version.json
+
 # Misc
 .DS_Store
 *.pem

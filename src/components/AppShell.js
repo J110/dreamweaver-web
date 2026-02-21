@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { I18nProvider, hasCompletedOnboarding } from '@/utils/i18n';
 import { VoicePreferencesProvider } from '@/utils/voicePreferences';
 import { isLoggedIn } from '@/utils/auth';
+import useVersionCheck from '@/hooks/useVersionCheck';
 import BottomNav from './BottomNav';
 
 const NO_NAV_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy'];
@@ -19,6 +20,10 @@ export default function AppShell({ children }) {
   const pathname = usePathname();
   const router = useRouter();
   const [checked, setChecked] = useState(false);
+
+  // Auto-reload on app open/foreground when a new deployment is detected.
+  // Only checks on startup and visibility change — never mid-session.
+  useVersionCheck();
 
   useEffect(() => {
     const isPublic = isPublicRoute(pathname);
