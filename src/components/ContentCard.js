@@ -49,11 +49,9 @@ export default function ContentCard({ content, onClick }) {
     const age = content.target_age;
     if (age == null) return null;
     if (age <= 1) return '0-1';
-    if (age <= 3) return '1-3';
-    if (age <= 5) return '4-5';
+    if (age <= 5) return '2-5';
     if (age <= 8) return '6-8';
-    if (age <= 12) return '8-12';
-    return '12+';
+    return '9-12';
   };
 
   // Compute display duration: prefer top-level duration, else average from audio_variants
