@@ -42,3 +42,7 @@ yarn-error.log*
 
 # OS
 Thumbs.db
+
+# Original large logo SVGs (2.6MB+ each, replaced with optimized PNGs)
+public/logo-new-original.svg
+public/logo-hi-original.svg

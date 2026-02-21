@@ -12,7 +12,7 @@ export default function Header() {
   const { lang } = useI18n();
   const [user, setUser] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const logoSrc = lang === 'hi' ? '/logo-hi.svg' : '/logo-new.svg';
+  const logoSrc = lang === 'hi' ? '/logo-hi.png' : '/logo-new.png';
   const appName = lang === 'hi' ? 'Sapno ki Duniya' : 'Dream Valley';
 
   useEffect(() => {

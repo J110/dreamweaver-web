@@ -109,7 +109,7 @@ export default function Home() {
   const songItems = sortByDiscovery(filteredStories.filter((s) => s.type === 'song'));
 
   const appName = lang === 'hi' ? 'Sapno ki Duniya' : 'Dream Valley';
-  const logoSrc = lang === 'hi' ? '/logo-hi.svg' : '/logo-new.svg';
+  const logoSrc = lang === 'hi' ? '/logo-hi.png' : '/logo-new.png';
 
   return (
     <>
