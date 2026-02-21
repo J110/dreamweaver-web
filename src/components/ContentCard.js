@@ -94,13 +94,11 @@ export default function ContentCard({ content, onClick }) {
             {content.type?.toLowerCase() === 'story' && '✨'}
           </div>
         )}
-        {isAddedToday && (
-          <span className={styles.newBadge}>NEW</span>
-        )}
-        {!isAddedToday && listened && (
+        {listened ? (
           <span className={styles.listenedBadge}>✓</span>
-        )}
-        {!isAddedToday && !listened && (
+        ) : isAddedToday ? (
+          <span className={styles.newBadge}>NEW</span>
+        ) : (
           <span className={styles.unreadDot} />
         )}
         {ageLabel && (
