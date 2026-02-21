@@ -1,0 +1,252 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradients -->
+    <radialGradient id="sf-skyGrad" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#0a1e3c"/>
+      <stop offset="50%" stop-color="#1a3a5f"/>
+      <stop offset="100%" stop-color="#2a5a8f"/>
+    </radialGradient>
+
+    <linearGradient id="sf-mountainGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#e0e0e0"/>
+      <stop offset="50%" stop-color="#a0a0a0"/>
+      <stop offset="100%" stop-color="#606060"/>
+    </linearGradient>
+
+    <linearGradient id="sf-snowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e0f0ff"/>
+    </linearGradient>
+
+    <radialGradient id="sf-moonGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#ffd700" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="sf-featherGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#ff8c00" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="sf-vignette" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.8"/>
+    </linearGradient>
+
+    <!-- Filters -->
+    <filter id="sf-softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="sf-mediumGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="sf-strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="sf-sparkleGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+      <feSpecularLighting result="specOut" in="blur" specularConstant="1" specularExponent="20" lighting-color="#ffd700">
+        <fePointLight x="0" y="0" z="200"/>
+      </feSpecularLighting>
+      <feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+    </filter>
+  </defs>
+
+  <style>
+    @keyframes sf-twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    .sf-twinkle { animation: sf-twinkle 3s ease-in-out infinite; }
+
+    @keyframes sf-breathe {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .sf-breathe { animation: sf-breathe 5s ease-in-out infinite; }
+
+    @keyframes sf-cloudDrift {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(20px); }
+    }
+    .sf-cloudDrift { animation: sf-cloudDrift 8s ease-in-out infinite; }
+
+    @keyframes sf-particleDrift {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      100% { transform: translate(30px, 20px) rotate(360deg); }
+    }
+    .sf-particleDrift { animation: sf-particleDrift 9s ease-in-out infinite; }
+
+    @keyframes sf-pulseGlow {
+      0%, 100% { filter: url(#sf-softGlow); }
+      50% { filter: url(#sf-mediumGlow); }
+    }
+    .sf-pulseGlow { animation: sf-pulseGlow 4s ease-in-out infinite; }
+
+    @keyframes sf-featherWarm {
+      0%, 100% { fill: #f5d78e; }
+      50% { fill: #ffd700; }
+    }
+    .sf-featherWarm { animation: sf-featherWarm 6s ease-in-out infinite; }
+
+    @keyframes sf-snowFall {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(512px) rotate(360deg); }
+    }
+    .sf-snowFall {
+      animation: sf-snowFall 12s linear infinite;
+      opacity: 0.8;
+    }
+  </style>
+
+  <!-- Layer 1: Sky/Background -->
+  <rect width="512" height="512" fill="url(#sf-skyGrad)"/>
+
+  <!-- Northern Lights -->
+  <path d="M0,100 Q100,50 200,100 T400,100 T600,100 L512,150 Q400,100 300,150 T100,150 Z" fill="#00ff88" opacity="0.3" filter="url(#sf-softGlow)">
+    <animate attributeName="d" values="
+      M0,100 Q100,50 200,100 T400,100 T600,100 L512,150 Q400,100 300,150 T100,150 Z;
+      M0,120 Q150,80 300,120 T500,120 L512,170 Q450,120 350,170 T50,170 Z;
+      M0,100 Q100,50 200,100 T400,100 T600,100 L512,150 Q400,100 300,150 T100,150 Z"
+      dur="10s" repeatCount="indefinite"/>
+  </path>
+  <path d="M0,150 Q150,100 300,150 T500,150 L512,200 Q450,150 350,200 T50,200 Z" fill="#ff00ff" opacity="0.3" filter="url(#sf-softGlow)">
+    <animate attributeName="d" values="
+      M0,150 Q150,100 300,150 T500,150 L512,200 Q450,150 350,200 T50,200 Z;
+      M0,170 Q200,120 350,170 T550,170 L512,220 Q500,170 400,220 T100,220 Z;
+      M0,150 Q150,100 300,150 T500,150 L512,200 Q450,150 350,200 T50,200 Z"
+      dur="12s" repeatCount="indefinite"/>
+  </path>
+
+  <!-- Moon -->
+  <circle cx="400" cy="100" r="40" fill="#f0f0d0" filter="url(#sf-mediumGlow)"/>
+  <circle cx="400" cy="100" r="60" fill="url(#sf-moonGlow)"/>
+
+  <!-- Stars -->
+  <g class="sf-twinkle">
+    <circle cx="50" cy="50" r="1.5" fill="white"/>
+    <circle cx="150" cy="30" r="1" fill="white"/>
+    <circle cx="250" cy="80" r="1.2" fill="white"/>
+    <circle cx="350" cy="40" r="1.8" fill="white"/>
+    <circle cx="450" cy="70" r="1" fill="white"/>
+    <circle cx="100" cy="120" r="1.5" fill="white"/>
+    <circle cx="200" cy="150" r="1.2" fill="white"/>
+    <circle cx="300" cy="130" r="1" fill="white"/>
+    <circle cx="400" cy="160" r="1.8" fill="white"/>
+    <circle cx="50" cy="200" r="1.5" fill="white"/>
+    <circle cx="150" cy="180" r="1" fill="white"/>
+    <circle cx="250" cy="220" r="1.2" fill="white"/>
+    <circle cx="350" cy="200" r="1.8" fill="white"/>
+    <circle cx="450" cy="240" r="1" fill="white"/>
+  </g>
+
+  <!-- Layer 2: Far Background -->
+  <g class="sf-cloudDrift">
+    <!-- Distant Mountains -->
+    <path d="M0,300 Q100,250 200,280 T400,280 T600,300 L512,512 L0,512 Z" fill="url(#sf-mountainGrad)" opacity="0.6"/>
+    <path d="M0,350 Q150,300 300,330 T500,330 L512,512 L0,512 Z" fill="url(#sf-mountainGrad)" opacity="0.4"/>
+
+    <!-- Distant Clouds -->
+    <ellipse cx="100" cy="200" rx="80" ry="30" fill="white" opacity="0.3"/>
+    <ellipse cx="300" cy="180" rx="100" ry="40" fill="white" opacity="0.3"/>
+    <ellipse cx="450" cy="220" rx="70" ry="25" fill="white" opacity="0.3"/>
+  </g>
+
+  <!-- Layer 3: Mid Background -->
+  <g>
+    <!-- Midground Mountains -->
+    <path d="M0,350 Q120,320 240,340 T480,340 L512,512 L0,512 Z" fill="url(#sf-mountainGrad)" opacity="0.8"/>
+    <path d="M0,400 Q180,360 360,380 T512,400 L512,512 L0,512 Z" fill="url(#sf-mountainGrad)"/>
+
+    <!-- Snow patches -->
+    <ellipse cx="150" cy="450" rx="60" ry="20" fill="white" opacity="0.9"/>
+    <ellipse cx="350" cy="430" rx="80" ry="25" fill="white" opacity="0.9"/>
+  </g>
+
+  <!-- Layer 4: Middle Ground -->
+  <g>
+    <!-- Nest -->
+    <ellipse cx="256" cy="350" rx="80" ry="30" fill="#8B4513" filter="url(#sf-softGlow)"/>
+    <ellipse cx="256" cy="340" rx="70" ry="25" fill="#A0522D"/>
+
+    <!-- Nest details -->
+    <path d="M200,340 Q220,320 240,330 Q260,340 280,330 Q300,320 320,340" stroke="#5D4037" stroke-width="2" fill="none"/>
+    <path d="M210,350 Q230,330 250,340 Q270,350 290,340" stroke="#5D4037" stroke-width="1.5" fill="none"/>
+  </g>
+
+  <!-- Layer 5: Main Character -->
+  <g transform="translate(256, 240)" class="sf-breathe">
+    <!-- Eagle Chick Body -->
+    <ellipse cx="0" cy="30" rx="40" ry="35" fill="#f5d78e" class="sf-featherWarm" filter="url(#sf-mediumGlow)"/>
+
+    <!-- Head -->
+    <circle cx="0" cy="0" r="25" fill="#f5d78e" class="sf-featherWarm"/>
+
+    <!-- Beak -->
+    <path d="M15,0 L25,5 L25,-5 Z" fill="#ffa500"/>
+
+    <!-- Eyes -->
+    <circle cx="-10" cy="-5" r="5" fill="black"/>
+    <circle cx="-12" cy="-7" r="2" fill="white"/>
+
+    <!-- Wings -->
+    <path d="M-40,20 Q-60,0 -40,-20 Q-20,-10 0,20 Z" fill="#f5d78e" class="sf-featherWarm"/>
+    <path d="M40,20 Q60,0 40,-20 Q20,-10 0,20 Z" fill="#f5d78e" class="sf-featherWarm"/>
+
+    <!-- Feathers (growing) -->
+    <g class="sf-pulseGlow">
+      <path d="M-30,10 Q-35,0 -30,-10" stroke="#ffd700" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M-20,20 Q-25,10 -20,0" stroke="#ffd700" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M-10,25 Q-15,15 -10,5" stroke="#ffd700" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M10,25 Q15,15 10,5" stroke="#ffd700" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M20,20 Q25,10 20,0" stroke="#ffd700" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M30,10 Q35,0 30,-10" stroke="#ffd700" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </g>
+
+    <!-- Warm glow effect -->
+    <circle cx="0" cy="10" r="50" fill="url(#sf-featherGlow)" opacity="0.3"/>
+  </g>
+
+  <!-- Layer 6: Foreground Particles/Sparkles -->
+  <g>
+    <!-- Snowflakes -->
+    <g>
+      <circle class="sf-snowFall" cx="50" cy="-10" r="2" fill="white" opacity="0.8" style="animation-delay: 0s"/>
+      <circle class="sf-snowFall" cx="150" cy="-20" r="1.5" fill="white" opacity="0.6" style="animation-delay: 1s"/>
+      <circle class="sf-snowFall" cx="250" cy="-5" r="2.5" fill="white" opacity="0.9" style="animation-delay: 2s"/>
+      <circle class="sf-snowFall" cx="350" cy="-15" r="1.8" fill="white" opacity="0.7" style="animation-delay: 3s"/>
+      <circle class="sf-snowFall" cx="450" cy="-25" r="2" fill="white" opacity="0.8" style="animation-delay: 4s"/>
+      <circle class="sf-snowFall" cx="100" cy="-30" r="1.5" fill="white" opacity="0.6" style="animation-delay: 0.5s"/>
+      <circle class="sf-snowFall" cx="200" cy="-10" r="2.2" fill="white" opacity="0.9" style="animation-delay: 1.5s"/>
+      <circle class="sf-snowFall" cx="300" cy="-20" r="1.7" fill="white" opacity="0.7" style="animation-delay: 2.5s"/>
+      <circle class="sf-snowFall" cx="400" cy="-5" r="2.3" fill="white" opacity="0.8" style="animation-delay: 3.5s"/>
+    </g>
+
+    <!-- Sparkles -->
+    <g class="sf-twinkle">
+      <circle cx="100" cy="100" r="2" fill="white" filter="url(#sf-sparkleGlow)"/>
+      <circle cx="400" cy="150" r="2.5" fill="white" filter="url(#sf-sparkleGlow)"/>
+      <circle cx="200" cy="200" r="2" fill="white" filter="url(#sf-sparkleGlow)"/>
+      <circle cx="350" cy="250" r="2.5" fill="white" filter="url(#sf-sparkleGlow)"/>
+      <circle cx="150" cy="300" r="2" fill="white" filter="url(#sf-sparkleGlow)"/>
+      <circle cx="300" cy="350" r="2.5" fill="white" filter="url(#sf-sparkleGlow)"/>
+    </g>
+
+    <!-- Floating particles -->
+    <g class="sf-particleDrift">
+      <circle cx="120" cy="80" r="1.5" fill="#ffd700" opacity="0.8"/>
+      <circle cx="380" cy="120" r="1.8" fill="#ff8c00" opacity="0.7"/>
+      <circle cx="220" cy="180" r="1.2" fill="#ffd700" opacity="0.9"/>
+      <circle cx="280" cy="220" r="1.5" fill="#ff8c00" opacity="0.6"/>
+    </g>
+  </g>
+
+  <!-- Layer 7: Vignette Overlay -->
+  <rect width="512" height="512" fill="url(#sf-vignette)" opacity="0.4"/>
+</svg>

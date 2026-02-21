@@ -1,0 +1,158 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<defs>
+    <radialGradient id="en-skyGrad" cx="50%" cy="50%" r="70%">
+        <stop offset="0%" stop-color="#0a0e2a"/>
+        <stop offset="50%" stop-color="#1a103d"/>
+        <stop offset="100%" stop-color="#0a0e2a"/>
+    </radialGradient>
+
+    <linearGradient id="en-mountainGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#3a2e4d"/>
+        <stop offset="100%" stop-color="#1a103d"/>
+    </linearGradient>
+
+    <linearGradient id="en-vineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#4a6b5a"/>
+        <stop offset="100%" stop-color="#2a4b3a"/>
+    </linearGradient>
+
+    <linearGradient id="en-glowGold" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ffd700" stop-opacity="0.8"/>
+        <stop offset="100%" stop-color="#ff8c00" stop-opacity="0.6"/>
+    </linearGradient>
+
+    <filter id="en-softGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="2" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="en-mediumGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="4" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="en-strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="6" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <radialGradient id="en-vignette" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="black" stop-opacity="0"/>
+        <stop offset="100%" stop-color="black" stop-opacity="0.8"/>
+    </radialGradient>
+
+    <filter id="en-sparkleGlow" x="-100%" y="-100%" width="300%" height="300%">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+        <feSpecularLighting result="specOut" in="blur" specularConstant="1" specularExponent="20" lighting-color="#ffd700">
+            <fePointLight x="0" y="0" z="200"/>
+        </feSpecularLighting>
+        <feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+    </filter>
+</defs>
+
+<style>
+    @keyframes en-twinkle {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 1; }
+    }
+    @keyframes en-bob {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    @keyframes en-wave {
+        0%, 100% { transform: translateX(0) rotate(0deg); }
+        50% { transform: translateX(5px) rotate(2deg); }
+    }
+    @keyframes en-drift {
+        0% { transform: translate(0, 0); }
+        25% { transform: translate(10px, 5px); }
+        50% { transform: translate(5px, 10px); }
+        75% { transform: translate(-5px, 5px); }
+        100% { transform: translate(0, 0); }
+    }
+    @keyframes en-pulse {
+        0%, 100% { opacity: 0.7; filter: url(#en-softGlow); }
+        50% { opacity: 1; filter: url(#en-mediumGlow); }
+    }
+    @keyframes en-vineGrow {
+        0%, 100% { transform: scaleY(1); }
+        50% { transform: scaleY(1.05); }
+    }
+    .en-twinkle { animation: en-twinkle 3s infinite ease-in-out; }
+    .en-bob { animation: en-bob 5s infinite ease-in-out; }
+    .en-wave { animation: en-wave 7s infinite ease-in-out; }
+    .en-drift { animation: en-drift 8s infinite ease-in-out; }
+    .en-pulse { animation: en-pulse 4s infinite ease-in-out; }
+    .en-vineGrow { animation: en-vineGrow 6s infinite ease-in-out; }
+</style>
+
+<g id="en-layer1-sky">
+    <rect width="512" height="512" fill="url(#en-skyGrad)"/>
+    <circle class="en-twinkle" cx="80" cy="60" r="2" fill="#ffd700" filter="url(#en-sparkleGlow)"/>
+    <circle class="en-twinkle" cx="420" cy="100" r="1.5" fill="#ffd700" filter="url(#en-sparkleGlow)"/>
+    <circle class="en-twinkle" cx="200" cy="40" r="1.8" fill="#ffd700" filter="url(#en-sparkleGlow)"/>
+    <circle class="en-twinkle" cx="350" cy="80" r="1.2" fill="#ffd700" filter="url(#en-sparkleGlow)"/>
+    <circle class="en-twinkle" cx="120" cy="140" r="1.5" fill="#ffd700" filter="url(#en-sparkleGlow)"/>
+    <circle class="en-twinkle" cx="450" cy="180" r="2" fill="#ffd700" filter="url(#en-sparkleGlow)"/>
+</g>
+
+<g id="en-layer2-farBg">
+    <path d="M0,300 Q100,250 200,280 Q300,260 400,290 Q500,270 512,300 L512,512 L0,512 Z" fill="url(#en-mountainGrad)"/>
+    <circle cx="150" cy="200" r="30" fill="#3a2e4d" opacity="0.6"/>
+    <circle cx="380" cy="180" r="25" fill="#3a2e4d" opacity="0.6"/>
+</g>
+
+<g id="en-layer3-midBg">
+    <path d="M50,350 Q150,320 250,340 Q350,330 450,350 L450,512 L50,512 Z" fill="#2a1e3d"/>
+    <g class="en-wave">
+        <path d="M100,400 Q150,380 200,400 Q250,390 300,400 Q350,395 400,400" stroke="#4a6b5a" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M80,420 Q130,400 180,420 Q230,410 280,420 Q330,415 380,420" stroke="#4a6b5a" stroke-width="2" fill="none" stroke-linecap="round"/>
+    </g>
+    <circle cx="120" cy="280" r="15" fill="#ffd700" opacity="0.3" filter="url(#en-softGlow)"/>
+    <circle cx="400" cy="260" r="12" fill="#ff8c00" opacity="0.3" filter="url(#en-softGlow)"/>
+</g>
+
+<g id="en-layer4-midGround">
+    <path d="M0,400 Q100,380 200,400 Q300,390 400,400 Q500,385 512,400 L512,512 L0,512 Z" fill="#1a103d"/>
+    <g class="en-vineGrow">
+        <path d="M150,300 Q180,250 220,300 Q250,350 280,300" stroke="url(#en-vineGrad)" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <path d="M300,280 Q330,230 370,280 Q400,330 430,280" stroke="url(#en-vineGrad)" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <circle cx="220" cy="300" r="10" fill="#ffd700" filter="url(#en-mediumGlow)"/>
+        <circle cx="370" cy="280" r="8" fill="#ff8c00" filter="url(#en-mediumGlow)"/>
+    </g>
+    <circle cx="250" cy="350" r="20" fill="#4a6b5a" opacity="0.7"/>
+    <circle cx="320" cy="380" r="15" fill="#4a6b5a" opacity="0.7"/>
+</g>
+
+<g id="en-layer5-mainChar" class="en-bob">
+    <g transform="translate(256, 240)">
+        <path d="M-30,-20 Q-20,-40 0,-30 Q20,-40 30,-20 Q40,0 30,20 Q20,40 0,30 Q-20,40 -30,20 Q-40,0 -30,-20 Z" fill="#ff6b6b" filter="url(#en-mediumGlow)"/>
+        <path d="M-20,-15 Q-10,-25 0,-20 Q10,-25 20,-15 Q25,5 20,15 Q10,25 0,20 Q-10,25 -20,15 Q-25,5 -20,-15 Z" fill="#ff8c00"/>
+        <circle cx="-15" cy="-10" r="3" fill="white"/>
+        <circle cx="15" cy="-10" r="3" fill="white"/>
+        <circle cx="-15" cy="-10" r="1.5" fill="black"/>
+        <circle cx="15" cy="-10" r="1.5" fill="black"/>
+        <path d="M-10,5 Q0,10 10,5 Q0,0 -10,5" fill="#ffd700"/>
+        <path d="M-25,10 Q-20,20 -10,15" stroke="#ffd700" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M25,10 Q20,20 10,15" stroke="#ffd700" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M-20,25 Q0,35 20,25" stroke="#ffd700" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </g>
+    <circle cx="280" cy="220" r="5" fill="#ffd700" filter="url(#en-sparkleGlow)" class="en-twinkle"/>
+    <circle cx="230" cy="260" r="4" fill="#ff8c00" filter="url(#en-sparkleGlow)" class="en-twinkle"/>
+</g>
+
+<g id="en-layer6-particles">
+    <circle class="en-drift en-twinkle" cx="100" cy="150" r="2" fill="#ffd700" filter="url(#en-sparkleGlow)"/>
+    <circle class="en-drift en-twinkle" cx="400" cy="120" r="1.5" fill="#ff8c00" filter="url(#en-sparkleGlow)"/>
+    <circle class="en-drift en-twinkle" cx="180" cy="200" r="1.8" fill="#ffd700" filter="url(#en-sparkleGlow)"/>
+    <circle class="en-drift en-twinkle" cx="320" cy="180" r="1.2" fill="#ff8c00" filter="url(#en-sparkleGlow)"/>
+    <circle class="en-drift en-pulse" cx="250" cy="100" r="3" fill="#ffd700" filter="url(#en-mediumGlow)"/>
+    <circle class="en-drift en-pulse" cx="350" cy="140" r="2.5" fill="#ff8c00" filter="url(#en-mediumGlow)"/>
+    <path class="en-drift" d="M200,160 L205,165 L200,170 L195,165 Z" fill="#ffd700" filter="url(#en-sparkleGlow)"/>
+    <path class="en-drift" d="M380,130 L385,135 L380,140 L375,135 Z" fill="#ff8c00" filter="url(#en-sparkleGlow)"/>
+</g>
+
+<g id="en-layer7-vignette">
+    <rect width="512" height="512" fill="url(#en-vignette)" opacity="0.4"/>
+</g>
+</svg>
