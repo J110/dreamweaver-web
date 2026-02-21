@@ -56,6 +56,19 @@ export default function ContentCard({ content, onClick }) {
     return '12+';
   };
 
+  // Compute display duration: prefer top-level duration, else average from audio_variants
+  const getDuration = () => {
+    if (content.duration) return `${content.duration} min`;
+    const variants = content.audio_variants || [];
+    const durs = variants.map(v => v.duration_seconds).filter(Boolean);
+    if (durs.length > 0) {
+      const avgSeconds = durs.reduce((a, b) => a + b, 0) / durs.length;
+      return `${Math.max(1, Math.ceil(avgSeconds / 60))} min`;
+    }
+    return null;
+  };
+
+  const durationLabel = getDuration();
   const ageLabel = getAgeLabel();
   const isNew = !isListened(content.id);
 
@@ -94,7 +107,7 @@ export default function ContentCard({ content, onClick }) {
         <h3 className={styles.cardTitle}>{content.title || 'Untitled'}</h3>
         <div className={styles.cardFooter}>
           <span className={styles.cardMeta}>
-            {content.duration && `${content.duration} min`}
+            {durationLabel && <><span className={styles.clockIcon}>&#128336;</span> {durationLabel}</>}
           </span>
           <span className={styles.cardLikes}>
             ❤️ {content.save_count || 0}

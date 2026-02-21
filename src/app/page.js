@@ -83,6 +83,7 @@ export default function Home() {
           musicParams: item.musicParams || seed.musicParams,
           musicProfile: item.musicProfile || seed.musicProfile,
           addedAt: item.addedAt || seed.addedAt,
+          duration: item.duration || seed.duration,
         };
       });
       // Add seed items not already present via API

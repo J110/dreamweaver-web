@@ -73,6 +73,7 @@ function ExploreContent() {
               musicParams: item.musicParams || seed.musicParams,
               musicProfile: item.musicProfile || seed.musicProfile,
               addedAt: item.addedAt || seed.addedAt,
+              duration: item.duration || seed.duration,
             };
           });
           setContent(enriched);
