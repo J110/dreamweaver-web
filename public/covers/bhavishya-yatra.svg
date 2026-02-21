@@ -474,29 +474,33 @@
   <rect x="473" y="215" width="4" height="3" fill="#00ccff" class="by-win1"/>
 
   <!-- === Holographic display (between buildings) === -->
-  <g class="by-holo" transform="translate(180, 180)">
-    <!-- Hologram projection base -->
-    <rect x="0" y="80" width="30" height="3" fill="#44ffaa" opacity="0.5"/>
-    <!-- Holographic display -->
-    <rect x="2" y="20" width="26" height="55" rx="2" fill="url(#by-holoGradient)" opacity="0.5"/>
-    <!-- Hologram scanlines -->
-    <line x1="4" y1="30" x2="26" y2="30" stroke="#88eeff" stroke-width="0.5" opacity="0.6"/>
-    <line x1="4" y1="40" x2="26" y2="40" stroke="#88eeff" stroke-width="0.5" opacity="0.5"/>
-    <line x1="4" y1="50" x2="26" y2="50" stroke="#88eeff" stroke-width="0.5" opacity="0.6"/>
-    <line x1="4" y1="60" x2="26" y2="60" stroke="#88eeff" stroke-width="0.5" opacity="0.5"/>
-    <!-- Hologram content (abstract shape) -->
-    <circle cx="15" cy="42" r="8" fill="none" stroke="#44ffaa" stroke-width="1" opacity="0.7"/>
-    <polygon points="15,34 20,46 10,46" fill="#88eeff" opacity="0.3"/>
+  <g transform="translate(180, 180)">
+    <g class="by-holo">
+      <!-- Hologram projection base -->
+      <rect x="0" y="80" width="30" height="3" fill="#44ffaa" opacity="0.5"/>
+      <!-- Holographic display -->
+      <rect x="2" y="20" width="26" height="55" rx="2" fill="url(#by-holoGradient)" opacity="0.5"/>
+      <!-- Hologram scanlines -->
+      <line x1="4" y1="30" x2="26" y2="30" stroke="#88eeff" stroke-width="0.5" opacity="0.6"/>
+      <line x1="4" y1="40" x2="26" y2="40" stroke="#88eeff" stroke-width="0.5" opacity="0.5"/>
+      <line x1="4" y1="50" x2="26" y2="50" stroke="#88eeff" stroke-width="0.5" opacity="0.6"/>
+      <line x1="4" y1="60" x2="26" y2="60" stroke="#88eeff" stroke-width="0.5" opacity="0.5"/>
+      <!-- Hologram content (abstract shape) -->
+      <circle cx="15" cy="42" r="8" fill="none" stroke="#44ffaa" stroke-width="1" opacity="0.7"/>
+      <polygon points="15,34 20,46 10,46" fill="#88eeff" opacity="0.3"/>
+    </g>
   </g>
 
   <!-- Second hologram on right side -->
-  <g class="by-holo" style="animation-delay: 1.2s;" transform="translate(300, 200)">
-    <rect x="0" y="60" width="25" height="3" fill="#44ffaa" opacity="0.4"/>
-    <rect x="1" y="15" width="23" height="40" rx="2" fill="url(#by-holoGradient)" opacity="0.4"/>
-    <line x1="3" y1="25" x2="22" y2="25" stroke="#88eeff" stroke-width="0.5" opacity="0.5"/>
-    <line x1="3" y1="35" x2="22" y2="35" stroke="#88eeff" stroke-width="0.5" opacity="0.4"/>
-    <line x1="3" y1="45" x2="22" y2="45" stroke="#88eeff" stroke-width="0.5" opacity="0.5"/>
-    <rect x="6" y="22" width="13" height="8" rx="1" fill="#44ffaa" opacity="0.3"/>
+  <g transform="translate(300, 200)">
+    <g class="by-holo" style="animation-delay: 1.2s;">
+      <rect x="0" y="60" width="25" height="3" fill="#44ffaa" opacity="0.4"/>
+      <rect x="1" y="15" width="23" height="40" rx="2" fill="url(#by-holoGradient)" opacity="0.4"/>
+      <line x1="3" y1="25" x2="22" y2="25" stroke="#88eeff" stroke-width="0.5" opacity="0.5"/>
+      <line x1="3" y1="35" x2="22" y2="35" stroke="#88eeff" stroke-width="0.5" opacity="0.4"/>
+      <line x1="3" y1="45" x2="22" y2="45" stroke="#88eeff" stroke-width="0.5" opacity="0.5"/>
+      <rect x="6" y="22" width="13" height="8" rx="1" fill="#44ffaa" opacity="0.3"/>
+    </g>
   </g>
 
   <!-- === Flying vehicles with light trails === -->
@@ -560,7 +564,8 @@
   <ellipse cx="360" cy="395" rx="50" ry="7" fill="#ff00ff" opacity="0.05" class="by-groundGlow" filter="url(#by-heavyBlur)" style="animation-delay: 0.8s;"/>
 
   <!-- === 3 Kid silhouettes looking up in wonder === -->
-  <g class="by-kids" transform="translate(256, 380)">
+  <g transform="translate(256, 380)">
+    <g class="by-kids">
     <!-- Kid 1 (center, slightly taller - Advait) -->
     <g transform="translate(0, 0)">
       <!-- Body -->
@@ -674,6 +679,7 @@
 
     <!-- Character shadow on ground -->
     <ellipse cx="0" cy="30" rx="50" ry="4" fill="#000000" opacity="0.25"/>
+    </g>
   </g>
 
   <!-- ============================================ -->

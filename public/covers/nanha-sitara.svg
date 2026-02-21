@@ -341,7 +341,8 @@
   <!-- ============================================ -->
 
   <!-- Sleeping bunny (left foreground) -->
-  <g class="ns-bunny-breathe" transform="translate(140, 390)">
+  <g transform="translate(140, 390)">
+    <g class="ns-bunny-breathe">
     <!-- Body -->
     <ellipse cx="0" cy="0" rx="22" ry="14" fill="#d4c4b0" opacity="0.9"/>
     <!-- Head -->
@@ -359,6 +360,7 @@
     <circle cx="-13" cy="-5" r="3" fill="#ffb6c1" opacity="0.35" class="ns-blush"/>
     <!-- Tail -->
     <circle cx="20" cy="-5" r="6" fill="#e8ddd0" opacity="0.8"/>
+    </g>
   </g>
 
   <!-- Sleeping bunny Zzz -->
@@ -368,7 +370,8 @@
   </g>
 
   <!-- Sleeping deer (right foreground) -->
-  <g class="ns-deer-breathe" transform="translate(370, 395)">
+  <g transform="translate(370, 395)">
+    <g class="ns-deer-breathe">
     <!-- Body (curled up) -->
     <ellipse cx="0" cy="0" rx="26" ry="15" fill="#c89660" opacity="0.9"/>
     <!-- Spots on body -->
@@ -390,6 +393,7 @@
     <circle cx="23" cy="-6" r="3" fill="#ffb6c1" opacity="0.3" class="ns-blush"/>
     <!-- Legs tucked -->
     <ellipse cx="-18" cy="8" rx="6" ry="3" fill="#b08050" opacity="0.6"/>
+    </g>
   </g>
 
   <!-- Sleeping deer Zzz -->
@@ -399,7 +403,8 @@
   </g>
 
   <!-- Sleeping owl on branch (center-left tree) -->
-  <g class="ns-owl-breathe" transform="translate(95, 310)">
+  <g transform="translate(95, 310)">
+    <g class="ns-owl-breathe">
     <!-- Branch -->
     <line x1="-20" y1="18" x2="25" y2="15" stroke="#5a4a3a" stroke-width="3" stroke-linecap="round"/>
     <!-- Body -->
@@ -424,6 +429,7 @@
     <!-- Feet gripping branch -->
     <path d="M-4,17 L-5,19 M-3,17 L-3,19 M-2,17 L-1,19" stroke="#d4a040" stroke-width="0.8" fill="none"/>
     <path d="M2,17 L1,19 M3,17 L3,19 M4,17 L5,19" stroke="#d4a040" stroke-width="0.8" fill="none"/>
+    </g>
   </g>
 
   <!-- Owl Zzz -->
@@ -436,7 +442,8 @@
   <!-- ============================================ -->
 
   <!-- Star character group -->
-  <g class="ns-star-body" transform="translate(256, 185)">
+  <g transform="translate(256, 185)">
+    <g class="ns-star-body">
     <!-- Outer glow aura -->
     <circle cx="0" cy="0" r="65" fill="url(#ns-starGlow)" class="ns-star-glow" filter="url(#ns-strongGlow)"/>
 
@@ -479,6 +486,7 @@
     <circle cx="28" cy="-28" r="1.5" fill="#ffffff" opacity="0.7" class="ns-twinkle-2"/>
     <circle cx="-30" cy="-25" r="1.2" fill="#ffffff" opacity="0.6" class="ns-twinkle-4"/>
     <circle cx="25" cy="20" r="1" fill="#ffffff" opacity="0.5" class="ns-twinkle-6"/>
+    </g>
   </g>
 
   <!-- ============================================ -->
@@ -487,38 +495,48 @@
 
   <!-- Musical notes floating down from star -->
   <!-- Note 1: eighth note (warm) -->
-  <g class="ns-note-1" transform="translate(230, 230)" filter="url(#ns-softGlow)">
+  <g transform="translate(230, 230)">
+    <g class="ns-note-1" filter="url(#ns-softGlow)">
     <ellipse cx="0" cy="0" rx="4" ry="3" fill="url(#ns-noteWarm)" transform="rotate(-20)"/>
     <line x1="3.5" y1="-1" x2="3.5" y2="-16" stroke="#ffb347" stroke-width="1.2"/>
     <path d="M3.5,-16 Q8,-14 6,-10" stroke="#ffb347" stroke-width="1.2" fill="none"/>
+    </g>
   </g>
 
   <!-- Note 2: quarter note (pink) -->
-  <g class="ns-note-2" transform="translate(280, 240)" filter="url(#ns-softGlow)">
+  <g transform="translate(280, 240)">
+    <g class="ns-note-2" filter="url(#ns-softGlow)">
     <ellipse cx="0" cy="0" rx="3.5" ry="2.8" fill="url(#ns-notePink)" transform="rotate(-15)"/>
     <line x1="3" y1="-1" x2="3" y2="-14" stroke="#ff69b4" stroke-width="1.2"/>
+    </g>
   </g>
 
   <!-- Note 3: double eighth note (warm) -->
-  <g class="ns-note-3" transform="translate(250, 250)" filter="url(#ns-softGlow)">
+  <g transform="translate(250, 250)">
+    <g class="ns-note-3" filter="url(#ns-softGlow)">
     <ellipse cx="0" cy="0" rx="3.5" ry="2.5" fill="url(#ns-noteWarm)" transform="rotate(-20)"/>
     <line x1="3" y1="-1" x2="3" y2="-13" stroke="#ffb347" stroke-width="1.2"/>
     <ellipse cx="10" cy="2" rx="3.5" ry="2.5" fill="url(#ns-noteWarm)" transform="rotate(-20)"/>
     <line x1="13" y1="1" x2="13" y2="-11" stroke="#ffb347" stroke-width="1.2"/>
     <line x1="3" y1="-13" x2="13" y2="-11" stroke="#ffb347" stroke-width="1.5"/>
+    </g>
   </g>
 
   <!-- Note 4: eighth note (pink) -->
-  <g class="ns-note-4" transform="translate(270, 225)" filter="url(#ns-softGlow)">
+  <g transform="translate(270, 225)">
+    <g class="ns-note-4" filter="url(#ns-softGlow)">
     <ellipse cx="0" cy="0" rx="3" ry="2.5" fill="url(#ns-notePink)" transform="rotate(-18)"/>
     <line x1="2.5" y1="-1" x2="2.5" y2="-12" stroke="#ff69b4" stroke-width="1"/>
     <path d="M2.5,-12 Q6,-10 5,-7" stroke="#ff69b4" stroke-width="1" fill="none"/>
+    </g>
   </g>
 
   <!-- Note 5: quarter note (warm) -->
-  <g class="ns-note-5" transform="translate(240, 260)" filter="url(#ns-softGlow)">
+  <g transform="translate(240, 260)">
+    <g class="ns-note-5" filter="url(#ns-softGlow)">
     <ellipse cx="0" cy="0" rx="3.5" ry="2.5" fill="url(#ns-noteWarm)" transform="rotate(-22)"/>
     <line x1="3" y1="-1" x2="3" y2="-14" stroke="#ffb347" stroke-width="1.2"/>
+    </g>
   </g>
 
   <!-- Foreground sparkle particles -->

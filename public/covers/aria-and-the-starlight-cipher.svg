@@ -139,7 +139,8 @@
 </g>
 
 <!-- Layer 5: Main Character -->
-<g class="aa-bob" transform="translate(256, 240)">
+<g transform="translate(256, 240)">
+  <g class="aa-bob">
     <!-- Aria's body -->
     <ellipse cx="0" cy="0" rx="20" ry="30" fill="#6a5acd" filter="url(#aa-softGlow)"/>
     <!-- Aria's head -->
@@ -158,6 +159,7 @@
     <!-- Aria's hands reaching for starlight -->
     <circle cx="-30" cy="0" r="3" fill="#ffd700" filter="url(#aa-softGlow)"/>
     <circle cx="30" cy="0" r="3" fill="#ffd700" filter="url(#aa-softGlow)"/>
+  </g>
 </g>
 
 <!-- Layer 6: Foreground Particles/Sparkles -->

@@ -386,7 +386,8 @@
   <!-- LAYER 5: DOLPHIN (FINN) & NARWHAL      -->
   <!-- ====================================== -->
   <!-- Narwhal (left, slightly behind) -->
-  <g class="fm-narwhal" transform="translate(160, 290)">
+  <g transform="translate(160, 290)">
+    <g class="fm-narwhal">
     <!-- Body -->
     <ellipse cx="0" cy="0" rx="42" ry="18" fill="url(#fm-narwhalGrad)" />
     <!-- Belly -->
@@ -418,10 +419,12 @@
     <path d="M-10,12 Q-18,22 -8,18 Q-2,16 -5,12" fill="#6a8aa0" />
     <!-- Tail -->
     <path d="M-42,0 Q-55,-12 -62,-8 Q-56,-2 -48,0 Q-56,2 -62,8 Q-55,12 -42,0 Z" fill="#6a8aa0" />
+    </g>
   </g>
 
   <!-- Dolphin (Finn, center-right, in front) -->
-  <g class="fm-dolphin" transform="translate(290, 270)">
+  <g transform="translate(290, 270)">
+    <g class="fm-dolphin">
     <!-- Body -->
     <ellipse cx="0" cy="0" rx="38" ry="15" fill="url(#fm-dolphinGrad)" />
     <!-- Belly -->
@@ -445,6 +448,7 @@
     <g class="fm-dolphinTailAnim">
       <path d="M-38,0 Q-50,-10 -58,-6 Q-52,0 -45,2 Q-52,4 -58,10 Q-50,14 -38,4 Z" fill="#5a7a94" />
     </g>
+    </g>
   </g>
 
   <!-- ======================================= -->
@@ -453,28 +457,34 @@
   <!-- Music notes floating up from between them -->
   <g filter="url(#fm-mediumGlow)">
     <!-- Note 1 (eighth note shape) -->
-    <g class="fm-note1" transform="translate(240, 240)">
+    <g transform="translate(240, 240)">
+      <g class="fm-note1">
       <circle cx="0" cy="0" r="5" fill="url(#fm-noteGlow)" />
       <circle cx="0" cy="0" r="3" fill="#ffd700" opacity="0.9" />
       <line x1="3" y1="0" x2="3" y2="-14" stroke="#ffd700" stroke-width="1" />
       <path d="M3,-14 Q8,-12 6,-8" fill="none" stroke="#ffd700" stroke-width="1" />
+      </g>
     </g>
 
     <!-- Note 2 (quarter note) -->
-    <g class="fm-note2" transform="translate(220, 225)">
+    <g transform="translate(220, 225)">
+      <g class="fm-note2">
       <circle cx="0" cy="0" r="4" fill="url(#fm-noteGlow)" />
       <circle cx="0" cy="0" r="2.5" fill="#ffd700" opacity="0.8" />
       <line x1="2.5" y1="0" x2="2.5" y2="-12" stroke="#ffd700" stroke-width="0.8" />
+      </g>
     </g>
 
     <!-- Note 3 (double eighth) -->
-    <g class="fm-note3" transform="translate(260, 235)">
+    <g transform="translate(260, 235)">
+      <g class="fm-note3">
       <circle cx="0" cy="0" r="3.5" fill="url(#fm-noteGlow)" />
       <circle cx="0" cy="0" r="2" fill="#ffd700" opacity="0.85" />
       <line x1="2" y1="0" x2="2" y2="-11" stroke="#ffd700" stroke-width="0.8" />
       <circle cx="8" cy="2" r="2" fill="#ffd700" opacity="0.7" />
       <line x1="10" y1="2" x2="10" y2="-9" stroke="#ffd700" stroke-width="0.8" />
       <line x1="2" y1="-11" x2="10" y2="-9" stroke="#ffd700" stroke-width="0.8" />
+      </g>
     </g>
   </g>
 

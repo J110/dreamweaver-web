@@ -396,27 +396,33 @@
   <ellipse cx="330" cy="490" rx="140" ry="35" fill="#3d6a4a" opacity="0.5" />
 
   <!-- Ferns (Left side) -->
-  <g class="fern1" transform="translate(80, 420)">
+  <g transform="translate(80, 420)">
+    <g class="fern1">
     <path d="M 0 0 Q 5 -8 3 -16 M 0 0 Q -5 -9 -4 -18 M 0 0 Q 7 -5 8 -14" stroke="#4a8f5a" stroke-width="2" fill="none" stroke-linecap="round" />
     <ellipse cx="2" cy="-10" rx="3" ry="5" fill="#5aa66a" />
     <ellipse cx="-3" cy="-12" rx="3" ry="5" fill="#4a8f5a" />
     <ellipse cx="5" cy="-15" rx="2.5" ry="4" fill="#5aa66a" />
+    </g>
   </g>
 
   <!-- Ferns (Center-left) -->
-  <g class="fern2" transform="translate(150, 430)">
+  <g transform="translate(150, 430)">
+    <g class="fern2">
     <path d="M 0 0 Q 6 -10 4 -18 M 0 0 Q -4 -8 -3 -16 M 0 0 Q 5 -6 7 -15" stroke="#4a8f5a" stroke-width="2" fill="none" stroke-linecap="round" />
     <ellipse cx="3" cy="-11" rx="3" ry="5" fill="#5aa66a" />
     <ellipse cx="-2" cy="-13" rx="3" ry="5" fill="#4a8f5a" />
     <ellipse cx="6" cy="-17" rx="2.5" ry="4" fill="#5aa66a" />
+    </g>
   </g>
 
   <!-- Ferns (Right side) -->
-  <g class="fern3" transform="translate(380, 425)">
+  <g transform="translate(380, 425)">
+    <g class="fern3">
     <path d="M 0 0 Q 5 -9 2 -17 M 0 0 Q -6 -10 -5 -19 M 0 0 Q 6 -7 8 -16" stroke="#4a8f5a" stroke-width="2" fill="none" stroke-linecap="round" />
     <ellipse cx="1" cy="-11" rx="3" ry="5" fill="#5aa66a" />
     <ellipse cx="-4" cy="-14" rx="3" ry="5" fill="#4a8f5a" />
     <ellipse cx="5" cy="-16" rx="2.5" ry="4" fill="#5aa66a" />
+    </g>
   </g>
 
   <!-- Mushrooms -->
@@ -502,7 +508,8 @@
   </g>
 
   <!-- Main Firefly (Center-top with animations) -->
-  <g class="firefly-main" transform="translate(150, 100)">
+  <g transform="translate(150, 100)">
+  <g class="firefly-main">
     <circle cx="0" cy="0" r="30" fill="url(#fireflySGlow)" opacity="0.3" class="firefly-abdomen" />
     <circle cx="0" cy="0" r="20" fill="url(#fireflySGlow)" opacity="0.4" class="firefly-abdomen" />
 
@@ -529,6 +536,7 @@
     <line x1="0" y1="-15" x2="3" y2="-22" stroke="#3d2817" stroke-width="1" stroke-linecap="round" />
     <circle cx="-3" cy="-23" r="1.2" fill="#1a0f08" />
     <circle cx="3" cy="-23" r="1.2" fill="#1a0f08" />
+  </g>
   </g>
 
   <!-- Front Layer Trees (Darkest, closest to camera) -->

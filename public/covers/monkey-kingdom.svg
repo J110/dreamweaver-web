@@ -472,40 +472,48 @@
   </g>
 
   <!-- Tropical flowers (bottom area) -->
-  <g class="mk-flower-1" transform="translate(75, 420)">
-    <line x1="0" y1="0" x2="0" y2="30" stroke="#1a5a2a" stroke-width="2"/>
-    <ellipse cx="-6" cy="-3" rx="7" ry="5" fill="url(#mk-flowerPink)"/>
-    <ellipse cx="6" cy="-3" rx="7" ry="5" fill="url(#mk-flowerPink)"/>
-    <ellipse cx="0" cy="-8" rx="7" ry="5" fill="url(#mk-flowerPink)"/>
-    <ellipse cx="-5" cy="4" rx="6" ry="4" fill="#ff69b4" opacity="0.8"/>
-    <ellipse cx="5" cy="4" rx="6" ry="4" fill="#ff69b4" opacity="0.8"/>
-    <circle cx="0" cy="0" r="4" fill="#ffd700"/>
+  <g transform="translate(75, 420)">
+    <g class="mk-flower-1">
+      <line x1="0" y1="0" x2="0" y2="30" stroke="#1a5a2a" stroke-width="2"/>
+      <ellipse cx="-6" cy="-3" rx="7" ry="5" fill="url(#mk-flowerPink)"/>
+      <ellipse cx="6" cy="-3" rx="7" ry="5" fill="url(#mk-flowerPink)"/>
+      <ellipse cx="0" cy="-8" rx="7" ry="5" fill="url(#mk-flowerPink)"/>
+      <ellipse cx="-5" cy="4" rx="6" ry="4" fill="#ff69b4" opacity="0.8"/>
+      <ellipse cx="5" cy="4" rx="6" ry="4" fill="#ff69b4" opacity="0.8"/>
+      <circle cx="0" cy="0" r="4" fill="#ffd700"/>
+    </g>
   </g>
 
-  <g class="mk-flower-2" transform="translate(440, 415)">
-    <line x1="0" y1="0" x2="0" y2="35" stroke="#1a5a2a" stroke-width="2"/>
-    <ellipse cx="-7" cy="-2" rx="8" ry="5" fill="url(#mk-flowerOrange)"/>
-    <ellipse cx="7" cy="-2" rx="8" ry="5" fill="url(#mk-flowerOrange)"/>
-    <ellipse cx="0" cy="-8" rx="7" ry="5" fill="url(#mk-flowerOrange)"/>
-    <ellipse cx="-5" cy="5" rx="7" ry="4" fill="#ffaa44" opacity="0.8"/>
-    <ellipse cx="5" cy="5" rx="7" ry="4" fill="#ffaa44" opacity="0.8"/>
-    <circle cx="0" cy="0" r="4" fill="#ffd700"/>
+  <g transform="translate(440, 415)">
+    <g class="mk-flower-2">
+      <line x1="0" y1="0" x2="0" y2="35" stroke="#1a5a2a" stroke-width="2"/>
+      <ellipse cx="-7" cy="-2" rx="8" ry="5" fill="url(#mk-flowerOrange)"/>
+      <ellipse cx="7" cy="-2" rx="8" ry="5" fill="url(#mk-flowerOrange)"/>
+      <ellipse cx="0" cy="-8" rx="7" ry="5" fill="url(#mk-flowerOrange)"/>
+      <ellipse cx="-5" cy="5" rx="7" ry="4" fill="#ffaa44" opacity="0.8"/>
+      <ellipse cx="5" cy="5" rx="7" ry="4" fill="#ffaa44" opacity="0.8"/>
+      <circle cx="0" cy="0" r="4" fill="#ffd700"/>
+    </g>
   </g>
 
-  <g class="mk-flower-3" transform="translate(160, 440)">
-    <line x1="0" y1="5" x2="0" y2="25" stroke="#1a5a2a" stroke-width="1.5"/>
-    <ellipse cx="-5" cy="-1" rx="5" ry="4" fill="#ff69b4"/>
-    <ellipse cx="5" cy="-1" rx="5" ry="4" fill="#ff69b4"/>
-    <ellipse cx="0" cy="-5" rx="5" ry="4" fill="#ff69b4"/>
-    <circle cx="0" cy="0" r="3" fill="#ffe4b5"/>
+  <g transform="translate(160, 440)">
+    <g class="mk-flower-3">
+      <line x1="0" y1="5" x2="0" y2="25" stroke="#1a5a2a" stroke-width="1.5"/>
+      <ellipse cx="-5" cy="-1" rx="5" ry="4" fill="#ff69b4"/>
+      <ellipse cx="5" cy="-1" rx="5" ry="4" fill="#ff69b4"/>
+      <ellipse cx="0" cy="-5" rx="5" ry="4" fill="#ff69b4"/>
+      <circle cx="0" cy="0" r="3" fill="#ffe4b5"/>
+    </g>
   </g>
 
-  <g class="mk-flower-4" transform="translate(370, 445)">
-    <line x1="0" y1="5" x2="0" y2="28" stroke="#1a5a2a" stroke-width="1.5"/>
-    <ellipse cx="-5" cy="-1" rx="6" ry="4" fill="#ff69b4" opacity="0.9"/>
-    <ellipse cx="5" cy="-1" rx="6" ry="4" fill="#ff69b4" opacity="0.9"/>
-    <ellipse cx="0" cy="-6" rx="5" ry="4" fill="#ff69b4" opacity="0.9"/>
-    <circle cx="0" cy="0" r="3" fill="#ffd700"/>
+  <g transform="translate(370, 445)">
+    <g class="mk-flower-4">
+      <line x1="0" y1="5" x2="0" y2="28" stroke="#1a5a2a" stroke-width="1.5"/>
+      <ellipse cx="-5" cy="-1" rx="6" ry="4" fill="#ff69b4" opacity="0.9"/>
+      <ellipse cx="5" cy="-1" rx="6" ry="4" fill="#ff69b4" opacity="0.9"/>
+      <ellipse cx="0" cy="-6" rx="5" ry="4" fill="#ff69b4" opacity="0.9"/>
+      <circle cx="0" cy="0" r="3" fill="#ffd700"/>
+    </g>
   </g>
 
   <!-- Ground / jungle floor -->
@@ -523,32 +531,34 @@
   </g>
 
   <!-- Parrot (perched on right branch) -->
-  <g class="mk-parrot-group" transform="translate(425, 188)">
-    <!-- Tail feathers -->
-    <path d="M -2 18 Q -8 35 -5 50" stroke="#dd2222" stroke-width="4" fill="none" stroke-linecap="round"/>
-    <path d="M 0 18 Q 2 38 5 52" stroke="#ff4422" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <path d="M 2 18 Q 8 34 10 48" stroke="#ffaa00" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <!-- Body -->
-    <ellipse cx="0" cy="5" rx="10" ry="16" fill="url(#mk-parrotBody)"/>
-    <!-- Wing -->
-    <g class="mk-parrot-wing">
-      <ellipse cx="8" cy="5" rx="12" ry="8" fill="url(#mk-parrotWing)" transform="rotate(10 8 5)"/>
+  <g transform="translate(425, 188)">
+    <g class="mk-parrot-group">
+      <!-- Tail feathers -->
+      <path d="M -2 18 Q -8 35 -5 50" stroke="#dd2222" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M 0 18 Q 2 38 5 52" stroke="#ff4422" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M 2 18 Q 8 34 10 48" stroke="#ffaa00" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <!-- Body -->
+      <ellipse cx="0" cy="5" rx="10" ry="16" fill="url(#mk-parrotBody)"/>
+      <!-- Wing -->
+      <g class="mk-parrot-wing">
+        <ellipse cx="8" cy="5" rx="12" ry="8" fill="url(#mk-parrotWing)" transform="rotate(10 8 5)"/>
+      </g>
+      <!-- Breast -->
+      <ellipse cx="-2" cy="8" rx="6" ry="8" fill="#ffdd22" opacity="0.7"/>
+      <!-- Head -->
+      <circle cx="0" cy="-12" r="8" fill="#22cc44"/>
+      <!-- Beak -->
+      <path d="M -3 -12 Q -8 -10 -4 -7" fill="#444444" stroke="#333333" stroke-width="0.5"/>
+      <!-- Eye -->
+      <circle cx="2" cy="-13" r="3" fill="#ffffff"/>
+      <circle cx="2" cy="-13" r="2" fill="#222222"/>
+      <circle cx="3" cy="-14" r="0.8" fill="#ffffff" opacity="0.9"/>
+      <!-- Eye ring -->
+      <circle cx="2" cy="-13" r="4" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.5"/>
+      <!-- Feet gripping branch -->
+      <path d="M -4 20 L -6 22 M -4 20 L -2 22" stroke="#666666" stroke-width="1" fill="none"/>
+      <path d="M 4 20 L 2 22 M 4 20 L 6 22" stroke="#666666" stroke-width="1" fill="none"/>
     </g>
-    <!-- Breast -->
-    <ellipse cx="-2" cy="8" rx="6" ry="8" fill="#ffdd22" opacity="0.7"/>
-    <!-- Head -->
-    <circle cx="0" cy="-12" r="8" fill="#22cc44"/>
-    <!-- Beak -->
-    <path d="M -3 -12 Q -8 -10 -4 -7" fill="#444444" stroke="#333333" stroke-width="0.5"/>
-    <!-- Eye -->
-    <circle cx="2" cy="-13" r="3" fill="#ffffff"/>
-    <circle cx="2" cy="-13" r="2" fill="#222222"/>
-    <circle cx="3" cy="-14" r="0.8" fill="#ffffff" opacity="0.9"/>
-    <!-- Eye ring -->
-    <circle cx="2" cy="-13" r="4" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.5"/>
-    <!-- Feet gripping branch -->
-    <path d="M -4 20 L -6 22 M -4 20 L -2 22" stroke="#666666" stroke-width="1" fill="none"/>
-    <path d="M 4 20 L 2 22 M 4 20 L 6 22" stroke="#666666" stroke-width="1" fill="none"/>
   </g>
 
   <!-- ============================================ -->

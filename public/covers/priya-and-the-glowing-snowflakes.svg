@@ -157,7 +157,8 @@
 </g>
 
 <!-- Layer 5: Main Character -->
-<g class="pr-character" transform="translate(256, 240)">
+<g transform="translate(256, 240)">
+  <g class="pr-character">
     <!-- Character Body -->
     <ellipse cx="0" cy="40" rx="15" ry="25" fill="#ff9a9e"/>
     <!-- Head -->
@@ -182,6 +183,7 @@
     <!-- Legs -->
     <ellipse cx="-8" cy="65" rx="5" ry="8" fill="#6a5acd"/>
     <ellipse cx="8" cy="65" rx="5" ry="8" fill="#6a5acd"/>
+  </g>
 </g>
 
 <!-- Layer 6: Foreground Particles/Sparkles -->

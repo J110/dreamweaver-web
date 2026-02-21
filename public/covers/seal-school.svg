@@ -443,7 +443,8 @@
 
   <!-- LAYER 5: Primary characters — Girl and Seal -->
   <!-- Girl character -->
-  <g class="ss-girl-group" transform="translate(190, 340)">
+  <g transform="translate(190, 340)">
+    <g class="ss-girl-group">
     <!-- Legs -->
     <rect x="-8" y="40" width="8" height="24" rx="3" fill="#2a3a5a"/>
     <rect x="4" y="40" width="8" height="24" rx="3" fill="#2a3a5a"/>
@@ -467,8 +468,10 @@
 
     <!-- Scarf -->
     <ellipse cx="0" cy="5" rx="14" ry="5" fill="#44ccff"/>
-    <g class="ss-scarf-end" transform="translate(10, 5)">
+    <g transform="translate(10, 5)">
+      <g class="ss-scarf-end">
       <path d="M 0 0 Q 5 8 3 18 Q 1 22 4 26" stroke="#44ccff" stroke-width="6" fill="none" stroke-linecap="round"/>
+      </g>
     </g>
 
     <!-- Head -->
@@ -499,10 +502,12 @@
     <circle cx="0" cy="-35" r="5" fill="#ffffff"/>
     <!-- Hat fur trim -->
     <ellipse cx="0" cy="-15" rx="17" ry="4" fill="#ffffff" opacity="0.85"/>
+    </g>
   </g>
 
   <!-- Seal pup -->
-  <g class="ss-seal-group" transform="translate(290, 365)">
+  <g transform="translate(290, 365)">
+    <g class="ss-seal-group">
     <!-- Body -->
     <ellipse cx="0" cy="15" rx="30" ry="20" fill="url(#ss-sealBody)"/>
     <!-- Belly -->
@@ -514,11 +519,15 @@
     <ellipse cx="-36" cy="26" rx="8" ry="5" fill="#708090" transform="rotate(-15, -36, 26)"/>
 
     <!-- Flippers -->
-    <g class="ss-flipper-left" transform="translate(-18, 5)">
+    <g transform="translate(-18, 5)">
+      <g class="ss-flipper-left">
       <ellipse cx="-8" cy="8" rx="5" ry="12" fill="#8090a0" transform="rotate(20)"/>
+      </g>
     </g>
-    <g class="ss-flipper-right" transform="translate(18, 5)">
+    <g transform="translate(18, 5)">
+      <g class="ss-flipper-right">
       <ellipse cx="8" cy="8" rx="5" ry="12" fill="#8090a0" transform="rotate(-20)"/>
+      </g>
     </g>
 
     <!-- Head -->
@@ -559,6 +568,7 @@
     <!-- Rosy cheeks -->
     <circle cx="-12" cy="0" r="3" fill="#ffb6c1" opacity="0.3"/>
     <circle cx="12" cy="0" r="3" fill="#ffb6c1" opacity="0.3"/>
+    </g>
   </g>
 
   <!-- LAYER 6: Foreground — Snowflakes and sparkles -->

@@ -604,14 +604,30 @@
   </g>
 
   <!-- Cherry blossom petals falling -->
-  <ellipse class="of-petal1" cx="120" cy="80" rx="4" ry="2.5" fill="#ffb6c1" opacity="0.8" transform="rotate(15 120 80)"/>
-  <ellipse class="of-petal2" cx="200" cy="60" rx="3.5" ry="2" fill="#ff69b4" opacity="0.7" transform="rotate(-20 200 60)"/>
-  <ellipse class="of-petal3" cx="340" cy="90" rx="3" ry="2" fill="#ffb6c1" opacity="0.75" transform="rotate(30 340 90)"/>
-  <ellipse class="of-petal4" cx="80" cy="150" rx="3.5" ry="2.2" fill="#ff69b4" opacity="0.7" transform="rotate(-10 80 150)"/>
-  <ellipse class="of-petal5" cx="430" cy="130" rx="3" ry="1.8" fill="#ffb6c1" opacity="0.65" transform="rotate(25 430 130)"/>
-  <ellipse class="of-petal6" cx="280" cy="110" rx="4" ry="2.3" fill="#ff69b4" opacity="0.7" transform="rotate(-35 280 110)"/>
-  <ellipse class="of-petal7" cx="170" cy="170" rx="3.2" ry="2" fill="#ffb6c1" opacity="0.6" transform="rotate(20 170 170)"/>
-  <ellipse class="of-petal8" cx="380" cy="200" rx="3.5" ry="2" fill="#ff69b4" opacity="0.65" transform="rotate(-15 380 200)"/>
+  <g transform="rotate(15 120 80)">
+    <ellipse class="of-petal1" cx="120" cy="80" rx="4" ry="2.5" fill="#ffb6c1" opacity="0.8"/>
+  </g>
+  <g transform="rotate(-20 200 60)">
+    <ellipse class="of-petal2" cx="200" cy="60" rx="3.5" ry="2" fill="#ff69b4" opacity="0.7"/>
+  </g>
+  <g transform="rotate(30 340 90)">
+    <ellipse class="of-petal3" cx="340" cy="90" rx="3" ry="2" fill="#ffb6c1" opacity="0.75"/>
+  </g>
+  <g transform="rotate(-10 80 150)">
+    <ellipse class="of-petal4" cx="80" cy="150" rx="3.5" ry="2.2" fill="#ff69b4" opacity="0.7"/>
+  </g>
+  <g transform="rotate(25 430 130)">
+    <ellipse class="of-petal5" cx="430" cy="130" rx="3" ry="1.8" fill="#ffb6c1" opacity="0.65"/>
+  </g>
+  <g transform="rotate(-35 280 110)">
+    <ellipse class="of-petal6" cx="280" cy="110" rx="4" ry="2.3" fill="#ff69b4" opacity="0.7"/>
+  </g>
+  <g transform="rotate(20 170 170)">
+    <ellipse class="of-petal7" cx="170" cy="170" rx="3.2" ry="2" fill="#ffb6c1" opacity="0.6"/>
+  </g>
+  <g transform="rotate(-15 380 200)">
+    <ellipse class="of-petal8" cx="380" cy="200" rx="3.5" ry="2" fill="#ff69b4" opacity="0.65"/>
+  </g>
 
   <!-- Additional golden sparkle dust in the air -->
   <circle class="of-sparkle1" cx="150" cy="200" r="1" fill="#ffd700" opacity="0.4"/>

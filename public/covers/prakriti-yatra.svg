@@ -473,12 +473,12 @@
 
     <!-- Falling leaves -->
     <g>
-      <use href="#py-leaf" class="py-leaf1" x="120" y="360" fill="#4dba5a" opacity="0" transform="scale(0.6)" />
-      <use href="#py-leaf" class="py-leaf2" x="155" y="355" fill="#3d9a4a" opacity="0" transform="scale(0.5)" />
-      <use href="#py-leaf" class="py-leaf3" x="370" y="358" fill="#4dba5a" opacity="0" transform="scale(0.55)" />
-      <use href="#py-leaf" class="py-leaf4" x="420" y="352" fill="#2d7a3a" opacity="0" transform="scale(0.5)" />
-      <use href="#py-leaf" class="py-leaf5" x="460" y="355" fill="#4dba5a" opacity="0" transform="scale(0.45)" />
-      <use href="#py-leaf" class="py-leaf6" x="85" y="365" fill="#3d9a4a" opacity="0" transform="scale(0.55)" />
+      <g transform="scale(0.6)"><use href="#py-leaf" class="py-leaf1" x="120" y="360" fill="#4dba5a" opacity="0" /></g>
+      <g transform="scale(0.5)"><use href="#py-leaf" class="py-leaf2" x="155" y="355" fill="#3d9a4a" opacity="0" /></g>
+      <g transform="scale(0.55)"><use href="#py-leaf" class="py-leaf3" x="370" y="358" fill="#4dba5a" opacity="0" /></g>
+      <g transform="scale(0.5)"><use href="#py-leaf" class="py-leaf4" x="420" y="352" fill="#2d7a3a" opacity="0" /></g>
+      <g transform="scale(0.45)"><use href="#py-leaf" class="py-leaf5" x="460" y="355" fill="#4dba5a" opacity="0" /></g>
+      <g transform="scale(0.55)"><use href="#py-leaf" class="py-leaf6" x="85" y="365" fill="#3d9a4a" opacity="0" /></g>
     </g>
   </g>
 

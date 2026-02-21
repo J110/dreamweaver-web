@@ -567,7 +567,8 @@
   <!-- ============================================ -->
 
   <!-- === ROBOT CHARACTER (left-center) === -->
-  <g class="fr-robot-group" transform="translate(215, 230)">
+  <g transform="translate(215, 230)">
+  <g class="fr-robot-group">
 
     <!-- Robot thrust glow (under feet) -->
     <ellipse cx="0" cy="55" rx="12" ry="20" fill="#00d4ff" opacity="0.15" filter="url(#fr-strongGlow)"/>
@@ -647,9 +648,11 @@
     <line x1="15" y1="-35" x2="20" y2="-42" stroke="#3a8ad4" stroke-width="1.5" stroke-linecap="round"/>
     <circle cx="21" cy="-43" r="2" fill="#00d4ff" opacity="0.6"/>
   </g>
+  </g>
 
   <!-- === BOY CHARACTER (right-center, floating alongside) === -->
-  <g class="fr-boy-group" transform="translate(310, 235)">
+  <g transform="translate(310, 235)">
+  <g class="fr-boy-group">
 
     <!-- Boy ambient warmth glow -->
     <circle cx="0" cy="-5" r="40" fill="#ffb347" opacity="0.05" filter="url(#fr-strongGlow)"/>
@@ -671,9 +674,11 @@
     <circle cx="-21" cy="16" r="3.5" fill="#d4a574"/>
 
     <!-- Boy right arm (waving / reaching to robot) -->
-    <g class="fr-boy-arm" transform="translate(12, -2)">
+    <g transform="translate(12, -2)">
+    <g class="fr-boy-arm">
       <line x1="0" y1="0" x2="10" y2="-14" stroke="url(#fr-boyShirt)" stroke-width="5" stroke-linecap="round"/>
       <circle cx="12" cy="-16" r="3.5" fill="#d4a574"/>
+    </g>
     </g>
 
     <!-- Boy head -->
@@ -718,6 +723,7 @@
     <ellipse cx="-9" cy="-15" rx="3" ry="2" fill="#ffb6c1" opacity="0.4"/>
     <ellipse cx="9" cy="-15" rx="3" ry="2" fill="#ffb6c1" opacity="0.4"/>
   </g>
+  </g>
 
   <!-- Connection glow between characters -->
   <ellipse cx="263" cy="240" rx="60" ry="25" fill="#00ffff" opacity="0.04" filter="url(#fr-strongGlow)"/>
@@ -727,47 +733,65 @@
   <!-- ============================================ -->
 
   <!-- Sparkle trail from robot (falling behind as they fly) -->
-  <g class="fr-sparkle-1" transform="translate(195, 280)">
+  <g transform="translate(195, 280)">
+  <g class="fr-sparkle-1">
     <circle cx="0" cy="0" r="2.5" fill="#00ffff" filter="url(#fr-softGlow)"/>
     <circle cx="0" cy="0" r="5" fill="url(#fr-sparkleGlow)" opacity="0.4"/>
   </g>
+  </g>
 
-  <g class="fr-sparkle-2" transform="translate(210, 275)">
+  <g transform="translate(210, 275)">
+  <g class="fr-sparkle-2">
     <circle cx="0" cy="0" r="2" fill="#80ffff" filter="url(#fr-softGlow)"/>
     <circle cx="0" cy="0" r="4.5" fill="url(#fr-sparkleGlow)" opacity="0.35"/>
   </g>
+  </g>
 
-  <g class="fr-sparkle-3" transform="translate(225, 285)">
+  <g transform="translate(225, 285)">
+  <g class="fr-sparkle-3">
     <circle cx="0" cy="0" r="1.8" fill="#00ffff" filter="url(#fr-softGlow)"/>
     <circle cx="0" cy="0" r="4" fill="url(#fr-sparkleGlow)" opacity="0.3"/>
   </g>
+  </g>
 
-  <g class="fr-sparkle-4" transform="translate(200, 270)">
+  <g transform="translate(200, 270)">
+  <g class="fr-sparkle-4">
     <circle cx="0" cy="0" r="2.2" fill="#80ffff" filter="url(#fr-softGlow)"/>
     <circle cx="0" cy="0" r="5" fill="url(#fr-sparkleGlow)" opacity="0.35"/>
   </g>
+  </g>
 
-  <g class="fr-sparkle-5" transform="translate(215, 290)">
+  <g transform="translate(215, 290)">
+  <g class="fr-sparkle-5">
     <circle cx="0" cy="0" r="1.5" fill="#00ffff" filter="url(#fr-softGlow)"/>
     <circle cx="0" cy="0" r="3.5" fill="url(#fr-sparkleGlow)" opacity="0.3"/>
   </g>
+  </g>
 
-  <g class="fr-sparkle-6" transform="translate(230, 278)">
+  <g transform="translate(230, 278)">
+  <g class="fr-sparkle-6">
     <circle cx="0" cy="0" r="1.8" fill="#80ffff" filter="url(#fr-softGlow)"/>
     <circle cx="0" cy="0" r="4" fill="url(#fr-sparkleGlow)" opacity="0.35"/>
   </g>
+  </g>
 
   <!-- Friendship hearts floating between characters -->
-  <g class="fr-heart-1" transform="translate(260, 210)">
+  <g transform="translate(260, 210)">
+  <g class="fr-heart-1">
     <path d="M 0 3 C 0 0 -4 -2 -4 1 C -4 4 0 6 0 8 C 0 6 4 4 4 1 C 4 -2 0 0 0 3 Z" fill="#ff6b8a" opacity="0.7" filter="url(#fr-softGlow)"/>
   </g>
-
-  <g class="fr-heart-2" transform="translate(275, 215)">
-    <path d="M 0 2 C 0 0 -3 -1.5 -3 0.5 C -3 3 0 4.5 0 6 C 0 4.5 3 3 3 0.5 C 3 -1.5 0 0 0 2 Z" fill="#ff6b8a" opacity="0.6" filter="url(#fr-softGlow)"/>
   </g>
 
-  <g class="fr-heart-3" transform="translate(252, 220)">
+  <g transform="translate(275, 215)">
+  <g class="fr-heart-2">
+    <path d="M 0 2 C 0 0 -3 -1.5 -3 0.5 C -3 3 0 4.5 0 6 C 0 4.5 3 3 3 0.5 C 3 -1.5 0 0 0 2 Z" fill="#ff6b8a" opacity="0.6" filter="url(#fr-softGlow)"/>
+  </g>
+  </g>
+
+  <g transform="translate(252, 220)">
+  <g class="fr-heart-3">
     <path d="M 0 2.5 C 0 0 -3.5 -1.5 -3.5 1 C -3.5 3 0 5 0 7 C 0 5 3.5 3 3.5 1 C 3.5 -1.5 0 0 0 2.5 Z" fill="#ff6b8a" opacity="0.5" filter="url(#fr-softGlow)"/>
+  </g>
   </g>
 
   <!-- Large foreground sparkles (depth) -->

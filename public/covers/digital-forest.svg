@@ -590,9 +590,15 @@
 
   <!-- Falling leaf particles (very subtle) -->
   <g opacity="0.2">
-    <ellipse cx="120" cy="160" rx="2" ry="1" fill="#2d4a3a" transform="rotate(25 120 160)" class="df-spore3"/>
-    <ellipse cx="380" cy="180" rx="1.5" ry="0.8" fill="#1a3a2a" transform="rotate(-15 380 180)" class="df-spore5"/>
-    <ellipse cx="260" cy="140" rx="1.8" ry="0.9" fill="#2d4a3a" transform="rotate(40 260 140)" class="df-spore7"/>
+    <g transform="rotate(25 120 160)">
+      <ellipse cx="120" cy="160" rx="2" ry="1" fill="#2d4a3a" class="df-spore3"/>
+    </g>
+    <g transform="rotate(-15 380 180)">
+      <ellipse cx="380" cy="180" rx="1.5" ry="0.8" fill="#1a3a2a" class="df-spore5"/>
+    </g>
+    <g transform="rotate(40 260 140)">
+      <ellipse cx="260" cy="140" rx="1.8" ry="0.9" fill="#2d4a3a" class="df-spore7"/>
+    </g>
   </g>
 
   <!-- ============ LAYER 7: Vignette overlay ============ -->

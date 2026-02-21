@@ -560,11 +560,21 @@
 
   <!-- Floating petal particles -->
   <g>
-    <ellipse class="pb-float-1" cx="180" cy="150" rx="4" ry="2.5" fill="url(#pb-floatingPetal)" transform="rotate(15 180 150)"/>
-    <ellipse class="pb-float-2" cx="320" cy="130" rx="3.5" ry="2" fill="url(#pb-floatingPetal)" transform="rotate(-20 320 130)"/>
-    <ellipse class="pb-float-3" cx="230" cy="170" rx="3" ry="1.8" fill="url(#pb-floatingPetal)" transform="rotate(30 230 170)"/>
-    <ellipse class="pb-float-4" cx="370" cy="160" rx="3.5" ry="2.2" fill="url(#pb-floatingPetal)" transform="rotate(-10 370 160)"/>
-    <ellipse class="pb-float-5" cx="140" cy="180" rx="3" ry="2" fill="url(#pb-floatingPetal)" transform="rotate(25 140 180)"/>
+    <g transform="rotate(15 180 150)">
+      <ellipse class="pb-float-1" cx="180" cy="150" rx="4" ry="2.5" fill="url(#pb-floatingPetal)"/>
+    </g>
+    <g transform="rotate(-20 320 130)">
+      <ellipse class="pb-float-2" cx="320" cy="130" rx="3.5" ry="2" fill="url(#pb-floatingPetal)"/>
+    </g>
+    <g transform="rotate(30 230 170)">
+      <ellipse class="pb-float-3" cx="230" cy="170" rx="3" ry="1.8" fill="url(#pb-floatingPetal)"/>
+    </g>
+    <g transform="rotate(-10 370 160)">
+      <ellipse class="pb-float-4" cx="370" cy="160" rx="3.5" ry="2.2" fill="url(#pb-floatingPetal)"/>
+    </g>
+    <g transform="rotate(25 140 180)">
+      <ellipse class="pb-float-5" cx="140" cy="180" rx="3" ry="2" fill="url(#pb-floatingPetal)"/>
+    </g>
   </g>
 
   <!-- Foreground sparkle dots -->

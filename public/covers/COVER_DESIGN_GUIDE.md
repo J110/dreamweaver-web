@@ -341,6 +341,40 @@ For groups of similar elements (stars, fireflies, flowers):
 
 Note: vary both duration AND delay for maximum naturalism. Never use identical durations for same-type elements.
 
+### 7.7 Critical: CSS Transform vs SVG Transform
+
+**CSS `transform` completely overrides SVG `transform` attributes.** If an element uses `transform="translate(x,y)"` (or `rotate()`, `scale()`, etc.) for positioning AND has a CSS animation that sets `transform: translateY(...)`, the CSS animation will REPLACE the positioning, snapping the element to (0,0).
+
+**ALWAYS use nested groups** — outer `<g>` for positioning, inner `<g>` for animation:
+
+```xml
+<!-- CORRECT: nested groups separate positioning from animation -->
+<g transform="translate(256, 240)">
+  <g class="my-character-bob">
+    <!-- character elements -->
+  </g>
+</g>
+
+<!-- WRONG: CSS animation will override translate, snapping to (0,0)! -->
+<g class="my-character-bob" transform="translate(256, 240)">
+  <!-- character elements -->
+</g>
+```
+
+This also applies to non-`<g>` elements like `<ellipse>` or `<use>`:
+
+```xml
+<!-- CORRECT: wrap in a positioned parent -->
+<g transform="rotate(15 120 80)">
+  <ellipse class="petal-fall" cx="120" cy="80" rx="8" ry="3" fill="#ffb6c1"/>
+</g>
+
+<!-- WRONG: CSS animation will lose the rotation -->
+<ellipse class="petal-fall" transform="rotate(15 120 80)" cx="120" cy="80" rx="8" ry="3" fill="#ffb6c1"/>
+```
+
+This rule applies to ALL elements that use CSS `transform` animations (bobbing, breathing, drifting, floating, swaying, etc.) AND are positioned/rotated/scaled via SVG `transform`.
+
 ---
 
 ## 8. Layer Composition Guide
@@ -457,6 +491,7 @@ Before merging a new cover, verify:
 - [ ] Valid XML (no parse errors)
 - [ ] Renders correctly at thumbnail size (120×120px)
 - [ ] Animations are gentle and calming (not fast or jarring)
+- [ ] No element has BOTH a CSS animation class (that animates `transform`) AND an SVG `transform` attribute — use nested groups instead (see Section 7.7)
 - [ ] Registered in seedData.js COVERS object
 
 ---
