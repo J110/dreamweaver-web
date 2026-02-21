@@ -68,7 +68,14 @@ export default function ContentCard({ content, onClick }) {
 
   const durationLabel = getDuration();
   const ageLabel = getAgeLabel();
-  const isNew = !isListened(content.id);
+  const listened = isListened(content.id);
+
+  // "NEW" badge: only for content added today
+  const isAddedToday = (() => {
+    if (!content.addedAt) return false;
+    const today = new Date().toISOString().slice(0, 10);
+    return content.addedAt.slice(0, 10) === today;
+  })();
 
   const cardContent = (
     <>
@@ -87,8 +94,14 @@ export default function ContentCard({ content, onClick }) {
             {content.type?.toLowerCase() === 'story' && '✨'}
           </div>
         )}
-        {isNew && (
+        {isAddedToday && (
           <span className={styles.newBadge}>NEW</span>
+        )}
+        {!isAddedToday && listened && (
+          <span className={styles.listenedBadge}>✓</span>
+        )}
+        {!isAddedToday && !listened && (
+          <span className={styles.unreadDot} />
         )}
         {ageLabel && (
           <span className={styles.ageBadge}>
