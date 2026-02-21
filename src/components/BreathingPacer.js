@@ -5,94 +5,36 @@ import styles from './BreathingPacer.module.css';
 
 /**
  * BreathingPacer — A voice-synced pulsating orb that expands with narration
- * and contracts during pauses. Uses Web Audio API AnalyserNode for real-time
- * amplitude detection. Falls back to a gentle CSS breathing animation if
- * Web Audio connection fails (e.g., CORS issues).
+ * and contracts during pauses. Reads real-time amplitude from a Web Audio
+ * AnalyserNode passed as a prop. Falls back to a gentle CSS breathing
+ * animation if no analyser is available.
+ *
+ * IMPORTANT: The Web Audio graph (source → analyser → destination) is managed
+ * by the parent player page, NOT here. This prevents the audio chain from
+ * breaking when the pacer mounts/unmounts on pause/resume.
  */
-export default function BreathingPacer({ audioRef, isPlaying }) {
+export default function BreathingPacer({ analyserNode }) {
   const containerRef = useRef(null);
-  const analyserRef = useRef(null);
-  const sourceNodeRef = useRef(null);
-  const audioCtxRef = useRef(null);
   const rafRef = useRef(null);
   const smoothedRef = useRef(0);
   const dataArrayRef = useRef(null);
-  const fallbackRef = useRef(false);
-  // Track which audio element we've connected, so we don't double-connect
-  const connectedAudioRef = useRef(null);
 
-  const setupAnalyser = useCallback(() => {
-    const audio = audioRef?.current;
-    if (!audio) {
-      fallbackRef.current = true;
-      return;
-    }
-
-    // Already connected this exact audio element — reuse
-    if (connectedAudioRef.current === audio && analyserRef.current) {
-      return;
-    }
-
-    try {
-      // Create or reuse AudioContext
-      if (!audioCtxRef.current) {
-        audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      const ctx = audioCtxRef.current;
-
-      // Resume if suspended (autoplay policy)
-      if (ctx.state === 'suspended') {
-        ctx.resume().catch(() => {});
-      }
-
-      // createMediaElementSource can only be called ONCE per audio element
-      if (!sourceNodeRef.current || connectedAudioRef.current !== audio) {
-        // If we had a previous source, disconnect it
-        if (sourceNodeRef.current) {
-          try { sourceNodeRef.current.disconnect(); } catch {}
-        }
-        sourceNodeRef.current = ctx.createMediaElementSource(audio);
-        connectedAudioRef.current = audio;
-      }
-
-      // Create analyser
-      const analyser = ctx.createAnalyser();
-      analyser.fftSize = 256;
-      analyser.smoothingTimeConstant = 0.8;
-      analyserRef.current = analyser;
-
-      // Connect: source → analyser → destination (speakers)
-      sourceNodeRef.current.disconnect();
-      sourceNodeRef.current.connect(analyser);
-      analyser.connect(ctx.destination);
-
-      // Prepare data buffer
-      dataArrayRef.current = new Uint8Array(analyser.fftSize);
-      fallbackRef.current = false;
-    } catch (err) {
-      // CORS or other Web Audio error — use CSS fallback
-      console.warn('BreathingPacer: Web Audio failed, using CSS fallback', err.message);
-      fallbackRef.current = true;
-    }
-  }, [audioRef]);
+  const hasAnalyser = !!analyserNode;
 
   const animate = useCallback(() => {
     if (!containerRef.current) return;
 
-    if (analyserRef.current && dataArrayRef.current && !fallbackRef.current) {
-      const analyser = analyserRef.current;
-      const dataArray = dataArrayRef.current;
-
+    if (analyserNode && dataArrayRef.current) {
       // Get time-domain waveform data
-      analyser.getByteTimeDomainData(dataArray);
+      analyserNode.getByteTimeDomainData(dataArrayRef.current);
 
       // Compute RMS amplitude (0-1 range)
       let sumSquares = 0;
-      for (let i = 0; i < dataArray.length; i++) {
-        const normalized = (dataArray[i] - 128) / 128; // -1 to 1
+      for (let i = 0; i < dataArrayRef.current.length; i++) {
+        const normalized = (dataArrayRef.current[i] - 128) / 128; // -1 to 1
         sumSquares += normalized * normalized;
       }
-      const rms = Math.sqrt(sumSquares / dataArray.length);
+      const rms = Math.sqrt(sumSquares / dataArrayRef.current.length);
 
       // Exponential smoothing for gentle movement
       const prevSmoothed = smoothedRef.current;
@@ -110,54 +52,29 @@ export default function BreathingPacer({ audioRef, isPlaying }) {
     }
 
     rafRef.current = requestAnimationFrame(animate);
-  }, []);
+  }, [analyserNode]);
 
   useEffect(() => {
-    if (isPlaying) {
-      setupAnalyser();
+    // Prepare data buffer for the analyser
+    if (analyserNode) {
+      dataArrayRef.current = new Uint8Array(analyserNode.fftSize);
+    }
 
-      // Small delay to ensure audio element is ready
-      const timer = setTimeout(() => {
-        smoothedRef.current = 0;
-        rafRef.current = requestAnimationFrame(animate);
-      }, 50);
+    // Start animation loop
+    smoothedRef.current = 0;
+    rafRef.current = requestAnimationFrame(animate);
 
-      return () => {
-        clearTimeout(timer);
-        if (rafRef.current) {
-          cancelAnimationFrame(rafRef.current);
-          rafRef.current = null;
-        }
-      };
-    } else {
-      // Stopped — cancel animation
+    return () => {
       if (rafRef.current) {
         cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
       }
-      smoothedRef.current = 0;
-    }
-  }, [isPlaying, setupAnalyser, animate]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
-      // Don't close AudioContext — the audio element may still be playing
-      // Just disconnect analyser if it exists
-      if (analyserRef.current) {
-        try { analyserRef.current.disconnect(); } catch {}
-      }
     };
-  }, []);
-
-  const isFallback = fallbackRef.current;
+  }, [analyserNode, animate]);
 
   return (
     <div
-      className={`${styles.pacerContainer} ${isFallback ? styles.pacerFallback : ''}`}
+      className={`${styles.pacerContainer} ${!hasAnalyser ? styles.pacerFallback : ''}`}
       ref={containerRef}
     >
       <div className={styles.pacerGlow} />

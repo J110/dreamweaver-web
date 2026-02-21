@@ -2,9 +2,9 @@
 
 .pacerContainer {
   position: absolute;
-  top: 50%;
+  bottom: 12px;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   z-index: 3;
   pointer-events: none;
   width: 140px;

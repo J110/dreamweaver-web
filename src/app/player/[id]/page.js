@@ -47,6 +47,11 @@ export default function PlayerPage() {
   const audioDisposingRef = useRef(false);
   const progressIntervalRef = useRef(null);
   const musicRef = useRef(null);
+  // Web Audio analyser for breathing pacer (persists across pause/resume)
+  const [narrationAnalyser, setNarrationAnalyser] = useState(null);
+  const narrationCtxRef = useRef(null);
+  const narrationSourceRef = useRef(null);
+  const narrationConnectedAudioRef = useRef(null);
   const musicStartedRef = useRef(false);
   const lastHistoryRecordRef = useRef(0); // throttle history writes
 
@@ -338,6 +343,27 @@ export default function PlayerPage() {
           await audio.play();
           setIsPlaying(true);
           startProgressTracking();
+          // Connect Web Audio analyser for breathing pacer (once per audio element)
+          if (narrationConnectedAudioRef.current !== audio) {
+            try {
+              if (!narrationCtxRef.current) {
+                narrationCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+              }
+              const ctx = narrationCtxRef.current;
+              if (ctx.state === 'suspended') await ctx.resume().catch(() => {});
+              const source = ctx.createMediaElementSource(audio);
+              const analyser = ctx.createAnalyser();
+              analyser.fftSize = 256;
+              analyser.smoothingTimeConstant = 0.8;
+              source.connect(analyser);
+              analyser.connect(ctx.destination);
+              narrationSourceRef.current = source;
+              narrationConnectedAudioRef.current = audio;
+              setNarrationAnalyser(analyser);
+            } catch (err) {
+              console.warn('Breathing pacer: Web Audio setup failed', err.message);
+            }
+          }
         } catch (e) {
           console.error('Playback failed:', e);
           setAudioError(lang === 'hi' ? 'Audio nahi chal paya' : 'Could not play audio');
@@ -379,6 +405,13 @@ export default function PlayerPage() {
       audioRef.current = null;
       setTimeout(() => { audioDisposingRef.current = false; }, 50);
     }
+    // Reset analyser so it reconnects to the new audio element
+    narrationConnectedAudioRef.current = null;
+    if (narrationSourceRef.current) {
+      try { narrationSourceRef.current.disconnect(); } catch {}
+      narrationSourceRef.current = null;
+    }
+    setNarrationAnalyser(null);
     setIsPlaying(false);
     setProgress(0);
     setCurrentTime(0);
@@ -749,7 +782,7 @@ export default function PlayerPage() {
             <span className={styles.albumIcon}>{getTypeIcon(content.type)}</span>
           )}
           {isPlaying && (
-            <BreathingPacer audioRef={audioRef} isPlaying={isPlaying} />
+            <BreathingPacer analyserNode={narrationAnalyser} />
           )}
         </div>
 
