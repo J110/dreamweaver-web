@@ -25,15 +25,6 @@ const fetchApi = async (endpoint, options = {}) => {
     });
 
     if (!response.ok) {
-      // If token is invalid/expired, clear it and redirect to login
-      if (response.status === 401 && token && typeof window !== 'undefined') {
-        console.warn('[API] 401 Unauthorized — clearing stale token and redirecting to login');
-        localStorage.removeItem('dreamweaver_token');
-        localStorage.removeItem('dreamweaver_user');
-        window.location.href = '/login';
-        // Return a never-resolving promise so the redirect happens cleanly
-        return new Promise(() => {});
-      }
       const error = await response.json().catch(() => ({}));
       throw new Error(error.detail || error.message || `API error: ${response.status}`);
     }
