@@ -1,0 +1,138 @@
+/* BreathingPacer — voice-synced pulsating orb with concentric rings */
+
+.pacerContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  pointer-events: none;
+  width: 140px;
+  height: 140px;
+  --pacer-scale: 1;
+}
+
+/* Soft ambient glow behind everything */
+.pacerGlow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(107, 76, 230, 0.25) 0%,
+    rgba(255, 107, 157, 0.15) 40%,
+    transparent 70%
+  );
+  transform: translate(-50%, -50%) scale(var(--pacer-scale));
+  transition: transform 0.2s ease-out;
+  filter: blur(8px);
+}
+
+/* Outer ring — largest, most subtle, slowest response */
+.pacerRingOuter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transform: translate(-50%, -50%) scale(calc(var(--pacer-scale) * 0.85));
+  transition: transform 0.3s ease-out;
+}
+
+/* Inner ring — medium, subtle border glow */
+.pacerRingInner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  transform: translate(-50%, -50%) scale(calc(var(--pacer-scale) * 0.92));
+  transition: transform 0.2s ease-out;
+}
+
+/* Core orb — the main glowing center */
+.pacerCore {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 40% 40%,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(199, 165, 255, 0.5) 30%,
+    rgba(107, 76, 230, 0.35) 60%,
+    rgba(255, 107, 157, 0.2) 100%
+  );
+  transform: translate(-50%, -50%) scale(var(--pacer-scale));
+  box-shadow:
+    0 0 20px rgba(107, 76, 230, 0.4),
+    0 0 40px rgba(255, 107, 157, 0.2),
+    0 0 60px rgba(107, 76, 230, 0.1);
+  transition: transform 0.15s ease-out;
+  mix-blend-mode: screen;
+}
+
+/* ──── CSS-only fallback (when Web Audio fails) ──── */
+
+.pacerFallback .pacerGlow {
+  animation: breatheGlow 6s ease-in-out infinite;
+}
+
+.pacerFallback .pacerCore {
+  animation: breatheCore 6s ease-in-out infinite;
+}
+
+.pacerFallback .pacerRingInner {
+  animation: breatheRingInner 6s ease-in-out infinite;
+}
+
+.pacerFallback .pacerRingOuter {
+  animation: breatheRingOuter 6s ease-in-out infinite;
+}
+
+@keyframes breatheCore {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow:
+      0 0 20px rgba(107, 76, 230, 0.4),
+      0 0 40px rgba(255, 107, 157, 0.2),
+      0 0 60px rgba(107, 76, 230, 0.1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.4);
+    box-shadow:
+      0 0 30px rgba(107, 76, 230, 0.5),
+      0 0 60px rgba(255, 107, 157, 0.3),
+      0 0 90px rgba(107, 76, 230, 0.15);
+  }
+}
+
+@keyframes breatheRingInner {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.92); }
+  50% { transform: translate(-50%, -50%) scale(1.3); }
+}
+
+@keyframes breatheRingOuter {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.85); }
+  50% { transform: translate(-50%, -50%) scale(1.2); }
+}
+
+@keyframes breatheGlow {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.4);
+    opacity: 1;
+  }
+}

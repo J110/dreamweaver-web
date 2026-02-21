@@ -13,6 +13,7 @@ import { isLoggedIn } from '@/utils/auth';
 import { VOICES, getVoiceId, getVoiceLabel } from '@/utils/voiceConfig';
 import { stripEmotionMarkers } from '@/utils/textUtils';
 import { recordListen, markCompleted } from '@/utils/listeningHistory';
+import BreathingPacer from '@/components/BreathingPacer';
 import styles from './page.module.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -748,9 +749,7 @@ export default function PlayerPage() {
             <span className={styles.albumIcon}>{getTypeIcon(content.type)}</span>
           )}
           {isPlaying && (
-            <div className={styles.playingWaves}>
-              <span></span><span></span><span></span><span></span><span></span>
-            </div>
+            <BreathingPacer audioRef={audioRef} isPlaying={isPlaying} />
           )}
         </div>
 

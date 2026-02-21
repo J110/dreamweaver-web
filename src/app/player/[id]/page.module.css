@@ -68,34 +68,6 @@
   left: 0;
 }
 
-.playingWaves {
-  position: absolute;
-  bottom: 16px;
-  display: flex;
-  align-items: flex-end;
-  gap: 4px;
-  height: 30px;
-}
-
-.playingWaves span {
-  display: block;
-  width: 4px;
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 2px;
-  animation: wave 1.2s ease-in-out infinite;
-}
-
-.playingWaves span:nth-child(1) { height: 8px; animation-delay: 0s; }
-.playingWaves span:nth-child(2) { height: 16px; animation-delay: 0.15s; }
-.playingWaves span:nth-child(3) { height: 24px; animation-delay: 0.3s; }
-.playingWaves span:nth-child(4) { height: 16px; animation-delay: 0.45s; }
-.playingWaves span:nth-child(5) { height: 8px; animation-delay: 0.6s; }
-
-@keyframes wave {
-  0%, 100% { transform: scaleY(0.4); }
-  50% { transform: scaleY(1); }
-}
-
 .ttsWarning {
   text-align: center;
   font-size: 12px;
