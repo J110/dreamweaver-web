@@ -97,7 +97,7 @@ export default function ContentCard({ content, onClick }) {
             {content.duration && `${content.duration} min`}
           </span>
           <span className={styles.cardLikes}>
-            ❤️ {content.like_count || 0}
+            ❤️ {content.save_count || 0}
           </span>
         </div>
       </div>

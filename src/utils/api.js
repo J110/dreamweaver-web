@@ -158,7 +158,7 @@ export const contentApi = {
           type: data.type || params.type,
           theme: data.theme || params.theme,
           duration: data.duration,
-          like_count: data.like_count || 0,
+          save_count: data.save_count || 0,
           poems: data.poems || null,
           songs: data.songs || null,
           qa: data.qa || null,

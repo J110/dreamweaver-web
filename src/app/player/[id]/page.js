@@ -524,9 +524,9 @@ export default function PlayerPage() {
     setIsSaved(!wasSaved);
     setContent({
       ...content,
-      like_count: wasSaved
-        ? Math.max(0, (content.like_count || 1) - 1)
-        : (content.like_count || 0) + 1,
+      save_count: wasSaved
+        ? Math.max(0, (content.save_count || 1) - 1)
+        : (content.save_count || 0) + 1,
     });
     setSaveToast(wasSaved ? t('playerRemovedFromSaved') : t('playerSavedToProfile'));
     setTimeout(() => setSaveToast(null), 2500);
@@ -542,9 +542,9 @@ export default function PlayerPage() {
       setIsSaved(wasSaved);
       setContent({
         ...content,
-        like_count: wasSaved
-          ? (content.like_count || 0)
-          : Math.max(0, (content.like_count || 1) - 1),
+        save_count: wasSaved
+          ? (content.save_count || 0)
+          : Math.max(0, (content.save_count || 1) - 1),
       });
     }
   };
@@ -857,7 +857,7 @@ export default function PlayerPage() {
             onClick={handleSave}
             className={`${styles.actionButton} ${isSaved ? styles.actionButtonActive : ''}`}
           >
-            ❤️ {content.like_count || 0}
+            ❤️ {content.save_count || 0}
           </button>
           <button onClick={handleReportOpen} className={styles.actionButton}>
             ⚠️ {t('playerReport')}
