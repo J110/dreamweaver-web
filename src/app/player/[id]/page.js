@@ -787,7 +787,7 @@ export default function PlayerPage() {
         </div>
 
         <div className={styles.badge}>
-          {content.type?.toUpperCase() || 'STORY'}
+          {content.type?.toLowerCase() === 'story' ? 'SHORT STORY' : content.type?.toUpperCase() || 'SHORT STORY'}
         </div>
         <h1 className={styles.title}>{content.title}</h1>
 

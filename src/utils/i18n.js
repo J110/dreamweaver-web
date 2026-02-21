@@ -30,7 +30,7 @@ const translations = {
     homeBannerText: 'Discover magical bedtime tales crafted just for your little ones',
     homeAllThemes: 'All',
     homeTrending: 'Popular Stories',
-    homeStories: 'Stories',
+    homeStories: 'Short Stories',
     homePoems: 'Poems',
     homeSongs: 'Songs',
     // Themes
@@ -97,12 +97,12 @@ const translations = {
     playerNoContent: 'No content available',
     playerExplore: 'Explore Stories',
     playerMinRead: 'min read',
-    playerStory: 'Story',
+    playerStory: 'Short Story',
     playerPoems: 'Poems',
     playerSongs: 'Songs',
     playerQA: 'Questions & Answers',
     // Content types
-    typeStory: 'Story',
+    typeStory: 'Short Story',
     typePoem: 'Poem',
     typeSong: 'Song',
     // Lengths

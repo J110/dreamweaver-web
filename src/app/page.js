@@ -162,7 +162,7 @@ export default function Home() {
             {storyItems.length > 0 && (
               <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>
-                  {lang === 'hi' ? '📖 Kahaniyan' : '📖 Stories'}
+                  {lang === 'hi' ? '📖 Kahaniyan' : '📖 Short Stories'}
                 </h2>
                 <div className={styles.horizontalScroll}>
                   {storyItems.map((item) => (

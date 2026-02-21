@@ -114,7 +114,7 @@ export default function MyStoriesPage() {
             <div className={styles.filterBar}>
               {[
                 { id: 'all', label: lang === 'hi' ? 'Sabhi' : 'All' },
-                { id: 'story', label: lang === 'hi' ? 'Kahaniyan' : 'Stories' },
+                { id: 'story', label: lang === 'hi' ? 'Kahaniyan' : 'Short Stories' },
                 { id: 'poem', label: lang === 'hi' ? 'Kavitayein' : 'Poems' },
                 { id: 'song', label: lang === 'hi' ? 'Gaane' : 'Songs' },
               ].map((type) => (
@@ -166,7 +166,7 @@ export default function MyStoriesPage() {
               <p className={styles.prefDescription}>{t('myPrefContentDesc')}</p>
               <div className={styles.prefOptions}>
                 {[
-                  { id: 'story', icon: '✨', en: 'Stories', hi: 'Kahaniyan' },
+                  { id: 'story', icon: '✨', en: 'Short Stories', hi: 'Kahaniyan' },
                   { id: 'poem', icon: '📖', en: 'Poems', hi: 'Kavitayein' },
                   { id: 'song', icon: '🎵', en: 'Songs', hi: 'Gaane' },
                 ].map((type) => (

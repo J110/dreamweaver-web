@@ -146,7 +146,7 @@ export default function OnboardingPage() {
         {step === 1 && (
           <div className={styles.slide}>
             <div className={styles.iconLarge}>✨</div>
-            <h1 className={styles.title}>Stories for Every Night</h1>
+            <h1 className={styles.title}>Short Stories for Every Night</h1>
             <p className={styles.subtitle}>
               Fantasy, Adventure, Space, Animals & more
             </p>
