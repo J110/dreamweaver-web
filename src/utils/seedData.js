@@ -839,7 +839,7 @@ export const SEED_STORIES = {
       view_count: 0,
       categories: ["Bedtime", "Animals", "Futuristic", "Nature"],
       theme: "animals",
-      musicParams: {"key": "A", "chordNotes": [110.0, 138.59, 164.81, 220.0], "padType": "resonant", "padGain": 0.0406, "padFilter": 473, "padLfo": 0.0515, "noiseType": "pink", "noiseGain": 0.0122, "droneFreq": 55.0, "droneGain": 0.0316, "melodyNotes": [220.0, 277.18, 329.62, 293.66], "melodyInterval": 5201, "melodyGain": 0.0147, "bassNotes": [55.0, 82.41, 69.3], "bassInterval": 7919, "counterNotes": [346.48, 412.02, 275.0], "counterInterval": 5734, "events": [{"type": "cricket", "interval": 8886}, {"type": "owl", "interval": 21553}, {"type": "heartbeat", "interval": 10775}, {"type": "sparkle", "interval": 14652}]},
+      musicParams: {"key": "A", "chordNotes": [110.0, 138.59, 164.81, 220.0], "padType": "resonant", "padGain": 0.0406, "padFilter": 473, "padLfo": 0.0515, "noiseType": "pink", "noiseGain": 0.0122, "droneFreq": 55.0, "droneGain": 0.0316, "melodyNotes": [220.0, 277.18, 329.62, 293.66], "melodyInterval": 5201, "melodyGain": 0.0147, "bassNotes": [55.0, 82.41, 69.3], "bassInterval": 7919, "counterNotes": [346.48, 412.02, 275.0], "counterInterval": 5734, "events": [{"type": "cricket", "interval": 8886}, {"type": "owl", "interval": 21553}, {"type": "heartbeat", "interval": 10775}, {"type": "sparkle", "interval": 14652}], "soundscapePreset": "heartbeat", "musicLoop": "musicBox"},
       audio_variants: [
         { voice: "female_1", url: "/audio/pre-gen/gen-01f0_female_1.mp3", duration_seconds: 52.41 },
         { voice: "female_2", url: "/audio/pre-gen/gen-01f0_female_2.mp3", duration_seconds: 45.65 },
