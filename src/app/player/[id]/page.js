@@ -694,6 +694,30 @@ export default function PlayerPage() {
     const variantVoices = new Set(allVariants.map(v => v.voice));
     const options = [];
 
+    // Songs: show ALL variants as switches (each is a distinct musical style)
+    const isSong = content.type === 'song';
+    if (isSong) {
+      for (const variant of allVariants) {
+        const variantBaseId = variant.voice.replace(/_hi$/, '');
+        const isActive = variant.voice === selectedVoice;
+        if (!isActive) {
+          const meta = VOICES[variantBaseId];
+          if (!meta) continue;
+          const label = getVoiceLabel(variantBaseId, lang);
+          const genderLabel = lang === 'hi'
+            ? (meta.gender === 'female' ? 'महिला' : 'पुरुष')
+            : (meta.gender === 'female' ? 'Female' : 'Male');
+          options.push({
+            voiceId: variant.voice,
+            icon: meta.icon,
+            switchLabel: `${label} ${genderLabel}`,
+          });
+        }
+      }
+      return options;
+    }
+
+    // Stories/poems: show preferred voices + ASMR
     // 1. Add the 2 non-active preferred voices
     const storyVoiceIds = getStoryVoices(lang);
     const preferredBaseIds = storyVoiceIds.map(v => v.replace(/_hi$/, ''));
