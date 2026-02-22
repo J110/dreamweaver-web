@@ -1,28 +1,26 @@
 /**
- * AmbientMusicEngine v3 — Rich procedural soundscapes via Web Audio API.
+ * AmbientMusicEngine v4 — Immersive 3-layer audio for bedtime stories.
  *
- * MAJOR IMPROVEMENTS (v3):
- * 1. Each profile has a UNIQUE BASE SYNTHESIS TECHNIQUE:
- *    - FM Synthesis (Dreamy Clouds, Cosmic Voyage) — rich evolving harmonics
- *    - Chorus/Detuned Pads (Moonlit Meadow, Starlight Lullaby) — lush string-like tones
- *    - Resonant Noise (Forest Night, Autumn Forest) — organic, breathy textures
- *    - Plucked/Kalimba (Enchanted Garden) — magical resonating strings
- *    - Custom layered pads (Ocean Drift) — vast, choir-like
+ * ARCHITECTURE (v4):
+ *   Layer 1 (bottom):  Ambient soundscape loops — real recorded audio (rain, ocean, wind, etc.)
+ *   Layer 2 (middle):  Music loops — real recorded lullabies/melodies OR enhanced synthesis
+ *   Layer 3 (top):     Synthesis accents — sparkles, chimes, crickets (procedural)
  *
- * 2. LAYERED MELODIC STRUCTURES — each profile now has 3 distinct voices:
- *    - (A) Primary melody (main tune)
- *    - (B) Bass line (low, subtle, moving slowly)
- *    - (C) Countermelody/Harmony (secondary voice, often 60% gain of primary)
- *    Each on its own schedule to create polyrhythmic interest.
+ *   All layers feed through:
+ *     [synthGain]       ─┐
+ *     [musicLoopGain]   ─┼─► [masterGain] ─► destination
+ *     [soundscapeGain]  ─┘
  *
- * 3. PRESERVED FEATURES:
- *    - All environment event sounds (crickets, frogs, owls, sparkles, waves, etc.)
- *    - Existing helper functions (_playTone, _playNoiseBurst, _scheduleRepeating, etc.)
- *    - Public API (play, pause, resume, stop, setVolume, etc.)
- *    - Singleton export pattern
+ *   Synth layer also routes through a convolver reverb for warmth.
  *
- * No audio files — pure Web Audio API synthesis.
+ * PRESERVED from v3:
+ *   - All synthesis techniques (FM, Chorus, Resonant Noise, Plucked, Simple)
+ *   - All environment event sounds (crickets, frogs, owls, sparkles, waves, etc.)
+ *   - musicParams / musicProfile backward compatibility
+ *   - Singleton export pattern, public API
  */
+
+import { SOUNDSCAPES, MUSIC_LOOPS, getSoundscapeUrls, getMusicLoopUrl } from './soundscapeConfig';
 
 // ── Noise Buffer Generators ──────────────────────────────────────────────────
 
@@ -85,9 +83,17 @@ export class AmbientMusicEngine {
   constructor() {
     this._ctx = null;
     this._masterGain = null;
+    this._synthGain = null;         // submix for procedural synthesis (v4)
+    this._soundscapeGain = null;    // submix for soundscape audio loops (v4)
+    this._musicLoopGain = null;     // submix for music audio loops (v4)
+    this._reverbNode = null;        // convolver reverb for synth warmth (v4)
+    this._reverbGain = null;        // reverb wet level (v4)
     this._nodes = [];
     this._intervals = [];
     this._timeouts = [];
+    this._soundscapeSources = [];   // active soundscape BufferSourceNodes (v4)
+    this._musicLoopSource = null;   // active music loop BufferSourceNode (v4)
+    this._audioBufferCache = {};    // cached decoded AudioBuffers (v4)
     this._playing = false;
     this._currentProfile = null;
     this._volume = 0.3;
@@ -109,6 +115,12 @@ export class AmbientMusicEngine {
       this._ctx.resume().catch(() => {});
     }
     return this._ctx;
+  }
+
+  /** Returns the gain node that synth methods should connect to.
+   *  Uses _synthGain when submixes are active, otherwise _masterGain. */
+  get _synthOut() {
+    return this._synthGain || this._masterGain;
   }
 
   /** Wait for AudioContext to be in 'running' state. Resolves immediately if already running. */
@@ -135,6 +147,154 @@ export class AmbientMusicEngine {
       }, 3000);
     });
   }
+
+  // ════════════════════════════════════════════════════════════════════════════
+  // v4 — SUBMIX ROUTING, REVERB, AUDIO LOADING, SOUNDSCAPE & MUSIC LOOPS
+  // ════════════════════════════════════════════════════════════════════════════
+
+  /** Create the 3-layer submix routing graph + convolver reverb. */
+  _setupSubmixes() {
+    const ctx = this._ctx;
+
+    // Synth submix — all procedural synthesis routes here
+    this._synthGain = ctx.createGain();
+    this._synthGain.gain.value = 1.0;
+
+    // Soundscape submix — ambient audio loops route here
+    this._soundscapeGain = ctx.createGain();
+    this._soundscapeGain.gain.value = 1.0;
+
+    // Music loop submix — melodic audio loops route here
+    this._musicLoopGain = ctx.createGain();
+    this._musicLoopGain.gain.value = 1.0;
+
+    // Create convolver reverb for synth warmth
+    this._setupReverb();
+
+    // Route all submixes to master
+    this._synthGain.connect(this._masterGain);
+    this._soundscapeGain.connect(this._masterGain);
+    this._musicLoopGain.connect(this._masterGain);
+
+    // Send synth through reverb too (wet signal)
+    if (this._reverbNode) {
+      const reverbSend = ctx.createGain();
+      reverbSend.gain.value = 0.3; // reverb send level
+      this._synthGain.connect(reverbSend);
+      reverbSend.connect(this._reverbNode);
+      this._nodes.push(reverbSend);
+    }
+  }
+
+  /** Create a synthetic impulse response for convolver reverb. */
+  _setupReverb() {
+    const ctx = this._ctx;
+    try {
+      const duration = 2.5;
+      const decay = 2.0;
+      const len = ctx.sampleRate * duration;
+      const irBuffer = ctx.createBuffer(2, len, ctx.sampleRate);
+
+      for (let ch = 0; ch < 2; ch++) {
+        const d = irBuffer.getChannelData(ch);
+        for (let i = 0; i < len; i++) {
+          // Exponential decay noise with stereo variation
+          d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * decay / 3));
+        }
+      }
+
+      this._reverbNode = ctx.createConvolver();
+      this._reverbNode.buffer = irBuffer;
+
+      this._reverbGain = ctx.createGain();
+      this._reverbGain.gain.value = 0.15; // subtle wet level
+
+      this._reverbNode.connect(this._reverbGain);
+      this._reverbGain.connect(this._masterGain);
+
+      this._nodes.push(this._reverbNode, this._reverbGain);
+    } catch (e) {
+      console.warn('AmbientMusic: reverb setup failed, continuing without', e);
+      this._reverbNode = null;
+      this._reverbGain = null;
+    }
+  }
+
+  /** Fetch and decode an audio file, caching the result. */
+  async _loadAudio(url) {
+    if (this._audioBufferCache[url]) return this._audioBufferCache[url];
+    try {
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${url}`);
+      const arrayBuf = await resp.arrayBuffer();
+      const audioBuf = await this._ctx.decodeAudioData(arrayBuf);
+      this._audioBufferCache[url] = audioBuf;
+      return audioBuf;
+    } catch (e) {
+      console.warn(`AmbientMusic: failed to load audio ${url}`, e);
+      return null;
+    }
+  }
+
+  /** Start ambient soundscape loop(s) from a preset name. */
+  async _startSoundscape(presetName) {
+    const resolved = getSoundscapeUrls(presetName);
+    if (!resolved) {
+      console.warn(`AmbientMusic: unknown soundscape "${presetName}"`);
+      return;
+    }
+
+    // Pick one file at random from the preset's files
+    const url = resolved.urls[Math.floor(Math.random() * resolved.urls.length)];
+    const buffer = await this._loadAudio(url);
+    if (!buffer || !this._playing) return;
+
+    const ctx = this._ctx;
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    src.loop = true;
+
+    const g = ctx.createGain();
+    g.gain.value = resolved.gain;
+
+    src.connect(g);
+    g.connect(this._soundscapeGain);
+    src.start(ctx.currentTime);
+
+    this._soundscapeSources.push(src);
+    this._nodes.push(src, g);
+  }
+
+  /** Start a music loop from a preset name. */
+  async _startMusicLoop(presetName) {
+    const resolved = getMusicLoopUrl(presetName);
+    if (!resolved) {
+      console.warn(`AmbientMusic: unknown music loop "${presetName}"`);
+      return;
+    }
+
+    const buffer = await this._loadAudio(resolved.url);
+    if (!buffer || !this._playing) return;
+
+    const ctx = this._ctx;
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    src.loop = true;
+
+    const g = ctx.createGain();
+    g.gain.value = resolved.gain;
+
+    src.connect(g);
+    g.connect(this._musicLoopGain);
+    src.start(ctx.currentTime);
+
+    this._musicLoopSource = src;
+    this._nodes.push(src, g);
+  }
+
+  // ════════════════════════════════════════════════════════════════════════════
+  // END v4 additions
+  // ════════════════════════════════════════════════════════════════════════════
 
   // ── Helper: schedule a repeating event with jitter ──
   _scheduleRepeating(fn, baseInterval, jitterFactor = 0.3, initialDelay = null) {
@@ -184,7 +344,7 @@ export class AmbientMusicEngine {
     } else {
       g.connect(f);
     }
-    f.connect(this._masterGain);
+    f.connect(this._synthOut);
 
     osc.start(now);
     osc.stop(now + attack + decay + 0.1);
@@ -223,7 +383,7 @@ export class AmbientMusicEngine {
     } else {
       g.connect(f);
     }
-    f.connect(this._masterGain);
+    f.connect(this._synthOut);
 
     src.start(now);
 
@@ -242,7 +402,7 @@ export class AmbientMusicEngine {
     padFilter.type = 'lowpass';
     padFilter.frequency.value = filterFreq;
     padFilter.Q.value = filterQ;
-    padFilter.connect(this._masterGain);
+    padFilter.connect(this._synthOut);
 
     // LFO on filter for movement
     const lfo = ctx.createOscillator();
@@ -291,7 +451,7 @@ export class AmbientMusicEngine {
 
     src.connect(g);
     g.connect(f);
-    f.connect(this._masterGain);
+    f.connect(this._synthOut);
     src.start(ctx.currentTime);
     this._nodes.push(src, g, f);
   }
@@ -323,7 +483,7 @@ export class AmbientMusicEngine {
 
     osc.connect(g);
     g.connect(f);
-    f.connect(this._masterGain);
+    f.connect(this._synthOut);
     osc.start(now);
     lfo.start(now);
     this._nodes.push(osc, g, lfo, lfoG, f);
@@ -384,7 +544,7 @@ export class AmbientMusicEngine {
 
     carrierOsc.connect(g);
     g.connect(filt);
-    filt.connect(this._masterGain);
+    filt.connect(this._synthOut);
 
     carrierOsc.start(now);
     modOsc.start(now);
@@ -410,7 +570,7 @@ export class AmbientMusicEngine {
     padFilter.type = 'lowpass';
     padFilter.frequency.value = filterFreq;
     padFilter.Q.value = filterQ;
-    padFilter.connect(this._masterGain);
+    padFilter.connect(this._synthOut);
 
     // LFO on filter
     const lfo = ctx.createOscillator();
@@ -497,7 +657,7 @@ export class AmbientMusicEngine {
       this._nodes.push(filt);
     });
 
-    prev.connect(this._masterGain);
+    prev.connect(this._synthOut);
     noiseSrc.start(now);
 
     this._nodes.push(noiseSrc, noiseGain);
@@ -539,7 +699,7 @@ export class AmbientMusicEngine {
 
       noiseSrc.connect(g);
       g.connect(filt);
-      filt.connect(this._masterGain);
+      filt.connect(this._synthOut);
 
       noiseSrc.start(now);
 
@@ -853,7 +1013,7 @@ export class AmbientMusicEngine {
       f.frequency.value = 800;
       f.Q.value = 1;
 
-      osc.connect(g); g.connect(f); f.connect(this._masterGain);
+      osc.connect(g); g.connect(f); f.connect(this._synthOut);
       osc.start(now); osc.stop(now + 0.6);
 
       const t = setTimeout(() => { try { osc.disconnect(); g.disconnect(); f.disconnect(); } catch(e) {} }, 1200);
@@ -1003,7 +1163,7 @@ export class AmbientMusicEngine {
 
       src.connect(g);
       if (pan) { g.connect(pan); pan.connect(f); } else { g.connect(f); }
-      f.connect(this._masterGain);
+      f.connect(this._synthOut);
       src.start(now);
 
       const t = setTimeout(() => {
@@ -1045,7 +1205,7 @@ export class AmbientMusicEngine {
       f.frequency.value = 1200;
       f.Q.value = 1;
 
-      osc.connect(g); g.connect(f); f.connect(this._masterGain);
+      osc.connect(g); g.connect(f); f.connect(this._synthOut);
       osc.start(now); osc.stop(now + 4.5);
 
       const t = setTimeout(() => { try { osc.disconnect(); g.disconnect(); f.disconnect(); } catch(e) {} }, 5000);
@@ -1161,7 +1321,7 @@ export class AmbientMusicEngine {
       g.gain.linearRampToValueAtTime(0.006, now + 1);
       g.gain.exponentialRampToValueAtTime(0.0001, now + 2.5);
 
-      osc.connect(g); g.connect(this._masterGain);
+      osc.connect(g); g.connect(this._synthOut);
       osc.start(now); osc.stop(now + 3);
 
       const t = setTimeout(() => { try { osc.disconnect(); g.disconnect(); } catch(e) {} }, 4000);
@@ -1196,7 +1356,7 @@ export class AmbientMusicEngine {
       }
 
       osc.connect(g); g.connect(f);
-      if (pan) { f.connect(pan); pan.connect(this._masterGain); } else { f.connect(this._masterGain); }
+      if (pan) { f.connect(pan); pan.connect(this._synthOut); } else { f.connect(this._synthOut); }
       osc.start(now); osc.stop(now + dur + 0.1);
 
       const t = setTimeout(() => { try { osc.disconnect(); g.disconnect(); f.disconnect(); } catch(e) {} }, (dur + 1) * 1000);
@@ -1308,7 +1468,7 @@ export class AmbientMusicEngine {
 
       src.connect(g);
       if (pan) { g.connect(pan); pan.connect(f); } else { g.connect(f); }
-      f.connect(this._masterGain);
+      f.connect(this._synthOut);
       src.start(now);
 
       for (let i = 0; i < 4; i++) {
@@ -1407,7 +1567,7 @@ export class AmbientMusicEngine {
       lfo.connect(lfoG);
       lfoG.connect(g.gain);
 
-      osc.connect(g); g.connect(this._masterGain);
+      osc.connect(g); g.connect(this._synthOut);
       osc.start(ctx.currentTime);
       lfo.start(ctx.currentTime);
       this._nodes.push(osc, g, lfo, lfoG);
@@ -1486,7 +1646,7 @@ export class AmbientMusicEngine {
         f.frequency.value = 600;
         f.Q.value = 2;
 
-        osc.connect(g); g.connect(f); f.connect(this._masterGain);
+        osc.connect(g); g.connect(f); f.connect(this._synthOut);
         osc.start(now); osc.stop(now + 1.2);
         vib.start(now); vib.stop(now + 1.2);
 
@@ -1652,7 +1812,7 @@ export class AmbientMusicEngine {
       f.frequency.linearRampToValueAtTime(300, now + dur);
       f.Q.value = 0.5;
 
-      src.connect(g); g.connect(f); f.connect(this._masterGain);
+      src.connect(g); g.connect(f); f.connect(this._synthOut);
       src.start(now);
 
       const t = setTimeout(() => { try { src.disconnect(); g.disconnect(); f.disconnect(); } catch(e) {} }, (dur + 1) * 1000);
@@ -1683,7 +1843,7 @@ export class AmbientMusicEngine {
       f.frequency.value = 400;
       f.Q.value = 3;
 
-      osc.connect(g); g.connect(f); f.connect(this._masterGain);
+      osc.connect(g); g.connect(f); f.connect(this._synthOut);
       osc.start(now); osc.stop(now + 5.5);
 
       const t = setTimeout(() => { try { osc.disconnect(); g.disconnect(); f.disconnect(); } catch(e) {} }, 6500);
@@ -1714,8 +1874,8 @@ export class AmbientMusicEngine {
 
       const p = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
       osc.connect(g); g.connect(f);
-      if (p) { p.pan.value = pan; f.connect(p); p.connect(this._masterGain); }
-      else { f.connect(this._masterGain); }
+      if (p) { p.pan.value = pan; f.connect(p); p.connect(this._synthOut); }
+      else { f.connect(this._synthOut); }
 
       osc.start(now); osc.stop(now + 1);
 
@@ -1744,7 +1904,7 @@ export class AmbientMusicEngine {
       f.frequency.value = 200;
       f.Q.value = 5;
 
-      osc.connect(g); g.connect(f); f.connect(this._masterGain);
+      osc.connect(g); g.connect(f); f.connect(this._synthOut);
       osc.start(now); osc.stop(now + 1.2);
 
       const t = setTimeout(() => { try { osc.disconnect(); g.disconnect(); f.disconnect(); } catch(e) {} }, 2000);
@@ -1771,7 +1931,7 @@ export class AmbientMusicEngine {
           g.gain.linearRampToValueAtTime(0.004, now + 0.02);
           g.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
 
-          osc.connect(g); g.connect(this._masterGain);
+          osc.connect(g); g.connect(this._synthOut);
           osc.start(now); osc.stop(now + 0.3);
 
           const t = setTimeout(() => { try { osc.disconnect(); g.disconnect(); } catch(e) {} }, 800);
@@ -1818,7 +1978,7 @@ export class AmbientMusicEngine {
       f.frequency.value = 250;
       f.Q.value = 2;
 
-      osc.connect(g); g.connect(f); f.connect(this._masterGain);
+      osc.connect(g); g.connect(f); f.connect(this._synthOut);
       osc.start(now); osc.stop(now + 7.2);
 
       const t = setTimeout(() => { try { osc.disconnect(); g.disconnect(); f.disconnect(); } catch(e) {} }, 8000);
@@ -2232,6 +2392,27 @@ export class AmbientMusicEngine {
     this._playing = true;
     this._currentProfile = profileLabel;
 
+    // v4: Set up 3-layer submix routing + reverb
+    this._setupSubmixes();
+
+    // v4: Start soundscape audio loop if specified
+    const soundscapePreset = typeof profileOrParams === 'object' ? profileOrParams?.soundscapePreset : null;
+    if (soundscapePreset) {
+      // Don't await — let it load in background while synth starts immediately
+      this._startSoundscape(soundscapePreset).catch(e =>
+        console.warn('AmbientMusic: soundscape load failed', e)
+      );
+    }
+
+    // v4: Start music loop if specified
+    const musicLoop = typeof profileOrParams === 'object' ? profileOrParams?.musicLoop : null;
+    if (musicLoop) {
+      this._startMusicLoop(musicLoop).catch(e =>
+        console.warn('AmbientMusic: music loop load failed', e)
+      );
+    }
+
+    // Run the synth builder (pads, melody, events — now routed through _synthGain)
     builder();
 
     // Fade in
@@ -2291,6 +2472,26 @@ export class AmbientMusicEngine {
       try { node.disconnect(); } catch(e) {}
     });
     this._nodes = [];
+
+    // v4: cleanup soundscape and music loop sources
+    this._soundscapeSources.forEach(src => {
+      try { src.stop(); } catch(e) {}
+      try { src.disconnect(); } catch(e) {}
+    });
+    this._soundscapeSources = [];
+
+    if (this._musicLoopSource) {
+      try { this._musicLoopSource.stop(); } catch(e) {}
+      try { this._musicLoopSource.disconnect(); } catch(e) {}
+      this._musicLoopSource = null;
+    }
+
+    // v4: disconnect submix nodes (but keep _masterGain alive)
+    if (this._synthGain) { try { this._synthGain.disconnect(); } catch(e) {} this._synthGain = null; }
+    if (this._soundscapeGain) { try { this._soundscapeGain.disconnect(); } catch(e) {} this._soundscapeGain = null; }
+    if (this._musicLoopGain) { try { this._musicLoopGain.disconnect(); } catch(e) {} this._musicLoopGain = null; }
+    if (this._reverbNode) { try { this._reverbNode.disconnect(); } catch(e) {} this._reverbNode = null; }
+    if (this._reverbGain) { try { this._reverbGain.disconnect(); } catch(e) {} this._reverbGain = null; }
   }
 
   setVolume(vol) {
@@ -2315,7 +2516,13 @@ export class AmbientMusicEngine {
       this._ctx.close().catch(() => {});
       this._ctx = null;
       this._masterGain = null;
+      this._synthGain = null;
+      this._soundscapeGain = null;
+      this._musicLoopGain = null;
+      this._reverbNode = null;
+      this._reverbGain = null;
     }
+    // Don't clear audio buffer cache — it persists across play/stop cycles
   }
 }
 
