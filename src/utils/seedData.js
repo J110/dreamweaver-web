@@ -228,13 +228,10 @@ export const SEED_STORIES = {
       musicProfile: "ocean-drift",
       musicParams: {"key": "G", "chordNotes": [98.0, 123.47, 146.83, 196.0], "padType": "fm", "padGain": 0.0477, "padFilter": 889, "padLfo": 0.0819, "noiseType": "pink", "noiseGain": 0.0127, "droneFreq": 49.0, "droneGain": 0.0316, "melodyNotes": [196.0, 246.94, 293.66, 261.62], "melodyInterval": 3357, "melodyGain": 0.0212, "bassNotes": [49.0, 73.42, 61.73], "bassInterval": 5611, "counterNotes": [308.68, 367.08, 245.0], "counterInterval": 4169, "events": [{"type": "chimes", "interval": 12142}, {"type": "heartbeat", "interval": 9132}, {"type": "waveCycle", "interval": 18167}], "soundscapePreset": "rain", "musicLoop": "pianoLullaby"},
       audio_variants: [
-        { voice: "female_1", url: "/audio/pre-gen/a3945b7b_female_1.mp3", duration_seconds: 64.9 },
-        { voice: "female_2", url: "/audio/pre-gen/a3945b7b_female_2.mp3", duration_seconds: 57.04 },
-        { voice: "female_3", url: "/audio/pre-gen/a3945b7b_female_3.mp3", duration_seconds: 49.07 },
-        { voice: "asmr", url: "/audio/pre-gen/a3945b7b_asmr.mp3", duration_seconds: 52.51 },
-        { voice: "male_1", url: "/audio/pre-gen/a3945b7b_male_1.mp3", duration_seconds: 44.04 },
-        { voice: "male_2", url: "/audio/pre-gen/a3945b7b_male_2.mp3", duration_seconds: 45.8 },
-        { voice: "male_3", url: "/audio/pre-gen/a3945b7b_male_3.mp3", duration_seconds: 46.18 },
+        { voice: "female_1", url: "/audio/pre-gen/a3945b7b_female_1.mp3", duration_seconds: 89.9 },
+        { voice: "female_3", url: "/audio/pre-gen/a3945b7b_female_3.mp3", duration_seconds: 89.9 },
+        { voice: "male_1", url: "/audio/pre-gen/a3945b7b_male_1.mp3", duration_seconds: 89.9 },
+        { voice: "male_2", url: "/audio/pre-gen/a3945b7b_male_2.mp3", duration_seconds: 89.9 },
       ],
     },
     {
