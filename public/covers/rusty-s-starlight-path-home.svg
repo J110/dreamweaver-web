@@ -1,0 +1,141 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="rs-skyGrad" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#0a0e2a"/>
+      <stop offset="50%" stop-color="#1a103d"/>
+      <stop offset="100%" stop-color="#0a0e2a"/>
+    </radialGradient>
+
+    <linearGradient id="rs-pathGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#ff6b6b" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#ffd700" stop-opacity="0.8"/>
+    </linearGradient>
+
+    <filter id="rs-softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="rs-mediumGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="rs-strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <radialGradient id="rs-vignette" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="black" stop-opacity="0"/>
+      <stop offset="100%" stop-color="black" stop-opacity="0.8"/>
+    </radialGradient>
+
+    <pattern id="rs-starPattern" patternUnits="userSpaceOnUse" width="20" height="20">
+      <circle cx="10" cy="10" r="1" fill="white" opacity="0.8"/>
+    </pattern>
+  </defs>
+
+  <style>
+    @keyframes rs-twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    .rs-twinkle { animation: rs-twinkle 3s ease-in-out infinite; }
+
+    @keyframes rs-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .rs-bob { animation: rs-bob 5s ease-in-out infinite; }
+
+    @keyframes rs-float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(2deg); }
+    }
+    .rs-float { animation: rs-float 7s ease-in-out infinite; }
+
+    @keyframes rs-drift {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(10px, 5px); }
+      50% { transform: translate(5px, 10px); }
+      75% { transform: translate(-5px, 5px); }
+      100% { transform: translate(0, 0); }
+    }
+    .rs-drift { animation: rs-drift 8s ease-in-out infinite; }
+
+    @keyframes rs-pulse {
+      0%, 100% { opacity: 0.7; filter: url(#rs-softGlow); }
+      50% { opacity: 1; filter: url(#rs-mediumGlow); }
+    }
+    .rs-pulse { animation: rs-pulse 4s ease-in-out infinite; }
+
+    @keyframes rs-shimmer {
+      0%, 100% { stop-color: #ffd700; }
+      50% { stop-color: #ff6b6b; }
+    }
+    .rs-shimmer stop { animation: rs-shimmer 6s ease-in-out infinite; }
+  </style>
+
+  <!-- Layer 1: Sky/Background -->
+  <rect width="512" height="512" fill="url(#rs-skyGrad)"/>
+  <rect width="512" height="512" fill="url(#rs-starPattern)" opacity="0.3"/>
+
+  <!-- Layer 2: Far Background -->
+  <g transform="translate(0, 300)">
+    <path d="M0,100 Q128,50 256,80 Q384,60 512,90 L512,220 L0,220 Z" fill="#1a103d" opacity="0.7"/>
+    <path d="M0,120 Q128,70 256,100 Q384,80 512,110 L512,220 L0,220 Z" fill="#2a1a4d" opacity="0.5"/>
+  </g>
+
+  <!-- Layer 3: Mid Background -->
+  <g transform="translate(50, 250)">
+    <g class="rs-float">
+      <ellipse cx="80" cy="100" rx="40" ry="15" fill="#3a2a5d" opacity="0.6"/>
+      <ellipse cx="200" cy="80" rx="50" ry="20" fill="#3a2a5d" opacity="0.5"/>
+      <ellipse cx="350" cy="90" rx="45" ry="18" fill="#3a2a5d" opacity="0.6"/>
+    </g>
+  </g>
+
+  <!-- Layer 4: Middle Ground -->
+  <path d="M0,400 Q128,350 256,380 Q384,360 512,390 L512,512 L0,512 Z" fill="#2a1a4d"/>
+  <path d="M100,380 Q256,340 412,380 L412,512 L100,512 Z" fill="#3a2a5d"/>
+
+  <!-- Glowing path -->
+  <path d="M150,420 Q256,380 362,420" stroke="url(#rs-pathGrad)" stroke-width="8" fill="none" stroke-linecap="round" class="rs-shimmer"/>
+
+  <!-- Layer 5: Main Character -->
+  <g transform="translate(256, 240)">
+    <g class="rs-bob">
+      <!-- Fox body -->
+      <ellipse cx="0" cy="30" rx="40" ry="25" fill="#c48f65" filter="url(#rs-softGlow)"/>
+      <!-- Fox head -->
+      <circle cx="0" cy="-10" r="25" fill="#e6a87c"/>
+      <!-- Fox ears -->
+      <path d="M-20,-25 L-10,-50 L0,-25 Z" fill="#e6a87c"/>
+      <path d="M20,-25 L10,-50 L0,-25 Z" fill="#e6a87c"/>
+      <!-- Fox tail -->
+      <path d="M-45,20 Q-60,0 -45,-20 Q-30,-40 0,20" fill="#c48f65" opacity="0.8"/>
+      <!-- Fox eyes -->
+      <circle cx="-10" cy="-15" r="3" fill="black"/>
+      <circle cx="10" cy="-15" r="3" fill="black"/>
+      <!-- Fox nose -->
+      <circle cx="0" cy="-5" r="2" fill="black"/>
+      <!-- Glowing star in paw -->
+      <circle cx="30" cy="20" r="8" fill="#ffd700" filter="url(#rs-mediumGlow)" class="rs-pulse"/>
+    </g>
+  </g>
+
+  <!-- Layer 6: Foreground Particles/Sparkles -->
+  <g>
+    <circle cx="50" cy="100" r="2" fill="white" class="rs-twinkle rs-drift"/>
+    <circle cx="450" cy="80" r="3" fill="#ffd700" class="rs-twinkle rs-drift" filter="url(#rs-softGlow)"/>
+    <circle cx="150" cy="200" r="2" fill="white" class="rs-twinkle rs-drift"/>
+    <circle cx="350" cy="150" r="2.5" fill="#ff6b6b" class="rs-twinkle rs-drift" filter="url(#rs-softGlow)"/>
+    <circle cx="200" cy="50" r="1.5" fill="white" class="rs-twinkle rs-drift"/>
+    <circle cx="300" cy="300" r="3" fill="#ffd700" class="rs-twinkle rs-drift" filter="url(#rs-mediumGlow)"/>
+  </g>
+
+  <!-- Layer 7: Vignette Overlay -->
+  <rect width="512" height="512" fill="url(#rs-vignette)" opacity="0.4"/>
+</svg>
