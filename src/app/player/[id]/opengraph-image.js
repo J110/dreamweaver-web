@@ -44,7 +44,7 @@ export default async function Image({ params }) {
   const allStories = [...(SEED_STORIES.en || []), ...(SEED_STORIES.hi || [])];
   const story = allStories.find((s) => s.id === id);
   const title = story?.title || 'A Magical Bedtime Story';
-  const storyType = story?.type === 'poem' ? 'POEM' : story?.type === 'song' ? 'LULLABY' : 'STORY';
+  const storyType = story?.type === 'poem' ? 'POEM' : story?.type === 'song' ? 'LULLABY' : story?.type === 'long_story' ? 'LONG STORY' : 'STORY';
 
   return new ImageResponse(
     (

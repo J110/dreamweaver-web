@@ -811,7 +811,7 @@ export default function PlayerPage() {
         </div>
 
         <div className={styles.badge}>
-          {content.type?.toLowerCase() === 'story' ? 'STORY' : content.type?.toLowerCase() === 'song' ? 'LULLABY' : content.type?.toUpperCase() || 'STORY'}
+          {content.type?.toLowerCase() === 'long_story' ? 'LONG STORY' : content.type?.toLowerCase() === 'story' ? 'STORY' : content.type?.toLowerCase() === 'song' ? 'LULLABY' : content.type?.toUpperCase() || 'STORY'}
         </div>
         <h1 className={styles.title}>{content.title}</h1>
 
@@ -940,6 +940,13 @@ export default function PlayerPage() {
             <div className={styles.extraSection}>
               <h3 className={styles.extraTitle}>🎵 {t('playerSongs')}</h3>
               <div className={styles.extraText}>{stripEmotionMarkers(content.songs)}</div>
+            </div>
+          )}
+
+          {content.lullaby_lyrics && (
+            <div className={styles.extraSection}>
+              <h3 className={styles.extraTitle}>🎵 Lullaby</h3>
+              <div className={styles.extraText}>{content.lullaby_lyrics.replace(/\[(verse|chorus)\]/gi, '').replace(/  +/g, ' ').trim()}</div>
             </div>
           )}
 

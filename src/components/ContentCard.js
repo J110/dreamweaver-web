@@ -37,6 +37,7 @@ export default function ContentCard({ content, onClick }) {
         return 'badge-poem';
       case 'song':
         return 'badge-song';
+      case 'long_story':
       case 'story':
       default:
         return 'badge-story';
@@ -110,7 +111,7 @@ export default function ContentCard({ content, onClick }) {
       <div className={styles.cardContent}>
         <div className={styles.cardHeader}>
           <span className={`badge ${getTypeBadge(content.type)}`}>
-            {content.type?.toLowerCase() === 'story' ? 'Story' : content.type?.toLowerCase() === 'song' ? 'Lullaby' : content.type || 'Story'}
+            {content.type?.toLowerCase() === 'long_story' ? 'Long Story' : content.type?.toLowerCase() === 'story' ? 'Story' : content.type?.toLowerCase() === 'song' ? 'Lullaby' : content.type || 'Story'}
           </span>
         </div>
         <h3 className={styles.cardTitle}>{content.title || 'Untitled'}</h3>

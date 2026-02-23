@@ -106,6 +106,7 @@ export default function Home() {
     : stories.filter((s) => s.theme === activeTheme);
 
   const storyItems = sortByDiscovery(filteredStories.filter((s) => s.type === 'story'));
+  const longStoryItems = sortByDiscovery(filteredStories.filter((s) => s.type === 'long_story'));
   const poemItems = sortByDiscovery(filteredStories.filter((s) => s.type === 'poem'));
   const songItems = sortByDiscovery(filteredStories.filter((s) => s.type === 'song'));
 
@@ -166,6 +167,21 @@ export default function Home() {
                 </h2>
                 <div className={styles.horizontalScroll}>
                   {storyItems.map((item) => (
+                    <div key={item.id} className={styles.cardWrapper}>
+                      <ContentCard content={item} />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {longStoryItems.length > 0 && (
+              <section className={styles.section}>
+                <h2 className={styles.sectionTitle}>
+                  {lang === 'hi' ? '🌙 Lambi Kahaniyan' : '🌙 Long Stories'}
+                </h2>
+                <div className={styles.horizontalScroll}>
+                  {longStoryItems.map((item) => (
                     <div key={item.id} className={styles.cardWrapper}>
                       <ContentCard content={item} />
                     </div>
