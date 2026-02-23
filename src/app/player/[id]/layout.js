@@ -15,75 +15,6 @@ function getStoryLanguage(story) {
   return hiStories.some((s) => s.id === story.id) ? 'hi' : 'en';
 }
 
-function buildJsonLd(story) {
-  const typeLabel = getStoryTypeLabel(story.type);
-  const lang = getStoryLanguage(story);
-
-  return {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'Article',
-        '@id': `https://dreamvalley.app/player/${story.id}#article`,
-        headline: story.title,
-        description:
-          story.description ||
-          `A magical bedtime ${typeLabel.toLowerCase()} for kids`,
-        inLanguage: lang,
-        author: {
-          '@type': 'Organization',
-          name: 'Dream Valley',
-          url: 'https://dreamvalley.app',
-        },
-        publisher: {
-          '@type': 'Organization',
-          name: 'Dream Valley',
-          url: 'https://dreamvalley.app',
-          logo: {
-            '@type': 'ImageObject',
-            url: 'https://dreamvalley.app/apple-touch-icon.png',
-          },
-        },
-        mainEntityOfPage: `https://dreamvalley.app/player/${story.id}`,
-        genre: typeLabel,
-        audience: {
-          '@type': 'Audience',
-          audienceType: 'Children',
-          suggestedMinAge: story.target_age?.split('-')[0] || '2',
-          suggestedMaxAge: story.target_age?.split('-')[1] || '10',
-        },
-        isAccessibleForFree: true,
-        ...(story.duration
-          ? { timeRequired: `PT${Math.ceil(story.duration / 60)}M` }
-          : {}),
-      },
-      {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          {
-            '@type': 'ListItem',
-            position: 1,
-            name: 'Home',
-            item: 'https://dreamvalley.app',
-          },
-          {
-            '@type': 'ListItem',
-            position: 2,
-            name: 'Explore',
-            item: 'https://dreamvalley.app/explore',
-          },
-          {
-            '@type': 'ListItem',
-            position: 3,
-            name: story.title,
-            item: `https://dreamvalley.app/player/${story.id}`,
-          },
-        ],
-      },
-    ],
-  };
-}
-
 export async function generateMetadata({ params }) {
   const { id } = await params;
 
@@ -140,21 +71,6 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default async function PlayerLayout({ children, params }) {
-  const { id } = await params;
-  const allStories = [...(SEED_STORIES.en || []), ...(SEED_STORIES.hi || [])];
-  const story = allStories.find((s) => s.id === id);
-
-  // Google supports JSON-LD anywhere in the HTML body
-  return (
-    <>
-      {story && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildJsonLd(story)) }}
-        />
-      )}
-      {children}
-    </>
-  );
+export default function PlayerLayout({ children }) {
+  return children;
 }
