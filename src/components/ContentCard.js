@@ -110,7 +110,7 @@ export default function ContentCard({ content, onClick }) {
       <div className={styles.cardContent}>
         <div className={styles.cardHeader}>
           <span className={`badge ${getTypeBadge(content.type)}`}>
-            {content.type?.toLowerCase() === 'story' ? 'Short Story' : content.type?.toLowerCase() === 'song' ? 'Lullaby' : content.type || 'Short Story'}
+            {content.type?.toLowerCase() === 'story' ? 'Story' : content.type?.toLowerCase() === 'song' ? 'Lullaby' : content.type || 'Story'}
           </span>
         </div>
         <h3 className={styles.cardTitle}>{content.title || 'Untitled'}</h3>
