@@ -231,7 +231,6 @@ export const SEED_STORIES = {
         { voice: "female_1", url: "/audio/pre-gen/a3945b7b_female_1.mp3", duration_seconds: 119.91 },
         { voice: "female_3", url: "/audio/pre-gen/a3945b7b_female_3.mp3", duration_seconds: 119.91 },
         { voice: "male_1", url: "/audio/pre-gen/a3945b7b_male_1.mp3", duration_seconds: 119.91 },
-        { voice: "male_2", url: "/audio/pre-gen/a3945b7b_male_2.mp3", duration_seconds: 119.91 },
       ],
     },
     {

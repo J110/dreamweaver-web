@@ -32,7 +32,7 @@ const translations = {
     homeTrending: 'Popular Stories',
     homeStories: 'Short Stories',
     homePoems: 'Poems',
-    homeSongs: 'Songs',
+    homeSongs: 'Lullabies',
     // Themes
     themeFantasy: 'Fantasy',
     themeAdventure: 'Adventure',
@@ -99,12 +99,12 @@ const translations = {
     playerMinRead: 'min read',
     playerStory: 'Short Story',
     playerPoems: 'Poems',
-    playerSongs: 'Songs',
+    playerSongs: 'Lullabies',
     playerQA: 'Questions & Answers',
     // Content types
     typeStory: 'Short Story',
     typePoem: 'Poem',
-    typeSong: 'Song',
+    typeSong: 'Lullaby',
     // Lengths
     lengthShort: 'Short',
     lengthMedium: 'Medium',
@@ -165,7 +165,7 @@ const translations = {
     homeTrending: 'Lokpriya Kahaniyan',
     homeStories: 'Kahaniyan',
     homePoems: 'Kavitayen',
-    homeSongs: 'Gaane',
+    homeSongs: 'Loriyaan',
     // Themes
     themeFantasy: 'Kalpana',
     themeAdventure: 'Sahas',
@@ -232,12 +232,12 @@ const translations = {
     playerMinRead: 'min padhne mein',
     playerStory: 'Kahani',
     playerPoems: 'Kavitayen',
-    playerSongs: 'Gaane',
+    playerSongs: 'Loriyaan',
     playerQA: 'Sawaal Jawaab',
     // Content types
     typeStory: 'Kahani',
     typePoem: 'Kavita',
-    typeSong: 'Gaana',
+    typeSong: 'Lori',
     // Lengths
     lengthShort: 'Chhoti',
     lengthMedium: 'Beech ki',

@@ -14,7 +14,7 @@ const FILTER_TYPES = [
   { id: 'all', en: 'All', hi: 'Sabhi' },
   { id: 'story', en: 'Short Stories', hi: 'Kahaniyan' },
   { id: 'poem', en: 'Poems', hi: 'Kavitayein' },
-  { id: 'song', en: 'Songs', hi: 'Gaane' },
+  { id: 'song', en: 'Lullabies', hi: 'Loriyaan' },
 ];
 
 const THEMES = [

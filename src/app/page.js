@@ -192,7 +192,7 @@ export default function Home() {
             {songItems.length > 0 && (
               <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>
-                  {lang === 'hi' ? '🎵 Gaane' : '🎵 Songs'}
+                  {lang === 'hi' ? '🎵 Loriyaan' : '🎵 Lullabies'}
                 </h2>
                 <div className={styles.horizontalScroll}>
                   {songItems.map((item) => (
