@@ -1,4 +1,3 @@
-import Script from 'next/script';
 import { SEED_STORIES } from '@/utils/seedData';
 
 function getStoryTypeLabel(type) {
@@ -146,13 +145,12 @@ export default async function PlayerLayout({ children, params }) {
   const allStories = [...(SEED_STORIES.en || []), ...(SEED_STORIES.hi || [])];
   const story = allStories.find((s) => s.id === id);
 
+  // Google supports JSON-LD anywhere in the HTML body
   return (
     <>
       {story && (
-        <Script
-          id="story-jsonld"
+        <script
           type="application/ld+json"
-          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(buildJsonLd(story)) }}
         />
       )}
