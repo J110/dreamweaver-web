@@ -71,10 +71,11 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function PlayerLayout({ children, params }) {
+export default async function PlayerLayout({ children, params }) {
+  const { id } = await params;
   // Build JSON-LD for this story (server component — runs at request time)
   const allStories = [...(SEED_STORIES.en || []), ...(SEED_STORIES.hi || [])];
-  const story = allStories.find((s) => s.id === params.id);
+  const story = allStories.find((s) => s.id === id);
 
   if (!story) return children;
 
