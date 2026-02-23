@@ -621,10 +621,10 @@ export default function PlayerPage() {
   const handleShare = async () => {
     if (!content) return;
     const shareUrl = `https://dreamvalley.app/player/${params.id}`;
+    const shareText = `${content.title} — ${content.description || `Listen on Dream Valley`}\n${shareUrl}`;
     const shareData = {
       title: content.title,
-      text: content.description || `Listen to "${content.title}" on Dream Valley`,
-      url: shareUrl,
+      text: shareText,
     };
 
     try {
