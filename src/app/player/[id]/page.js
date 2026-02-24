@@ -357,7 +357,10 @@ export default function PlayerPage() {
           setIsPlaying(true);
           startProgressTracking();
           updatePlaybackState('playing');
-          // Connect Web Audio analyser for breathing pacer (once per audio element)
+          // Connect Web Audio analyser for breathing pacer (once per audio element).
+          // Use captureStream() so audio plays directly through the Audio element
+          // (survives iOS background/lock screen) while still feeding the AnalyserNode.
+          // Fallback to createMediaElementSource for browsers without captureStream.
           if (narrationConnectedAudioRef.current !== audio) {
             try {
               if (!narrationCtxRef.current) {
@@ -365,13 +368,26 @@ export default function PlayerPage() {
               }
               const ctx = narrationCtxRef.current;
               if (ctx.state === 'suspended') await ctx.resume().catch(() => {});
-              const source = ctx.createMediaElementSource(audio);
               const analyser = ctx.createAnalyser();
               analyser.fftSize = 256;
               analyser.smoothingTimeConstant = 0.8;
-              source.connect(analyser);
-              analyser.connect(ctx.destination);
-              narrationSourceRef.current = source;
+
+              if (typeof audio.captureStream === 'function') {
+                // captureStream: audio plays through element (survives background),
+                // analyser taps the stream for visualization only — no ctx.destination needed
+                const stream = audio.captureStream();
+                const source = ctx.createMediaStreamSource(stream);
+                source.connect(analyser);
+                // Do NOT connect to ctx.destination — audio already plays via the element
+                narrationSourceRef.current = source;
+              } else {
+                // Fallback: route through AudioContext (breaks on iOS background but works everywhere else)
+                const source = ctx.createMediaElementSource(audio);
+                source.connect(analyser);
+                analyser.connect(ctx.destination);
+                narrationSourceRef.current = source;
+              }
+
               narrationConnectedAudioRef.current = audio;
               setNarrationAnalyser(analyser);
             } catch (err) {
