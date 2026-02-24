@@ -14,6 +14,13 @@ import { VOICES, getVoiceId, getVoiceLabel } from '@/utils/voiceConfig';
 import { stripEmotionMarkers } from '@/utils/textUtils';
 import { recordListen, markCompleted } from '@/utils/listeningHistory';
 import BreathingPacer from '@/components/BreathingPacer';
+import {
+  updateMediaSessionMetadata,
+  registerMediaSessionHandlers,
+  updatePlaybackState,
+  updatePositionState,
+  clearMediaSession,
+} from '@/utils/mediaSessionManager';
 import styles from './page.module.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -74,6 +81,72 @@ export default function PlayerPage() {
       }
     };
   }, []);
+
+  // Media Session: Register lock screen controls (play/pause/seek)
+  useEffect(() => {
+    registerMediaSessionHandlers({
+      onPlay: () => {
+        if (audioRef.current && !audioRef.current.ended && audioRef.current.currentTime > 0) {
+          audioRef.current.play().then(() => {
+            setIsPlaying(true);
+            startProgressTracking();
+            updatePlaybackState('playing');
+          }).catch(console.error);
+        }
+      },
+      onPause: () => {
+        if (audioRef.current) {
+          audioRef.current.pause();
+          setIsPlaying(false);
+          stopProgressTracking();
+          updatePlaybackState('paused');
+        }
+      },
+      onSeekBackward: (details) => {
+        if (audioRef.current && audioRef.current.duration) {
+          const skip = details?.seekOffset || 15;
+          audioRef.current.currentTime = Math.max(0, audioRef.current.currentTime - skip);
+        }
+      },
+      onSeekForward: (details) => {
+        if (audioRef.current && audioRef.current.duration) {
+          const skip = details?.seekOffset || 15;
+          audioRef.current.currentTime = Math.min(audioRef.current.duration, audioRef.current.currentTime + skip);
+        }
+      },
+    });
+    return () => clearMediaSession();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Media Session: Update metadata when story loads (title, cover art on lock screen)
+  useEffect(() => {
+    if (!content) return;
+    const typeLabel = content.type === 'song' ? 'Lullaby'
+      : content.type === 'poem' ? 'Bedtime Poem'
+      : 'Bedtime Story';
+    updateMediaSessionMetadata({
+      title: content.title,
+      artist: 'Dream Valley',
+      album: typeLabel,
+      coverUrl: content.cover,
+    });
+  }, [content?.id, content?.title, content?.cover, content?.type]);
+
+  // Media Session: Sync UI when returning from background (e.g. after phone call)
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible' && audioRef.current) {
+        if (audioRef.current.paused && isPlaying) {
+          setIsPlaying(false);
+          stopProgressTracking();
+          updatePlaybackState('paused');
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, [isPlaying, stopProgressTracking]);
 
   // Auto-select voice based on preferences when content loads
   const voiceInitializedRef = useRef(false);
@@ -278,6 +351,9 @@ export default function PlayerPage() {
         const pct = (now / dur) * 100;
         setProgress(pct);
 
+        // Update lock screen progress bar
+        updatePositionState(now, dur);
+
         // Record listening history (throttled: every 10s)
         const ts = Date.now();
         if (params?.id && ts - lastHistoryRecordRef.current > 10000) {
@@ -303,12 +379,14 @@ export default function PlayerPage() {
         audioRef.current.pause();
         setIsPlaying(false);
         stopProgressTracking();
+        updatePlaybackState('paused');
         return;
       } else if (audioRef.current.currentTime > 0 && !audioRef.current.ended) {
         try {
           await audioRef.current.play();
           setIsPlaying(true);
           startProgressTracking();
+          updatePlaybackState('playing');
         } catch (e) {
           console.error('Resume failed:', e);
         }
@@ -344,6 +422,7 @@ export default function PlayerPage() {
           await audio.play();
           setIsPlaying(true);
           startProgressTracking();
+          updatePlaybackState('playing');
           // Connect Web Audio analyser for breathing pacer (once per audio element)
           if (narrationConnectedAudioRef.current !== audio) {
             try {
@@ -369,6 +448,7 @@ export default function PlayerPage() {
           console.error('Playback failed:', e);
           setAudioError(lang === 'hi' ? 'Audio nahi chal paya' : 'Could not play audio');
           setIsPlaying(false);
+          updatePlaybackState('paused');
         }
       }, { once: true });
 
@@ -376,6 +456,7 @@ export default function PlayerPage() {
         setIsPlaying(false);
         setProgress(100);
         stopProgressTracking();
+        updatePlaybackState('paused');
         if (params?.id) markCompleted(params.id);
       });
 
@@ -385,6 +466,7 @@ export default function PlayerPage() {
         setAudioError(lang === 'hi' ? 'Audio load nahi ho paya. Baad mein try karein.' : 'Could not load audio. Try again later.');
         setIsPlaying(false);
         stopProgressTracking();
+        updatePlaybackState('paused');
       });
 
       audio.src = audioSource.url;
