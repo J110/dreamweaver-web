@@ -18,6 +18,7 @@ const COVERS = {
   blanketStars: '/covers/blanket-stars.svg',
   frozenMelody: '/covers/frozen-melody.svg',
   dreamLibrary: '/covers/dream-library.svg',
+  leoMoonlightSchool: '/covers/leo-moonlight-school-waves.svg',
 };
 
 export const SEED_STORIES = {
@@ -932,7 +933,7 @@ export const SEED_STORIES = {
       type: "story",
       title: "Leo and the Moonlight School of Waves",
       description: "Leo, a little boy in a floating treehouse, discovers a magical underwater school where sea creatures celebrate learning under the moonlight.",
-      cover: "",
+      cover: COVERS.leoMoonlightSchool,
       addedAt: "2026-02-24",
       text: "[GENTLE] High above the sparkling ocean, in a cozy treehouse that floated on gentle waves, lived a little boy named Leo. \n\nHis treehouse had soft blue walls that glowed like the night sky, and a big round window where he could watch the stars twinkle. \n\nTonight, Leo snuggled under his favorite blanket, listening to the ocean’s lullaby—*whoosh, whoosh*—as the waves rocked him to sleep.\n\n\n[CURIOUS] But wait! What was that? A soft golden light shimmered beneath the waves. \n\nLeo rubbed his eyes and leaned closer to the window. [WHISPERING] 'Is that... a school?' \n\nDown below, fish with tiny backpacks swam in neat rows, and a wise old turtle held a glowing seashell like a book. [EXCITED] 'A school under the sea!' Leo gasped.\n\n\n[ADVENTUROUS] Leo tiptoed to his closet and found his special diving helmet—it let him breathe underwater! \n\n[DRAMATIC_PAUSE] *Click!* The helmet lit up, and with a big splash, Leo dove into the moonlit ocean. \n\nThe fish giggled as he swam toward them. [JOYFUL] 'Welcome, Leo!' said the turtle, handing him a seashell. 'Tonight, we’re learning about the stars!'\n\n\n[CALM] Leo sat on a smooth rock, listening as the turtle pointed to the sky. \n\n'The stars are like friends,' she said. 'They guide us home when we’re lost.' \n\nLeo looked up and saw his treehouse twinkling above, like a little star of its own. [laugh] 'I think I know the way!' he said.\n\n\n[GENTLE] After the lesson, the sea creatures threw a celebration! \n\nThey danced in swirling circles, their scales shimmering like confetti. \n\nLeo clapped along, his heart full of joy. 'This is the best school ever!' he cheered.\n\n\n[SLEEPY] But as the moon climbed higher, Leo’s eyelids grew heavy. \n\nThe turtle smiled. 'Time to rest, little one. Even explorers need their dreams.' \n\nLeo waved goodbye and floated back to his treehouse, where his pillow waited like a cloud. \n\nAnd as the waves sang their soft *whoosh, whoosh*, Leo drifted off to sleep, dreaming of stars, schools, and new friends under the sea.",
       target_age: 3,

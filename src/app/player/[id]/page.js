@@ -46,6 +46,7 @@ export default function PlayerPage() {
   const audioRef = useRef(null);
   const audioDisposingRef = useRef(false);
   const progressIntervalRef = useRef(null);
+  const voiceSwitchAutoPlayRef = useRef(false);
   const musicRef = useRef(null);
   // Web Audio analyser for breathing pacer (persists across pause/resume)
   const [narrationAnalyser, setNarrationAnalyser] = useState(null);
@@ -395,6 +396,18 @@ export default function PlayerPage() {
     }
   }, [content, isPlaying, lang, getAudioSource, startProgressTracking, stopProgressTracking]);
 
+  // Auto-play when voice is switched by user
+  useEffect(() => {
+    if (voiceSwitchAutoPlayRef.current && selectedVoice) {
+      voiceSwitchAutoPlayRef.current = false;
+      // Small delay to ensure audio cleanup from handleVoiceChange completes
+      const timer = setTimeout(() => {
+        handlePlayPause();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedVoice, handlePlayPause]);
+
   // Handle voice character change
   const handleVoiceChange = useCallback((voiceId) => {
     if (voiceId === selectedVoice) return;
@@ -418,6 +431,7 @@ export default function PlayerPage() {
     setDuration(0);
     setAudioError(null);
     stopProgressTracking();
+    voiceSwitchAutoPlayRef.current = true;
     setSelectedVoice(voiceId);
   }, [selectedVoice, stopProgressTracking]);
 
