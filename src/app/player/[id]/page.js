@@ -82,72 +82,6 @@ export default function PlayerPage() {
     };
   }, []);
 
-  // Media Session: Register lock screen controls (play/pause/seek)
-  useEffect(() => {
-    registerMediaSessionHandlers({
-      onPlay: () => {
-        if (audioRef.current && !audioRef.current.ended && audioRef.current.currentTime > 0) {
-          audioRef.current.play().then(() => {
-            setIsPlaying(true);
-            startProgressTracking();
-            updatePlaybackState('playing');
-          }).catch(console.error);
-        }
-      },
-      onPause: () => {
-        if (audioRef.current) {
-          audioRef.current.pause();
-          setIsPlaying(false);
-          stopProgressTracking();
-          updatePlaybackState('paused');
-        }
-      },
-      onSeekBackward: (details) => {
-        if (audioRef.current && audioRef.current.duration) {
-          const skip = details?.seekOffset || 15;
-          audioRef.current.currentTime = Math.max(0, audioRef.current.currentTime - skip);
-        }
-      },
-      onSeekForward: (details) => {
-        if (audioRef.current && audioRef.current.duration) {
-          const skip = details?.seekOffset || 15;
-          audioRef.current.currentTime = Math.min(audioRef.current.duration, audioRef.current.currentTime + skip);
-        }
-      },
-    });
-    return () => clearMediaSession();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Media Session: Update metadata when story loads (title, cover art on lock screen)
-  useEffect(() => {
-    if (!content) return;
-    const typeLabel = content.type === 'song' ? 'Lullaby'
-      : content.type === 'poem' ? 'Bedtime Poem'
-      : 'Bedtime Story';
-    updateMediaSessionMetadata({
-      title: content.title,
-      artist: 'Dream Valley',
-      album: typeLabel,
-      coverUrl: content.cover,
-    });
-  }, [content?.id, content?.title, content?.cover, content?.type]);
-
-  // Media Session: Sync UI when returning from background (e.g. after phone call)
-  useEffect(() => {
-    const handleVisibility = () => {
-      if (document.visibilityState === 'visible' && audioRef.current) {
-        if (audioRef.current.paused && isPlaying) {
-          setIsPlaying(false);
-          stopProgressTracking();
-          updatePlaybackState('paused');
-        }
-      }
-    };
-    document.addEventListener('visibilitychange', handleVisibility);
-    return () => document.removeEventListener('visibilitychange', handleVisibility);
-  }, [isPlaying, stopProgressTracking]);
-
   // Auto-select voice based on preferences when content loads
   const voiceInitializedRef = useRef(false);
   useEffect(() => {
@@ -489,6 +423,72 @@ export default function PlayerPage() {
       return () => clearTimeout(timer);
     }
   }, [selectedVoice, handlePlayPause]);
+
+  // Media Session: Register lock screen controls (play/pause/seek)
+  useEffect(() => {
+    registerMediaSessionHandlers({
+      onPlay: () => {
+        if (audioRef.current && !audioRef.current.ended && audioRef.current.currentTime > 0) {
+          audioRef.current.play().then(() => {
+            setIsPlaying(true);
+            startProgressTracking();
+            updatePlaybackState('playing');
+          }).catch(console.error);
+        }
+      },
+      onPause: () => {
+        if (audioRef.current) {
+          audioRef.current.pause();
+          setIsPlaying(false);
+          stopProgressTracking();
+          updatePlaybackState('paused');
+        }
+      },
+      onSeekBackward: (details) => {
+        if (audioRef.current && audioRef.current.duration) {
+          const skip = details?.seekOffset || 15;
+          audioRef.current.currentTime = Math.max(0, audioRef.current.currentTime - skip);
+        }
+      },
+      onSeekForward: (details) => {
+        if (audioRef.current && audioRef.current.duration) {
+          const skip = details?.seekOffset || 15;
+          audioRef.current.currentTime = Math.min(audioRef.current.duration, audioRef.current.currentTime + skip);
+        }
+      },
+    });
+    return () => clearMediaSession();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Media Session: Update metadata when story loads (title, cover art on lock screen)
+  useEffect(() => {
+    if (!content) return;
+    const typeLabel = content.type === 'song' ? 'Lullaby'
+      : content.type === 'poem' ? 'Bedtime Poem'
+      : 'Bedtime Story';
+    updateMediaSessionMetadata({
+      title: content.title,
+      artist: 'Dream Valley',
+      album: typeLabel,
+      coverUrl: content.cover,
+    });
+  }, [content?.id, content?.title, content?.cover, content?.type]);
+
+  // Media Session: Sync UI when returning from background (e.g. after phone call)
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible' && audioRef.current) {
+        if (audioRef.current.paused && isPlaying) {
+          setIsPlaying(false);
+          stopProgressTracking();
+          updatePlaybackState('paused');
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, [isPlaying, stopProgressTracking]);
 
   // Handle voice character change
   const handleVoiceChange = useCallback((voiceId) => {
