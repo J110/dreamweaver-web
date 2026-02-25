@@ -945,11 +945,13 @@ export const SEED_STORIES = {
       theme: "bedtime",
       musicParams: {},
       audio_variants: [
-        { voice: "female_1", url: "/audio/pre-gen/gen-9e87_female_1.mp3", duration_seconds: 196.17 },
-        { voice: "female_2", url: "/audio/pre-gen/gen-9e87_female_2.mp3", duration_seconds: 182.5 },
-        { voice: "female_3", url: "/audio/pre-gen/gen-9e87_female_3.mp3", duration_seconds: 167.61 },
-        { voice: "male_1", url: "/audio/pre-gen/gen-9e87_male_1.mp3", duration_seconds: 156.51 },
-        { voice: "male_2", url: "/audio/pre-gen/gen-9e87_male_2.mp3", duration_seconds: 157.31 },
+        { voice: "female_1", url: "/audio/pre-gen/gen-9e87_female_1.mp3", duration_seconds: 186.32 },
+        { voice: "female_2", url: "/audio/pre-gen/gen-9e87_female_2.mp3", duration_seconds: 173.17 },
+        { voice: "female_3", url: "/audio/pre-gen/gen-9e87_female_3.mp3", duration_seconds: 153.29 },
+        { voice: "asmr", url: "/audio/pre-gen/gen-9e87_asmr.mp3", duration_seconds: 175.22 },
+        { voice: "male_1", url: "/audio/pre-gen/gen-9e87_male_1.mp3", duration_seconds: 147.31 },
+        { voice: "male_2", url: "/audio/pre-gen/gen-9e87_male_2.mp3", duration_seconds: 150.26 },
+        { voice: "male_3", url: "/audio/pre-gen/gen-9e87_male_3.mp3", duration_seconds: 153.15 },
       ],
     },
     {
