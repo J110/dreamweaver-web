@@ -51,6 +51,8 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   position: relative;
+  /* Push content below notch/status bar on devices with safe areas (iOS notch, Android cutout) */
+  padding-top: env(safe-area-inset-top);
 }
 
 html {

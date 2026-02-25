@@ -7,6 +7,7 @@ import { VoicePreferencesProvider } from '@/utils/voicePreferences';
 import { isLoggedIn, getToken, logout } from '@/utils/auth';
 import useVersionCheck from '@/hooks/useVersionCheck';
 import BottomNav from './BottomNav';
+import InstallPrompt from './InstallPrompt';
 
 const NO_NAV_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy'];
 const PUBLIC_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy'];
@@ -76,6 +77,7 @@ export default function AppShell({ children }) {
           {children}
         </div>
         {showNav && <BottomNav />}
+        <InstallPrompt />
       </VoicePreferencesProvider>
     </I18nProvider>
   );
