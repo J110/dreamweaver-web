@@ -100,6 +100,13 @@ export class AmbientMusicEngine {
     this._fadeTime = 3;
     this._playGeneration = 0; // increments on each play() call to cancel stale async plays
     this._fadeCleanupTimer = null; // pending fade-out cleanup timeout from stop(true)
+
+    // Safari/iOS: use native <audio> elements for soundscape/music loops
+    // so they survive background/lock screen (AudioContext gets suspended by iOS).
+    this._useNativeAudio = (typeof HTMLMediaElement !== 'undefined' &&
+      typeof HTMLMediaElement.prototype.captureStream !== 'function');
+    this._nativeAudios = [];       // { audio: HTMLAudioElement, baseGain: number }
+    this._nativeFadeInterval = null;
   }
 
   _ensureContext() {
@@ -246,6 +253,13 @@ export class AmbientMusicEngine {
 
     // Pick one file at random from the preset's files
     const url = resolved.urls[Math.floor(Math.random() * resolved.urls.length)];
+
+    // Safari/iOS: use native <audio> element so it survives background/lock screen
+    if (this._useNativeAudio) {
+      this._startNativeAudio(url, resolved.gain);
+      return;
+    }
+
     const buffer = await this._loadAudio(url);
     if (!buffer || !this._playing) return;
 
@@ -273,6 +287,12 @@ export class AmbientMusicEngine {
       return;
     }
 
+    // Safari/iOS: use native <audio> element so it survives background/lock screen
+    if (this._useNativeAudio) {
+      this._startNativeAudio(resolved.url, resolved.gain);
+      return;
+    }
+
     const buffer = await this._loadAudio(resolved.url);
     if (!buffer || !this._playing) return;
 
@@ -290,6 +310,68 @@ export class AmbientMusicEngine {
 
     this._musicLoopSource = src;
     this._nodes.push(src, g);
+  }
+
+  // ── Safari/iOS native <audio> helpers for background audio survival ──
+
+  /** Create a native <audio> element for a loop file (soundscape or music loop). */
+  _startNativeAudio(url, baseGain) {
+    const audio = new Audio(url);
+    audio.loop = true;
+    audio.volume = 0; // starts silent, faded in by play()
+    audio.play().catch(e => console.warn('AmbientMusic: native audio play failed', e));
+    this._nativeAudios.push({ audio, baseGain });
+  }
+
+  /** Fade all native <audio> elements to target volume over duration seconds.
+   *  targetFactor: 0 = silent, 1 = full (_volume × baseGain per element). */
+  _fadeNativeAudios(targetFactor, duration) {
+    if (this._nativeFadeInterval) {
+      clearInterval(this._nativeFadeInterval);
+      this._nativeFadeInterval = null;
+    }
+    if (!this._nativeAudios.length) return;
+
+    if (duration <= 0) {
+      this._nativeAudios.forEach(({ audio, baseGain }) => {
+        audio.volume = Math.min(1, baseGain * this._volume * targetFactor);
+      });
+      return;
+    }
+
+    const stepMs = 50;
+    const steps = Math.max(1, Math.round((duration * 1000) / stepMs));
+    let step = 0;
+
+    // Capture starting volumes
+    const starts = this._nativeAudios.map(({ audio }) => audio.volume);
+
+    this._nativeFadeInterval = setInterval(() => {
+      step++;
+      const progress = Math.min(1, step / steps);
+      this._nativeAudios.forEach(({ audio, baseGain }, i) => {
+        const target = Math.min(1, baseGain * this._volume * targetFactor);
+        audio.volume = starts[i] + (target - starts[i]) * progress;
+      });
+      if (step >= steps) {
+        clearInterval(this._nativeFadeInterval);
+        this._nativeFadeInterval = null;
+      }
+    }, stepMs);
+  }
+
+  /** Stop and remove all native <audio> elements. */
+  _cleanupNativeAudios() {
+    if (this._nativeFadeInterval) {
+      clearInterval(this._nativeFadeInterval);
+      this._nativeFadeInterval = null;
+    }
+    this._nativeAudios.forEach(({ audio }) => {
+      audio.pause();
+      audio.src = '';
+      audio.load(); // release resources
+    });
+    this._nativeAudios = [];
   }
 
   // ════════════════════════════════════════════════════════════════════════════
@@ -2420,6 +2502,11 @@ export class AmbientMusicEngine {
     this._masterGain.gain.cancelScheduledValues(now);
     this._masterGain.gain.setValueAtTime(0, now);
     this._masterGain.gain.linearRampToValueAtTime(this._volume, now + this._fadeTime);
+
+    // Also fade in any native <audio> elements (Safari/iOS background audio)
+    if (this._nativeAudios.length) {
+      this._fadeNativeAudios(1, this._fadeTime);
+    }
   }
 
   pause() {
@@ -2433,6 +2520,7 @@ export class AmbientMusicEngine {
   stop(fade = true) {
     if (!this._ctx || !this._masterGain) {
       this._playing = false;
+      this._cleanupNativeAudios();
       return;
     }
 
@@ -2442,6 +2530,8 @@ export class AmbientMusicEngine {
       this._masterGain.gain.cancelScheduledValues(now);
       this._masterGain.gain.setValueAtTime(this._masterGain.gain.value, now);
       this._masterGain.gain.linearRampToValueAtTime(0, now + this._fadeTime);
+      // Fade out native audio elements too
+      this._fadeNativeAudios(0, this._fadeTime);
       // Save timer ID so play() can cancel it if called before fade completes
       this._fadeCleanupTimer = setTimeout(() => {
         this._fadeCleanupTimer = null;
@@ -2492,6 +2582,9 @@ export class AmbientMusicEngine {
     if (this._musicLoopGain) { try { this._musicLoopGain.disconnect(); } catch(e) {} this._musicLoopGain = null; }
     if (this._reverbNode) { try { this._reverbNode.disconnect(); } catch(e) {} this._reverbNode = null; }
     if (this._reverbGain) { try { this._reverbGain.disconnect(); } catch(e) {} this._reverbGain = null; }
+
+    // Cleanup native <audio> elements (Safari/iOS)
+    this._cleanupNativeAudios();
   }
 
   setVolume(vol) {
@@ -2501,6 +2594,12 @@ export class AmbientMusicEngine {
       this._masterGain.gain.cancelScheduledValues(now);
       this._masterGain.gain.setValueAtTime(this._masterGain.gain.value, now);
       this._masterGain.gain.linearRampToValueAtTime(this._volume, now + 0.3);
+    }
+    // Update native <audio> element volumes (Safari/iOS)
+    if (this._nativeAudios.length && this._playing) {
+      this._nativeAudios.forEach(({ audio, baseGain }) => {
+        audio.volume = Math.min(1, baseGain * this._volume);
+      });
     }
   }
 
@@ -2512,6 +2611,7 @@ export class AmbientMusicEngine {
 
   destroy() {
     this.stop(false);
+    this._cleanupNativeAudios();
     if (this._ctx) {
       this._ctx.close().catch(() => {});
       this._ctx = null;
