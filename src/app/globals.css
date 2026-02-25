@@ -37,6 +37,8 @@ body {
   padding: 0;
   width: 100%;
   min-height: 100%;
+  /* Prevent white flash behind status bar / safe area */
+  background-color: var(--color-deep-night);
 }
 
 * {

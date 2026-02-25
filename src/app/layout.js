@@ -18,6 +18,7 @@ export const viewport = {
 
 export const metadata = {
   metadataBase: new URL('https://dreamvalley.app'),
+  themeColor: '#0D0B2E',
   title: 'Dream Valley - Magical Bedtime Stories for Kids',
   description:
     'Dream Valley offers soothing AI-narrated bedtime stories, poems, and lullabies for children. With calming voices, ambient music, and beautiful illustrations — perfect for helping kids fall asleep peacefully.',
