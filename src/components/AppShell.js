@@ -28,6 +28,13 @@ export default function AppShell({ children }) {
   // Only checks on startup and visibility change — never mid-session.
   useVersionCheck();
 
+  // Register service worker for PWA support (required for beforeinstallprompt on Chrome)
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+  }, []);
+
   useEffect(() => {
     const isPublic = isPublicRoute(pathname);
 
