@@ -9,9 +9,10 @@ const SHOW_DELAY_MS = 3000;
 /**
  * Cross-platform PWA install prompt.
  *
- * - Android / Desktop Chrome: captures `beforeinstallprompt`, shows "Install" button
- *   that triggers the native install dialog.
- * - iOS Safari: shows manual instructions ("Tap Share → Add to Home Screen").
+ * - Android / Desktop Chrome: captures `beforeinstallprompt`, shows "Add" button
+ *   that triggers the native install dialog (adds to home screen as PWA).
+ * - iOS Safari: shows step-by-step instructions (Share → Add to Home Screen).
+ *   iOS has no API to trigger this — user must do it manually.
  * - Already installed (standalone mode): hidden.
  * - Dismissable with ✕ — persists in localStorage so it only shows once.
  */
@@ -86,20 +87,23 @@ export default function InstallPrompt() {
         <div className={styles.text}>
           {platform === 'ios' ? (
             <>
-              <span className={styles.title}>Add Dream Valley to Home Screen</span>
+              <span className={styles.title}>Create a shortcut for Dream Valley</span>
               <span className={styles.subtitle}>
-                No install needed! Tap{' '}
+                Add to your home screen for a full screen experience!
+              </span>
+              <span className={styles.steps}>
+                1. Tap{' '}
                 <svg className={styles.shareIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13" />
                 </svg>
-                {' '}then &ldquo;Add to Home Screen&rdquo;
+                {' '}below &nbsp;2. Tap &ldquo;Add to Home Screen&rdquo;
               </span>
             </>
           ) : (
             <>
-              <span className={styles.title}>Add Dream Valley to Home Screen</span>
+              <span className={styles.title}>Create a shortcut for Dream Valley</span>
               <span className={styles.subtitle}>
-                No install needed — full screen, faster loading
+                Add to your home screen for a full screen experience!
               </span>
             </>
           )}

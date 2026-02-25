@@ -67,6 +67,18 @@
   flex-wrap: wrap;
 }
 
+.steps {
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  color: var(--color-primary-purple);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
 .shareIcon {
   display: inline-block;
   width: 14px;
