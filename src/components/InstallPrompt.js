@@ -105,11 +105,7 @@ export default function InstallPrompt() {
                 Add to your home screen for a full screen experience!
               </span>
               <span className={styles.steps}>
-                1. Tap{' '}
-                <svg className={styles.shareIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13" />
-                </svg>
-                {' '}below &nbsp;2. Tap &ldquo;Add to Home Screen&rdquo;
+                Tap <strong>···</strong> in Safari&apos;s toolbar → &ldquo;Add to Home Screen&rdquo;
               </span>
             </>
           ) : (
