@@ -13,9 +13,10 @@ const SHOW_DELAY_MS = 3000;
  * - Only shows on the home page ('/') — not during onboarding, login, or player.
  * - Android / Desktop Chrome: captures `beforeinstallprompt`, shows "Add" button
  *   that triggers the native install dialog (adds to home screen as PWA).
- * - iOS Safari: shows step-by-step instructions (Share → Add to Home Screen).
+ * - iOS Safari: shows step-by-step instructions (··· menu → Add to Home Screen).
  *   iOS has no API to trigger this — user must do it manually.
  * - Already installed (standalone mode): hidden.
+ * - Auto-hides when app is installed (listens for `appinstalled` event).
  * - Dismissable with ✕ — persists in localStorage so it only shows once.
  */
 export default function InstallPrompt() {
@@ -25,8 +26,7 @@ export default function InstallPrompt() {
   const deferredPromptRef = useRef(null);
   const listenerSetup = useRef(false);
 
-  // Always listen for beforeinstallprompt (it fires once on page load,
-  // we need to capture it even before we're on the home page)
+  // Always listen for beforeinstallprompt and appinstalled
   useEffect(() => {
     if (listenerSetup.current) return;
     listenerSetup.current = true;
@@ -36,7 +36,16 @@ export default function InstallPrompt() {
       deferredPromptRef.current = e;
       setPlatform('chrome');
     };
+
+    // Auto-dismiss when app is installed
+    const handleAppInstalled = () => {
+      setVisible(false);
+      localStorage.setItem(DISMISSED_KEY, '1');
+      deferredPromptRef.current = null;
+    };
+
     window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+    window.addEventListener('appinstalled', handleAppInstalled);
 
     // Detect iOS Safari
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
@@ -48,6 +57,7 @@ export default function InstallPrompt() {
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+      window.removeEventListener('appinstalled', handleAppInstalled);
     };
   }, []);
 
@@ -81,12 +91,21 @@ export default function InstallPrompt() {
   };
 
   const handleInstallClick = async () => {
-    if (!deferredPromptRef.current) return;
-    deferredPromptRef.current.prompt();
-    const result = await deferredPromptRef.current.userChoice;
-    if (result.outcome === 'accepted') {
-      setVisible(false);
-      localStorage.setItem(DISMISSED_KEY, '1');
+    if (!deferredPromptRef.current) {
+      // Prompt already used or expired — just dismiss
+      handleDismiss();
+      return;
+    }
+    try {
+      deferredPromptRef.current.prompt();
+      const result = await deferredPromptRef.current.userChoice;
+      if (result.outcome === 'accepted') {
+        setVisible(false);
+        localStorage.setItem(DISMISSED_KEY, '1');
+      }
+    } catch (e) {
+      // prompt() can throw if already used — dismiss gracefully
+      handleDismiss();
     }
     deferredPromptRef.current = null;
   };
