@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import styles from './InstallPrompt.module.css';
 
 const DISMISSED_KEY = 'installPromptDismissed';
@@ -9,6 +10,7 @@ const SHOW_DELAY_MS = 3000;
 /**
  * Cross-platform PWA install prompt.
  *
+ * - Only shows on the home page ('/') — not during onboarding, login, or player.
  * - Android / Desktop Chrome: captures `beforeinstallprompt`, shows "Add" button
  *   that triggers the native install dialog (adds to home screen as PWA).
  * - iOS Safari: shows step-by-step instructions (Share → Add to Home Screen).
@@ -17,21 +19,18 @@ const SHOW_DELAY_MS = 3000;
  * - Dismissable with ✕ — persists in localStorage so it only shows once.
  */
 export default function InstallPrompt() {
+  const pathname = usePathname();
   const [visible, setVisible] = useState(false);
   const [platform, setPlatform] = useState(null); // 'chrome' | 'ios' | null
   const deferredPromptRef = useRef(null);
+  const listenerSetup = useRef(false);
 
+  // Always listen for beforeinstallprompt (it fires once on page load,
+  // we need to capture it even before we're on the home page)
   useEffect(() => {
-    // Already dismissed?
-    if (localStorage.getItem(DISMISSED_KEY)) return;
+    if (listenerSetup.current) return;
+    listenerSetup.current = true;
 
-    // Already running as installed PWA?
-    const isStandalone =
-      window.matchMedia('(display-mode: standalone)').matches ||
-      window.navigator.standalone === true;
-    if (isStandalone) return;
-
-    // Listen for Chrome/Edge/Samsung beforeinstallprompt
     const handleBeforeInstall = (e) => {
       e.preventDefault();
       deferredPromptRef.current = e;
@@ -39,28 +38,42 @@ export default function InstallPrompt() {
     };
     window.addEventListener('beforeinstallprompt', handleBeforeInstall);
 
-    // Detect iOS Safari (no beforeinstallprompt support)
+    // Detect iOS Safari
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
       (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome|CriOS|FxiOS/.test(navigator.userAgent);
-
-    // Show after delay
-    const timer = setTimeout(() => {
-      if (deferredPromptRef.current) {
-        // Chrome/Edge already captured the event
-        setVisible(true);
-      } else if (isIOS && isSafari) {
-        setPlatform('ios');
-        setVisible(true);
-      }
-      // Other browsers (Firefox, etc.) — don't show if no install mechanism
-    }, SHOW_DELAY_MS);
+    if (isIOS && isSafari) {
+      setPlatform('ios');
+    }
 
     return () => {
-      clearTimeout(timer);
       window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
     };
   }, []);
+
+  // Show/hide based on pathname — only on home page
+  useEffect(() => {
+    if (pathname !== '/') {
+      setVisible(false);
+      return;
+    }
+
+    // Already dismissed or already standalone?
+    if (localStorage.getItem(DISMISSED_KEY)) return;
+    const isStandalone =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true;
+    if (isStandalone) return;
+
+    // Show after delay once we're on home page
+    const timer = setTimeout(() => {
+      if (deferredPromptRef.current || platform === 'ios') {
+        setVisible(true);
+      }
+    }, SHOW_DELAY_MS);
+
+    return () => clearTimeout(timer);
+  }, [pathname, platform]);
 
   const handleDismiss = () => {
     setVisible(false);
