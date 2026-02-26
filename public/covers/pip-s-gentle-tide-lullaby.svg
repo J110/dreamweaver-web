@@ -1,0 +1,215 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="pg-skyGrad" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#0a1a3a"/>
+      <stop offset="50%" stop-color="#1a2a5a"/>
+      <stop offset="100%" stop-color="#0a0a2a"/>
+    </radialGradient>
+
+    <linearGradient id="pg-oceanGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a3a6a"/>
+      <stop offset="50%" stop-color="#2a5a8a"/>
+      <stop offset="100%" stop-color="#1a4a7a"/>
+    </linearGradient>
+
+    <linearGradient id="pg-meteorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd700"/>
+      <stop offset="50%" stop-color="#ffa500"/>
+      <stop offset="100%" stop-color="#ff6b00"/>
+    </linearGradient>
+
+    <linearGradient id="pg-villageGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#5a3a2a"/>
+      <stop offset="100%" stop-color="#3a2a1a"/>
+    </linearGradient>
+
+    <filter id="pg-softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="pg-mediumGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="pg-strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <radialGradient id="pg-vignette" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="black" stop-opacity="0"/>
+      <stop offset="100%" stop-color="black" stop-opacity="1"/>
+    </radialGradient>
+
+    <filter id="pg-sparkleGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+      <feSpecularLighting result="specOut" in="blur" specularConstant="1" specularExponent="20" lighting-color="#ffd700">
+        <fePointLight x="0" y="0" z="200"/>
+      </feSpecularLighting>
+      <feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+    </filter>
+  </defs>
+
+  <style>
+    @keyframes pg-starTwinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    .pg-starTwinkle {
+      animation: pg-starTwinkle 3s ease-in-out infinite;
+    }
+
+    @keyframes pg-meteorPulse {
+      0%, 100% { opacity: 0.8; filter: url(#pg-mediumGlow); }
+      50% { opacity: 1; filter: url(#pg-strongGlow); }
+    }
+    .pg-meteorPulse {
+      animation: pg-meteorPulse 5s ease-in-out infinite;
+    }
+
+    @keyframes pg-waveFlow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .pg-waveFlow {
+      animation: pg-waveFlow 8s ease-in-out infinite;
+    }
+
+    @keyframes pg-characterBob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .pg-characterBob {
+      animation: pg-characterBob 6s ease-in-out infinite;
+    }
+
+    @keyframes pg-sparkleDrift {
+      0% { transform: translate(0, 0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translate(10px, 10px); opacity: 0; }
+    }
+    .pg-sparkleDrift {
+      animation: pg-sparkleDrift 9s ease-in-out infinite;
+    }
+
+    @keyframes pg-cloudDrift {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(20px); }
+    }
+    .pg-cloudDrift {
+      animation: pg-cloudDrift 12s ease-in-out infinite;
+    }
+
+    @keyframes pg-lanternGlow {
+      0%, 100% { opacity: 0.7; filter: url(#pg-softGlow); }
+      50% { opacity: 1; filter: url(#pg-mediumGlow); }
+    }
+    .pg-lanternGlow {
+      animation: pg-lanternGlow 4s ease-in-out infinite;
+    }
+  </style>
+
+  <!-- Layer 1: Sky/Background -->
+  <rect width="512" height="512" fill="url(#pg-skyGrad)"/>
+
+  <!-- Stars -->
+  <g>
+    <circle cx="50" cy="80" r="1.5" fill="white" class="pg-starTwinkle" style="animation-delay: 0s"/>
+    <circle cx="120" cy="50" r="1.2" fill="white" class="pg-starTwinkle" style="animation-delay: 0.5s"/>
+    <circle cx="200" cy="30" r="1.8" fill="white" class="pg-starTwinkle" style="animation-delay: 1s"/>
+    <circle cx="300" cy="60" r="1.3" fill="white" class="pg-starTwinkle" style="animation-delay: 1.5s"/>
+    <circle cx="400" cy="40" r="1.6" fill="white" class="pg-starTwinkle" style="animation-delay: 2s"/>
+    <circle cx="450" cy="90" r="1.1" fill="white" class="pg-starTwinkle" style="animation-delay: 2.5s"/>
+    <circle cx="150" cy="120" r="1.4" fill="white" class="pg-starTwinkle" style="animation-delay: 0.3s"/>
+    <circle cx="350" cy="110" r="1.7" fill="white" class="pg-starTwinkle" style="animation-delay: 0.8s"/>
+  </g>
+
+  <!-- Distant mountains -->
+  <path d="M0,300 Q100,250 200,280 Q300,260 400,290 Q500,270 512,300 L512,512 L0,512 Z" fill="#0a1a2a" opacity="0.7"/>
+
+  <!-- Layer 2: Far Background -->
+  <g class="pg-cloudDrift">
+    <path d="M50,150 Q100,130 150,140 Q200,120 250,130 Q300,110 350,120 Q400,100 450,110 Q500,90 512,100"
+          fill="white" opacity="0.3" filter="url(#pg-softGlow)"/>
+  </g>
+
+  <!-- Ocean horizon -->
+  <rect x="0" y="300" width="512" height="212" fill="url(#pg-oceanGrad)"/>
+
+  <!-- Layer 3: Mid Background -->
+  <g class="pg-waveFlow">
+    <!-- Distant waves -->
+    <path d="M0,320 Q100,310 200,320 Q300,310 400,320 Q500,310 512,320 L512,512 L0,512 Z" fill="#2a4a7a" opacity="0.8"/>
+    <path d="M0,340 Q150,330 300,340 Q450,330 512,340 L512,512 L0,512 Z" fill="#3a5a8a" opacity="0.6"/>
+  </g>
+
+  <!-- Village silhouette -->
+  <path d="M100,350 L120,330 L140,340 L160,320 L180,335 L200,315 L220,330 L240,310 L260,325 L280,305 L300,320 L320,300 L340,315 L360,295 L380,310 L400,290 L420,305 L440,285 L460,300 L480,280 L500,295 L500,350 Z" fill="url(#pg-villageGrad)" opacity="0.9"/>
+
+  <!-- Lanterns -->
+  <g transform="translate(180, 310)">
+    <circle cx="0" cy="0" r="8" fill="#ffd700" class="pg-lanternGlow"/>
+    <rect x="-2" y="8" width="4" height="12" fill="#5a3a2a"/>
+  </g>
+  <g transform="translate(320, 290)">
+    <circle cx="0" cy="0" r="6" fill="#ffa500" class="pg-lanternGlow" style="animation-delay: 1s"/>
+    <rect x="-1.5" y="6" width="3" height="9" fill="#5a3a2a"/>
+  </g>
+  <g transform="translate(440, 285)">
+    <circle cx="0" cy="0" r="7" fill="#ff6b00" class="pg-lanternGlow" style="animation-delay: 2s"/>
+    <rect x="-1.8" y="7" width="3.6" height="10" fill="#5a3a2a"/>
+  </g>
+
+  <!-- Layer 4: Middle Ground -->
+  <g class="pg-waveFlow">
+    <!-- Mid waves -->
+    <path d="M0,380 Q120,370 240,380 Q360,370 480,380 Q512,375 512,380 L512,512 L0,512 Z" fill="#3a6a9a" opacity="0.7"/>
+    <path d="M0,420 Q180,410 360,420 Q512,415 512,420 L512,512 L0,512 Z" fill="#4a7a9a" opacity="0.5"/>
+  </g>
+
+  <!-- Layer 5: Main Character -->
+  <g transform="translate(256, 240)">
+    <g class="pg-characterBob">
+      <!-- Meteor -->
+      <ellipse cx="0" cy="0" rx="25" ry="15" fill="url(#pg-meteorGrad)" class="pg-meteorPulse" filter="url(#pg-mediumGlow)"/>
+
+      <!-- Pip's body -->
+      <circle cx="0" cy="0" r="12" fill="#a0d8f3" filter="url(#pg-softGlow)"/>
+
+      <!-- Eyes -->
+      <circle cx="-5" cy="-3" r="3" fill="white"/>
+      <circle cx="-5" cy="-3" r="1.5" fill="black"/>
+      <circle cx="5" cy="-3" r="3" fill="white"/>
+      <circle cx="5" cy="-3" r="1.5" fill="black"/>
+
+      <!-- Mouth -->
+      <path d="M-3,4 Q0,6 3,4" stroke="black" stroke-width="1" fill="none"/>
+
+      <!-- Antennae -->
+      <path d="M-8,-10 Q-10,-15 -12,-12" stroke="#a0d8f3" stroke-width="2" fill="none"/>
+      <circle cx="-12" cy="-12" r="2" fill="#ffd700" filter="url(#pg-softGlow)"/>
+      <path d="M8,-10 Q10,-15 12,-12" stroke="#a0d8f3" stroke-width="2" fill="none"/>
+      <circle cx="12" cy="-12" r="2" fill="#ffd700" filter="url(#pg-softGlow)"/>
+
+      <!-- Little arms -->
+      <path d="M-12,-2 Q-15,0 -12,2" stroke="#a0d8f3" stroke-width="2" fill="none"/>
+      <path d="M12,-2 Q15,0 12,2" stroke="#a0d8f3" stroke-width="2" fill="none"/>
+    </g>
+  </g>
+
+  <!-- Layer 6: Foreground Particles/Sparkles -->
+  <g>
+    <circle cx="100" cy="200" r="2" fill="white" class="pg-sparkleDrift" style="animation-delay: 0s"/>
+    <circle cx="400" cy="180" r="1.5" fill="#ffd700" class="pg-sparkleDrift" style="animation-delay: 1s"/>
+    <circle cx="200" cy="150" r="2.5" fill="white" class="pg-sparkleDrift" style="animation-delay: 2s"/>
+    <circle cx="350" cy="220" r="1.8" fill="#ffa500" class="pg-sparkleDrift" style="animation-delay: 3s"/>
+    <circle cx="150" cy="250" r="2" fill="white" class="pg-sparkleDrift" style="animation-delay: 4s"/>
+    <circle cx="450" cy="200" r="1.5" fill="#ff6b00" class="pg-sparkleDrift" style="animation-delay: 5s"/>
+  </g>
+
+  <!-- Layer 7: Vignette Overlay -->
+  <rect width="512" height="512" fill="url(#pg-vignette)" opacity="0.4"/>
+</svg>

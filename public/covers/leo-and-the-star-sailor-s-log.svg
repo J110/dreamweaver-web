@@ -1,0 +1,227 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradients -->
+    <radialGradient id="le-skyGrad" cx="50%" cy="50%" r="70%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#0a0e2a"/>
+      <stop offset="50%" stop-color="#1a103d"/>
+      <stop offset="100%" stop-color="#0a0e2a"/>
+    </radialGradient>
+
+    <linearGradient id="le-waterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a2a6c"/>
+      <stop offset="50%" stop-color="#3a3a8a"/>
+      <stop offset="100%" stop-color="#1a2a6c"/>
+    </linearGradient>
+
+    <linearGradient id="le-treeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3a2e1a"/>
+      <stop offset="100%" stop-color="#2a1e0a"/>
+    </linearGradient>
+
+    <linearGradient id="le-sailGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8f8ff"/>
+      <stop offset="50%" stop-color="#ffd700"/>
+      <stop offset="100%" stop-color="#f8f8ff"/>
+    </linearGradient>
+
+    <radialGradient id="le-moonGrad" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#f5f3ce"/>
+      <stop offset="50%" stop-color="#e6e2b8"/>
+      <stop offset="100%" stop-color="#d4d0a0"/>
+    </radialGradient>
+
+    <radialGradient id="le-vignette" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="black" stop-opacity="0"/>
+      <stop offset="100%" stop-color="black" stop-opacity="1"/>
+    </radialGradient>
+
+    <!-- Filters -->
+    <filter id="le-softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="le-mediumGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="le-strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="le-starGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+      <feSpecularLighting result="specOut" in="blur" specularConstant="1" specularExponent="20" lighting-color="#ffd700">
+        <fePointLight x="0" y="0" z="200"/>
+      </feSpecularLighting>
+      <feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+    </filter>
+  </defs>
+
+  <style>
+    @keyframes le-twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    .le-twinkle { animation: le-twinkle 2s ease-in-out infinite; }
+
+    @keyframes le-slowTwinkle {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.9; }
+    }
+    .le-slowTwinkle { animation: le-slowTwinkle 3s ease-in-out infinite; }
+
+    @keyframes le-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .le-bob { animation: le-bob 5s ease-in-out infinite; }
+
+    @keyframes le-float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(0.5deg); }
+    }
+    .le-float { animation: le-float 6s ease-in-out infinite; }
+
+    @keyframes le-cloudDrift {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(10px); }
+    }
+    .le-cloudDrift { animation: le-cloudDrift 8s ease-in-out infinite; }
+
+    @keyframes le-waterWave {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    .le-waterWave { animation: le-waterWave 7s ease-in-out infinite; }
+
+    @keyframes le-particleDrift {
+      0% { transform: translate(0, 0) scale(1); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 0.5; }
+      100% { transform: translate(15px, 15px) scale(0.5); opacity: 0; }
+    }
+    .le-particleDrift { animation: le-particleDrift 9s ease-in-out infinite; }
+
+    @keyframes le-pulseGlow {
+      0%, 100% { filter: url(#le-softGlow); }
+      50% { filter: url(#le-mediumGlow); }
+    }
+    .le-pulseGlow { animation: le-pulseGlow 4s ease-in-out infinite; }
+
+    @keyframes le-sailWave {
+      0%, 100% { transform: rotate(-2deg); }
+      50% { transform: rotate(2deg); }
+    }
+    .le-sailWave { animation: le-sailWave 6s ease-in-out infinite; }
+  </style>
+
+  <!-- Layer 1: Sky/Background -->
+  <rect width="512" height="512" fill="url(#le-skyGrad)"/>
+
+  <!-- Distant stars -->
+  <g>
+    <circle cx="50" cy="80" r="1" fill="#ffd700" filter="url(#le-starGlow)" class="le-twinkle"/>
+    <circle cx="120" cy="40" r="1.2" fill="#ffd700" filter="url(#le-starGlow)" class="le-slowTwinkle"/>
+    <circle cx="200" cy="60" r="0.8" fill="#ffd700" filter="url(#le-starGlow)" class="le-twinkle"/>
+    <circle cx="300" cy="30" r="1.5" fill="#ffd700" filter="url(#le-starGlow)" class="le-slowTwinkle"/>
+    <circle cx="400" cy="70" r="1" fill="#ffd700" filter="url(#le-starGlow)" class="le-twinkle"/>
+    <circle cx="450" cy="120" r="1.2" fill="#ffd700" filter="url(#le-starGlow)" class="le-slowTwinkle"/>
+    <circle cx="350" cy="150" r="0.7" fill="#ffd700" filter="url(#le-starGlow)" class="le-twinkle"/>
+    <circle cx="150" cy="180" r="1.3" fill="#ffd700" filter="url(#le-starGlow)" class="le-slowTwinkle"/>
+  </g>
+
+  <!-- Moon -->
+  <circle cx="420" cy="100" r="35" fill="url(#le-moonGrad)" filter="url(#le-softGlow)"/>
+
+  <!-- Layer 2: Far Background -->
+  <g class="le-cloudDrift">
+    <path d="M0,200 Q50,180 100,200 T200,200 T300,210 T400,200 T500,210 L512,250 L0,250 Z" fill="#2a3a6a" opacity="0.6"/>
+    <path d="M50,280 Q150,260 250,280 T450,280 L512,320 L0,320 Z" fill="#3a4a7a" opacity="0.4"/>
+  </g>
+
+  <!-- Layer 3: Mid Background -->
+  <g>
+    <!-- Distant islands -->
+    <path d="M50,350 Q100,330 150,350 T250,350 T350,360 T450,350 L512,400 L0,400 Z" fill="#2a1e3a" opacity="0.7"/>
+    <path d="M100,380 Q150,360 200,380 T300,380 T400,390 L450,420 L50,420 Z" fill="#3a2e4a" opacity="0.5"/>
+
+    <!-- Distant ship -->
+    <g transform="translate(380,320) scale(0.6)">
+      <path d="M0,0 L0,-40 L30,-20 L30,0 Z" fill="url(#le-sailGrad)" filter="url(#le-softGlow)" class="le-sailWave"/>
+      <path d="M-10,0 L40,0 L35,10 L-5,10 Z" fill="#3a2e1a"/>
+    </g>
+  </g>
+
+  <!-- Layer 4: Middle Ground -->
+  <g>
+    <!-- Water -->
+    <rect x="0" y="400" width="512" height="112" fill="url(#le-waterGrad)" class="le-waterWave"/>
+
+    <!-- Treehouse base -->
+    <path d="M200,350 Q256,320 310,350 L310,400 L200,400 Z" fill="url(#le-treeGrad)"/>
+    <path d="M220,350 L220,300 L290,300 L290,350" fill="#4a3e2a"/>
+
+    <!-- Tree branches -->
+    <path d="M180,320 Q200,300 220,320 Q240,340 256,320 Q270,300 290,320 Q310,340 330,320" fill="none" stroke="#3a2e1a" stroke-width="8" stroke-linecap="round"/>
+    <path d="M200,280 Q220,260 240,280" fill="none" stroke="#3a2e1a" stroke-width="6" stroke-linecap="round"/>
+    <path d="M270,280 Q290,260 310,280" fill="none" stroke="#3a2e1a" stroke-width="6" stroke-linecap="round"/>
+  </g>
+
+  <!-- Layer 5: Main Character -->
+  <g transform="translate(256,240)">
+    <g class="le-bob">
+      <!-- Leo's body -->
+      <path d="M-20,-30 Q-10,-40 0,-30 Q10,-20 20,-30 Q30,-40 40,-30 Q35,-10 20,0 Q5,10 -5,10 Q-15,-10 -20,-30 Z" fill="#ffd700" filter="url(#le-softGlow)"/>
+
+      <!-- Leo's head -->
+      <circle cx="10" cy="-50" r="15" fill="#f8d49a"/>
+
+      <!-- Leo's hair -->
+      <path d="M-5,-65 Q0,-75 10,-65 Q20,-75 25,-65 Q30,-55 20,-50 Q10,-55 0,-50 Q-10,-55 -5,-65 Z" fill="#3a2e1a"/>
+
+      <!-- Leo's nightshirt -->
+      <path d="M-20,-30 Q-25,-20 -20,-10 Q-15,0 -10,-10 Q-5,-20 0,-10 Q5,0 10,-10 Q15,-20 20,-10 Q25,0 20,-30 Z" fill="#3a5a8a"/>
+
+      <!-- Leo's telescope -->
+      <path d="M-30,-20 L-50,-30 L-50,-20 L-30,-10 Z" fill="#3a2e1a"/>
+      <circle cx="-40" cy="-25" r="3" fill="#ffd700" filter="url(#le-starGlow)"/>
+
+      <!-- Leo's map -->
+      <path d="M25,-15 L40,-25 L40,0 L25,10 Z" fill="#f8f8f0" filter="url(#le-softGlow)"/>
+      <path d="M28,-12 Q32,-18 36,-12 Q34,-8 30,-8 Q28,-12 28,-12 Z" fill="#ffd700" class="le-pulseGlow"/>
+    </g>
+  </g>
+
+  <!-- Layer 6: Foreground Particles/Sparkles -->
+  <g>
+    <!-- Floating particles -->
+    <g transform="translate(100,150)">
+      <g class="le-particleDrift" style="animation-delay: 0s">
+        <circle cx="0" cy="0" r="1.5" fill="#ffd700" filter="url(#le-starGlow)"/>
+      </g>
+      <g class="le-particleDrift" style="animation-delay: 1s">
+        <circle cx="10" cy="5" r="1" fill="#ffd700" filter="url(#le-starGlow)"/>
+      </g>
+    </g>
+
+    <g transform="translate(400,100)">
+      <g class="le-particleDrift" style="animation-delay: 2s">
+        <circle cx="0" cy="0" r="1.2" fill="#ffd700" filter="url(#le-starGlow)"/>
+      </g>
+      <g class="le-particleDrift" style="animation-delay: 3s">
+        <circle cx="15" cy="10" r="0.8" fill="#ffd700" filter="url(#le-starGlow)"/>
+      </g>
+    </g>
+
+    <!-- Nearby twinkling stars -->
+    <circle cx="180" cy="200" r="1.5" fill="#ffd700" filter="url(#le-starGlow)" class="le-twinkle"/>
+    <circle cx="350" cy="180" r="1.3" fill="#ffd700" filter="url(#le-starGlow)" class="le-slowTwinkle"/>
+    <circle cx="280" cy="250" r="1" fill="#ffd700" filter="url(#le-starGlow)" class="le-twinkle"/>
+  </g>
+
+  <!-- Layer 7: Vignette Overlay -->
+  <rect width="512" height="512" fill="url(#le-vignette)" opacity="0.4"/>
+</svg>
