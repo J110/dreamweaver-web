@@ -107,6 +107,7 @@ export class AmbientMusicEngine {
       typeof HTMLMediaElement.prototype.captureStream !== 'function');
     this._nativeAudios = [];       // { audio: HTMLAudioElement, baseGain: number }
     this._nativeFadeInterval = null;
+    this._paused = false;          // true when user explicitly pauses (vs mute)
   }
 
   _ensureContext() {
@@ -2510,15 +2511,20 @@ export class AmbientMusicEngine {
   }
 
   pause() {
+    this._paused = true;
     if (this._ctx && this._playing) this._ctx.suspend();
     // Pause native <audio> elements (iOS soundscape + music loops)
     this._nativeAudios.forEach(({ audio }) => { audio.pause(); });
   }
 
   resume() {
+    this._paused = false;
     if (this._ctx && this._playing) this._ctx.resume();
-    // Resume native <audio> elements (iOS soundscape + music loops)
-    this._nativeAudios.forEach(({ audio }) => { audio.play().catch(() => {}); });
+    // Resume native <audio> elements — but only if not muted (volume > 0).
+    // iOS ignores audio.volume, so mute pauses native elements; don't undo that.
+    if (this._volume > 0) {
+      this._nativeAudios.forEach(({ audio }) => { audio.play().catch(() => {}); });
+    }
   }
 
   stop(fade = true) {
@@ -2552,6 +2558,7 @@ export class AmbientMusicEngine {
     }
 
     this._playing = false;
+    this._paused = false;
     this._currentProfile = null;
   }
 
@@ -2608,8 +2615,19 @@ export class AmbientMusicEngine {
     // Update native <audio> element volumes (Safari/iOS)
     if (this._nativeAudios.length && this._playing) {
       this._nativeAudios.forEach(({ audio, baseGain }) => {
-        audio.volume = Math.min(1, baseGain * this._volume);
+        audio.volume = Math.min(1, baseGain * this._volume); // works on desktop
       });
+      // iOS ignores audio.volume entirely — pause/play as mute/unmute fallback.
+      // Only do this when music is not user-paused (pause button handles its own state).
+      if (!this._paused) {
+        if (this._volume === 0) {
+          this._nativeAudios.forEach(({ audio }) => { audio.pause(); });
+        } else {
+          this._nativeAudios.forEach(({ audio }) => {
+            if (audio.paused) audio.play().catch(() => {});
+          });
+        }
+      }
     }
   }
 
