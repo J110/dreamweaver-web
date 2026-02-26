@@ -6,24 +6,29 @@
  * - Setting metadata (title, artist, artwork) for the lock screen
  * - Registering action handlers (play, pause, seek) for lock screen controls
  * - Updating playback state and position
- * - Converting SVG cover art to PNG (Media Session requires raster images)
+ * - Converting SVG cover art to PNG data URLs (Android needs self-contained URLs;
+ *   blob URLs are page-scoped and can't be fetched by the OS notification system)
  */
 
-// Cache rasterized cover blob URLs to avoid re-rendering
+// Cache rasterized cover data URLs to avoid re-rendering
 const _artworkCache = new Map();
 
-/**
- * Rasterize an SVG URL to a PNG blob URL using an offscreen canvas.
- * Media Session API requires raster image URLs (PNG/JPEG), not SVGs.
- *
- * @param {string} svgUrl - URL like "/covers/sleepy-cloud.svg"
- * @param {number} size - Target square size in pixels (default 512)
- * @returns {Promise<string|null>} Blob URL of rasterized PNG, or null
- */
-async function rasterizeSvgCover(svgUrl, size = 512) {
-  if (!svgUrl || svgUrl.includes('default.svg')) return null;
+// Fallback app icon for lock screen when cover art fails to load
+const FALLBACK_ICON = '/icon-512x512.png';
 
-  const cacheKey = `${svgUrl}_${size}`;
+/**
+ * Rasterize an SVG (or any image) URL to a PNG data URL using an offscreen canvas.
+ * Uses data URLs instead of blob URLs because Android's notification system
+ * renders lock screen artwork out-of-process and can't access blob: URLs.
+ *
+ * @param {string} imgUrl - URL like "/covers/sleepy-cloud.svg" or "/icon-512x512.png"
+ * @param {number} size - Target square size in pixels (default 512)
+ * @returns {Promise<string|null>} Data URL of rasterized PNG, or null
+ */
+async function rasterizeCover(imgUrl, size = 512) {
+  if (!imgUrl || imgUrl.includes('default.svg')) return null;
+
+  const cacheKey = `${imgUrl}_${size}`;
   if (_artworkCache.has(cacheKey)) return _artworkCache.get(cacheKey);
 
   return new Promise((resolve) => {
@@ -38,28 +43,28 @@ async function rasterizeSvgCover(svgUrl, size = 512) {
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, size, size);
 
-        canvas.toBlob((blob) => {
-          if (blob) {
-            const blobUrl = URL.createObjectURL(blob);
-            _artworkCache.set(cacheKey, blobUrl);
-            resolve(blobUrl);
-          } else {
-            resolve(null);
-          }
-        }, 'image/png');
+        // Use toDataURL instead of toBlob — produces a self-contained
+        // data:image/png;base64,... string that works across processes
+        const dataUrl = canvas.toDataURL('image/png');
+        if (dataUrl && dataUrl !== 'data:,') {
+          _artworkCache.set(cacheKey, dataUrl);
+          resolve(dataUrl);
+        } else {
+          resolve(null);
+        }
       } catch (err) {
-        console.warn('[MediaSession] SVG rasterization failed:', err.message);
+        console.warn('[MediaSession] Cover rasterization failed:', err.message);
         resolve(null);
       }
     };
 
     img.onerror = () => {
-      console.warn('[MediaSession] Could not load cover:', svgUrl);
+      console.warn('[MediaSession] Could not load cover:', imgUrl);
       resolve(null);
     };
 
     // Convert relative paths to absolute URLs
-    img.src = svgUrl.startsWith('http') ? svgUrl : `${window.location.origin}${svgUrl}`;
+    img.src = imgUrl.startsWith('http') ? imgUrl : `${window.location.origin}${imgUrl}`;
   });
 }
 
@@ -75,18 +80,27 @@ async function rasterizeSvgCover(svgUrl, size = 512) {
 export async function updateMediaSessionMetadata({ title, artist, album, coverUrl }) {
   if (!('mediaSession' in navigator)) return;
 
-  const artwork = [];
+  let artwork = [];
 
   if (coverUrl && !coverUrl.includes('default.svg')) {
-    // Rasterize SVG at multiple sizes for best lock screen display
+    // Rasterize cover at multiple sizes for best lock screen display
     const sizes = [512, 256, 128];
-    const results = await Promise.all(sizes.map(s => rasterizeSvgCover(coverUrl, s)));
+    const results = await Promise.all(sizes.map(s => rasterizeCover(coverUrl, s)));
 
     results.forEach((url, i) => {
       if (url) {
         artwork.push({ src: url, sizes: `${sizes[i]}x${sizes[i]}`, type: 'image/png' });
       }
     });
+  }
+
+  // Fallback: if no cover art available or rasterization failed, use the app icon.
+  // This ensures Android always shows *something* instead of "a website is playing".
+  if (artwork.length === 0) {
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    artwork = [
+      { src: `${origin}${FALLBACK_ICON}`, sizes: '512x512', type: 'image/png' },
+    ];
   }
 
   try {
