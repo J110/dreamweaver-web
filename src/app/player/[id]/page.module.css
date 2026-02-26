@@ -438,36 +438,6 @@
   box-shadow: 0 2px 8px rgba(107, 76, 230, 0.3);
 }
 
-.musicSlider:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.musicMuteBtn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(107, 76, 230, 0.15);
-  border: 1px solid rgba(107, 76, 230, 0.2);
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition-fast);
-  flex-shrink: 0;
-}
-
-.musicMuteBtn:active {
-  transform: scale(0.9);
-}
-
-.musicMuteBtnActive {
-  background: rgba(255, 107, 157, 0.2);
-  border-color: rgba(255, 107, 157, 0.3);
-}
-
 .actions {
   display: flex;
   gap: 8px;

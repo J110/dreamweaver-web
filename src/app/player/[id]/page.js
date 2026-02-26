@@ -46,7 +46,6 @@ export default function PlayerPage() {
   const [audioLoading, setAudioLoading] = useState(false);
   const [audioError, setAudioError] = useState(null);
   const [musicVolume, setMusicVolume] = useState(100);
-  const [musicMuted, setMusicMuted] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [shareCopied, setShareCopied] = useState(false);
@@ -573,20 +572,6 @@ export default function PlayerPage() {
     }
   }, [musicPlaying, content?.musicParams, content?.musicProfile, musicVolume]);
 
-  const handleMusicMuteToggle = useCallback(() => {
-    setMusicMuted(prev => {
-      const newMuted = !prev;
-      if (musicRef.current) {
-        if (newMuted) {
-          musicRef.current.setVolume(0);
-        } else {
-          musicRef.current.setVolume(musicVolume / 100);
-        }
-      }
-      return newMuted;
-    });
-  }, [musicVolume]);
-
   // Stop narration audio when content changes (e.g., navigating to a different story).
   // Music cleanup is handled in the render phase above (before effects run) to avoid
   // race conditions between the music-start effect and this cleanup effect.
@@ -1036,19 +1021,11 @@ export default function PlayerPage() {
                 type="range"
                 min="0"
                 max="100"
-                value={musicMuted ? 0 : musicVolume}
+                value={musicVolume}
                 onChange={handleMusicVolumeChange}
                 className={styles.musicSlider}
-                disabled={musicMuted}
               />
             </div>
-            <button
-              onClick={handleMusicMuteToggle}
-              className={`${styles.musicMuteBtn} ${musicMuted ? styles.musicMuteBtnActive : ''}`}
-              title={musicMuted ? (lang === 'hi' ? 'Awaz chalayein' : 'Unmute') : (lang === 'hi' ? 'Awaz band karein' : 'Mute')}
-            >
-              {musicMuted ? '🔇' : '🔊'}
-            </button>
           </div>
         )}
 
