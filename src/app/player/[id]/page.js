@@ -323,6 +323,12 @@ export default function PlayerPage() {
           updatePlaybackState('playing');
         } catch (e) {
           console.error('Resume failed:', e);
+          // On iOS, if resume fails (e.g. NotAllowedError after long pause),
+          // reset state so user can tap play again for a fresh start
+          if (e.name === 'NotAllowedError') {
+            setIsPlaying(false);
+            updatePlaybackState('paused');
+          }
         }
         return;
       }
@@ -350,59 +356,6 @@ export default function PlayerPage() {
         }
       });
 
-      audio.addEventListener('canplay', async () => {
-        setAudioLoading(false);
-        try {
-          await audio.play();
-          setIsPlaying(true);
-          startProgressTracking();
-          updatePlaybackState('playing');
-          // Connect Web Audio analyser for breathing pacer (once per audio element).
-          // Strategy:
-          // 1. captureStream() — audio plays via element (survives iOS background),
-          //    analyser taps stream. Best option. Chrome/Edge/Firefox support this.
-          // 2. Safari/iOS fallback — do NOT use createMediaElementSource (it routes audio
-          //    through AudioContext which iOS suspends in background, muting sound).
-          //    Instead, skip AudioContext entirely. Audio plays natively; breathing pacer
-          //    uses a CSS-only fallback animation (no AnalyserNode data).
-          if (narrationConnectedAudioRef.current !== audio) {
-            try {
-              if (typeof audio.captureStream === 'function') {
-                // Path A: captureStream available (Chrome, Edge, Firefox)
-                if (!narrationCtxRef.current) {
-                  narrationCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                const ctx = narrationCtxRef.current;
-                if (ctx.state === 'suspended') await ctx.resume().catch(() => {});
-                const analyser = ctx.createAnalyser();
-                analyser.fftSize = 256;
-                analyser.smoothingTimeConstant = 0.8;
-                const stream = audio.captureStream();
-                const source = ctx.createMediaStreamSource(stream);
-                source.connect(analyser);
-                // Do NOT connect to ctx.destination — audio already plays via the element
-                narrationSourceRef.current = source;
-                narrationConnectedAudioRef.current = audio;
-                setNarrationAnalyser(analyser);
-              } else {
-                // Path B: Safari/iOS — skip AudioContext entirely so audio survives background.
-                // Breathing pacer will use CSS fallback animation (no analyser data).
-                console.info('[Audio] Safari detected: skipping AudioContext for background audio support');
-                narrationConnectedAudioRef.current = audio;
-                setNarrationAnalyser(null); // triggers CSS fallback in BreathingPacer
-              }
-            } catch (err) {
-              console.warn('Breathing pacer: Web Audio setup failed', err.message);
-            }
-          }
-        } catch (e) {
-          console.error('Playback failed:', e);
-          setAudioError(lang === 'hi' ? 'Audio nahi chal paya' : 'Could not play audio');
-          setIsPlaying(false);
-          updatePlaybackState('paused');
-        }
-      }, { once: true });
-
       audio.addEventListener('ended', () => {
         setIsPlaying(false);
         setProgress(100);
@@ -420,8 +373,65 @@ export default function PlayerPage() {
         updatePlaybackState('paused');
       });
 
+      // Set source — do NOT call audio.load() separately; play() handles loading.
       audio.src = audioSource.url;
-      audio.load();
+
+      // Call play() directly in user gesture context (critical for iOS/Safari).
+      // Previously, play() was inside a 'canplay' callback which fires async —
+      // by that time iOS has lost the user gesture context and rejects with
+      // NotAllowedError. Calling play() directly preserves the gesture chain;
+      // the browser starts playback once enough data has loaded.
+      try {
+        await audio.play();
+        setAudioLoading(false);
+        setIsPlaying(true);
+        startProgressTracking();
+        updatePlaybackState('playing');
+        // Connect Web Audio analyser for breathing pacer (once per audio element).
+        // Strategy:
+        // 1. captureStream() — audio plays via element (survives iOS background),
+        //    analyser taps stream. Best option. Chrome/Edge/Firefox support this.
+        // 2. Safari/iOS fallback — do NOT use createMediaElementSource (it routes audio
+        //    through AudioContext which iOS suspends in background, muting sound).
+        //    Instead, skip AudioContext entirely. Audio plays natively; breathing pacer
+        //    uses a CSS-only fallback animation (no AnalyserNode data).
+        if (narrationConnectedAudioRef.current !== audio) {
+          try {
+            if (typeof audio.captureStream === 'function') {
+              // Path A: captureStream available (Chrome, Edge, Firefox)
+              if (!narrationCtxRef.current) {
+                narrationCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+              }
+              const ctx = narrationCtxRef.current;
+              if (ctx.state === 'suspended') await ctx.resume().catch(() => {});
+              const analyser = ctx.createAnalyser();
+              analyser.fftSize = 256;
+              analyser.smoothingTimeConstant = 0.8;
+              const stream = audio.captureStream();
+              const source = ctx.createMediaStreamSource(stream);
+              source.connect(analyser);
+              // Do NOT connect to ctx.destination — audio already plays via the element
+              narrationSourceRef.current = source;
+              narrationConnectedAudioRef.current = audio;
+              setNarrationAnalyser(analyser);
+            } else {
+              // Path B: Safari/iOS — skip AudioContext entirely so audio survives background.
+              // Breathing pacer will use CSS fallback animation (no analyser data).
+              console.info('[Audio] Safari detected: skipping AudioContext for background audio support');
+              narrationConnectedAudioRef.current = audio;
+              setNarrationAnalyser(null); // triggers CSS fallback in BreathingPacer
+            }
+          } catch (err) {
+            console.warn('Breathing pacer: Web Audio setup failed', err.message);
+          }
+        }
+      } catch (e) {
+        console.error('Playback failed:', e);
+        setAudioLoading(false);
+        setAudioError(lang === 'hi' ? 'Audio nahi chal paya' : 'Could not play audio');
+        setIsPlaying(false);
+        updatePlaybackState('paused');
+      }
     } catch (e) {
       console.error('Audio error:', e);
       setAudioLoading(false);
@@ -770,9 +780,23 @@ export default function PlayerPage() {
   const handleSeek = useCallback((e) => {
     if (!audioRef.current || !audioRef.current.duration) return;
     const rect = e.currentTarget.getBoundingClientRect();
-    const pct = (e.clientX - rect.left) / rect.width;
+    const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     audioRef.current.currentTime = pct * audioRef.current.duration;
     setProgress(pct * 100);
+    setCurrentTime(pct * audioRef.current.duration);
+  }, []);
+
+  // Touch-friendly seek handler for iOS — uses touch coordinates instead of clientX
+  const handleSeekTouch = useCallback((e) => {
+    if (!audioRef.current || !audioRef.current.duration) return;
+    e.preventDefault(); // prevent page scrolling while seeking
+    const touch = e.touches[0];
+    if (!touch) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (touch.clientX - rect.left) / rect.width));
+    audioRef.current.currentTime = pct * audioRef.current.duration;
+    setProgress(pct * 100);
+    setCurrentTime(pct * audioRef.current.duration);
   }, []);
 
   const formatTime = (secs) => {
@@ -968,11 +992,18 @@ export default function PlayerPage() {
         )}
 
         <div className={styles.progressContainer}>
-          <div className={styles.progressBar} onClick={handleSeek}>
-            <div
-              className={styles.progressFill}
-              style={{ width: `${progress}%` }}
-            ></div>
+          <div
+            className={styles.progressTouchArea}
+            onClick={handleSeek}
+            onTouchStart={handleSeekTouch}
+            onTouchMove={handleSeekTouch}
+          >
+            <div className={styles.progressBar}>
+              <div
+                className={styles.progressFill}
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
           </div>
           <div className={styles.timeDisplay}>
             <span>{formatTime(currentTime)}</span>
