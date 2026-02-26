@@ -2511,10 +2511,14 @@ export class AmbientMusicEngine {
 
   pause() {
     if (this._ctx && this._playing) this._ctx.suspend();
+    // Pause native <audio> elements (iOS soundscape + music loops)
+    this._nativeAudios.forEach(({ audio }) => { audio.pause(); });
   }
 
   resume() {
     if (this._ctx && this._playing) this._ctx.resume();
+    // Resume native <audio> elements (iOS soundscape + music loops)
+    this._nativeAudios.forEach(({ audio }) => { audio.play().catch(() => {}); });
   }
 
   stop(fade = true) {
@@ -2592,8 +2596,14 @@ export class AmbientMusicEngine {
     if (this._masterGain && this._playing) {
       const now = this._ctx.currentTime;
       this._masterGain.gain.cancelScheduledValues(now);
-      this._masterGain.gain.setValueAtTime(this._masterGain.gain.value, now);
-      this._masterGain.gain.linearRampToValueAtTime(this._volume, now + 0.3);
+      // If AudioContext is suspended (e.g. after pause() on iOS), ramps won't
+      // execute because currentTime is frozen. Set value directly instead.
+      if (this._ctx.state === 'suspended') {
+        this._masterGain.gain.value = this._volume;
+      } else {
+        this._masterGain.gain.setValueAtTime(this._masterGain.gain.value, now);
+        this._masterGain.gain.linearRampToValueAtTime(this._volume, now + 0.3);
+      }
     }
     // Update native <audio> element volumes (Safari/iOS)
     if (this._nativeAudios.length && this._playing) {
