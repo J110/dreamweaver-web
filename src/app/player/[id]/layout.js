@@ -62,11 +62,18 @@ export async function generateMetadata({ params }) {
       siteName: 'Dream Valley',
       url: `https://dreamvalley.app/player/${id}`,
       locale: lang === 'hi' ? 'hi_IN' : 'en_US',
+      images: [{
+        url: `https://dreamvalley.app/player/${id}/opengraph-image`,
+        width: 1200,
+        height: 630,
+        alt: story.title,
+      }],
     },
     twitter: {
       card: 'summary_large_image',
       title: story.title,
       description,
+      images: [`https://dreamvalley.app/player/${id}/opengraph-image`],
     },
   };
 }
