@@ -1,0 +1,221 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="ll-skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0a0e2a"/>
+      <stop offset="50%" stop-color="#1a103d"/>
+      <stop offset="100%" stop-color="#0a0e2a"/>
+    </linearGradient>
+
+    <linearGradient id="ll-seaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a3b5f"/>
+      <stop offset="100%" stop-color="#0a1e3a"/>
+    </linearGradient>
+
+    <linearGradient id="ll-lanternGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#ff8c00" stop-opacity="0.6"/>
+    </linearGradient>
+
+    <radialGradient id="ll-vignette" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="black" stop-opacity="0"/>
+      <stop offset="100%" stop-color="black" stop-opacity="0.8"/>
+    </radialGradient>
+
+    <filter id="ll-softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="ll-mediumGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="ll-strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="ll-sparkleGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+      <feSpecularLighting result="specOut" in="blur" specularConstant="1" specularExponent="20" lighting-color="#ffd700">
+        <fePointLight x="0" y="0" z="200"/>
+      </feSpecularLighting>
+      <feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+    </filter>
+  </defs>
+
+  <style>
+    @keyframes ll-twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    .ll-twinkle { animation: ll-twinkle 3s ease-in-out infinite; }
+
+    @keyframes ll-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .ll-bob { animation: ll-bob 5s ease-in-out infinite; }
+
+    @keyframes ll-wave {
+      0%, 100% { transform: translateX(0) translateY(0); }
+      25% { transform: translateX(4px) translateY(-2px); }
+      50% { transform: translateX(0) translateY(0); }
+      75% { transform: translateX(-4px) translateY(2px); }
+    }
+    .ll-wave { animation: ll-wave 7s ease-in-out infinite; }
+
+    @keyframes ll-drift {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(10px, 5px); }
+      50% { transform: translate(5px, 10px); }
+      75% { transform: translate(-5px, 5px); }
+      100% { transform: translate(0, 0); }
+    }
+    .ll-drift { animation: ll-drift 8s ease-in-out infinite; }
+
+    @keyframes ll-pulse {
+      0%, 100% { opacity: 0.7; filter: url(#ll-softGlow); }
+      50% { opacity: 1; filter: url(#ll-mediumGlow); }
+    }
+    .ll-pulse { animation: ll-pulse 4s ease-in-out infinite; }
+
+    @keyframes ll-float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(2deg); }
+    }
+    .ll-float { animation: ll-float 6s ease-in-out infinite; }
+
+    @keyframes ll-cloudDrift {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(20px); }
+    }
+    .ll-cloudDrift { animation: ll-cloudDrift 12s ease-in-out infinite; }
+  </style>
+
+  <!-- Layer 1: Sky/Background -->
+  <rect width="512" height="512" fill="url(#ll-skyGrad)"/>
+
+  <!-- Distant stars -->
+  <g>
+    <circle cx="80" cy="60" r="1.5" fill="#fff" class="ll-twinkle" style="animation-delay: 0s"/>
+    <circle cx="150" cy="40" r="1.2" fill="#fff" class="ll-twinkle" style="animation-delay: 0.5s"/>
+    <circle cx="220" cy="80" r="1.8" fill="#fff" class="ll-twinkle" style="animation-delay: 1s"/>
+    <circle cx="300" cy="30" r="1.3" fill="#fff" class="ll-twinkle" style="animation-delay: 1.5s"/>
+    <circle cx="380" cy="70" r="1.6" fill="#fff" class="ll-twinkle" style="animation-delay: 2s"/>
+    <circle cx="450" cy="50" r="1.4" fill="#fff" class="ll-twinkle" style="animation-delay: 2.5s"/>
+  </g>
+
+  <!-- Layer 2: Far Background -->
+  <g class="ll-cloudDrift">
+    <path d="M50,120 Q80,100 120,120 Q160,100 200,120 Q240,100 280,120 Q320,100 360,120 Q400,100 440,120" fill="#3a4a6b" opacity="0.6"/>
+    <path d="M100,180 Q150,160 200,180 Q250,160 300,180 Q350,160 400,180" fill="#4a5a7b" opacity="0.4"/>
+  </g>
+
+  <!-- Distant island -->
+  <path d="M50,350 Q100,320 150,350 Q200,320 250,350 Q300,320 350,350 Q400,320 450,350 L450,512 L50,512 Z" fill="#2a3a4a"/>
+
+  <!-- Layer 3: Mid Background -->
+  <g>
+    <!-- Sea with subtle waves -->
+    <rect y="300" width="512" height="212" fill="url(#ll-seaGrad)"/>
+
+    <!-- Distant waves -->
+    <path d="M0,320 Q50,310 100,320 Q150,310 200,320 Q250,310 300,320 Q350,310 400,320 Q450,310 500,320 Q550,310 600,320" fill="#1a3b5f" opacity="0.7" class="ll-wave"/>
+    <path d="M0,340 Q80,330 160,340 Q240,330 320,340 Q400,330 480,340" fill="#0a2e4a" opacity="0.5" class="ll-wave" style="animation-delay: 1s"/>
+  </g>
+
+  <!-- Layer 4: Middle Ground -->
+  <g>
+    <!-- Island path -->
+    <path d="M200,350 Q220,340 240,350 Q260,340 280,350 Q300,340 320,350 L320,512 L200,512 Z" fill="#3a4a5a"/>
+
+    <!-- School house -->
+    <g transform="translate(240,280)">
+      <rect x="-30" y="20" width="60" height="40" fill="#5a6a7a" rx="5"/>
+      <polygon points="-40,20 0,0 40,20" fill="#4a5a6a"/>
+      <rect x="-25" y="25" width="10" height="15" fill="#2a3a4a"/>
+      <rect x="15" y="25" width="10" height="15" fill="#2a3a4a"/>
+      <circle cx="0" cy="35" r="3" fill="#ffd700" filter="url(#ll-softGlow)"/>
+    </g>
+
+    <!-- Distant boat -->
+    <g transform="translate(100,360)" class="ll-float">
+      <path d="M0,0 Q10,-10 20,0 Q30,-5 40,0 L40,10 Q30,15 20,10 Q10,15 0,10 Z" fill="#4a5a6a"/>
+      <rect x="15" y="-15" width="2" height="15" fill="#3a4a5a"/>
+      <path d="M17,-15 L22,-25 L17,-25 Z" fill="#ff8c00"/>
+    </g>
+  </g>
+
+  <!-- Layer 5: Main Character -->
+  <g transform="translate(256,240)">
+    <g class="ll-bob">
+      <!-- Lantern (Lumi) -->
+      <g>
+        <path d="M-20,-30 Q-10,-40 0,-30 Q10,-40 20,-30 L20,0 Q10,-10 0,0 Q-10,-10 -20,0 Z" fill="#3a4a5a"/>
+        <ellipse cx="0" cy="-35" rx="15" ry="8" fill="#2a3a4a"/>
+        <rect x="-15" y="-40" width="30" height="5" fill="#2a3a4a" rx="2"/>
+
+        <!-- Lantern glow -->
+        <g class="ll-pulse">
+          <ellipse cx="0" cy="-15" rx="18" ry="25" fill="url(#ll-lanternGlow)" filter="url(#ll-strongGlow)" opacity="0.8"/>
+        </g>
+
+        <!-- Lantern details -->
+        <circle cx="-10" cy="-25" r="2" fill="#ffd700"/>
+        <circle cx="10" cy="-25" r="2" fill="#ffd700"/>
+        <path d="M-15,-30 Q0,-35 15,-30" stroke="#ffd700" stroke-width="1" fill="none"/>
+      </g>
+
+      <!-- Little girl -->
+      <g transform="translate(0,20)">
+        <circle cx="0" cy="-25" r="12" fill="#f5d5b0"/>
+        <path d="M-8,-20 Q0,-30 8,-20 Q0,-15 -8,-20" fill="#6a4a3a"/>
+        <circle cx="-4" cy="-28" r="2" fill="#3a2a1a"/>
+        <circle cx="4" cy="-28" r="2" fill="#3a2a1a"/>
+        <path d="M-3,-23 Q0,-20 3,-23" stroke="#3a2a1a" stroke-width="1" fill="none"/>
+
+        <!-- Dress -->
+        <path d="M-12,-15 Q0,-5 12,-15 L12,10 Q0,20 -12,10 Z" fill="#8a6a9a"/>
+        <path d="M-10,5 Q0,10 10,5" stroke="#6a4a7a" stroke-width="1" fill="none"/>
+
+        <!-- Arms -->
+        <path d="M-15,-10 Q-20,-5 -15,0" stroke="#f5d5b0" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M15,-10 Q20,-5 15,0" stroke="#f5d5b0" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+        <!-- Holding lantern -->
+        <path d="M-15,0 L-25,-15" stroke="#3a4a5a" stroke-width="2" stroke-linecap="round"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- Layer 6: Foreground Particles/Sparkles -->
+  <g>
+    <!-- Floating sparkles -->
+    <g class="ll-drift" style="animation-delay: 0s">
+      <circle cx="150" cy="100" r="2" fill="#ffd700" filter="url(#ll-sparkleGlow)" class="ll-twinkle"/>
+      <circle cx="350" cy="120" r="2.5" fill="#ffd700" filter="url(#ll-sparkleGlow)" class="ll-twinkle"/>
+    </g>
+    <g class="ll-drift" style="animation-delay: 1s">
+      <circle cx="100" cy="180" r="1.8" fill="#ffd700" filter="url(#ll-sparkleGlow)" class="ll-twinkle"/>
+      <circle cx="400" cy="200" r="2.2" fill="#ffd700" filter="url(#ll-sparkleGlow)" class="ll-twinkle"/>
+    </g>
+    <g class="ll-drift" style="animation-delay: 2s">
+      <circle cx="200" cy="250" r="2" fill="#ffd700" filter="url(#ll-sparkleGlow)" class="ll-twinkle"/>
+      <circle cx="300" cy="280" r="1.5" fill="#ffd700" filter="url(#ll-sparkleGlow)" class="ll-twinkle"/>
+    </g>
+
+    <!-- Water sparkles -->
+    <g class="ll-wave" style="animation-delay: 0.5s">
+      <circle cx="80" cy="380" r="1.2" fill="#ffd700" opacity="0.8" class="ll-twinkle"/>
+      <circle cx="180" cy="400" r="1.5" fill="#ffd700" opacity="0.8" class="ll-twinkle"/>
+      <circle cx="280" cy="390" r="1.3" fill="#ffd700" opacity="0.8" class="ll-twinkle"/>
+      <circle cx="380" cy="410" r="1.6" fill="#ffd700" opacity="0.8" class="ll-twinkle"/>
+      <circle cx="450" cy="380" r="1.4" fill="#ffd700" opacity="0.8" class="ll-twinkle"/>
+    </g>
+  </g>
+
+  <!-- Layer 7: Vignette Overlay -->
+  <rect width="512" height="512" fill="url(#ll-vignette)" opacity="0.4"/>
+</svg>
