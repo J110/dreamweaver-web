@@ -1176,6 +1176,28 @@ export const SEED_STORIES = {
         { voice: "male_2", url: "/audio/pre-gen/gen-a4a5_male_2.mp3", duration_seconds: 262.21 },
         { voice: "male_3", url: "/audio/pre-gen/gen-a4a5_male_3.mp3", duration_seconds: 263.37 },
       ],
+    },
+    {
+      id: "gen-69ca3c81363d",
+      type: "song",
+      title: "Priya and the River of Echoing Hearts",
+      description: "A lullaby about Priya, a girl in an ancient village, who discovers the power of friendship and unity while listening to the whispers of a mythical river that carries the dreams of her people.",
+      cover: "/covers/priya-and-the-river-of-echoing-hearts.svg",
+      addedAt: "2026-02-28",
+      text: "[SINGING] By the river’s edge where fireflies gleam,\nPriya listens to the water’s dream.\n[GENTLE] The current hums a lullaby so sweet,\nOf hearts entwined and dancing feet.\n\n[PAUSE]\n\n[HUMMING] Hmm-hmm-hmm, hmm-hmm-hmm,\nThe river sings of bonds that brim.\n\n[PAUSE]\n\n[SINGING] Aru, the storyteller, with tales so wide,\nMaya, the weaver, with threads of pride.\nKiran, the drummer, with rhythms bold,\nTogether they weave a friendship’s gold.\n\n[PAUSE]\n\n[JOYFUL] Oh, the river knows, oh, the river sees,\nHow kindness flows like the breeze.\nDifferences fade in the moon’s soft glow,\nFor love is the river’s eternal flow.\n\n[PAUSE]\n\n[HUMMING] Hmm-hmm-hmm, hmm-hmm-hmm,\nThe stars above nod and dim.\n\n[PAUSE]\n\n[SLEEPY] Now Priya closes her eyes so tight,\nAs the river sings her into the night.\n[GENTLE] Dreams of friendship, strong and true,\nDance in the light of the silver moon.\n\n[PAUSE]\n\n[HUMMING] Hmm-hmm-hmm, hmm-hmm-hmm,\nSleep now, dear one, drift and swim.",
+      target_age: 10,
+      duration: 2,
+      like_count: 0,
+      save_count: 0,
+      view_count: 0,
+      categories: ["Mythological", "Friendship", "Lullaby"],
+      theme: "friendship",
+      musicParams: {"key": "A", "chordNotes": [110.0, 138.59, 164.81, 220.0], "padType": "chorus", "padGain": 0.0451, "padFilter": 852, "padLfo": 0.0824, "noiseType": "pink", "noiseGain": 0.0122, "droneFreq": 55.0, "droneGain": 0.0368, "melodyNotes": [220.0, 277.18, 329.62, 293.66], "melodyInterval": 4369, "melodyGain": 0.0177, "bassNotes": [55.0, 82.41, 69.3], "bassInterval": 6434, "counterNotes": [346.48, 412.02, 275.0], "counterInterval": 4778, "events": [{"type": "chimes", "interval": 13329}, {"type": "sparkle", "interval": 19398}, {"type": "birdChirp", "interval": 19754}, {"type": "waterDrop", "interval": 28000}], "soundscapePreset": "garden", "musicLoop": "softStrings"},
+      audio_variants: [
+        { voice: "female_1", url: "/audio/pre-gen/gen-69ca_female_1.mp3", duration_seconds: 119.91 },
+        { voice: "female_3", url: "/audio/pre-gen/gen-69ca_female_3.mp3", duration_seconds: 119.91 },
+        { voice: "male_1", url: "/audio/pre-gen/gen-69ca_male_1.mp3", duration_seconds: 119.91 },
+      ],
     },],
   hi: [
     {

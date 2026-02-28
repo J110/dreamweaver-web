@@ -1,0 +1,236 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradients -->
+    <radialGradient id="po-skyGrad" cx="50%" cy="50%" r="70%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#0a0e2a"/>
+      <stop offset="50%" stop-color="#1a103d"/>
+      <stop offset="100%" stop-color="#0a0e2a"/>
+    </radialGradient>
+
+    <linearGradient id="po-riverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3a8bc8" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#5d4e75" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#3a8bc8" stop-opacity="0.8"/>
+    </linearGradient>
+
+    <linearGradient id="po-mountainGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2a3441"/>
+      <stop offset="100%" stop-color="#1a2028"/>
+    </linearGradient>
+
+    <linearGradient id="po-goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd700"/>
+      <stop offset="50%" stop-color="#ffed4e"/>
+      <stop offset="100%" stop-color="#ffd700"/>
+    </linearGradient>
+
+    <radialGradient id="po-glowGrad" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#ffd700" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Filters -->
+    <filter id="po-softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="po-mediumGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="po-strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="po-vignetteFilter">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="100" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <!-- Patterns -->
+    <pattern id="po-stars" patternUnits="userSpaceOnUse" width="20" height="20">
+      <circle cx="2" cy="2" r="1" fill="white" opacity="0.8"/>
+      <circle cx="15" cy="5" r="0.8" fill="white" opacity="0.6"/>
+      <circle cx="8" cy="12" r="1.2" fill="white" opacity="0.7"/>
+      <circle cx="18" cy="15" r="0.5" fill="white" opacity="0.5"/>
+    </pattern>
+  </defs>
+
+  <style>
+    @keyframes po-starTwinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    .po-star-twinkle {
+      animation: po-starTwinkle 3s ease-in-out infinite;
+    }
+
+    @keyframes po-riverFlow {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(5px); }
+    }
+    .po-river-flow {
+      animation: po-riverFlow 8s ease-in-out infinite;
+    }
+
+    @keyframes po-characterBob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .po-character-bob {
+      animation: po-characterBob 5s ease-in-out infinite;
+    }
+
+    @keyframes po-leafFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(5deg); }
+    }
+    .po-leaf-float {
+      animation: po-leafFloat 6s ease-in-out infinite;
+    }
+
+    @keyframes po-particleDrift {
+      0% { transform: translate(0, 0) scale(1); opacity: 0; }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.8; }
+      100% { transform: translate(20px, -30px) scale(0.5); opacity: 0; }
+    }
+    .po-particle-drift {
+      animation: po-particleDrift 9s ease-in-out infinite;
+    }
+
+    @keyframes po-glowPulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    .po-glow-pulse {
+      animation: po-glowPulse 4s ease-in-out infinite;
+    }
+
+    @keyframes po-fireflyGlow {
+      0%, 100% { opacity: 0.3; filter: url(#po-softGlow); }
+      50% { opacity: 1; filter: url(#po-mediumGlow); }
+    }
+    .po-firefly-glow {
+      animation: po-fireflyGlow 5s ease-in-out infinite;
+    }
+
+    @keyframes po-heartFloat {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.7; }
+      50% { transform: translateY(-20px) scale(1.1); opacity: 1; }
+    }
+    .po-heart-float {
+      animation: po-heartFloat 7s ease-in-out infinite;
+    }
+  </style>
+
+  <!-- Layer 1: Sky/Background -->
+  <rect width="512" height="512" fill="url(#po-skyGrad)"/>
+  <rect width="512" height="512" fill="url(#po-stars)" opacity="0.3"/>
+  <circle cx="100" cy="80" r="2" fill="white" class="po-star-twinkle" style="animation-delay: 0.5s"/>
+  <circle cx="400" cy="60" r="1.5" fill="white" class="po-star-twinkle" style="animation-delay: 1s"/>
+  <circle cx="200" cy="40" r="2.5" fill="white" class="po-star-twinkle" style="animation-delay: 1.5s"/>
+  <circle cx="350" cy="120" r="1.8" fill="white" class="po-star-twinkle" style="animation-delay: 2s"/>
+  <circle cx="150" cy="150" r="2" fill="white" class="po-star-twinkle" style="animation-delay: 2.5s"/>
+
+  <!-- Layer 2: Far Background -->
+  <path d="M0,300 Q128,250 256,300 T512,300 L512,512 L0,512 Z" fill="url(#po-mountainGrad)"/>
+  <path d="M0,350 Q192,320 384,350 T512,350 L512,512 L0,512 Z" fill="#1a2028" opacity="0.8"/>
+  <circle cx="450" cy="100" r="30" fill="#ffd700" opacity="0.2" filter="url(#po-softGlow)"/>
+
+  <!-- Layer 3: Mid Background -->
+  <path d="M0,400 Q64,380 128,400 T256,400 T384,400 T512,400 L512,512 L0,512 Z" fill="#2a3441" opacity="0.6"/>
+  <path d="M50,380 Q100,360 150,380 T250,380 T350,380 T450,380 L450,512 L50,512 Z" fill="#3a4a5a" opacity="0.4"/>
+
+  <!-- River -->
+  <path d="M0,420 Q128,400 256,420 T512,420 L512,512 L0,512 Z" fill="url(#po-riverGrad)" class="po-river-flow">
+    <animate attributeName="d" values="
+      M0,420 Q128,400 256,420 T512,420 L512,512 L0,512 Z;
+      M0,420 Q128,410 256,420 T512,420 L512,512 L0,512 Z;
+      M0,420 Q128,400 256,420 T512,420 L512,512 L0,512 Z"
+      dur="8s" repeatCount="indefinite"/>
+  </path>
+
+  <!-- Layer 4: Middle Ground -->
+  <g transform="translate(50, 350)">
+    <g class="po-leaf-float">
+      <path d="M0,0 Q10,-20 20,0 Q10,20 0,0" fill="#4a7c59" transform="rotate(-10)"/>
+    </g>
+  </g>
+  <g transform="translate(400, 320)">
+    <g class="po-leaf-float" style="animation-delay: 1s">
+      <path d="M0,0 Q15,-25 30,0 Q15,25 0,0" fill="#6a994e" transform="rotate(15)"/>
+    </g>
+  </g>
+  <g transform="translate(200, 380)">
+    <g class="po-leaf-float" style="animation-delay: 2s">
+      <path d="M0,0 Q8,-16 16,0 Q8,16 0,0" fill="#8a9b68" transform="rotate(-5)"/>
+    </g>
+  </g>
+
+  <!-- Fireflies -->
+  <circle cx="100" cy="250" r="2" fill="#ffd700" class="po-firefly-glow" style="animation-delay: 0.5s"/>
+  <circle cx="350" cy="200" r="2" fill="#ffed4e" class="po-firefly-glow" style="animation-delay: 1.5s"/>
+  <circle cx="200" cy="180" r="1.5" fill="#ffd700" class="po-firefly-glow" style="animation-delay: 2.5s"/>
+
+  <!-- Layer 5: Main Character -->
+  <g transform="translate(256, 240)">
+    <g class="po-character-bob">
+      <!-- Priya's body -->
+      <path d="M-20,-50 Q-10,-70 0,-50 Q10,-70 20,-50 L20,0 Q10,20 0,0 Q-10,20 -20,0 Z" fill="#d4a574"/>
+      <!-- Dress -->
+      <path d="M-25,0 Q-15,-30 0,-20 Q15,-30 25,0 L25,30 Q15,50 0,30 Q-15,50 -25,30 Z" fill="#6a5acd"/>
+      <!-- Hair -->
+      <path d="M-20,-50 Q-30,-70 -25,-80 Q-15,-90 0,-85 Q15,-90 25,-80 Q30,-70 20,-50 Q10,-60 0,-55 Q-10,-60 -20,-50" fill="#3a2c1a"/>
+      <!-- Face -->
+      <circle cx="0" cy="-30" r="12" fill="#f5d5ae"/>
+      <circle cx="-5" cy="-35" r="2" fill="#3a2c1a"/>
+      <circle cx="5" cy="-35" r="2" fill="#3a2c1a"/>
+      <path d="M-3,-25 Q0,-20 3,-25" stroke="#3a2c1a" stroke-width="1" fill="none"/>
+      <!-- Arms -->
+      <path d="M-25,-10 Q-35,-20 -30,-30 Q-25,-40 -20,-30 L-20,-10" fill="#d4a574"/>
+      <path d="M25,-10 Q35,-20 30,-30 Q25,-40 20,-30 L20,-10" fill="#d4a574"/>
+      <!-- Lantern -->
+      <circle cx="35" cy="-40" r="8" fill="#ffd700" filter="url(#po-mediumGlow)"/>
+      <rect x="32" y="-48" width="6" height="12" fill="#3a2c1a"/>
+      <path d="M35,-55 L30,-65 L40,-65 Z" fill="#3a2c1a"/>
+    </g>
+
+    <!-- Floating hearts -->
+    <g transform="translate(-30, -80)" class="po-heart-float" style="animation-delay: 0.5s">
+      <path d="M0,0 Q5,-10 10,0 Q5,10 0,0 Q-5,10 -10,0 Q-5,-10 0,0" fill="#ff6b6b" opacity="0.8"/>
+    </g>
+    <g transform="translate(30, -70)" class="po-heart-float" style="animation-delay: 1.5s">
+      <path d="M0,0 Q4,-8 8,0 Q4,8 0,0 Q-4,8 -8,0 Q-4,-8 0,0" fill="#ffd700" opacity="0.8"/>
+    </g>
+  </g>
+
+  <!-- Layer 6: Foreground Particles/Sparkles -->
+  <g transform="translate(100, 100)" class="po-particle-drift" style="animation-delay: 0s">
+    <circle cx="0" cy="0" r="2" fill="#ffd700" filter="url(#po-softGlow)"/>
+  </g>
+  <g transform="translate(400, 150)" class="po-particle-drift" style="animation-delay: 1s">
+    <circle cx="0" cy="0" r="1.5" fill="#ffed4e" filter="url(#po-softGlow)"/>
+  </g>
+  <g transform="translate(200, 80)" class="po-particle-drift" style="animation-delay: 2s">
+    <circle cx="0" cy="0" r="2.5" fill="#ffd700" filter="url(#po-mediumGlow)"/>
+  </g>
+  <g transform="translate(300, 200)" class="po-particle-drift" style="animation-delay: 3s">
+    <circle cx="0" cy="0" r="1.8" fill="#ffed4e" filter="url(#po-softGlow)"/>
+  </g>
+
+  <!-- Glowing river particles -->
+  <circle cx="150" cy="430" r="1.5" fill="#ffd700" class="po-glow-pulse" style="animation-delay: 0.5s"/>
+  <circle cx="350" cy="440" r="1.8" fill="#ffed4e" class="po-glow-pulse" style="animation-delay: 1.5s"/>
+  <circle cx="250" cy="420" r="2" fill="#ffd700" class="po-glow-pulse" style="animation-delay: 2.5s"/>
+
+  <!-- Layer 7: Vignette Overlay -->
+  <rect width="512" height="512" fill="url(#po-vignette)" opacity="0.4" filter="url(#po-vignetteFilter)"/>
+  <radialGradient id="po-vignette" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+    <stop offset="0%" stop-color="black" stop-opacity="0"/>
+    <stop offset="100%" stop-color="black" stop-opacity="0.8"/>
+  </radialGradient>
+</svg>
