@@ -196,7 +196,7 @@ export default function PrivacyPolicyPage() {
                   <span className={styles.bold}>Parental Notice:</span> We encourage parents and
                   guardians to supervise their children&apos;s use of the app. If you believe your
                   child has provided us with personal information beyond what is described in this
-                  policy, please contact us immediately at privacy@vervetogether.com and we will
+                  policy, please contact us immediately at privacy@dreamvalley.app and we will
                   promptly delete such information.
                 </p>
               </div>
@@ -308,7 +308,7 @@ export default function PrivacyPolicyPage() {
                 <li>
                   <span className={styles.bold}>Right to Review</span> &mdash; You may request to
                   review the personal information we have collected from your child by contacting us
-                  at privacy@vervetogether.com.
+                  at privacy@dreamvalley.app.
                 </li>
                 <li>
                   <span className={styles.bold}>Right to Deletion</span> &mdash; You may request
@@ -335,7 +335,7 @@ export default function PrivacyPolicyPage() {
               <div className={styles.highlightImportant}>
                 <p>
                   To exercise any of these rights, please contact us at{' '}
-                  <span className={styles.bold}>privacy@vervetogether.com</span> with the subject
+                  <span className={styles.bold}>privacy@dreamvalley.app</span> with the subject
                   line &quot;Parental Rights Request.&quot; We will verify your identity as the
                   child&apos;s parent or guardian before processing any request. All requests will be
                   handled within 30 days.
@@ -383,7 +383,7 @@ export default function PrivacyPolicyPage() {
               <div className={styles.highlight}>
                 <p>
                   <span className={styles.bold}>How to delete your account:</span> You can request
-                  account deletion at any time by contacting us at privacy@vervetogether.com. Upon
+                  account deletion at any time by contacting us at privacy@dreamvalley.app. Upon
                   receiving a verified deletion request, we will permanently delete all associated
                   data from our servers within 30 days. Data that has already been anonymized and
                   aggregated for analytics purposes cannot be attributed back to an individual and
@@ -443,7 +443,7 @@ export default function PrivacyPolicyPage() {
               </p>
               <ul className={styles.list}>
                 <li>
-                  <span className={styles.bold}>Email:</span> privacy@vervetogether.com
+                  <span className={styles.bold}>Email:</span> privacy@dreamvalley.app
                 </li>
                 <li>
                   <span className={styles.bold}>Subject Line:</span> Use &quot;Dream Valley Privacy
@@ -461,8 +461,8 @@ export default function PrivacyPolicyPage() {
           {/* Contact Card */}
           <div className={styles.contactCard}>
             <p className={styles.contactTitle}>Have Questions About Your Privacy?</p>
-            <a href="mailto:privacy@vervetogether.com" className={styles.contactEmail}>
-              privacy@vervetogether.com
+            <a href="mailto:privacy@dreamvalley.app" className={styles.contactEmail}>
+              privacy@dreamvalley.app
             </a>
             <p className={styles.contactNote}>
               We take your family&apos;s privacy seriously and are here to help with any concerns.
