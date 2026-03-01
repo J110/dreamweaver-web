@@ -17,7 +17,7 @@ This guide defines the design system for all story cover illustrations in Dream 
 | Location | `/public/covers/` |
 | Animation type | Embedded CSS `@keyframes` inside `<style>` block |
 
-Why CSS-in-SVG (not GSAP/JS): The covers render via `<img>` tags, which block JavaScript execution. CSS animations embedded in SVG `<style>` blocks are GPU-accelerated, self-contained, and work universally in `<img>`, `<object>`, and inline SVG rendering.
+**Rendering**: Hand-crafted SVG covers (Sections 1-11) use CSS `@keyframes` and render via both `<img>` and `<object>` tags. Experimental covers (Section 12) use SMIL animations and **require `<object>` tags** — the frontend automatically uses `<object>` for all `.svg` covers and `<img>` for non-SVG formats (WebP, PNG). CSS animations are GPU-accelerated, self-contained, and work universally.
 
 ---
 
@@ -520,6 +520,128 @@ Themes NOT yet covered that would add diversity:
 - **Desert oasis** night (sand gold, palm silhouettes, warm)
 - **Treehouse** at twilight (greens, warm window light)
 - **Northern lights** arctic scene (greens-purples over snow)
+
+---
+
+## 12. Experimental Cover System (FLUX AI + SVG Overlay)
+
+Starting March 2026, new covers are generated using a **2-layer architecture** instead of hand-crafted SVGs:
+
+### Architecture
+
+| Layer | Source | Format | Purpose |
+|-------|--------|--------|---------|
+| Layer 1 | FLUX.1 Schnell (Hugging Face, free tier) | WebP (15-40 KB) | AI-generated illustration background |
+| Layer 2 | Programmatic SVG generator | SVG animations | Particles, glows, mist, stars, vignette |
+| Combined | Script-generated | SVG with embedded base64 WebP | Single file served to frontend |
+
+The combined SVG embeds the WebP as a base64 `<image>` element with all animated overlay elements on top, producing a single `.svg` file that renders with animations.
+
+### Rendering Requirement
+
+Experimental covers **MUST** be rendered via `<object>` tags (not `<img>` tags) in the frontend:
+
+```jsx
+// ContentCard.js / player page
+{content.cover.endsWith('.svg') ? (
+  <object
+    data={content.cover}
+    type="image/svg+xml"
+    className={styles.coverImage}
+    aria-label={content.title || 'Cover art'}
+  />
+) : (
+  <img src={content.cover} alt={content.title} className={styles.coverImage} />
+)}
+```
+
+**Why `<object>` instead of `<img>`?** The `<img>` tag blocks all SVG animations (CSS and SMIL). The `<object>` tag allows animations to render. The CSS for `.coverImage` includes `pointer-events: none; border: none;` to prevent interaction issues.
+
+### 7 Diversity Axes
+
+Each cover is auto-selected from the story's metadata across 7 axes to ensure visual uniqueness:
+
+| Axis | Options |
+|------|---------|
+| **World Setting** | deep_ocean, cloud_kingdom, enchanted_forest, snow_landscape, desert_night, cozy_interior, mountain_meadow, space_cosmos, tropical_lagoon, underground_cave, ancient_library, floating_islands |
+| **Color Palette** | ember_warm, twilight_cool, forest_deep, golden_hour, moonstone, berry_dusk |
+| **Composition** | vast_landscape, intimate_closeup, overhead_canopy, winding_path, circular_nest |
+| **Character Visual** | small_mammal, aquatic_creature, bird, mythical_gentle, human_child, nature_spirit, robot_mech, no_character |
+| **Light Source** | above (moonlight), backlit (rim light), below (bioluminescence), ambient (diffused) |
+| **Texture** | watercolor_soft, soft_pastel, digital_painterly, paper_cutout |
+| **Time Marker** | early_night, deep_night, eternal_dusk, timeless_indoor |
+
+Story metadata (theme, age group, title keywords) auto-maps to appropriate axes, with randomness for variety.
+
+### SVG Overlay Animation Types
+
+All covers include these mandatory sleep-focused layers:
+1. **Vignette breathing** (7-10s cycle) — darkens edges, primary sleep cue
+2. **Breathing pacer glow** (7-9s cycle) — guides breathing rhythm
+3. **Moonlight wash** — gentle ambient light from top
+
+Plus world-specific animations selected from:
+- `particles_*` (bubbles, pollen, snow, dust, fireflies, spores, leaves)
+- `glow_*` (bioluminescence, firefly, candle, crystals, sunset, lantern, nebula)
+- `twinkle_*` (stars, distant shimmer)
+- `drift_*` (clouds, sand, starfield)
+- `mist_*` (underwater, ground, valley, sea, steam)
+
+### Sleep-Safe Animation Rules
+
+| Rule | Value |
+|------|-------|
+| Minimum cycle duration | 4 seconds |
+| Maximum opacity | 60% (particles), 80% (vignette) |
+| Breathing pacer | 7-9s cycle (6-8 breaths/min) |
+| Particle drift | 15-28s slow downward |
+| Star twinkle | 5-10s fade in/out |
+| Mist movement | 18-38s gentle sway |
+
+### Character Expression Rules
+
+Characters in FLUX-generated backgrounds must:
+- Look **happy, curious, and adventurous** (bright eyes, gentle smile)
+- Never appear **sad, distressed, or crying**
+- Eyes should be **wide open** (not closed/sleepy — the overlay handles the sleep mood)
+- Expressions should convey **wonder and exploration**
+
+### Pipeline Integration
+
+The automated daily pipeline (`pipeline_run.py`) generates experimental covers via:
+```bash
+python3 scripts/generate_cover_experimental.py --story-json <path>
+```
+
+This produces:
+1. `{id}_background.webp` — FLUX AI background
+2. `{id}_overlay.svg` — Animated SVG overlay
+3. `{id}_combined.svg` — Combined file (copied to `public/covers/`)
+
+The pipeline falls back to Mistral-generated SVG covers if `HF_API_TOKEN` is not set.
+
+### Generation Script
+
+**File**: `dreamweaver-backend/scripts/generate_cover_experimental.py`
+
+**Required env var**: `HF_API_TOKEN` (Hugging Face Read token, free tier)
+
+```bash
+# Generate cover for a specific story
+python3 scripts/generate_cover_experimental.py \
+    --story-json seed_output/experimental_6_8_gen-XXXX.json
+
+# Override diversity axes
+python3 scripts/generate_cover_experimental.py \
+    --story-json seed_output/experimental_6_8_gen-XXXX.json \
+    --world-setting enchanted_forest \
+    --palette golden_hour
+
+# Dry run (show prompt only)
+python3 scripts/generate_cover_experimental.py \
+    --story-json seed_output/experimental_6_8_gen-XXXX.json \
+    --dry-run
+```
 
 ---
 

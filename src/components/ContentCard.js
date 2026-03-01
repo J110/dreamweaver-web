@@ -82,12 +82,21 @@ export default function ContentCard({ content, onClick }) {
     <>
       <div className={`${styles.cardArt} ${content.cover ? styles.cardArtWithImage : getTypeColor(content.type)}`}>
         {content.cover ? (
-          <img
-            src={content.cover}
-            alt={content.title || 'Story cover'}
-            className={styles.coverImage}
-            loading="lazy"
-          />
+          content.cover.endsWith('.svg') ? (
+            <object
+              data={content.cover}
+              type="image/svg+xml"
+              className={styles.coverImage}
+              aria-label={content.title || 'Story cover'}
+            />
+          ) : (
+            <img
+              src={content.cover}
+              alt={content.title || 'Story cover'}
+              className={styles.coverImage}
+              loading="lazy"
+            />
+          )
         ) : (
           <div className={styles.cardIcon}>
             {content.type?.toLowerCase() === 'poem' && '📖'}

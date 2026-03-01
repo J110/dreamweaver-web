@@ -919,11 +919,20 @@ export default function PlayerPage() {
 
         <div className={`${styles.albumArt} ${content.cover ? styles.artWithImage : getTypeColor(content.type)}`}>
           {content.cover ? (
-            <img
-              src={content.cover}
-              alt={content.title || 'Cover art'}
-              className={styles.coverImage}
-            />
+            content.cover.endsWith('.svg') ? (
+              <object
+                data={content.cover}
+                type="image/svg+xml"
+                className={styles.coverImage}
+                aria-label={content.title || 'Cover art'}
+              />
+            ) : (
+              <img
+                src={content.cover}
+                alt={content.title || 'Cover art'}
+                className={styles.coverImage}
+              />
+            )
           ) : (
             <span className={styles.albumIcon}>{getTypeIcon(content.type)}</span>
           )}
