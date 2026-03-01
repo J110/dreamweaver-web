@@ -1,0 +1,194 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="li-skyGrad" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#0a1a3a"/>
+      <stop offset="50%" stop-color="#1a2a5a"/>
+      <stop offset="100%" stop-color="#0a0a2a"/>
+    </radialGradient>
+
+    <linearGradient id="li-oceanGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a3a6a"/>
+      <stop offset="50%" stop-color="#2a5a8a"/>
+      <stop offset="100%" stop-color="#1a3a5a"/>
+    </linearGradient>
+
+    <linearGradient id="li-treehouseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b4513"/>
+      <stop offset="50%" stop-color="#a0522d"/>
+      <stop offset="100%" stop-color="#654321"/>
+    </linearGradient>
+
+    <linearGradient id="li-lilaDressGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffd700"/>
+      <stop offset="100%" stop-color="#ffcc00"/>
+    </linearGradient>
+
+    <filter id="li-softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="li-mediumGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="li-strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <radialGradient id="li-vignette" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="black" stop-opacity="0"/>
+      <stop offset="100%" stop-color="black" stop-opacity="1"/>
+    </radialGradient>
+
+    <pattern id="li-stars" patternUnits="userSpaceOnUse" width="20" height="20">
+      <circle cx="2" cy="2" r="1" fill="white" opacity="0.8"/>
+      <circle cx="15" cy="5" r="0.8" fill="white" opacity="0.6"/>
+      <circle cx="8" cy="12" r="0.5" fill="white" opacity="0.7"/>
+      <circle cx="18" cy="15" r="0.7" fill="white" opacity="0.5"/>
+    </pattern>
+  </defs>
+
+  <style>
+    @keyframes li-starTwinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    .li-starTwinkle {
+      animation: li-starTwinkle 3s ease-in-out infinite;
+    }
+
+    @keyframes li-waveMotion {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .li-waveMotion {
+      animation: li-waveMotion 7s ease-in-out infinite;
+    }
+
+    @keyframes li-characterBob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .li-characterBob {
+      animation: li-characterBob 5s ease-in-out infinite;
+    }
+
+    @keyframes li-leafSway {
+      0%, 100% { transform: rotate(-5deg); }
+      50% { transform: rotate(5deg); }
+    }
+    .li-leafSway {
+      animation: li-leafSway 6s ease-in-out infinite;
+    }
+
+    @keyframes li-particleDrift {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      100% { transform: translate(10px, 15px) rotate(360deg); }
+    }
+    .li-particleDrift {
+      animation: li-particleDrift 8s ease-in-out infinite;
+    }
+
+    @keyframes li-glowPulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+    .li-glowPulse {
+      animation: li-glowPulse 4s ease-in-out infinite;
+    }
+
+    @keyframes li-moonGlow {
+      0%, 100% { filter: url(#li-softGlow); }
+      50% { filter: url(#li-mediumGlow); }
+    }
+    .li-moonGlow {
+      animation: li-moonGlow 5s ease-in-out infinite;
+    }
+  </style>
+
+  <!-- Layer 1: Sky/Background -->
+  <rect width="512" height="512" fill="url(#li-skyGrad)"/>
+  <rect width="512" height="512" fill="url(#li-stars)" opacity="0.3"/>
+  <circle cx="400" cy="100" r="30" fill="white" filter="url(#li-softGlow)" class="li-moonGlow"/>
+  <circle cx="420" cy="80" r="8" fill="#ffd700" filter="url(#li-softGlow)" class="li-glowPulse"/>
+
+  <!-- Layer 2: Far Background -->
+  <rect x="0" y="300" width="512" height="212" fill="url(#li-oceanGrad)" class="li-waveMotion"/>
+  <path d="M0,320 Q128,310 256,320 T512,320 L512,512 L0,512 Z" fill="#1a4a7a" class="li-waveMotion"/>
+  <path d="M0,340 Q128,335 256,340 T512,340 L512,512 L0,512 Z" fill="#2a5a8a" class="li-waveMotion"/>
+
+  <!-- Layer 3: Mid Background -->
+  <g transform="translate(100, 200)">
+    <path d="M0,0 Q20,-30 40,0 Q60,30 80,0 Q100,-20 120,0 L120,100 L0,100 Z" fill="#2a5a3a" class="li-leafSway"/>
+    <path d="M120,0 Q140,-25 160,0 Q180,25 200,0 Q220,-15 240,0 L240,100 L120,100 Z" fill="#3a6a4a" class="li-leafSway"/>
+  </g>
+
+  <g transform="translate(350, 180)">
+    <path d="M0,0 Q15,-20 30,0 Q45,20 60,0 Q75,-15 90,0 L90,80 L0,80 Z" fill="#2a5a3a" class="li-leafSway"/>
+  </g>
+
+  <!-- Layer 4: Middle Ground -->
+  <g transform="translate(200, 250)">
+    <rect x="0" y="0" width="120" height="80" rx="10" fill="url(#li-treehouseGrad)"/>
+    <rect x="10" y="10" width="100" height="60" rx="5" fill="#8b5a2b"/>
+    <polygon points="0,0 60,-30 120,0" fill="#654321"/>
+    <rect x="50" y="50" width="20" height="30" fill="#5a3a22"/>
+    <circle cx="60" cy="65" r="3" fill="#ffd700" filter="url(#li-softGlow)" class="li-glowPulse"/>
+    <path d="M20,40 Q30,30 40,40 Q50,50 60,40 Q70,30 80,40" stroke="#5a3a22" stroke-width="2" fill="none"/>
+    <g transform="translate(30, 20)">
+      <path d="M0,0 Q10,-15 20,0 Q30,15 40,0 Q50,-10 60,0" stroke="#8b5a2b" stroke-width="3" fill="none" class="li-leafSway"/>
+    </g>
+  </g>
+
+  <!-- Layer 5: Main Character -->
+  <g transform="translate(256, 240)">
+    <g class="li-characterBob">
+      <circle cx="0" cy="-40" r="25" fill="#f5d5b0"/>
+      <path d="M-15,-30 Q0,-40 15,-30 Q15,-15 -15,-15 Q-15,-30 -15,-30 Z" fill="#8b4513"/>
+      <circle cx="-8" cy="-45" r="3" fill="black"/>
+      <circle cx="8" cy="-45" r="3" fill="black"/>
+      <path d="M-5,-38 Q0,-35 5,-38" stroke="black" stroke-width="1" fill="none"/>
+      <path d="M-10,-25 Q0,-20 10,-25" stroke="#ff6b6b" stroke-width="2" fill="none"/>
+
+      <path d="M-20,-15 Q0,-30 20,-15 L20,30 Q0,45 -20,30 Z" fill="url(#li-lilaDressGrad)" filter="url(#li-softGlow)"/>
+      <path d="M-15,0 Q0,-10 15,0 Q15,15 -15,15 Q-15,0 -15,0 Z" fill="#ffcc00"/>
+      <circle cx="0" cy="10" r="8" fill="#f5d5b0"/>
+      <path d="M-10,20 L-10,40 M10,20 L10,40" stroke="#f5d5b0" stroke-width="5" stroke-linecap="round"/>
+      <path d="M-15,40 Q0,45 15,40" stroke="#f5d5b0" stroke-width="5" fill="none"/>
+    </g>
+  </g>
+
+  <!-- Layer 6: Foreground Particles/Sparkles -->
+  <g transform="translate(150, 100)">
+    <g class="li-particleDrift">
+      <circle cx="0" cy="0" r="2" fill="white" filter="url(#li-softGlow)"/>
+    </g>
+    <g transform="translate(50, 30)" class="li-particleDrift">
+      <circle cx="0" cy="0" r="1.5" fill="#ffd700" filter="url(#li-softGlow)"/>
+    </g>
+    <g transform="translate(200, 50)" class="li-particleDrift">
+      <circle cx="0" cy="0" r="2.5" fill="white" filter="url(#li-softGlow)"/>
+    </g>
+    <g transform="translate(300, 80)" class="li-particleDrift">
+      <circle cx="0" cy="0" r="1.8" fill="#ffd700" filter="url(#li-softGlow)"/>
+    </g>
+    <g transform="translate(400, 20)" class="li-particleDrift">
+      <circle cx="0" cy="0" r="2" fill="white" filter="url(#li-softGlow)"/>
+    </g>
+  </g>
+
+  <g transform="translate(200, 50)">
+    <circle cx="0" cy="0" r="1" fill="white" class="li-starTwinkle"/>
+    <circle cx="50" cy="20" r="1.2" fill="white" class="li-starTwinkle"/>
+    <circle cx="100" cy="10" r="0.8" fill="white" class="li-starTwinkle"/>
+    <circle cx="150" cy="30" r="1.5" fill="white" class="li-starTwinkle"/>
+    <circle cx="250" cy="15" r="1" fill="white" class="li-starTwinkle"/>
+    <circle cx="300" cy="25" r="1.3" fill="white" class="li-starTwinkle"/>
+  </g>
+
+  <!-- Layer 7: Vignette Overlay -->
+  <rect width="512" height="512" fill="url(#li-vignette)" opacity="0.4"/>
+</svg>

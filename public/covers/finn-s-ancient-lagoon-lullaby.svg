@@ -1,0 +1,185 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="fa-skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0a1e3c"/>
+      <stop offset="50%" stop-color="#1a3b6f"/>
+      <stop offset="100%" stop-color="#2a5a8f"/>
+    </linearGradient>
+
+    <linearGradient id="fa-waterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a4a7a"/>
+      <stop offset="50%" stop-color="#2a6a9a"/>
+      <stop offset="100%" stop-color="#3a8ac0"/>
+    </linearGradient>
+
+    <linearGradient id="fa-moonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#ffec8b" stop-opacity="0.7"/>
+    </linearGradient>
+
+    <radialGradient id="fa-glowGrad" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#ffd700" stop-opacity="0"/>
+    </radialGradient>
+
+    <filter id="fa-softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="fa-mediumGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="fa-strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <pattern id="fa-stars" patternUnits="userSpaceOnUse" width="20" height="20">
+      <circle cx="2" cy="2" r="1" fill="white" opacity="0.8"/>
+      <circle cx="15" cy="5" r="1.2" fill="white" opacity="0.7"/>
+      <circle cx="8" cy="12" r="0.8" fill="white" opacity="0.9"/>
+      <circle cx="18" cy="15" r="1.1" fill="white" opacity="0.6"/>
+    </pattern>
+
+    <mask id="fa-vignette">
+      <rect width="512" height="512" fill="white"/>
+      <circle cx="256" cy="256" r="240" fill="black" opacity="0.6"/>
+    </mask>
+  </defs>
+
+  <style>
+    @keyframes fa-twinkle {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+    .fa-twinkle { animation: fa-twinkle 3s ease-in-out infinite; }
+
+    @keyframes fa-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .fa-bob { animation: fa-bob 5s ease-in-out infinite; }
+
+    @keyframes fa-wave {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(4px); }
+    }
+    .fa-wave { animation: fa-wave 7s ease-in-out infinite; }
+
+    @keyframes fa-drift {
+      0%, 100% { transform: translate(0, 0); }
+      25% { transform: translate(2px, -2px); }
+      50% { transform: translate(4px, 0); }
+      75% { transform: translate(2px, 2px); }
+    }
+    .fa-drift { animation: fa-drift 8s ease-in-out infinite; }
+
+    @keyframes fa-pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+    .fa-pulse { animation: fa-pulse 4s ease-in-out infinite; }
+
+    @keyframes fa-float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-5px) rotate(2deg); }
+    }
+    .fa-float { animation: fa-float 6s ease-in-out infinite; }
+
+    @keyframes fa-sway {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(3deg); }
+    }
+    .fa-sway { animation: fa-sway 9s ease-in-out infinite; }
+  </style>
+
+  <!-- Layer 1: Sky/Background -->
+  <rect width="512" height="512" fill="url(#fa-skyGrad)"/>
+  <circle cx="400" cy="120" r="40" fill="url(#fa-moonGrad)" filter="url(#fa-softGlow)"/>
+  <rect width="512" height="512" fill="url(#fa-stars)" opacity="0.6"/>
+
+  <!-- Layer 2: Far Background -->
+  <g transform="translate(0, 350)">
+    <path d="M0,100 Q128,80 256,90 Q384,100 512,85 L512,162 Q384,142 256,152 Q128,162 0,142 Z" fill="#1a4a7a" class="fa-wave"/>
+    <path d="M0,120 Q128,100 256,110 Q384,120 512,105 L512,162 Q384,142 256,152 Q128,162 0,142 Z" fill="#2a6a9a" class="fa-wave" style="animation-delay: -1s"/>
+    <path d="M0,140 Q128,120 256,130 Q384,140 512,125 L512,162 Q384,142 256,152 Q128,162 0,142 Z" fill="#3a8ac0" class="fa-wave" style="animation-delay: -2s"/>
+  </g>
+
+  <!-- Distant mountains -->
+  <path d="M0,250 Q100,200 200,220 Q300,240 400,210 Q500,230 512,200 L512,350 L0,350 Z" fill="#0a1e3c" opacity="0.7"/>
+  <path d="M50,280 Q150,230 250,250 Q350,270 450,240 Q500,260 512,230 L512,350 L0,350 Z" fill="#1a3b6f" opacity="0.5"/>
+
+  <!-- Layer 3: Mid Background -->
+  <g transform="translate(50, 300)">
+    <g class="fa-sway">
+      <path d="M20,0 Q30,-20 40,0 Q50,-10 60,0 L60,50 Q50,40 40,50 Q30,40 20,50 Z" fill="#5a9a5a"/>
+      <path d="M15,30 Q25,10 35,30 Q45,20 55,30 L55,80 Q45,70 35,80 Q25,70 15,80 Z" fill="#4a8a4a"/>
+    </g>
+    <g transform="translate(80, 20)" class="fa-sway" style="animation-delay: -1s">
+      <path d="M15,0 Q25,-15 35,0 Q45,-5 55,0 L55,40 Q45,30 35,40 Q25,30 15,40 Z" fill="#6a9a6a"/>
+    </g>
+  </g>
+
+  <g transform="translate(350, 320)">
+    <g class="fa-sway">
+      <path d="M20,0 Q30,-25 40,0 Q50,-15 60,0 L60,60 Q50,50 40,60 Q30,50 20,60 Z" fill="#5a7a5a"/>
+    </g>
+  </g>
+
+  <!-- Layer 4: Middle Ground -->
+  <g transform="translate(150, 380)">
+    <ellipse cx="0" cy="0" rx="60" ry="20" fill="#2a5a8f" opacity="0.8"/>
+    <ellipse cx="20" cy="-5" rx="40" ry="15" fill="#3a7ac0" opacity="0.9"/>
+    <circle cx="30" cy="-10" r="8" fill="#ffd700" opacity="0.7" filter="url(#fa-softGlow)"/>
+  </g>
+
+  <g transform="translate(300, 370)">
+    <ellipse cx="0" cy="0" rx="50" ry="18" fill="#2a5a8f" opacity="0.8"/>
+    <circle cx="15" cy="-8" r="6" fill="#ffd700" opacity="0.7" filter="url(#fa-softGlow)"/>
+  </g>
+
+  <!-- Layer 5: Main Character -->
+  <g transform="translate(256, 240)">
+    <g class="fa-bob">
+      <path d="M0,-30 C10,-40 30,-40 40,-30 C50,-20 50,0 40,10 C30,20 10,20 0,10 C-10,20 -30,20 -40,10 C-50,0 -50,-20 -40,-30 C-30,-40 -10,-40 0,-30 Z" fill="#7a9abc" filter="url(#fa-mediumGlow)"/>
+      <path d="M15,-15 C20,-20 30,-20 35,-15 C40,-10 40,-5 35,0 C30,5 20,5 15,0 C10,-5 10,-10 15,-15 Z" fill="#aacadd"/>
+      <circle cx="25" cy="-20" r="3" fill="#3a5a7a"/>
+      <path d="M-20,-10 Q-15,-15 -10,-10 Q-5,-5 0,0" stroke="#3a5a7a" stroke-width="2" fill="none"/>
+      <path d="M-25,-5 Q-20,-10 -15,-5 Q-10,0 -5,5" stroke="#3a5a7a" stroke-width="2" fill="none"/>
+      <path d="M30,-5 C35,-8 40,-5 45,0 C50,5 45,10 40,15" stroke="#3a5a7a" stroke-width="2" fill="none" stroke-linecap="round"/>
+    </g>
+
+    <!-- Glowing song bubbles -->
+    <g transform="translate(30, -40)">
+      <circle cx="0" cy="0" r="8" fill="#ffd700" opacity="0.8" filter="url(#fa-strongGlow)" class="fa-pulse"/>
+      <circle cx="15" cy="-5" r="6" fill="#ffec8b" opacity="0.7" filter="url(#fa-mediumGlow)" class="fa-pulse" style="animation-delay: -1s"/>
+      <circle cx="5" cy="-12" r="4" fill="#ffd700" opacity="0.6" filter="url(#fa-softGlow)" class="fa-pulse" style="animation-delay: -2s"/>
+    </g>
+  </g>
+
+  <!-- Layer 6: Foreground Particles/Sparkles -->
+  <g>
+    <circle cx="100" cy="150" r="2" fill="white" class="fa-twinkle fa-drift"/>
+    <circle cx="400" cy="120" r="1.5" fill="white" class="fa-twinkle fa-drift" style="animation-delay: -1s"/>
+    <circle cx="200" cy="80" r="2.5" fill="#ffd700" class="fa-twinkle fa-drift" style="animation-delay: -2s"/>
+    <circle cx="350" cy="200" r="1.8" fill="white" class="fa-twinkle fa-drift" style="animation-delay: -3s"/>
+    <circle cx="150" cy="250" r="2" fill="#ffec8b" class="fa-twinkle fa-drift" style="animation-delay: -4s"/>
+    <circle cx="450" cy="180" r="1.5" fill="white" class="fa-twinkle fa-drift" style="animation-delay: -5s"/>
+    <circle cx="80" cy="300" r="2.2" fill="#ffd700" class="fa-twinkle fa-drift" style="animation-delay: -6s"/>
+    <circle cx="300" cy="350" r="1.7" fill="white" class="fa-twinkle fa-drift" style="animation-delay: -7s"/>
+
+    <!-- Floating leaves -->
+    <g transform="translate(120, 400)" class="fa-float">
+      <path d="M0,0 Q5,-10 10,0 Q5,10 0,0 Z" fill="#5a9a5a"/>
+    </g>
+    <g transform="translate(380, 380)" class="fa-float" style="animation-delay: -2s">
+      <path d="M0,0 Q4,-8 8,0 Q4,8 0,0 Z" fill="#6a9a6a"/>
+    </g>
+  </g>
+
+  <!-- Layer 7: Vignette Overlay -->
+  <rect width="512" height="512" fill="url(#fa-vignette)" opacity="0.4"/>
+</svg>
