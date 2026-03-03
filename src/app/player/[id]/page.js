@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import StarField from '@/components/StarField';
@@ -61,6 +61,33 @@ export default function PlayerPage() {
   const narrationConnectedAudioRef = useRef(null);
   const musicStartedRef = useRef(false);
   const lastHistoryRecordRef = useRef(0); // throttle history writes
+
+  // Progressive cover dimming — 3-phase model for sleep induction:
+  // Phase 1 (0-33%): Capture — full brightness, draws attention
+  // Phase 2 (33-66%): Descent — gradual warm dimming, transition to sleepiness
+  // Phase 3 (66-100%): Sleep — near-dark, minimal stimulation
+  // Values interpolate continuously within each phase (no sudden jumps).
+  const coverDimStyle = useMemo(() => {
+    if (!isPlaying || !content?.cover?.endsWith('.svg')) return {};
+    const p = Math.max(0, Math.min(100, progress));
+    let brightness, saturate, sepia;
+    if (p <= 33) {
+      brightness = 1.0; saturate = 1.0; sepia = 0.0;
+    } else if (p <= 66) {
+      const t = (p - 33) / 33;
+      brightness = 1.0 - t * 0.15;   // 1.0 → 0.85
+      saturate   = 1.0 - t * 0.2;    // 1.0 → 0.8
+      sepia      = t * 0.1;           // 0.0 → 0.1
+    } else {
+      const t = (p - 66) / 34;
+      brightness = 0.85 - t * 0.35;  // 0.85 → 0.5
+      saturate   = 0.8  - t * 0.3;   // 0.8  → 0.5
+      sepia      = 0.1  + t * 0.1;   // 0.1  → 0.2
+    }
+    return {
+      filter: `brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)}) sepia(${sepia.toFixed(3)})`,
+    };
+  }, [progress, isPlaying, content?.cover]);
 
   // Initialize music engine
   useEffect(() => {
@@ -924,6 +951,7 @@ export default function PlayerPage() {
                 data={content.cover}
                 type="image/svg+xml"
                 className={styles.coverImage}
+                style={coverDimStyle}
                 aria-label={content.title || 'Cover art'}
               />
             ) : (

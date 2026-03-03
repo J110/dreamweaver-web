@@ -68,6 +68,7 @@
   left: 0;
   pointer-events: none;
   border: none;
+  transition: filter 1s ease-in-out;
 }
 
 .ttsWarning {
