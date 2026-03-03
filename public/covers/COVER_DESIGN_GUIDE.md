@@ -548,6 +548,7 @@ Experimental covers **MUST** be rendered via `<object>` tags (not `<img>` tags) 
     data={content.cover}
     type="image/svg+xml"
     className={styles.coverImage}
+    style={coverDimStyle}   // Progressive dimming during playback
     aria-label={content.title || 'Cover art'}
   />
 ) : (
@@ -555,7 +556,7 @@ Experimental covers **MUST** be rendered via `<object>` tags (not `<img>` tags) 
 )}
 ```
 
-**Why `<object>` instead of `<img>`?** The `<img>` tag blocks all SVG animations (CSS and SMIL). The `<object>` tag allows animations to render. The CSS for `.coverImage` includes `pointer-events: none; border: none;` to prevent interaction issues.
+**Why `<object>` instead of `<img>`?** The `<img>` tag blocks all SVG animations (CSS and SMIL). The `<object>` tag allows animations to render. The CSS for `.coverImage` includes `pointer-events: none; border: none; transition: filter 1s ease-in-out;` for smooth animation and dimming support.
 
 ### 7 Diversity Axes
 
@@ -566,26 +567,114 @@ Each cover is auto-selected from the story's metadata across 7 axes to ensure vi
 | **World Setting** | deep_ocean, cloud_kingdom, enchanted_forest, snow_landscape, desert_night, cozy_interior, mountain_meadow, space_cosmos, tropical_lagoon, underground_cave, ancient_library, floating_islands |
 | **Color Palette** | ember_warm, twilight_cool, forest_deep, golden_hour, moonstone, berry_dusk |
 | **Composition** | vast_landscape, intimate_closeup, overhead_canopy, winding_path, circular_nest |
-| **Character Visual** | small_mammal, aquatic_creature, bird, mythical_gentle, human_child, nature_spirit, robot_mech, no_character |
+| **Character Visual** | human_child, small_mammal, aquatic_creature, bird, insect, plant, celestial, atmospheric, mythical_gentle, object, robot_mech, nature_spirit, no_character |
 | **Light Source** | above (moonlight), backlit (rim light), below (bioluminescence), ambient (diffused) |
 | **Texture** | watercolor_soft, soft_pastel, digital_painterly, paper_cutout |
 | **Time Marker** | early_night, deep_night, eternal_dusk, timeless_indoor |
 
-Story metadata (theme, age group, title keywords) auto-maps to appropriate axes, with randomness for variety.
+Story metadata (theme, age group, title keywords, `lead_character_type`) auto-maps to appropriate axes.
+
+### Character Visual System (13 Types)
+
+The character visual axis maps all 12 `lead_character_type` values from content generation to FLUX-friendly descriptions:
+
+| Visual Key | FLUX Description | Mapped From |
+|-----------|------------------|-------------|
+| `human_child` | A young child with soft rounded features and bright curious eyes | `human` |
+| `small_mammal` | A small cute animal with soft round body and gentle expression | `animal` |
+| `aquatic_creature` | A gentle sea creature with flowing form and luminous eyes | `sea_creature` |
+| `bird` | A small bird with soft feathers and round body | `bird` |
+| `insect` | A tiny insect with delicate features and round friendly face | `insect` |
+| `plant` | A sentient plant with gentle glowing organic form | `plant` |
+| `celestial` | A glowing celestial being with radiant soft light | `celestial` |
+| `atmospheric` | A personified weather element with translucent flowing form | `atmospheric` |
+| `mythical_gentle` | A baby mythical creature with soft features | `mythical` |
+| `object` | A personified everyday object with gentle expressive features | `object` |
+| `robot_mech` | A small round friendly robot with soft edges | `robot` |
+| `nature_spirit` | An abstract nature spirit with flowing translucent form | `alien` |
+| `no_character` | (empty — pure landscape) | — |
+
+**Compound type matching**: For values like `"jellyfish (sea creature)"`, fuzzy keyword matching finds the correct visual (e.g., "sea" → `aquatic_creature`).
+
+### Character Phrase Extraction
+
+The `_extract_character_phrase()` helper extracts the lead character's identity from the story `description` field for use directly in the FLUX prompt. This ensures covers show the *actual* character — not a generic child.
+
+**Examples:**
+- `"A tiny raindrop named Drizzle embarks on..."` → `"a tiny raindrop named Drizzle"`
+- `"When seven-year-old Aarohi discovers..."` → `"seven-year-old Aarohi"`
+- `"A gentle tortoise named Pebble embarks..."` → `"a gentle tortoise named Pebble"`
+- `"In a futuristic city where playgrounds float, Aria discovers..."` → `"Aria"`
+
+**Handled edge cases:**
+- "When/As/In..." prefixes stripped; comma-separated clauses parsed
+- "A gentle lullaby about..." wrappers removed
+- "Join X as..." patterns matched
+- Phrases capped at 60 chars with natural break at "who/from/in"
+
+### Human Character Diversity
+
+For `lead_character_type == "human"`, appearance is **deterministically diversified** using MD5 hash of the story ID. This ensures:
+- Same story always gets the same appearance (stable across regenerations)
+- Different stories get different-looking children
+- Gender-appropriate selections
+
+**Diversity pools (gender-aware):**
+
+| Trait | Female Options | Male Options |
+|-------|--------------|-------------|
+| **Hair** | long straight black, braided with ribbons, curly dark, pigtails, bob cut, afro, long flowing red, two buns, ponytail with bangs, wavy brown with flowers | short curly dark, messy wavy brown, short spiky, short afro, buzz cut, shaggy brown, neat black, short with headband, tousled red, close-cropped |
+| **Skin** | warm brown, light olive, dark brown, fair rosy, tan, deep ebony, golden tan, pale with freckles | (same pool) |
+| **Clothing** | cozy knitted sweater, flowing colorful dress, overalls + striped shirt, hooded cape, hoodie, traditional embroidered, puffy jacket + scarf, simple tunic | cozy knitted sweater, vest + rolled sleeves, overalls + striped shirt, hooded cape, hoodie + sneakers, traditional embroidered, puffy jacket + scarf, tunic + sandals |
+
+**Prompt examples:**
+- **Non-human (atmospheric/raindrop):** `"a tiny raindrop named Drizzle, a personified weather element with translucent flowing form, gentle and friendly expression, in a magical world"`
+- **Human (diverse girl):** `"seven-year-old Aarohi, a young girl, warm brown skin, braided hair with ribbons, wearing a flowing colorful dress, bright curious eyes wide open, gentle smile, looking with wonder at the magical world"`
+- **Object (clock):** `"an old friendly clock named Tick, a personified everyday object with gentle expressive features and warm glow, gentle and friendly expression, in a magical world"`
 
 ### SVG Overlay Animation Types
 
-All covers include these mandatory sleep-focused layers:
-1. **Vignette breathing** (7-10s cycle) — darkens edges, primary sleep cue
-2. **Breathing pacer glow** (7-9s cycle) — guides breathing rhythm
-3. **Moonlight wash** — gentle ambient light from top
+Each cover gets a **world-appropriate vignette** plus 2-3 world-specific animation layers. There are no mandatory layers across all covers — variety comes from the world setting.
 
-Plus world-specific animations selected from:
-- `particles_*` (bubbles, pollen, snow, dust, fireflies, spores, leaves)
-- `glow_*` (bioluminescence, firefly, candle, crystals, sunset, lantern, nebula)
-- `twinkle_*` (stars, distant shimmer)
-- `drift_*` (clouds, sand, starfield)
-- `mist_*` (underwater, ground, valley, sea, steam)
+**World-specific animations:**
+- `particles_*` — bubbles, pollen, snow, dust, fireflies, spores, leaves
+- `glow_*` — bioluminescence, firefly, candle, crystals, sunset, lantern, nebula
+- `twinkle_*` — stars, distant shimmer
+- `drift_*` — clouds, sand, starfield
+- `mist_*` — underwater, ground, valley, sea, steam
+
+### SVG Overlay Diversity Rules
+
+Each animation variant uses **radically different SVG primitives** to prevent visual sameness:
+
+**Mist variants (5 distinct styles):**
+
+| Variant | SVG Primitive | Position | Visual Effect |
+|---------|--------------|----------|---------------|
+| `mist_underwater` | `<path>` cubic bezier curves | Mid-height (y: 160-440) | Wavy horizontal current lines |
+| `mist_valley` | `<rect>` with `transform="rotate()"` | Full canvas, diagonal | Sweeping diagonal bands |
+| `mist_sea` | Thin `<rect>` lines | Horizon line (y: ~260) | Single sharp horizon mist |
+| `mist_steam` | Tall narrow `<rect>` columns | Rising upward | Vertical steam columns |
+| `mist_ground` | Small `<circle>` dots (12-20) | Varying heights | Scattered soft fog dots |
+
+**Glow variants (position diversity):**
+
+| Variant | SVG Primitive | Position | Visual Effect |
+|---------|--------------|----------|---------------|
+| `glow_bioluminescence` | Vertical `<rect>` streaks | Upper 2/3 of canvas | Tall glowing streaks |
+| `glow_campfire` | `<polygon>` triangles | Scattered across canvas | Flame-shaped points |
+| `glow_sunset` | Horizontal `<rect>` bands | TOP of canvas (y: 20-120) | Sky-level color bands |
+| Other glow variants | `<ellipse>` / `<circle>` | Various positions | Standard soft glows |
+
+**Drift variants:**
+
+| Variant | SVG Primitive | Position |
+|---------|--------------|----------|
+| `drift_clouds` | `<ellipse>` | Upper canvas |
+| `drift_sand` | `<line>` diagonal streaks | Full canvas, angled |
+| `drift_starfield` | `<circle>` dots | Scattered |
+
+**Key rule:** No two animation variants should use the same combination of SVG primitive + position + size. If everything uses `<ellipse>` at the bottom, the covers look identical regardless of the name.
 
 ### Sleep-Safe Animation Rules
 
@@ -593,10 +682,29 @@ Plus world-specific animations selected from:
 |------|-------|
 | Minimum cycle duration | 4 seconds |
 | Maximum opacity | 60% (particles), 80% (vignette) |
-| Breathing pacer | 7-9s cycle (6-8 breaths/min) |
 | Particle drift | 15-28s slow downward |
 | Star twinkle | 5-10s fade in/out |
 | Mist movement | 18-38s gentle sway |
+| All animations | SMIL `<animate>` / `<animateTransform>` |
+| Easing | ease-in-out for all cycles |
+
+### Progressive Cover Dimming (Playback)
+
+During audio playback, the cover image **progressively dims** to support sleep induction. This is implemented as CSS `filter` changes on the `<object>` element, driven by playback progress (0-100%).
+
+**3-Phase Dimming Model:**
+
+| Phase | Progress | Brightness | Saturation | Sepia | Purpose |
+|-------|----------|-----------|------------|-------|---------|
+| Capture (Phase 1) | 0-33% | 1.0 | 1.0 | 0.0 | Full vibrant cover to engage child |
+| Descent (Phase 2) | 33-66% | 1.0 → 0.85 | 1.0 → 0.8 | 0.0 → 0.1 | Gradual warmth + slight dim |
+| Sleep (Phase 3) | 66-100% | 0.85 → 0.5 | 0.8 → 0.5 | 0.1 → 0.2 | Deep dim, warm sepia tone |
+
+**Implementation:**
+- `useMemo` in player page computes `coverDimStyle` from `progress` state
+- CSS `transition: filter 1s ease-in-out` smooths changes
+- Only applies when `isPlaying` and cover is SVG
+- Works for ALL content types (stories, poems, lullabies) — progress is always 0-100%
 
 ### Character Expression Rules
 
@@ -618,13 +726,15 @@ This produces:
 2. `{id}_overlay.svg` — Animated SVG overlay
 3. `{id}_combined.svg` — Combined file (copied to `public/covers/`)
 
-The pipeline falls back to Mistral-generated SVG covers if `HF_API_TOKEN` is not set.
+**FLUX is the only cover system for the pipeline.** The `HF_API_TOKEN` env var must be set. If FLUX fails for a story, that story gets no cover (it will use `default.svg`) rather than falling back to a different generation method. This ensures visual consistency across all covers.
 
 ### Generation Script
 
 **File**: `dreamweaver-backend/scripts/generate_cover_experimental.py`
 
 **Required env var**: `HF_API_TOKEN` (Hugging Face Read token, free tier)
+
+**Required packages**: `pip install httpx Pillow`
 
 ```bash
 # Generate cover for a specific story
@@ -645,4 +755,4 @@ python3 scripts/generate_cover_experimental.py \
 
 ---
 
-*This guide is maintained alongside the codebase. Update it when adding new covers or changing the design system.*
+*This guide is maintained alongside the codebase. Last updated: March 2026 — overlay diversity, character diversity, progressive dimming.*
