@@ -1,0 +1,180 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<defs>
+    <radialGradient id="so-skyGrad" cx="50%" cy="50%" r="70%">
+        <stop offset="0%" stop-color="#0a0e2a"/>
+        <stop offset="50%" stop-color="#1a103d"/>
+        <stop offset="100%" stop-color="#0a0e2a"/>
+    </radialGradient>
+
+    <linearGradient id="so-bambooGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#a8d8a8"/>
+        <stop offset="50%" stop-color="#7a9a7a"/>
+        <stop offset="100%" stop-color="#5a7a5a"/>
+    </linearGradient>
+
+    <linearGradient id="so-tigerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#f5d742"/>
+        <stop offset="50%" stop-color="#f5b842"/>
+        <stop offset="100%" stop-color="#f59a42"/>
+    </linearGradient>
+
+    <filter id="so-softGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="2" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="so-mediumGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="4" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="so-strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="6" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <radialGradient id="so-vignette" cx="50%" cy="50%" r="70%">
+        <stop offset="0%" stop-color="black" stop-opacity="0"/>
+        <stop offset="100%" stop-color="black" stop-opacity="1"/>
+    </radialGradient>
+
+    <filter id="so-sparkleGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1" result="blur"/>
+        <feSpecularLighting result="specOut" in="blur" specularConstant="1" specularExponent="20" lighting-color="#ffd700">
+            <fePointLight x="0" y="0" z="200"/>
+        </feSpecularLighting>
+        <feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+    </filter>
+</defs>
+
+<style>
+    @keyframes so-twinkle {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 1; }
+    }
+    .so-twinkle { animation: so-twinkle 3s ease-in-out infinite; }
+
+    @keyframes so-bob {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+    .so-bob { animation: so-bob 5s ease-in-out infinite; }
+
+    @keyframes so-sway {
+        0%, 100% { transform: rotate(-2deg); }
+        50% { transform: rotate(2deg); }
+    }
+    .so-sway { animation: so-sway 7s ease-in-out infinite; }
+
+    @keyframes so-drift {
+        0% { transform: translate(0, 0); }
+        25% { transform: translate(3px, 2px); }
+        50% { transform: translate(-2px, 4px); }
+        75% { transform: translate(1px, -3px); }
+        100% { transform: translate(0, 0); }
+    }
+    .so-drift { animation: so-drift 8s ease-in-out infinite; }
+
+    @keyframes so-pulse {
+        0%, 100% { opacity: 0.7; filter: url(#so-softGlow); }
+        50% { opacity: 1; filter: url(#so-mediumGlow); }
+    }
+    .so-pulse { animation: so-pulse 4s ease-in-out infinite; }
+
+    @keyframes so-float {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-10px) rotate(1deg); }
+    }
+    .so-float { animation: so-float 6s ease-in-out infinite; }
+
+    @keyframes so-leafTwitch {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(3deg); }
+        75% { transform: rotate(-3deg); }
+    }
+    .so-leafTwitch { animation: so-leafTwitch 5s ease-in-out infinite; }
+</style>
+
+<rect width="512" height="512" fill="url(#so-skyGrad)"/>
+
+<g id="so-layer1-sky">
+    <circle cx="100" cy="80" r="2" fill="#ffd700" class="so-twinkle" filter="url(#so-sparkleGlow)"/>
+    <circle cx="400" cy="60" r="2" fill="#ffd700" class="so-twinkle" filter="url(#so-sparkleGlow)" style="animation-delay: 0.5s"/>
+    <circle cx="200" cy="40" r="1.5" fill="#ffd700" class="so-twinkle" filter="url(#so-sparkleGlow)" style="animation-delay: 1s"/>
+    <circle cx="350" cy="120" r="1.5" fill="#ffd700" class="so-twinkle" filter="url(#so-sparkleGlow)" style="animation-delay: 1.5s"/>
+    <circle cx="150" cy="150" r="2" fill="#ffd700" class="so-twinkle" filter="url(#so-sparkleGlow)" style="animation-delay: 2s"/>
+    <circle cx="450" cy="180" r="1.5" fill="#ffd700" class="so-twinkle" filter="url(#so-sparkleGlow)" style="animation-delay: 2.5s"/>
+</g>
+
+<g id="so-layer2-far-background">
+    <path d="M0,350 Q100,320 200,340 Q300,360 400,330 Q500,350 512,320 L512,512 L0,512 Z" fill="#2a3a2a" class="so-sway"/>
+    <path d="M50,380 Q150,360 250,380 Q350,400 450,370 Q512,390 512,420 L512,512 L0,512 Z" fill="#1a2a1a" class="so-sway" style="animation-delay: 1s"/>
+</g>
+
+<g id="so-layer3-mid-background">
+    <g transform="translate(50,280)">
+        <path d="M0,0 Q20,-40 40,0 Q60,40 80,0 Q100,-40 120,0 L120,120 L0,120 Z" fill="url(#so-bambooGrad)" class="so-leafTwitch"/>
+    </g>
+    <g transform="translate(150,300)">
+        <path d="M0,0 Q15,-30 30,0 Q45,30 60,0 Q75,-30 90,0 L90,100 L0,100 Z" fill="url(#so-bambooGrad)" class="so-leafTwitch" style="animation-delay: 0.5s"/>
+    </g>
+    <g transform="translate(300,290)">
+        <path d="M0,0 Q25,-50 50,0 Q75,50 100,0 Q125,-50 150,0 L150,150 L0,150 Z" fill="url(#so-bambooGrad)" class="so-leafTwitch" style="animation-delay: 1s"/>
+    </g>
+    <g transform="translate(400,310)">
+        <path d="M0,0 Q20,-40 40,0 Q60,40 80,0 Q100,-40 120,0 L120,120 L0,120 Z" fill="url(#so-bambooGrad)" class="so-leafTwitch" style="animation-delay: 1.5s"/>
+    </g>
+</g>
+
+<g id="so-layer4-middle-ground">
+    <g transform="translate(100,320)">
+        <path d="M0,0 L20,0 L20,-100 L15,-120 L10,-100 L10,0 Z" fill="#7a9a7a" class="so-sway"/>
+        <path d="M10,-120 Q15,-140 20,-120" stroke="#5a7a5a" stroke-width="2" fill="none"/>
+    </g>
+    <g transform="translate(200,300)">
+        <path d="M0,0 L25,0 L25,-140 L20,-160 L15,-140 L15,0 Z" fill="#7a9a7a" class="so-sway" style="animation-delay: 0.5s"/>
+        <path d="M15,-160 Q20,-180 25,-160" stroke="#5a7a5a" stroke-width="2" fill="none"/>
+    </g>
+    <g transform="translate(350,310)">
+        <path d="M0,0 L22,0 L22,-110 L18,-130 L14,-110 L14,0 Z" fill="#7a9a7a" class="so-sway" style="animation-delay: 1s"/>
+        <path d="M14,-130 Q18,-150 22,-130" stroke="#5a7a5a" stroke-width="2" fill="none"/>
+    </g>
+    <g transform="translate(450,330)">
+        <path d="M0,0 L18,0 L18,-90 L15,-110 L12,-90 L12,0 Z" fill="#7a9a7a" class="so-sway" style="animation-delay: 1.5s"/>
+        <path d="M12,-110 Q15,-130 18,-110" stroke="#5a7a5a" stroke-width="2" fill="none"/>
+    </g>
+</g>
+
+<g id="so-layer5-main-character">
+    <g transform="translate(256,240)">
+        <g class="so-bob">
+            <g class="so-pulse">
+                <path d="M-40,-30 Q-30,-50 -10,-50 Q10,-50 20,-30 Q30,-10 30,10 Q30,30 20,40 Q0,50 -20,40 Q-30,30 -40,10 Z" fill="url(#so-tigerGrad)" filter="url(#so-softGlow)"/>
+                <path d="M-25,-20 Q-20,-30 -10,-30 Q0,-30 5,-20 Q10,-10 10,0 Q10,10 5,20 Q-10,30 -20,20 Q-25,10 -25,-20 Z" fill="#f5f5f5"/>
+                <path d="M-15,-10 L-10,-15 L-5,-10 L-10,-5 Z" fill="#333"/>
+                <path d="M10,-10 L15,-15 L20,-10 L15,-5 Z" fill="#333"/>
+                <circle cx="-12" cy="-5" r="3" fill="#333"/>
+                <circle cx="12" cy="-5" r="3" fill="#333"/>
+                <path d="M-5,5 Q0,15 5,5 Q0,10 -5,5 Z" fill="#f5d742"/>
+                <path d="M-30,0 Q-25,10 -20,0 Q-25,-10 -30,0 Z" fill="#f59a42"/>
+                <path d="M25,0 Q30,10 35,0 Q30,-10 25,0 Z" fill="#f59a42"/>
+            </g>
+        </g>
+    </g>
+</g>
+
+<g id="so-layer6-foreground-particles">
+    <circle cx="120" cy="200" r="1.5" fill="#ffd700" class="so-drift so-twinkle" filter="url(#so-sparkleGlow)"/>
+    <circle cx="380" cy="180" r="1.2" fill="#ffd700" class="so-drift so-twinkle" filter="url(#so-sparkleGlow)" style="animation-delay: 1s"/>
+    <circle cx="200" cy="150" r="1" fill="#ffd700" class="so-drift so-twinkle" filter="url(#so-sparkleGlow)" style="animation-delay: 2s"/>
+    <circle cx="420" cy="250" r="1.5" fill="#ffd700" class="so-drift so-twinkle" filter="url(#so-sparkleGlow)" style="animation-delay: 3s"/>
+    <circle cx="80" cy="280" r="1.2" fill="#ffd700" class="so-drift so-twinkle" filter="url(#so-sparkleGlow)" style="animation-delay: 4s"/>
+    <path d="M256,100 L261,110 L256,105 L251,110 Z" fill="#ffd700" class="so-float" filter="url(#so-sparkleGlow)"/>
+    <path d="M280,120 L285,130 L280,125 L275,130 Z" fill="#ffd700" class="so-float" filter="url(#so-sparkleGlow)" style="animation-delay: 1s"/>
+    <path d="M230,140 L235,150 L230,145 L225,150 Z" fill="#ffd700" class="so-float" filter="url(#so-sparkleGlow)" style="animation-delay: 2s"/>
+</g>
+
+<g id="so-layer7-vignette">
+    <rect width="512" height="512" fill="url(#so-vignette)" opacity="0.4"/>
+</g>
+</svg>
