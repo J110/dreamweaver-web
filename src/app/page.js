@@ -61,7 +61,7 @@ export default function Home() {
   const loadStories = async () => {
     setLoading(true);
     try {
-      const data = await trendingApi.getTrending(40, lang);
+      const data = await trendingApi.getTrending(100, lang);
       const apiItems = data.content || [];
       const seedItems = getStories(lang);
       // Build seed lookup by id and title for enrichment
