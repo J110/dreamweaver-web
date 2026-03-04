@@ -562,33 +562,33 @@
   <ellipse cx="0" cy="0" rx="1.5" ry="4" fill="#8B7355" opacity="0.38"/>
 </g>
 <!-- D4: Cricket -->
-<g id="cricket-0" transform="translate(40%, 88%)" opacity="0.25">
+<g id="cricket-0" transform="translate(40%, 88%)" opacity="0.13">
   <ellipse cx="0" cy="0" rx="4" ry="1.5" fill="#2A1F14"/>
   <line x1="2" y1="1" x2="6" y2="4" stroke="#2A1F14" stroke-width="0.5">
     <animateTransform attributeName="transform" type="rotate"
       values="0,2,1; 0,2,1; 0,2,1; 0,2,1; 0,2,1; 0,2,1; 0,2,1; 8,2,1; 0,2,1; 0,2,1"
-      dur="13s" repeatCount="indefinite"
+      dur="23s" repeatCount="indefinite"
       calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
   </line>
   <line x1="-3" y1="-1" x2="-7" y2="-4" stroke="#2A1F14" stroke-width="0.3">
     <animateTransform attributeName="transform" type="rotate"
       values="0,-3,-1; 4,-3,-1; 0,-3,-1; -4,-3,-1; 0,-3,-1"
-      dur="13s" repeatCount="indefinite"
+      dur="19s" repeatCount="indefinite"
       calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
   </line>
 </g>
-<g id="cricket-1" transform="translate(78%, 90%)" opacity="0.28">
+<g id="cricket-1" transform="translate(78%, 90%)" opacity="0.14">
   <ellipse cx="0" cy="0" rx="4" ry="1.5" fill="#2A1F14"/>
   <line x1="2" y1="1" x2="6" y2="4" stroke="#2A1F14" stroke-width="0.5">
     <animateTransform attributeName="transform" type="rotate"
       values="0,2,1; 0,2,1; 0,2,1; 0,2,1; 0,2,1; 0,2,1; 0,2,1; 3,2,1; 0,2,1; 0,2,1"
-      dur="11s" repeatCount="indefinite"
+      dur="19s" repeatCount="indefinite"
       calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
   </line>
   <line x1="-3" y1="-1" x2="-7" y2="-4" stroke="#2A1F14" stroke-width="0.3">
     <animateTransform attributeName="transform" type="rotate"
       values="0,-3,-1; 1,-3,-1; 0,-3,-1; -2,-3,-1; 0,-3,-1"
-      dur="7s" repeatCount="indefinite"
+      dur="13s" repeatCount="indefinite"
       calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
   </line>
 </g>
@@ -606,12 +606,12 @@
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
 </g>
 <!-- Vignette: bottom_light -->
-<linearGradient id="vigLG653" x1="0" y1="0" x2="0" y2="1">
+<linearGradient id="vigLG699" x1="0" y1="0" x2="0" y2="1">
   <stop offset="0%" stop-color="#051005" stop-opacity="0"/>
   <stop offset="70%" stop-color="#051005" stop-opacity="0"/>
   <stop offset="100%" stop-color="#051005" stop-opacity="0.40"/>
 </linearGradient>
-<rect width="512" height="512" fill="url(#vigLG653)" opacity="0.58"/>
+<rect width="512" height="512" fill="url(#vigLG699)" opacity="0.55"/>
 
 
 </svg>

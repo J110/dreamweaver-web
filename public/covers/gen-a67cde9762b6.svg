@@ -410,18 +410,18 @@
   </circle>
 </g>
 <!-- D4: Cricket -->
-<g id="cricket-0" transform="translate(56%, 93%)" opacity="0.27">
+<g id="cricket-0" transform="translate(56%, 93%)" opacity="0.14">
   <ellipse cx="0" cy="0" rx="4" ry="1.5" fill="#1A0F05"/>
   <line x1="2" y1="1" x2="6" y2="4" stroke="#1A0F05" stroke-width="0.5">
     <animateTransform attributeName="transform" type="rotate"
       values="0,2,1; 0,2,1; 0,2,1; 0,2,1; 0,2,1; 0,2,1; 0,2,1; 4,2,1; 0,2,1; 0,2,1"
-      dur="11s" repeatCount="indefinite"
+      dur="19s" repeatCount="indefinite"
       calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
   </line>
   <line x1="-3" y1="-1" x2="-7" y2="-4" stroke="#1A0F05" stroke-width="0.3">
     <animateTransform attributeName="transform" type="rotate"
       values="0,-3,-1; 2,-3,-1; 0,-3,-1; -2,-3,-1; 0,-3,-1"
-      dur="13s" repeatCount="indefinite"
+      dur="19s" repeatCount="indefinite"
       calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
   </line>
 </g>
@@ -439,11 +439,11 @@
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
 </g>
 <!-- Vignette: top_corners -->
-<radialGradient id="vigRC356" cx="0.5" cy="0.3" r="0.7">
+<radialGradient id="vigRC402" cx="0.5" cy="0.3" r="0.7">
   <stop offset="50%" stop-color="#1a0a05" stop-opacity="0"/>
   <stop offset="100%" stop-color="#1a0a05" stop-opacity="0.60"/>
 </radialGradient>
-<rect width="512" height="512" fill="url(#vigRC356)" opacity="0.57"/>
+<rect width="512" height="512" fill="url(#vigRC402)" opacity="0.56"/>
 
 
 </svg>

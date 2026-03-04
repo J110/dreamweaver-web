@@ -344,11 +344,11 @@
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
 </g>
 <!-- Vignette: corners_only -->
-<radialGradient id="vigRC730" cx="0.5" cy="0.5" r="0.6">
+<radialGradient id="vigRC120" cx="0.5" cy="0.5" r="0.6">
   <stop offset="40%" stop-color="#051005" stop-opacity="0"/>
   <stop offset="100%" stop-color="#051005" stop-opacity="0.55"/>
 </radialGradient>
-<rect width="512" height="512" fill="url(#vigRC730)" opacity="0.69"/>
+<rect width="512" height="512" fill="url(#vigRC120)" opacity="0.58"/>
 
 
 </svg>

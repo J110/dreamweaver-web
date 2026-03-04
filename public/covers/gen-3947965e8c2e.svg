@@ -461,13 +461,13 @@
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
 </g>
 <!-- Vignette: top_heavy -->
-<linearGradient id="vigLG277" x1="0" y1="0" x2="0" y2="1">
+<linearGradient id="vigLG158" x1="0" y1="0" x2="0" y2="1">
   <stop offset="0%" stop-color="#051005" stop-opacity="0.15"/>
   <stop offset="50%" stop-color="#051005" stop-opacity="0.15"/>
   <stop offset="100%" stop-color="#051005" stop-opacity="0"/>
 </linearGradient>
-<rect width="512" height="512" fill="url(#vigLG277)" opacity="0.68">
-  <animate attributeName="opacity" values="0.68;0.7300000000000001;0.68" dur="10s" repeatCount="indefinite"
+<rect width="512" height="512" fill="url(#vigLG158)" opacity="0.71">
+  <animate attributeName="opacity" values="0.71;0.76;0.71" dur="9s" repeatCount="indefinite"
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
 </rect>
 

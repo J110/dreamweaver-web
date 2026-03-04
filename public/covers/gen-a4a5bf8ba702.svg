@@ -483,13 +483,26 @@
   </ellipse>
   <ellipse cx="0" cy="0" rx="1.5" ry="4" fill="#8B7355" opacity="0.43"/>
 </g>
+<!-- A2: Shooting Star -->
+<g id="shooting-star" opacity="0">
+  <line x1="0" y1="0" x2="-20" y2="-8" stroke="#FFCA78" stroke-width="1.5"
+    stroke-linecap="round" opacity="0.5"/>
+  <circle cx="0" cy="0" r="2" fill="#FFF5E0" opacity="0.6"/>
+  <circle cx="0" cy="0" r="5" fill="#FFCA78" opacity="0.15"/>
+  <animateMotion dur="7.0s" begin="43s" repeatCount="indefinite"
+    path="M-15,-2 Q126,35 314,74"
+    calcMode="spline" keySplines="0.2 0 0.8 1"/>
+  <animate attributeName="opacity" values="0;0;0.6;0.6;0;0;0;0;0;0;0;0;0"
+    dur="43s" begin="0s" repeatCount="indefinite"
+    calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+</g>
 <!-- Vignette: bottom_light -->
-<linearGradient id="vigLG965" x1="0" y1="0" x2="0" y2="1">
+<linearGradient id="vigLG695" x1="0" y1="0" x2="0" y2="1">
   <stop offset="0%" stop-color="#051005" stop-opacity="0"/>
   <stop offset="70%" stop-color="#051005" stop-opacity="0"/>
   <stop offset="100%" stop-color="#051005" stop-opacity="0.40"/>
 </linearGradient>
-<rect width="512" height="512" fill="url(#vigLG965)" opacity="0.54"/>
+<rect width="512" height="512" fill="url(#vigLG695)" opacity="0.62"/>
 
 
 </svg>
