@@ -709,14 +709,6 @@ export default function PlayerPage() {
           }
           setContent(data);
           setIsSaved(data.is_saved || false);
-          // First-visit: auto-expand About panel
-          try {
-            const aboutKey = `dv_about_${params.id}`;
-            if (!localStorage.getItem(aboutKey)) {
-              setShowAboutPanel(true);
-              localStorage.setItem(aboutKey, '1');
-            }
-          } catch (e) { /* localStorage unavailable */ }
         } else {
           const seedMatch = getStories(lang).find((s) => s.id === params.id);
           if (seedMatch) {
