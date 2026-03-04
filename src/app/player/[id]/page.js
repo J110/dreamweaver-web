@@ -56,6 +56,7 @@ export default function PlayerPage() {
   const musicRef = useRef(null);
   // Web Audio analyser for breathing pacer (persists across pause/resume)
   const [narrationAnalyser, setNarrationAnalyser] = useState(null);
+  const [amplitudeEnvelope, setAmplitudeEnvelope] = useState(null);
   const narrationCtxRef = useRef(null);
   const narrationSourceRef = useRef(null);
   const narrationConnectedAudioRef = useRef(null);
@@ -441,11 +442,44 @@ export default function PlayerPage() {
               narrationConnectedAudioRef.current = audio;
               setNarrationAnalyser(analyser);
             } else {
-              // Path B: Safari/iOS — skip AudioContext entirely so audio survives background.
-              // Breathing pacer will use CSS fallback animation (no analyser data).
-              console.info('[Audio] Safari detected: skipping AudioContext for background audio support');
+              // Path B: Safari/iOS — skip live AudioContext (it mutes audio in background).
+              // Instead, pre-compute amplitude envelope from the decoded audio buffer.
+              // BreathingPacer uses this with audio.currentTime for speech-synced animation.
+              console.info('[Audio] Safari detected: computing amplitude envelope for breathing pacer');
               narrationConnectedAudioRef.current = audio;
-              setNarrationAnalyser(null); // triggers CSS fallback in BreathingPacer
+              setNarrationAnalyser(null);
+              // Compute envelope async — doesn't block playback
+              const envUrl = audio.src;
+              (async () => {
+                try {
+                  const resp = await fetch(envUrl);
+                  if (!resp.ok) return;
+                  const arrayBuf = await resp.arrayBuffer();
+                  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                  const audioBuf = await ctx.decodeAudioData(arrayBuf);
+                  // Close context immediately — we only needed it for decoding
+                  ctx.close().catch(() => {});
+                  // Compute RMS at 20Hz (every 50ms)
+                  const ENVELOPE_RATE = 20;
+                  const channelData = audioBuf.getChannelData(0);
+                  const samplesPerWindow = Math.floor(audioBuf.sampleRate / ENVELOPE_RATE);
+                  const envelopeLength = Math.ceil(channelData.length / samplesPerWindow);
+                  const envelope = new Float32Array(envelopeLength);
+                  for (let i = 0; i < envelopeLength; i++) {
+                    let sumSq = 0;
+                    const start = i * samplesPerWindow;
+                    const end = Math.min(start + samplesPerWindow, channelData.length);
+                    for (let j = start; j < end; j++) {
+                      sumSq += channelData[j] * channelData[j];
+                    }
+                    envelope[i] = Math.sqrt(sumSq / (end - start));
+                  }
+                  setAmplitudeEnvelope({ data: envelope, sampleRate: ENVELOPE_RATE });
+                  console.info('[Audio] Amplitude envelope ready:', envelopeLength, 'samples');
+                } catch (e) {
+                  console.warn('[Audio] Envelope computation failed, using CSS fallback:', e.message);
+                }
+              })();
             }
           } catch (err) {
             console.warn('Breathing pacer: Web Audio setup failed', err.message);
@@ -560,6 +594,7 @@ export default function PlayerPage() {
       narrationSourceRef.current = null;
     }
     setNarrationAnalyser(null);
+    setAmplitudeEnvelope(null);
     setIsPlaying(false);
     setProgress(0);
     setCurrentTime(0);
@@ -965,7 +1000,7 @@ export default function PlayerPage() {
             <span className={styles.albumIcon}>{getTypeIcon(content.type)}</span>
           )}
           {isPlaying && (
-            <BreathingPacer analyserNode={narrationAnalyser} />
+            <BreathingPacer analyserNode={narrationAnalyser} amplitudeEnvelope={amplitudeEnvelope} audioRef={audioRef} />
           )}
         </div>
 
