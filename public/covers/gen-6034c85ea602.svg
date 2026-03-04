@@ -4,50 +4,50 @@
     <filter id="blur-fire_candle"><feGaussianBlur stdDeviation="12"/></filter>
     <filter id="char-blur-fire_candle"><feGaussianBlur stdDeviation="20"/></filter>
     <mask id="mask-fire_candle">
-      <circle cx="402" cy="236" r="63" fill="white" filter="url(#blur-fire_candle)"/>
-      <ellipse cx="256" cy="399" rx="61" ry="61" fill="black" filter="url(#char-blur-fire_candle)"/>
+      <circle cx="406" cy="222" r="63" fill="white" filter="url(#blur-fire_candle)"/>
+      <ellipse cx="230" cy="307" rx="61" ry="92" fill="black" filter="url(#char-blur-fire_candle)"/>
     </mask>
     <filter id="blur-glow_candle"><feGaussianBlur stdDeviation="22"/></filter>
     <filter id="char-blur-glow_candle"><feGaussianBlur stdDeviation="20"/></filter>
     <mask id="mask-glow_candle">
-      <circle cx="256" cy="258" r="175" fill="white" filter="url(#blur-glow_candle)"/>
-      <ellipse cx="256" cy="399" rx="61" ry="61" fill="black" filter="url(#char-blur-glow_candle)"/>
+      <circle cx="260" cy="249" r="175" fill="white" filter="url(#blur-glow_candle)"/>
+      <ellipse cx="230" cy="307" rx="61" ry="92" fill="black" filter="url(#char-blur-glow_candle)"/>
     </mask>
     <filter id="blur-fog_dust"><feGaussianBlur stdDeviation="20"/></filter>
     <filter id="char-blur-fog_dust"><feGaussianBlur stdDeviation="20"/></filter>
     <mask id="mask-fog_dust">
-      <path d="M0,81 L512,85 L512,202 Q264.0,216 0,211 Z" fill="white" filter="url(#blur-fog_dust)"/>
-      <ellipse cx="256" cy="399" rx="61" ry="61" fill="black" filter="url(#char-blur-fog_dust)"/>
+      <path d="M0,82 L512,80 L512,194 Q253.0,222 0,192 Z" fill="white" filter="url(#blur-fog_dust)"/>
+      <ellipse cx="230" cy="307" rx="61" ry="92" fill="black" filter="url(#char-blur-fog_dust)"/>
     </mask>
     <filter id="fire-flicker-fire_candle" x="-10%" y="-15%" width="120%" height="130%">
-      <feTurbulence type="turbulence" baseFrequency="0.046 0.083" numOctaves="3" result="flame-noise" seed="131">
-        <animate attributeName="baseFrequency" values="0.046 0.083; 0.056 0.073; 0.041 0.093; 0.051 0.078; 0.046 0.083" dur="4.2s" repeatCount="indefinite"/>
+      <feTurbulence type="turbulence" baseFrequency="0.045 0.071" numOctaves="3" result="flame-noise" seed="944">
+        <animate attributeName="baseFrequency" values="0.045 0.071; 0.055 0.061; 0.040 0.081; 0.050 0.066; 0.045 0.071" dur="4.5s" repeatCount="indefinite"/>
       </feTurbulence>
       <feDisplacementMap in="SourceGraphic" in2="flame-noise" scale="5" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="5;8;4;7;5;4;8;5" dur="4.2s" repeatCount="indefinite"/>
+        <animate attributeName="scale" values="5;8;4;7;5;4;8;5" dur="4.5s" repeatCount="indefinite"/>
       </feDisplacementMap>
       <feComponentTransfer>
-        <feFuncR type="linear" slope="1.0"><animate attributeName="slope" values="1.0;1.10;0.95;1.08;0.94;1.03;1.0" dur="4.5s" repeatCount="indefinite"/></feFuncR>
-        <feFuncG type="linear" slope="1.0"><animate attributeName="slope" values="1.0;1.07;0.94;1.06;0.92;1.02;1.0" dur="4.5s" repeatCount="indefinite"/></feFuncG>
-        <feFuncB type="linear" slope="0.85"><animate attributeName="slope" values="0.85;0.80;0.78;0.82;0.75;0.80;0.85" dur="4.5s" repeatCount="indefinite"/></feFuncB>
+        <feFuncR type="linear" slope="1.0"><animate attributeName="slope" values="1.0;1.10;0.95;1.08;0.94;1.03;1.0" dur="4.2s" repeatCount="indefinite"/></feFuncR>
+        <feFuncG type="linear" slope="1.0"><animate attributeName="slope" values="1.0;1.07;0.94;1.06;0.92;1.02;1.0" dur="4.2s" repeatCount="indefinite"/></feFuncG>
+        <feFuncB type="linear" slope="0.85"><animate attributeName="slope" values="0.85;0.80;0.78;0.82;0.75;0.80;0.85" dur="4.2s" repeatCount="indefinite"/></feFuncB>
       </feComponentTransfer>
     </filter>
     <filter id="glow-pulse-glow_candle" x="-15%" y="-15%" width="130%" height="130%">
       <feComponentTransfer>
-        <feFuncR type="linear" slope="1.0"><animate attributeName="slope" values="1.0;1.18;1.0" dur="5s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/></feFuncR>
-        <feFuncG type="linear" slope="1.0"><animate attributeName="slope" values="1.0;1.13;1.0" dur="5s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/></feFuncG>
+        <feFuncR type="linear" slope="1.0"><animate attributeName="slope" values="1.0;1.2;1.0" dur="5s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/></feFuncR>
+        <feFuncG type="linear" slope="1.0"><animate attributeName="slope" values="1.0;1.15;1.0" dur="5s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/></feFuncG>
         <feFuncB type="linear" slope="0.82"><animate attributeName="slope" values="0.82;0.77;0.82" dur="5s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/></feFuncB>
       </feComponentTransfer>
       <feGaussianBlur stdDeviation="0">
-        <animate attributeName="stdDeviation" values="0;1.3;0" dur="5s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+        <animate attributeName="stdDeviation" values="0;1.1;0" dur="5s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
       </feGaussianBlur>
     </filter>
     <filter id="fog-drift-fog_dust" x="-15%" y="-5%" width="130%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.01 0.017" numOctaves="2" result="fog-noise" seed="82">
-        <animate attributeName="baseFrequency" values="0.01 0.017; 0.013 0.014; 0.007 0.020; 0.011 0.016; 0.01 0.017" dur="24s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.008 0.01" numOctaves="2" result="fog-noise" seed="642">
+        <animate attributeName="baseFrequency" values="0.008 0.01; 0.010 0.008; 0.006 0.012; 0.009 0.009; 0.008 0.01" dur="25s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="7" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="5;9;4;8;5" dur="40s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="8" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="6;10;5;9;6" dur="42s" repeatCount="indefinite"/>
       </feDisplacementMap>
     </filter>
   </defs>
@@ -64,88 +64,154 @@
   </g>
   <g mask="url(#mask-fog_dust)">
     <use href="#bg" filter="url(#fog-drift-fog_dust)"/>
-      <animateTransform attributeName="transform" type="translate" values="0,0; 11,1; 0,0; -5,-1; 0,0" dur="37s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 9,1; 0,0; -4,-1; 0,0" dur="38s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
   </g>
 
-  <!-- Layer 3: Lean SMIL overlay -->
+  <!-- Layer 3: Full SMIL overlay (12-20 elements, 3 depth layers) -->
+
+  <defs>
+    <radialGradient id="vignetteGrad">
+      <stop offset="40%" stop-color="transparent"/>
+      <stop offset="100%" stop-color="#051005" stop-opacity="0.75"/>
+    </radialGradient>
+    <filter id="softBlur">
+      <feGaussianBlur stdDeviation="2"/>
+    </filter>
+  </defs>
 <!-- F3: Breathing Pacer (Interior) -->
 <g id="breath-pacer">
-  <radialGradient id="breathG737">
+  <radialGradient id="breathG880">
     <stop offset="0%" stop-color="#FFA000" stop-opacity="0.55"/>
     <stop offset="40%" stop-color="#FFA000" stop-opacity="0.20"/>
     <stop offset="100%" stop-color="#FFA000" stop-opacity="0"/>
   </radialGradient>
-  <circle cx="35%" cy="55%" r="30" fill="url(#breathG737)">
+  <circle cx="35%" cy="55%" r="30" fill="url(#breathG880)">
     <animate attributeName="r" values="26;32;26" dur="5s" repeatCount="indefinite"
       calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
     <animate attributeName="opacity" values="0.40;0.65;0.40" dur="5s" repeatCount="indefinite"
       calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
   </circle>
 </g>
+<!-- F2: Shadow Play -->
+<g id="window-shadows" opacity="0.10">
+  <ellipse cx="208" cy="347" rx="39" ry="15" fill="#3D2B1F" opacity="0.11">
+    <animateTransform attributeName="transform" type="translate"
+      values="0,0; 2,3; -2,2; 3,0; 0,0"
+      dur="13.7s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.10;0.14;0.07;0.11;0.10"
+      dur="23s" repeatCount="indefinite"/>
+  </ellipse>
+</g>
+<!-- A1: Twinkling Stars -->
+<g id="stars">
+  <circle cx="16%" cy="40%" r="2.8" fill="#FFEFD5">
+    <animate attributeName="opacity" values="0;0;0.45;0.32;0"
+      dur="7.4s" begin="1.2s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="14%" cy="6%" r="2.7" fill="#FFF5E0">
+    <animate attributeName="opacity" values="0;0;0.37;0.26;0"
+      dur="6.4s" begin="4.1s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="89%" cy="37%" r="2.7" fill="#FFF5E0">
+    <animate attributeName="opacity" values="0;0;0.69;0.48;0"
+      dur="6.7s" begin="4.6s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="52%" cy="36%" r="2.6" fill="#FFF5E0">
+    <animate attributeName="opacity" values="0;0;0.62;0.43;0"
+      dur="6.7s" begin="9.7s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="76%" cy="34%" r="2.2" fill="#FFE4B5">
+    <animate attributeName="opacity" values="0;0;0.51;0.36;0"
+      dur="7.6s" begin="8.7s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="18%" cy="33%" r="1.3" fill="#FFE4B5">
+    <animate attributeName="opacity" values="0;0;0.39;0.27;0"
+      dur="5.4s" begin="1.4s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+</g>
 <!-- A3: Moon Glow -->
 <g id="moon-glow">
-  <radialGradient id="moonH645">
+  <radialGradient id="moonH570">
     <stop offset="0%" stop-color="#FFF8E8" stop-opacity="0.35"/>
     <stop offset="40%" stop-color="#FFA000" stop-opacity="0.15"/>
     <stop offset="100%" stop-color="#FFA000" stop-opacity="0"/>
   </radialGradient>
-  <circle cx="68%" cy="20%" r="75" fill="url(#moonH645)">
-    <animate attributeName="r" values="70;85;70" dur="7s" repeatCount="indefinite"
+  <circle cx="85%" cy="16%" r="53" fill="url(#moonH570)">
+    <animate attributeName="r" values="48;63;48" dur="7s" repeatCount="indefinite"
       calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
     <animate attributeName="opacity" values="0.30;0.60;0.30" dur="7s" repeatCount="indefinite"
       calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
   </circle>
-  <circle cx="68%" cy="20%" r="14" fill="#FFF8E8" opacity="0.20">
+  <circle cx="85%" cy="16%" r="17" fill="#FFF8E8" opacity="0.20">
     <animate attributeName="opacity" values="0.15;0.25;0.15" dur="7s" repeatCount="indefinite"
       calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
   </circle>
 </g>
-<!-- A1: Twinkling Stars -->
-<g id="stars">
-  <circle cx="22%" cy="21%" r="2.4" fill="#FFE4B5">
-    <animate attributeName="opacity" values="0;0;0.54;0.38;0"
-      dur="6.0s" begin="9.9s" repeatCount="indefinite"
-      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+<!-- F1: Candle Flicker -->
+<g id="candle-glow" transform="translate(41%, 59%)">
+  <radialGradient id="flameG253">
+    <stop offset="0%" stop-color="#FFF8E8" stop-opacity="0.55"/>
+    <stop offset="30%" stop-color="#FFA000" stop-opacity="0.25"/>
+    <stop offset="100%" stop-color="#FFA000" stop-opacity="0"/>
+  </radialGradient>
+  <circle cx="0" cy="0" r="52" fill="url(#flameG253)">
+    <animate attributeName="opacity" values="0.69;0.54;0.45;0.61;0.53;0.50;0.62;0.51;0.59;0.65"
+      dur="4.7s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <animate attributeName="r" values="56;58;54;50;58;53;55;50;57;48"
+      dur="4.0s" repeatCount="indefinite"/>
   </circle>
-  <circle cx="85%" cy="34%" r="3.0" fill="#FFF0DB">
-    <animate attributeName="opacity" values="0;0;0.35;0.24;0"
-      dur="6.1s" begin="8.4s" repeatCount="indefinite"
-      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-  </circle>
-  <circle cx="58%" cy="21%" r="1.3" fill="#FFF5E0">
-    <animate attributeName="opacity" values="0;0;0.60;0.42;0"
-      dur="4.4s" begin="1.7s" repeatCount="indefinite"
-      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-  </circle>
-  <circle cx="69%" cy="27%" r="1.2" fill="#FFF5E0">
-    <animate attributeName="opacity" values="0;0;0.38;0.27;0"
-      dur="4.3s" begin="6.1s" repeatCount="indefinite"
-      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-  </circle>
-  <circle cx="85%" cy="8%" r="2.9" fill="#FFF0DB">
-    <animate attributeName="opacity" values="0;0;0.62;0.43;0"
-      dur="6.0s" begin="6.8s" repeatCount="indefinite"
-      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-  </circle>
-  <circle cx="57%" cy="21%" r="1.5" fill="#FFEFD5">
-    <animate attributeName="opacity" values="0;0;0.48;0.34;0"
-      dur="5.9s" begin="5.8s" repeatCount="indefinite"
-      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-  </circle>
-  <circle cx="81%" cy="19%" r="2.4" fill="#FFF0DB">
-    <animate attributeName="opacity" values="0;0;0.55;0.39;0"
-      dur="6.4s" begin="6.0s" repeatCount="indefinite"
-      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-  </circle>
-  <circle cx="15%" cy="39%" r="1.5" fill="#FFEFD5">
-    <animate attributeName="opacity" values="0;0;0.36;0.25;0"
-      dur="7.7s" begin="2.4s" repeatCount="indefinite"
-      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  <circle cx="0" cy="-3" r="6" fill="#FFF8E8" opacity="0.45">
+    <animate attributeName="opacity" values="0.51;0.43;0.45;0.45;0.46;0.44;0.43"
+      dur="3.8s" repeatCount="indefinite"/>
+    <animate attributeName="cy" values="-3;-3;-4;-4;-2"
+      dur="4.9s" repeatCount="indefinite"/>
   </circle>
 </g>
+<!-- F2: Shadow Play -->
+<g id="window-shadows" opacity="0.10">
+  <path d="M200,81 Q220,61 250,94 Q212,68 259,90"
+    fill="none" stroke="#1A0F05" stroke-width="15" stroke-linecap="round" opacity="0.09">
+    <animateTransform attributeName="transform" type="translate"
+      values="0,0; 8,2; -3,2; 6,-1; 0,0"
+      dur="12.0s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </path>
+  <path d="M167,168 Q196,152 220,176 Q204,160 217,175"
+    fill="none" stroke="#1A0F05" stroke-width="15" stroke-linecap="round" opacity="0.11">
+    <animateTransform attributeName="transform" type="translate"
+      values="0,0; 4,2; -1,3; 2,-2; 0,0"
+      dur="11.4s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </path>
+</g>
+<!-- D4: Cricket -->
+<g id="cricket-0" transform="translate(47%, 94%)" opacity="0.24">
+  <ellipse cx="0" cy="0" rx="4" ry="1.5" fill="#2A1F14"/>
+  <line x1="2" y1="1" x2="6" y2="4" stroke="#2A1F14" stroke-width="0.5">
+    <animateTransform attributeName="transform" type="rotate"
+      values="0,2,1; 0,2,1; 0,2,1; 0,2,1; 0,2,1; 0,2,1; 0,2,1; 8,2,1; 0,2,1; 0,2,1"
+      dur="11s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </line>
+  <line x1="-3" y1="-1" x2="-7" y2="-4" stroke="#2A1F14" stroke-width="0.3">
+    <animateTransform attributeName="transform" type="rotate"
+      values="0,-3,-1; 4,-3,-1; 0,-3,-1; -4,-3,-1; 0,-3,-1"
+      dur="11s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </line>
+</g>
 <!-- Vignette: full_soft -->
-<rect width="512" height="512" fill="url(#vignetteGrad)" opacity="0.55">
-  <animate attributeName="opacity" values="0.55;0.6000000000000001;0.55" dur="8s" repeatCount="indefinite"
+<rect width="512" height="512" fill="url(#vignetteGrad)" opacity="0.56">
+  <animate attributeName="opacity" values="0.56;0.6100000000000001;0.56" dur="10s" repeatCount="indefinite"
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
 </rect>
+
+
 </svg>
