@@ -139,13 +139,20 @@
   font-size: 14px;
 }
 
-.controls {
+.controlsRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 12px;
+}
+
+.playGroup,
+.aboutGroup {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  margin-bottom: 12px;
   align-items: center;
-  justify-content: center;
+  gap: 4px;
 }
 
 .controlLabel {
@@ -154,6 +161,130 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+/* ─── About Button ─────────────────────────────── */
+
+.aboutButton {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(107, 76, 230, 0.15);
+  border: 1px solid rgba(107, 76, 230, 0.3);
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.aboutButton:active {
+  transform: scale(0.93);
+}
+
+.aboutButtonActive {
+  background: linear-gradient(135deg, rgba(107, 76, 230, 0.3), rgba(255, 107, 157, 0.2));
+  border-color: rgba(107, 76, 230, 0.5);
+  box-shadow: 0 0 16px rgba(107, 76, 230, 0.2);
+}
+
+/* ─── About Panel (expandable) ─────────────────── */
+
+.aboutPanel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 300ms ease-in-out, opacity 300ms ease-in-out;
+  opacity: 0;
+}
+
+.aboutPanelOpen {
+  max-height: 600px;
+  opacity: 1;
+}
+
+.aboutPanelContent {
+  padding: 16px;
+  background: var(--color-card-dark);
+  border: 1px solid rgba(107, 76, 230, 0.15);
+  border-radius: 16px;
+  margin-bottom: 12px;
+}
+
+.aboutDescription {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 4px 0;
+  font-style: italic;
+}
+
+/* ─── Character Card ───────────────────────────── */
+
+.characterCard {
+  background: rgba(107, 76, 230, 0.08);
+  border: 1px solid rgba(107, 76, 230, 0.15);
+  border-radius: 12px;
+  padding: 12px;
+  margin: 12px 0;
+}
+
+.characterHeader {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-light);
+  margin-bottom: 6px;
+}
+
+.characterIdentity {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
+
+.characterSpecial {
+  font-size: 13px;
+  color: var(--color-text-light);
+  margin-bottom: 6px;
+}
+
+.characterTags {
+  font-size: 12px;
+  color: #B8A9FF;
+  font-weight: 600;
+}
+
+/* ─── About Details ────────────────────────────── */
+
+.aboutDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 12px 0;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.aboutReportBtn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 12px;
+  background: rgba(255, 107, 157, 0.08);
+  border: 1px solid rgba(255, 107, 157, 0.2);
+  border-radius: 10px;
+  color: var(--color-text-muted);
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--transition-fast);
+}
+
+.aboutReportBtn:active {
+  transform: scale(0.98);
+  background: rgba(255, 107, 157, 0.15);
 }
 
 .playButton {

@@ -49,6 +49,8 @@ export default function PlayerPage() {
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [shareCopied, setShareCopied] = useState(false);
+  const [showAboutPanel, setShowAboutPanel] = useState(false);
+  const aboutPanelRef = useRef(null);
   const audioRef = useRef(null);
   const audioDisposingRef = useRef(false);
   const progressIntervalRef = useRef(null);
@@ -335,8 +337,14 @@ export default function PlayerPage() {
     }
   }, []);
 
+  const handleAboutToggle = useCallback(() => {
+    setShowAboutPanel(prev => !prev);
+  }, []);
+
   const handlePlayPause = useCallback(async () => {
     if (!content) return;
+    // Collapse About panel when play is tapped
+    setShowAboutPanel(false);
 
     if (audioRef.current && audioRef.current.src) {
       if (isPlaying) {
@@ -695,9 +703,20 @@ export default function PlayerPage() {
             if ((!data.cover || data.cover.includes('default.svg')) && seedMatch.cover) {
               data.cover = seedMatch.cover;
             }
+            if (seedMatch.character && (!data.character || !data.character.name)) {
+              data.character = seedMatch.character;
+            }
           }
           setContent(data);
           setIsSaved(data.is_saved || false);
+          // First-visit: auto-expand About panel
+          try {
+            const aboutKey = `dv_about_${params.id}`;
+            if (!localStorage.getItem(aboutKey)) {
+              setShowAboutPanel(true);
+              localStorage.setItem(aboutKey, '1');
+            }
+          } catch (e) { /* localStorage unavailable */ }
         } else {
           const seedMatch = getStories(lang).find((s) => s.id === params.id);
           if (seedMatch) {
@@ -723,6 +742,22 @@ export default function PlayerPage() {
       loadContent();
     }
   }, [params.id, lang]);
+
+  // Click outside About panel to close it
+  useEffect(() => {
+    if (!showAboutPanel) return;
+    const handler = (e) => {
+      if (aboutPanelRef.current && !aboutPanelRef.current.contains(e.target) && !e.target.closest('[data-about-btn]')) {
+        setShowAboutPanel(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    document.addEventListener('touchstart', handler);
+    return () => {
+      document.removeEventListener('mousedown', handler);
+      document.removeEventListener('touchstart', handler);
+    };
+  }, [showAboutPanel]);
 
   const handleSave = async () => {
     if (!content) return;
@@ -1012,20 +1047,79 @@ export default function PlayerPage() {
         </div>
         <h1 className={styles.title}>{content.title}</h1>
 
-        <div className={styles.controls}>
-          <button
-            onClick={handlePlayPause}
-            className={`${styles.playButton} ${audioLoading ? styles.playButtonLoading : ''}`}
-            disabled={audioLoading}
-            title={isPlaying ? (lang === 'hi' ? 'Kahaani rokein' : 'Pause narration') : (lang === 'hi' ? 'Kahaani sunein' : 'Play narration')}
-          >
-            {audioLoading ? (
-              <span className={styles.spinner}></span>
-            ) : isPlaying ? '⏸️' : '▶️'}
-          </button>
-          <span className={styles.controlLabel}>
-            {lang === 'hi' ? 'Kahaani' : 'Narration'}
-          </span>
+        <div className={styles.controlsRow}>
+          <div className={styles.playGroup}>
+            <button
+              onClick={handlePlayPause}
+              className={`${styles.playButton} ${audioLoading ? styles.playButtonLoading : ''}`}
+              disabled={audioLoading}
+              title={isPlaying ? (lang === 'hi' ? 'Kahaani rokein' : 'Pause narration') : (lang === 'hi' ? 'Kahaani sunein' : 'Play narration')}
+            >
+              {audioLoading ? (
+                <span className={styles.spinner}></span>
+              ) : isPlaying ? '⏸️' : '▶️'}
+            </button>
+            <span className={styles.controlLabel}>
+              {lang === 'hi' ? 'Kahaani' : 'Narration'}
+            </span>
+          </div>
+          <div className={styles.aboutGroup}>
+            <button
+              onClick={handleAboutToggle}
+              className={`${styles.aboutButton} ${showAboutPanel ? styles.aboutButtonActive : ''}`}
+              data-about-btn="true"
+              title={t('playerAbout')}
+            >
+              📖
+            </button>
+            <span className={styles.controlLabel}>{t('playerAbout')}</span>
+          </div>
+        </div>
+
+        {/* About panel — expandable, pushes content down */}
+        <div
+          ref={aboutPanelRef}
+          className={`${styles.aboutPanel} ${showAboutPanel ? styles.aboutPanelOpen : ''}`}
+        >
+          <div className={styles.aboutPanelContent}>
+            {content.description && (
+              <p className={styles.aboutDescription}>{content.description}</p>
+            )}
+
+            {content.character?.name && (
+              <div className={styles.characterCard}>
+                <div className={styles.characterHeader}>★ Meet {content.character.name}</div>
+                {content.character.identity && (
+                  <div className={styles.characterIdentity}>{content.character.identity}</div>
+                )}
+                {content.character.special && (
+                  <div className={styles.characterSpecial}>✦ {content.character.special}</div>
+                )}
+                {content.character.personality_tags?.length > 0 && (
+                  <div className={styles.characterTags}>
+                    {content.character.personality_tags.join(' · ')}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className={styles.aboutDetails}>
+              <span>
+                {content.type === 'long_story' ? 'Long Story' : content.type === 'song' ? 'Lullaby' : content.type === 'poem' ? 'Poem' : 'Story'}
+                {' · ~'}{content.duration || '?'}{' min'}
+              </span>
+              <span>
+                Best for ages {content.age_min || content.target_age || '?'}-{content.age_max || ((content.target_age || 0) + 3) || '?'}
+              </span>
+              <span>
+                Themes: {(content.categories || []).slice(0, 2).join(', ') || content.theme || '—'}
+              </span>
+            </div>
+
+            <button onClick={handleReportOpen} className={styles.aboutReportBtn}>
+              ⚠️ {t('playerReport')}
+            </button>
+          </div>
         </div>
 
         {/* Voice switch buttons — "Switch to Calm Female" / "Switch to Warm Male" */}
@@ -1110,9 +1204,6 @@ export default function PlayerPage() {
             className={`${styles.actionButton} ${isSaved ? styles.actionButtonActive : ''}`}
           >
             ❤️ {content.save_count || 0}
-          </button>
-          <button onClick={handleReportOpen} className={styles.actionButton}>
-            ⚠️ {t('playerReport')}
           </button>
           <button onClick={handleShare} className={styles.actionButton}>
             🔗 {shareCopied ? t('playerShareCopied') : t('playerShare')}
