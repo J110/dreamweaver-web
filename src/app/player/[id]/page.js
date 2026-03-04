@@ -68,8 +68,11 @@ export default function PlayerPage() {
   // Phase 2 (33-66%): Descent — gradual warm dimming, transition to sleepiness
   // Phase 3 (66-100%): Sleep — near-dark, minimal stimulation
   // Values interpolate continuously within each phase (no sudden jumps).
+  // Dimming persists when paused or ended — never flashes bright at a sleepy child.
   const coverDimStyle = useMemo(() => {
-    if (!isPlaying || !content?.cover?.endsWith('.svg')) return {};
+    if (!content?.cover?.endsWith('.svg')) return {};
+    // Only skip dimming before playback has started (progress still at 0 and not playing)
+    if (!isPlaying && progress === 0) return {};
     const p = Math.max(0, Math.min(100, progress));
     let brightness, saturate, sepia;
     if (p <= 33) {
