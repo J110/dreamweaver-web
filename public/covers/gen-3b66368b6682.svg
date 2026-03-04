@@ -5,58 +5,42 @@
     <filter id="char-blur-water_main"><feGaussianBlur stdDeviation="20"/></filter>
     <mask id="mask-water_main">
       <path d="M0,0 L512,0 L512,512 L0,512 Z" fill="white" filter="url(#blur-water_main)"/>
-      <ellipse cx="256" cy="368" rx="51" ry="71" fill="black" filter="url(#char-blur-water_main)"/>
-    </mask>
-    <filter id="blur-glow_bio"><feGaussianBlur stdDeviation="20"/></filter>
-    <filter id="char-blur-glow_bio"><feGaussianBlur stdDeviation="20"/></filter>
-    <mask id="mask-glow_bio">
-      <circle cx="264" cy="264" r="96" fill="white" filter="url(#blur-glow_bio)"/>
-      <ellipse cx="256" cy="368" rx="51" ry="71" fill="black" filter="url(#char-blur-glow_bio)"/>
+      <ellipse cx="230" cy="307" rx="61" ry="92" fill="black" filter="url(#char-blur-water_main)"/>
     </mask>
     <filter id="blur-seaweed"><feGaussianBlur stdDeviation="12"/></filter>
     <filter id="char-blur-seaweed"><feGaussianBlur stdDeviation="20"/></filter>
     <mask id="mask-seaweed">
-      <path d="M0,411 Q183.2,418 338.8,417 Q338.8,417 512,429 L512,512 L0,512 Z" fill="white" filter="url(#blur-seaweed)"/>
-      <ellipse cx="256" cy="368" rx="51" ry="71" fill="black" filter="url(#char-blur-seaweed)"/>
+      <path d="M0,426 Q188.2,403 337.8,424 Q337.8,424 512,417 L512,512 L0,512 Z" fill="white" filter="url(#blur-seaweed)"/>
+      <ellipse cx="230" cy="307" rx="61" ry="92" fill="black" filter="url(#char-blur-seaweed)"/>
     </mask>
     <filter id="blur-fog_depth"><feGaussianBlur stdDeviation="25"/></filter>
     <filter id="char-blur-fog_depth"><feGaussianBlur stdDeviation="20"/></filter>
     <mask id="mask-fog_depth">
-      <path d="M0,66 L512,83 L512,206 Q252.0,220 0,193 Z" fill="white" filter="url(#blur-fog_depth)"/>
-      <ellipse cx="256" cy="368" rx="51" ry="71" fill="black" filter="url(#char-blur-fog_depth)"/>
+      <path d="M0,68 L512,75 L512,206 Q249.0,211 0,205 Z" fill="white" filter="url(#blur-fog_depth)"/>
+      <ellipse cx="230" cy="307" rx="61" ry="92" fill="black" filter="url(#char-blur-fog_depth)"/>
     </mask>
     <filter id="water-flow-water_main" x="-5%" y="-5%" width="110%" height="110%">
-      <feTurbulence type="turbulence" baseFrequency="0.009 0.02" numOctaves="2" result="noise" seed="546">
-        <animate attributeName="baseFrequency" values="0.009 0.02; 0.011 0.017; 0.007 0.023; 0.010 0.018; 0.009 0.02" dur="14s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+      <feTurbulence type="turbulence" baseFrequency="0.006 0.016" numOctaves="2" result="noise" seed="845">
+        <animate attributeName="baseFrequency" values="0.006 0.016; 0.008 0.014; 0.004 0.018; 0.007 0.015; 0.006 0.016" dur="17s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="6;9;4;7;6" dur="19s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="5;8;4;6;5" dur="18s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
       </feDisplacementMap>
     </filter>
-    <filter id="glow-pulse-glow_bio" x="-15%" y="-15%" width="130%" height="130%">
-      <feComponentTransfer>
-        <feFuncR type="linear" slope="1.0"><animate attributeName="slope" values="1.0;1.22;1.0" dur="5s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/></feFuncR>
-        <feFuncG type="linear" slope="1.0"><animate attributeName="slope" values="1.0;1.17;1.0" dur="5s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/></feFuncG>
-        <feFuncB type="linear" slope="0.85"><animate attributeName="slope" values="0.85;0.8;0.85" dur="5s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/></feFuncB>
-      </feComponentTransfer>
-      <feGaussianBlur stdDeviation="0">
-        <animate attributeName="stdDeviation" values="0;2.2;0" dur="5s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
-      </feGaussianBlur>
-    </filter>
     <filter id="veg-sway-seaweed" x="-5%" y="-5%" width="110%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.006 0.01" numOctaves="2" result="wind-noise" seed="134">
-        <animate attributeName="baseFrequency" values="0.006 0.01; 0.008 0.008; 0.004 0.012; 0.007 0.009; 0.006 0.01" dur="15s" begin="0.5s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.006 0.011" numOctaves="2" result="wind-noise" seed="359">
+        <animate attributeName="baseFrequency" values="0.006 0.011; 0.008 0.009; 0.004 0.013; 0.007 0.010; 0.006 0.011" dur="18s" begin="1.3s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="wind-noise" scale="7" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="5;9;4;8;6;10;5" dur="21s" begin="0.5s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+      <feDisplacementMap in="SourceGraphic" in2="wind-noise" scale="8" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="6;10;5;9;7;11;6" dur="19s" begin="1.3s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
       </feDisplacementMap>
     </filter>
     <filter id="fog-drift-fog_depth" x="-15%" y="-5%" width="130%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.004 0.006" numOctaves="2" result="fog-noise" seed="917">
-        <animate attributeName="baseFrequency" values="0.004 0.006; 0.005 0.005; 0.003 0.007; 0.005 0.006; 0.004 0.006" dur="29s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.004 0.007" numOctaves="2" result="fog-noise" seed="174">
+        <animate attributeName="baseFrequency" values="0.004 0.007; 0.005 0.006; 0.003 0.008; 0.005 0.007; 0.004 0.007" dur="29s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="6" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="4;8;3;7;4" dur="44s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="7" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="5;9;4;8;5" dur="37s" repeatCount="indefinite"/>
       </feDisplacementMap>
     </filter>
   </defs>
@@ -64,19 +48,16 @@
   <!-- Layer 1: Static background -->
   <use href="#bg"/>
 
-  <!-- Layer 2: Cinemagraph filtered regions (4 filters, 8 octaves) -->
+  <!-- Layer 2: Cinemagraph filtered regions (3 filters, 6 octaves) -->
   <g mask="url(#mask-water_main)">
     <use href="#bg" filter="url(#water-flow-water_main)"/>
-  </g>
-  <g mask="url(#mask-glow_bio)">
-    <use href="#bg" filter="url(#glow-pulse-glow_bio)"/>
   </g>
   <g mask="url(#mask-seaweed)">
     <use href="#bg" filter="url(#veg-sway-seaweed)"/>
   </g>
   <g mask="url(#mask-fog_depth)">
     <use href="#bg" filter="url(#fog-drift-fog_depth)"/>
-      <animateTransform attributeName="transform" type="translate" values="0,0; 7,1; 0,0; -3,-1; 0,0" dur="40s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 9,1; 0,0; -4,-1; 0,0" dur="43s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
   </g>
 
   <!-- Layer 3: Full SMIL overlay (12-20 elements, 3 depth layers) -->
@@ -84,7 +65,7 @@
   <defs>
     <radialGradient id="vignetteGrad">
       <stop offset="40%" stop-color="transparent"/>
-      <stop offset="100%" stop-color="#0a0520" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#1a0f00" stop-opacity="0.75"/>
     </radialGradient>
     <filter id="softBlur">
       <feGaussianBlur stdDeviation="2"/>
@@ -92,12 +73,12 @@
   </defs>
 <!-- F3: Breathing Pacer (Ocean) -->
 <g id="breath-pacer">
-  <radialGradient id="breathG126">
+  <radialGradient id="breathG333">
     <stop offset="0%" stop-color="#FF8F00" stop-opacity="0.50"/>
     <stop offset="40%" stop-color="#FF8F00" stop-opacity="0.20"/>
     <stop offset="100%" stop-color="#FF8F00" stop-opacity="0"/>
   </radialGradient>
-  <ellipse cx="50%" cy="60%" rx="20" ry="25" fill="url(#breathG126)">
+  <ellipse cx="50%" cy="60%" rx="20" ry="25" fill="url(#breathG333)">
     <animate attributeName="ry" values="22;28;22" dur="5s" repeatCount="indefinite"
       calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
     <animate attributeName="rx" values="18;22;18" dur="5s" repeatCount="indefinite"
@@ -106,117 +87,83 @@
       calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
   </ellipse>
 </g>
-<!-- B1: Drifting Fog -->
-<g id="fog-126">
-  <ellipse cx="77%" cy="82%" rx="265" ry="58" fill="#D4C8B8" opacity="0.11">
-    <animateTransform attributeName="transform" type="translate"
-      values="0,0; 106,3; 212,0; 106,-3; 0,0"
-      dur="31s" repeatCount="indefinite"
-      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-    <animate attributeName="opacity" values="0.11;0.15;0.13;0.17;0.11"
-      dur="31s" repeatCount="indefinite"/>
-  </ellipse>
-  <ellipse cx="34%" cy="84%" rx="308" ry="56" fill="#F5E6D3" opacity="0.14">
-    <animateTransform attributeName="transform" type="translate"
-      values="0,0; -114,3; -228,0; -114,-3; 0,0"
-      dur="31s" repeatCount="indefinite"
-      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-    <animate attributeName="opacity" values="0.14;0.18;0.16;0.20;0.14"
-      dur="37s" repeatCount="indefinite"/>
-  </ellipse>
-  <ellipse cx="24%" cy="72%" rx="335" ry="56" fill="#E8D8C4" opacity="0.14">
-    <animateTransform attributeName="transform" type="translate"
-      values="0,0; 117,3; 234,0; 117,-3; 0,0"
-      dur="37s" repeatCount="indefinite"
-      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-    <animate attributeName="opacity" values="0.14;0.18;0.16;0.20;0.14"
-      dur="43s" repeatCount="indefinite"/>
-  </ellipse>
-  <ellipse cx="34%" cy="58%" rx="335" ry="46" fill="#EDE0D0" opacity="0.08">
-    <animateTransform attributeName="transform" type="translate"
-      values="0,0; -75,3; -150,0; -75,-3; 0,0"
-      dur="37s" repeatCount="indefinite"
-      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-    <animate attributeName="opacity" values="0.08;0.12;0.10;0.14;0.08"
-      dur="47s" repeatCount="indefinite"/>
-  </ellipse>
-</g>
 <!-- A4: Aurora -->
-<g id="aurora" opacity="0.3">
-  <ellipse cx="39%" cy="23%" rx="188" ry="38" fill="#C8B0A0" opacity="0.21">
+<g id="aurora-657">
+  <defs>  <radialGradient id="aur-g657-0"><stop offset="0%" stop-color="#D4B8A0" stop-opacity="0.6"/><stop offset="50%" stop-color="#D4B8A0" stop-opacity="0.3"/><stop offset="100%" stop-color="#D4B8A0" stop-opacity="0"/></radialGradient>  <radialGradient id="aur-g657-1"><stop offset="0%" stop-color="#D4C8A0" stop-opacity="0.6"/><stop offset="50%" stop-color="#D4C8A0" stop-opacity="0.3"/><stop offset="100%" stop-color="#D4C8A0" stop-opacity="0"/></radialGradient></defs>
+  <ellipse cx="53%" cy="10%" rx="128" ry="20" fill="url(#aur-g657-0)" opacity="0.17">
     <animateTransform attributeName="transform" type="translate"
-      values="0,0; 17,6; -10,5; 5,-1; 0,0" dur="23s" repeatCount="indefinite"
+      values="0,0; 10,4; -6,2; 8,-2; 0,0" dur="31s" repeatCount="indefinite"
       calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-    <animate attributeName="opacity" values="0.21;0.29;0.23;0.31;0.21"
-      dur="29s" repeatCount="indefinite"/>
-    <animate attributeName="ry" values="35;45;33;42;35"
-      dur="19s" repeatCount="indefinite"/>
-  </ellipse>
-  <ellipse cx="47%" cy="24%" rx="180" ry="30" fill="#D4C8A0" opacity="0.20">
-    <animateTransform attributeName="transform" type="translate"
-      values="0,0; 10,4; -6,1; 6,-3; 0,0" dur="23s" repeatCount="indefinite"
-      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-    <animate attributeName="opacity" values="0.20;0.28;0.22;0.30;0.20"
-      dur="31s" repeatCount="indefinite"/>
-    <animate attributeName="ry" values="27;37;25;34;27"
+    <animate attributeName="opacity" values="0.17;0.23;0.19;0.25;0.17"
+      dur="37s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="17;25;16;23;17"
       dur="23s" repeatCount="indefinite"/>
   </ellipse>
-  <ellipse cx="37%" cy="25%" rx="160" ry="26" fill="#D0C0A0" opacity="0.20">
+  <ellipse cx="44%" cy="24%" rx="170" ry="33" fill="url(#aur-g657-1)" opacity="0.18">
     <animateTransform attributeName="transform" type="translate"
-      values="0,0; 13,2; -11,1; 7,-2; 0,0" dur="19s" repeatCount="indefinite"
+      values="0,0; 14,4; -5,3; 4,-3; 0,0" dur="31s" repeatCount="indefinite"
       calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-    <animate attributeName="opacity" values="0.20;0.28;0.22;0.30;0.20"
+    <animate attributeName="opacity" values="0.18;0.24;0.20;0.25;0.18"
+      dur="37s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="30;38;29;36;30"
       dur="23s" repeatCount="indefinite"/>
-    <animate attributeName="ry" values="23;33;21;30;23"
-      dur="29s" repeatCount="indefinite"/>
   </ellipse>
 </g>
 <!-- B5: Underwater Caustics -->
 <g id="caustics" opacity="0.18">
-  <ellipse cx="52%" cy="78%" rx="54" ry="25" fill="#FF8F00" opacity="0.22">
-    <animate attributeName="rx" values="49;59;52;62;49" dur="17s" repeatCount="indefinite"/>
-    <animate attributeName="ry" values="22;30;20;28;22" dur="23s" repeatCount="indefinite"/>
+  <ellipse cx="38%" cy="57%" rx="50" ry="22" fill="#FF8F00" opacity="0.15">
+    <animate attributeName="rx" values="45;55;48;58;45" dur="23s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="19;27;17;25;19" dur="29s" repeatCount="indefinite"/>
     <animateTransform attributeName="transform" type="translate"
-      values="0,0; 11,8; -6,11; 8,-4; 0,0" dur="31s" repeatCount="indefinite"/>
-    <animate attributeName="opacity" values="0.22;0.25;0.24;0.25;0.22"
-      dur="17s" repeatCount="indefinite"/>
+      values="0,0; 7,4; -4,7; 4,-2; 0,0" dur="19s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.15;0.21;0.17;0.23;0.15"
+      dur="23s" repeatCount="indefinite"/>
   </ellipse>
-  <ellipse cx="55%" cy="63%" rx="60" ry="29" fill="#FF8F00" opacity="0.18">
-    <animate attributeName="rx" values="55;65;58;68;55" dur="23s" repeatCount="indefinite"/>
-    <animate attributeName="ry" values="26;34;24;32;26" dur="29s" repeatCount="indefinite"/>
+  <ellipse cx="30%" cy="68%" rx="58" ry="24" fill="#FF8F00" opacity="0.15">
+    <animate attributeName="rx" values="53;63;56;66;53" dur="19s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="21;29;19;27;21" dur="23s" repeatCount="indefinite"/>
     <animateTransform attributeName="transform" type="translate"
-      values="0,0; 7,5; -4,8; 4,-3; 0,0" dur="23s" repeatCount="indefinite"/>
-    <animate attributeName="opacity" values="0.18;0.24;0.20;0.25;0.18"
+      values="0,0; 5,5; -3,8; 2,-3; 0,0" dur="31s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.15;0.21;0.17;0.23;0.15"
       dur="19s" repeatCount="indefinite"/>
   </ellipse>
 </g>
 <!-- B1: Drifting Fog -->
-<g id="fog-766">
-  <ellipse cx="22%" cy="83%" rx="296" ry="42" fill="#F5E6D3" opacity="0.09">
+<g id="fog-217">
+  <defs>  <radialGradient id="fog-g217-0"><stop offset="0%" stop-color="#EDE0D0" stop-opacity="0.5"/><stop offset="40%" stop-color="#EDE0D0" stop-opacity="0.25"/><stop offset="100%" stop-color="#EDE0D0" stop-opacity="0"/></radialGradient>  <radialGradient id="fog-g217-1"><stop offset="0%" stop-color="#D4C8B8" stop-opacity="0.5"/><stop offset="40%" stop-color="#D4C8B8" stop-opacity="0.25"/><stop offset="100%" stop-color="#D4C8B8" stop-opacity="0"/></radialGradient>  <radialGradient id="fog-g217-2"><stop offset="0%" stop-color="#E8D8C4" stop-opacity="0.5"/><stop offset="40%" stop-color="#E8D8C4" stop-opacity="0.25"/><stop offset="100%" stop-color="#E8D8C4" stop-opacity="0"/></radialGradient></defs>
+  <ellipse cx="40%" cy="62%" rx="275" ry="45" fill="url(#fog-g217-0)" opacity="0.06">
     <animateTransform attributeName="transform" type="translate"
-      values="0,0; 108,3; 216,0; 108,-3; 0,0"
-      dur="29s" repeatCount="indefinite"
+      values="0,0; 76,3; 152,0; 76,-3; 0,0"
+      dur="43s" repeatCount="indefinite"
       calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-    <animate attributeName="opacity" values="0.09;0.13;0.11;0.15;0.09"
-      dur="47s" repeatCount="indefinite"/>
-  </ellipse>
-  <ellipse cx="60%" cy="58%" rx="323" ry="48" fill="#EDE0D0" opacity="0.12">
-    <animateTransform attributeName="transform" type="translate"
-      values="0,0; -95,3; -190,0; -95,-3; 0,0"
-      dur="29s" repeatCount="indefinite"
-      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-    <animate attributeName="opacity" values="0.12;0.16;0.14;0.18;0.12"
+    <animate attributeName="opacity" values="0.06;0.09;0.07;0.11;0.06"
       dur="41s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="45%" cy="61%" rx="198" ry="43" fill="url(#fog-g217-1)" opacity="0.09">
+    <animateTransform attributeName="transform" type="translate"
+      values="0,0; -62,3; -124,0; -62,-3; 0,0"
+      dur="43s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0.09;0.12;0.10;0.14;0.09"
+      dur="43s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="47%" cy="68%" rx="274" ry="37" fill="url(#fog-g217-2)" opacity="0.09">
+    <animateTransform attributeName="transform" type="translate"
+      values="0,0; 67,3; 134,0; 67,-3; 0,0"
+      dur="29s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0.09;0.12;0.10;0.14;0.09"
+      dur="47s" repeatCount="indefinite"/>
   </ellipse>
 </g>
 <!-- Vignette: top_heavy -->
-<linearGradient id="vigLG608" x1="0" y1="0" x2="0" y2="1">
-  <stop offset="0%" stop-color="#0a0520" stop-opacity="0.15"/>
-  <stop offset="50%" stop-color="#0a0520" stop-opacity="0.15"/>
-  <stop offset="100%" stop-color="#0a0520" stop-opacity="0"/>
+<linearGradient id="vigLG570" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#1a0f00" stop-opacity="0.15"/>
+  <stop offset="50%" stop-color="#1a0f00" stop-opacity="0.15"/>
+  <stop offset="100%" stop-color="#1a0f00" stop-opacity="0"/>
 </linearGradient>
-<rect width="512" height="512" fill="url(#vigLG608)" opacity="0.72">
-  <animate attributeName="opacity" values="0.72;0.77;0.72" dur="10s" repeatCount="indefinite"
+<rect width="512" height="512" fill="url(#vigLG570)" opacity="0.79">
+  <animate attributeName="opacity" values="0.79;0.8400000000000001;0.79" dur="10s" repeatCount="indefinite"
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
 </rect>
 
