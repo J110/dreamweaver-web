@@ -1,6 +1,8 @@
 import { ImageResponse } from 'next/og';
 import { SEED_STORIES } from '@/utils/seedData';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.dreamvalley.app';
+
 export const runtime = 'edge';
 export const alt = 'Dream Valley Story';
 export const size = { width: 1200, height: 630 };
@@ -42,7 +44,19 @@ export default async function Image({ params }) {
 
   // Look up story in seed data
   const allStories = [...(SEED_STORIES.en || []), ...(SEED_STORIES.hi || [])];
-  const story = allStories.find((s) => s.id === id);
+  let story = allStories.find((s) => s.id === id);
+
+  // Fallback: fetch from backend API for stories added after last build
+  if (!story) {
+    try {
+      const res = await fetch(`${API_URL}/api/v1/content/${id}`);
+      if (res.ok) {
+        const json = await res.json();
+        story = json.data || null;
+      }
+    } catch { /* use fallback title */ }
+  }
+
   const title = story?.title || 'A Magical Bedtime Story';
   const storyType = story?.type === 'poem' ? 'POEM' : story?.type === 'song' ? 'LULLABY' : story?.type === 'long_story' ? 'LONG STORY' : 'STORY';
 

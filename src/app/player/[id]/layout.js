@@ -1,5 +1,7 @@
 import { SEED_STORIES } from '@/utils/seedData';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.dreamvalley.app';
+
 function getStoryTypeLabel(type) {
   switch (type) {
     case 'poem': return 'Poem';
@@ -15,12 +17,30 @@ function getStoryLanguage(story) {
   return hiStories.some((s) => s.id === story.id) ? 'hi' : 'en';
 }
 
+async function fetchStoryFromAPI(id) {
+  try {
+    const res = await fetch(`${API_URL}/api/v1/content/${id}`, {
+      next: { revalidate: 3600 }, // cache for 1 hour
+    });
+    if (!res.ok) return null;
+    const json = await res.json();
+    return json.data || null;
+  } catch {
+    return null;
+  }
+}
+
 export async function generateMetadata({ params }) {
   const { id } = await params;
 
   // Look up story in seed data (both en and hi arrays)
   const allStories = [...(SEED_STORIES.en || []), ...(SEED_STORIES.hi || [])];
-  const story = allStories.find((s) => s.id === id);
+  let story = allStories.find((s) => s.id === id);
+
+  // Fallback: fetch from backend API for stories added after last build
+  if (!story) {
+    story = await fetchStoryFromAPI(id);
+  }
 
   if (!story) {
     return {
