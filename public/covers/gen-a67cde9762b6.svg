@@ -15,18 +15,18 @@
     </mask>
     <filter id="cloud-drift-sky_main" x="-10%" y="-5%" width="120%" height="110%">
       <feTurbulence type="fractalNoise" baseFrequency="0.006 0.01" numOctaves="1" result="cloud-noise" seed="593">
-        <animate attributeName="baseFrequency" values="0.006 0.01; 0.008 0.008; 0.004 0.012; 0.007 0.009; 0.006 0.01" dur="29s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+        <animate attributeName="baseFrequency" values="0.006 0.01; 0.007 0.009; 0.005 0.011; 0.007 0.010; 0.006 0.01" dur="29s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="cloud-noise" scale="11" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="8;16;7;14;8" dur="43s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="cloud-noise" scale="6" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="4;8;4;7;4" dur="43s" repeatCount="indefinite"/>
       </feDisplacementMap>
     </filter>
     <filter id="fog-drift-fog_ground" x="-15%" y="-5%" width="130%" height="110%">
       <feTurbulence type="fractalNoise" baseFrequency="0.01 0.016" numOctaves="2" result="fog-noise" seed="318">
-        <animate attributeName="baseFrequency" values="0.01 0.016; 0.013 0.013; 0.007 0.019; 0.011 0.015; 0.01 0.016" dur="26s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+        <animate attributeName="baseFrequency" values="0.01 0.016; 0.012 0.014; 0.008 0.018; 0.011 0.015; 0.01 0.016" dur="26s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="5" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="3;7;2;6;3" dur="37s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="3" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="2;4;1;4;2" dur="37s" repeatCount="indefinite"/>
       </feDisplacementMap>
     </filter>
   </defs>
@@ -439,11 +439,11 @@
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
 </g>
 <!-- Vignette: top_corners -->
-<radialGradient id="vigRC402" cx="0.5" cy="0.3" r="0.7">
+<radialGradient id="vigRC173" cx="0.5" cy="0.3" r="0.7">
   <stop offset="50%" stop-color="#1a0a05" stop-opacity="0"/>
   <stop offset="100%" stop-color="#1a0a05" stop-opacity="0.60"/>
 </radialGradient>
-<rect width="512" height="512" fill="url(#vigRC402)" opacity="0.56"/>
+<rect width="512" height="512" fill="url(#vigRC173)" opacity="0.59"/>
 
 
 </svg>

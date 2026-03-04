@@ -10,37 +10,37 @@
     <filter id="blur-sky_main"><feGaussianBlur stdDeviation="15"/></filter>
     <filter id="char-blur-sky_main"><feGaussianBlur stdDeviation="20"/></filter>
     <mask id="mask-sky_main">
-      <path d="M0,0 L512,0 L512,185 Q375.0,169 251.0,189 Q136.0,170 0,161 Z" fill="white" filter="url(#blur-sky_main)"/>
+      <path d="M0,0 L512,0 L512,194 Q379.0,164 264.0,190 Q119.0,179 0,174 Z" fill="white" filter="url(#blur-sky_main)"/>
       <ellipse cx="256" cy="230" rx="143" ry="179" fill="black" filter="url(#char-blur-sky_main)"/>
     </mask>
     <filter id="blur-reflection_ice"><feGaussianBlur stdDeviation="12"/></filter>
     <filter id="char-blur-reflection_ice"><feGaussianBlur stdDeviation="20"/></filter>
     <mask id="mask-reflection_ice">
-      <path d="M0,393 Q260.0,378 512,371 L512,512 L0,512 Z" fill="white" filter="url(#blur-reflection_ice)"/>
+      <path d="M0,389 Q263.0,375 512,380 L512,512 L0,512 Z" fill="white" filter="url(#blur-reflection_ice)"/>
       <ellipse cx="256" cy="230" rx="143" ry="179" fill="black" filter="url(#char-blur-reflection_ice)"/>
     </mask>
     <filter id="fog-drift-fog_snow" x="-15%" y="-5%" width="130%" height="110%">
       <feTurbulence type="fractalNoise" baseFrequency="0.006 0.009" numOctaves="2" result="fog-noise" seed="27">
-        <animate attributeName="baseFrequency" values="0.006 0.009; 0.008 0.007; 0.004 0.011; 0.007 0.008; 0.006 0.009" dur="15s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+        <animate attributeName="baseFrequency" values="0.006 0.009; 0.007 0.008; 0.005 0.010; 0.007 0.009; 0.006 0.009" dur="15s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="14" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="12;16;11;15;12" dur="33s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="8" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="7;9;6;9;7" dur="33s" repeatCount="indefinite"/>
       </feDisplacementMap>
     </filter>
     <filter id="cloud-drift-sky_main" x="-10%" y="-5%" width="120%" height="110%">
       <feTurbulence type="fractalNoise" baseFrequency="0.005 0.006" numOctaves="2" result="cloud-noise" seed="610">
-        <animate attributeName="baseFrequency" values="0.005 0.006; 0.007 0.004; 0.003 0.008; 0.006 0.005; 0.005 0.006" dur="34s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+        <animate attributeName="baseFrequency" values="0.005 0.006; 0.006 0.005; 0.004 0.007; 0.005 0.006; 0.005 0.006" dur="31s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="cloud-noise" scale="14" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="10;19;9;17;10" dur="45s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="cloud-noise" scale="7" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="5;9;5;8;5" dur="45s" repeatCount="indefinite"/>
       </feDisplacementMap>
     </filter>
     <filter id="shimmer-reflection_ice" x="-2%" y="-2%" width="104%" height="104%">
-      <feTurbulence type="turbulence" baseFrequency="0.04 0.078" numOctaves="2" result="shimmer-noise" seed="724">
-        <animate attributeName="baseFrequency" values="0.04 0.078; 0.045 0.073; 0.037 0.083; 0.043 0.076; 0.04 0.078" dur="6s" repeatCount="indefinite"/>
+      <feTurbulence type="turbulence" baseFrequency="0.036 0.075" numOctaves="2" result="shimmer-noise" seed="966">
+        <animate attributeName="baseFrequency" values="0.036 0.075; 0.041 0.070; 0.033 0.080; 0.039 0.073; 0.036 0.075" dur="6s" repeatCount="indefinite"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="shimmer-noise" scale="3" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="3;5;2;4;3" dur="7s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="shimmer-noise" scale="4" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="4;6;3;5;4" dur="7s" repeatCount="indefinite"/>
       </feDisplacementMap>
     </filter>
   </defs>
@@ -51,11 +51,11 @@
   <!-- Layer 2: Cinemagraph filtered regions (3 filters, 6 octaves) -->
   <g mask="url(#mask-fog_snow)">
     <use href="#bg" filter="url(#fog-drift-fog_snow)"/>
-      <animateTransform attributeName="transform" type="translate" values="0,0; 10,1; 0,0; -5,-1; 0,0" dur="39s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 6,1; 0,0; -3,-1; 0,0" dur="29s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
   </g>
   <g mask="url(#mask-sky_main)">
     <use href="#bg" filter="url(#cloud-drift-sky_main)"/>
-      <animateTransform attributeName="transform" type="translate" values="0,0; 5,0; 0,0; -3,0; 0,0" dur="36s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 7,0; 0,0; -4,0; 0,0" dur="39s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
   </g>
   <g mask="url(#mask-reflection_ice)">
     <use href="#bg" filter="url(#shimmer-reflection_ice)"/>
@@ -548,12 +548,12 @@
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
 </g>
 <!-- Vignette: bottom_light -->
-<linearGradient id="vigLG114" x1="0" y1="0" x2="0" y2="1">
+<linearGradient id="vigLG948" x1="0" y1="0" x2="0" y2="1">
   <stop offset="0%" stop-color="#1a0a05" stop-opacity="0"/>
   <stop offset="70%" stop-color="#1a0a05" stop-opacity="0"/>
   <stop offset="100%" stop-color="#1a0a05" stop-opacity="0.40"/>
 </linearGradient>
-<rect width="512" height="512" fill="url(#vigLG114)" opacity="0.52"/>
+<rect width="512" height="512" fill="url(#vigLG948)" opacity="0.57"/>
 
 
 </svg>

@@ -9,10 +9,10 @@
     </mask>
     <filter id="cloud-drift-sky_main" x="-10%" y="-5%" width="120%" height="110%">
       <feTurbulence type="fractalNoise" baseFrequency="0.006 0.008" numOctaves="3" result="cloud-noise" seed="994">
-        <animate attributeName="baseFrequency" values="0.006 0.008; 0.008 0.006; 0.004 0.010; 0.007 0.007; 0.006 0.008" dur="32s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+        <animate attributeName="baseFrequency" values="0.006 0.008; 0.007 0.007; 0.005 0.009; 0.007 0.008; 0.006 0.008" dur="47s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="cloud-noise" scale="16" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="12;21;11;19;12" dur="57s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="cloud-noise" scale="7" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="5;9;5;8;5" dur="44s" repeatCount="indefinite"/>
       </feDisplacementMap>
     </filter>
   </defs>
@@ -23,7 +23,7 @@
   <!-- Layer 2: Cinemagraph filtered regions (1 filters, 2 octaves) -->
   <g mask="url(#mask-sky_main)">
     <use href="#bg" filter="url(#cloud-drift-sky_main)"/>
-      <animateTransform attributeName="transform" type="translate" values="0,0; 5,0; 0,0; -3,0; 0,0" dur="48s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 8,0; 0,0; -4,0; 0,0" dur="36s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
   </g>
 
   <!-- Layer 3: Full SMIL overlay (12-20 elements, 3 depth layers) -->
@@ -477,11 +477,11 @@
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
 </g>
 <!-- Vignette: corners_only -->
-<radialGradient id="vigRC737" cx="0.5" cy="0.5" r="0.6">
+<radialGradient id="vigRC299" cx="0.5" cy="0.5" r="0.6">
   <stop offset="40%" stop-color="#050810" stop-opacity="0"/>
   <stop offset="100%" stop-color="#050810" stop-opacity="0.55"/>
 </radialGradient>
-<rect width="512" height="512" fill="url(#vigRC737)" opacity="0.57"/>
+<rect width="512" height="512" fill="url(#vigRC299)" opacity="0.6"/>
 
 
 </svg>

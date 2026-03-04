@@ -9,10 +9,10 @@
     </mask>
     <filter id="cloud-drift-sky_main" x="-10%" y="-5%" width="120%" height="110%">
       <feTurbulence type="fractalNoise" baseFrequency="0.006 0.01" numOctaves="3" result="cloud-noise" seed="63">
-        <animate attributeName="baseFrequency" values="0.006 0.01; 0.008 0.008; 0.004 0.012; 0.007 0.009; 0.006 0.01" dur="44s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+        <animate attributeName="baseFrequency" values="0.006 0.01; 0.007 0.009; 0.005 0.011; 0.007 0.010; 0.006 0.01" dur="44s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="cloud-noise" scale="12" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="8;17;7;15;8" dur="59s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="cloud-noise" scale="7" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="5;9;5;8;5" dur="59s" repeatCount="indefinite"/>
       </feDisplacementMap>
     </filter>
   </defs>
@@ -344,11 +344,11 @@
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
 </g>
 <!-- Vignette: corners_only -->
-<radialGradient id="vigRC120" cx="0.5" cy="0.5" r="0.6">
+<radialGradient id="vigRC776" cx="0.5" cy="0.5" r="0.6">
   <stop offset="40%" stop-color="#051005" stop-opacity="0"/>
   <stop offset="100%" stop-color="#051005" stop-opacity="0.55"/>
 </radialGradient>
-<rect width="512" height="512" fill="url(#vigRC120)" opacity="0.58"/>
+<rect width="512" height="512" fill="url(#vigRC776)" opacity="0.62"/>
 
 
 </svg>

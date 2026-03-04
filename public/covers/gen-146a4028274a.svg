@@ -23,8 +23,8 @@
       <feTurbulence type="turbulence" baseFrequency="0.04 0.061" numOctaves="3" result="flame-noise" seed="571">
         <animate attributeName="baseFrequency" values="0.04 0.061; 0.050 0.051; 0.035 0.071; 0.045 0.056; 0.04 0.061" dur="3.9s" repeatCount="indefinite"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="flame-noise" scale="5" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="5;8;4;7;5;4;8;5" dur="3.9s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="flame-noise" scale="3" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="3;6;2;5;3;2;6;3" dur="3.9s" repeatCount="indefinite"/>
       </feDisplacementMap>
       <feComponentTransfer>
         <feFuncR type="linear" slope="1.0"><animate attributeName="slope" values="1.0;1.12;0.94;1.10;0.93;1.04;1.0" dur="4.2s" repeatCount="indefinite"/></feFuncR>
@@ -34,18 +34,18 @@
     </filter>
     <filter id="water-flow-water_pool" x="-5%" y="-5%" width="110%" height="110%">
       <feTurbulence type="turbulence" baseFrequency="0.018 0.05" numOctaves="2" result="noise" seed="650">
-        <animate attributeName="baseFrequency" values="0.018 0.05; 0.022 0.043; 0.014 0.057; 0.020 0.046; 0.018 0.05" dur="11s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+        <animate attributeName="baseFrequency" values="0.018 0.05; 0.022 0.044; 0.014 0.056; 0.020 0.047; 0.018 0.05" dur="11s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="8;11;5;9;8" dur="12s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="5;7;3;6;5" dur="12s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
       </feDisplacementMap>
     </filter>
     <filter id="fog-drift-fog_steam" x="-15%" y="-5%" width="130%" height="110%">
       <feTurbulence type="fractalNoise" baseFrequency="0.008 0.011" numOctaves="2" result="fog-noise" seed="174">
         <animate attributeName="baseFrequency" values="0.008 0.011; 0.010 0.009; 0.006 0.013; 0.009 0.010; 0.008 0.011" dur="24s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="8" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="6;10;5;9;6" dur="25s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="4" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="3;5;2;5;3" dur="25s" repeatCount="indefinite"/>
       </feDisplacementMap>
     </filter>
   </defs>
@@ -477,8 +477,8 @@
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
 </g>
 <!-- Vignette: full_heavy -->
-<rect width="512" height="512" fill="url(#vignetteGrad)" opacity="0.8">
-  <animate attributeName="opacity" values="0.8;0.8500000000000001;0.8" dur="8s" repeatCount="indefinite"
+<rect width="512" height="512" fill="url(#vignetteGrad)" opacity="0.83">
+  <animate attributeName="opacity" values="0.83;0.88;0.83" dur="10s" repeatCount="indefinite"
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
 </rect>
 

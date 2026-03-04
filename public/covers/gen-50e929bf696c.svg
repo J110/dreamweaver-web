@@ -4,43 +4,43 @@
     <filter id="blur-grass"><feGaussianBlur stdDeviation="12"/></filter>
     <filter id="char-blur-grass"><feGaussianBlur stdDeviation="20"/></filter>
     <mask id="mask-grass">
-      <path d="M0,262 Q145.6,267 302.2,239 Q302.2,239 512,226 L512,512 L0,512 Z" fill="white" filter="url(#blur-grass)"/>
+      <path d="M0,250 Q143.6,266 299.2,242 Q299.2,242 512,236 L512,512 L0,512 Z" fill="white" filter="url(#blur-grass)"/>
       <ellipse cx="256" cy="399" rx="61" ry="61" fill="black" filter="url(#char-blur-grass)"/>
     </mask>
     <filter id="blur-sky_main"><feGaussianBlur stdDeviation="15"/></filter>
     <filter id="char-blur-sky_main"><feGaussianBlur stdDeviation="20"/></filter>
     <mask id="mask-sky_main">
-      <path d="M0,0 L512,0 L512,184 Q391.0,156 256.0,188 Q132.0,175 0,174 Z" fill="white" filter="url(#blur-sky_main)"/>
+      <path d="M0,0 L512,0 L512,160 Q393.0,158 252.0,189 Q135.0,161 0,179 Z" fill="white" filter="url(#blur-sky_main)"/>
       <ellipse cx="256" cy="399" rx="61" ry="61" fill="black" filter="url(#char-blur-sky_main)"/>
     </mask>
     <filter id="blur-fog_meadow"><feGaussianBlur stdDeviation="25"/></filter>
     <filter id="char-blur-fog_meadow"><feGaussianBlur stdDeviation="20"/></filter>
     <mask id="mask-fog_meadow">
-      <path d="M0,292 Q135.0,291 251.0,310 Q387.0,289 512,319 L512,430 L0,428 Z" fill="white" filter="url(#blur-fog_meadow)"/>
+      <path d="M0,309 Q123.0,305 262.0,324 Q374.0,306 512,296 L512,412 L0,431 Z" fill="white" filter="url(#blur-fog_meadow)"/>
       <ellipse cx="256" cy="399" rx="61" ry="61" fill="black" filter="url(#char-blur-fog_meadow)"/>
     </mask>
     <filter id="veg-sway-grass" x="-5%" y="-5%" width="110%" height="110%">
       <feTurbulence type="fractalNoise" baseFrequency="0.014 0.022" numOctaves="2" result="wind-noise" seed="806">
-        <animate attributeName="baseFrequency" values="0.014 0.022; 0.018 0.018; 0.010 0.026; 0.016 0.021; 0.014 0.022" dur="9s" begin="0.9s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+        <animate attributeName="baseFrequency" values="0.014 0.022; 0.017 0.019; 0.011 0.025; 0.015 0.021; 0.014 0.022" dur="10s" begin="1.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="wind-noise" scale="10" xChannelSelector="R" yChannelSelector="B">
-        <animate attributeName="scale" values="8;12;7;11;9;13;8" dur="10s" begin="0.9s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+      <feDisplacementMap in="SourceGraphic" in2="wind-noise" scale="6" xChannelSelector="R" yChannelSelector="B">
+        <animate attributeName="scale" values="5;7;4;7;5;8;5" dur="11s" begin="1.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
       </feDisplacementMap>
     </filter>
     <filter id="cloud-drift-sky_main" x="-10%" y="-5%" width="120%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.009 0.013" numOctaves="1" result="cloud-noise" seed="426">
-        <animate attributeName="baseFrequency" values="0.009 0.013; 0.012 0.010; 0.006 0.016; 0.010 0.012; 0.009 0.013" dur="38s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.009 0.013" numOctaves="2" result="cloud-noise" seed="904">
+        <animate attributeName="baseFrequency" values="0.009 0.013; 0.011 0.011; 0.007 0.015; 0.010 0.012; 0.009 0.013" dur="31s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="cloud-noise" scale="11" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="8;16;7;14;8" dur="35s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="cloud-noise" scale="6" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="4;8;4;7;4" dur="41s" repeatCount="indefinite"/>
       </feDisplacementMap>
     </filter>
     <filter id="fog-drift-fog_meadow" x="-15%" y="-5%" width="130%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.008 0.012" numOctaves="2" result="fog-noise" seed="485">
-        <animate attributeName="baseFrequency" values="0.008 0.012; 0.010 0.010; 0.006 0.014; 0.009 0.011; 0.008 0.012" dur="20s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.007 0.011" numOctaves="2" result="fog-noise" seed="372">
+        <animate attributeName="baseFrequency" values="0.007 0.011; 0.008 0.010; 0.006 0.012; 0.007 0.011; 0.007 0.011" dur="21s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="12" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="10;14;9;13;10" dur="37s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="7" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="6;8;5;8;6" dur="35s" repeatCount="indefinite"/>
       </feDisplacementMap>
     </filter>
   </defs>
@@ -54,11 +54,11 @@
   </g>
   <g mask="url(#mask-sky_main)">
     <use href="#bg" filter="url(#cloud-drift-sky_main)"/>
-      <animateTransform attributeName="transform" type="translate" values="0,0; 10,0; 0,0; -5,0; 0,0" dur="41s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 5,0; 0,0; -3,0; 0,0" dur="48s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
   </g>
   <g mask="url(#mask-fog_meadow)">
     <use href="#bg" filter="url(#fog-drift-fog_meadow)"/>
-      <animateTransform attributeName="transform" type="translate" values="0,0; 9,1; 0,0; -4,-1; 0,0" dur="34s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 5,1; 0,0; -2,-1; 0,0" dur="34s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
   </g>
 
   <!-- Layer 3: Full SMIL overlay (12-20 elements, 3 depth layers) -->
@@ -598,12 +598,12 @@
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
 </g>
 <!-- Vignette: bottom_light -->
-<linearGradient id="vigLG751" x1="0" y1="0" x2="0" y2="1">
+<linearGradient id="vigLG676" x1="0" y1="0" x2="0" y2="1">
   <stop offset="0%" stop-color="#051005" stop-opacity="0"/>
   <stop offset="70%" stop-color="#051005" stop-opacity="0"/>
   <stop offset="100%" stop-color="#051005" stop-opacity="0.40"/>
 </linearGradient>
-<rect width="512" height="512" fill="url(#vigLG751)" opacity="0.69"/>
+<rect width="512" height="512" fill="url(#vigLG676)" opacity="0.69"/>
 
 
 </svg>

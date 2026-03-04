@@ -16,7 +16,7 @@
     <filter id="blur-ground_veg"><feGaussianBlur stdDeviation="10"/></filter>
     <filter id="char-blur-ground_veg"><feGaussianBlur stdDeviation="20"/></filter>
     <mask id="mask-ground_veg">
-      <path d="M0,415 Q176.2,410 326.8,424 Q326.8,424 512,426 L512,512 L0,512 Z" fill="white" filter="url(#blur-ground_veg)"/>
+      <path d="M0,414 Q176.2,407 330.8,426 Q330.8,426 512,426 L512,512 L0,512 Z" fill="white" filter="url(#blur-ground_veg)"/>
       <ellipse cx="230" cy="307" rx="61" ry="92" fill="black" filter="url(#char-blur-ground_veg)"/>
     </mask>
     <filter id="blur-fog_floor"><feGaussianBlur stdDeviation="25"/></filter>
@@ -27,34 +27,34 @@
     </mask>
     <filter id="veg-sway-canopy" x="-5%" y="-5%" width="110%" height="110%">
       <feTurbulence type="fractalNoise" baseFrequency="0.007 0.013" numOctaves="2" result="wind-noise" seed="266">
-        <animate attributeName="baseFrequency" values="0.007 0.013; 0.009 0.011; 0.005 0.015; 0.008 0.012; 0.007 0.013" dur="12s" begin="0s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+        <animate attributeName="baseFrequency" values="0.007 0.013; 0.008 0.012; 0.006 0.014; 0.007 0.013; 0.007 0.013" dur="12s" begin="0s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="wind-noise" scale="12" xChannelSelector="R" yChannelSelector="B">
-        <animate attributeName="scale" values="10;14;9;13;11;15;10" dur="19s" begin="0s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+      <feDisplacementMap in="SourceGraphic" in2="wind-noise" scale="7" xChannelSelector="R" yChannelSelector="B">
+        <animate attributeName="scale" values="6;8;5;8;6;9;6" dur="19s" begin="0s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
       </feDisplacementMap>
     </filter>
     <filter id="cloud-drift-sky_main" x="-10%" y="-5%" width="120%" height="110%">
       <feTurbulence type="fractalNoise" baseFrequency="0.008 0.012" numOctaves="1" result="cloud-noise" seed="714">
         <animate attributeName="baseFrequency" values="0.008 0.012; 0.010 0.010; 0.006 0.014; 0.009 0.011; 0.008 0.012" dur="26s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="cloud-noise" scale="12" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="8;17;7;15;8" dur="44s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="cloud-noise" scale="7" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="5;9;5;8;5" dur="44s" repeatCount="indefinite"/>
       </feDisplacementMap>
     </filter>
     <filter id="veg-sway-ground_veg" x="-5%" y="-5%" width="110%" height="110%">
       <feTurbulence type="fractalNoise" baseFrequency="0.009 0.015" numOctaves="2" result="wind-noise" seed="625">
-        <animate attributeName="baseFrequency" values="0.009 0.015; 0.011 0.013; 0.007 0.017; 0.010 0.014; 0.009 0.015" dur="11s" begin="0.7s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+        <animate attributeName="baseFrequency" values="0.009 0.015; 0.011 0.013; 0.007 0.017; 0.010 0.014; 0.009 0.015" dur="11s" begin="1.0s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="wind-noise" scale="6" xChannelSelector="R" yChannelSelector="B">
-        <animate attributeName="scale" values="4;8;3;7;5;9;4" dur="13s" begin="0.7s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+      <feDisplacementMap in="SourceGraphic" in2="wind-noise" scale="3" xChannelSelector="R" yChannelSelector="B">
+        <animate attributeName="scale" values="2;4;1;4;2;5;2" dur="13s" begin="1.0s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
       </feDisplacementMap>
     </filter>
     <filter id="fog-drift-fog_floor" x="-15%" y="-5%" width="130%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.007 0.01" numOctaves="2" result="fog-noise" seed="327">
-        <animate attributeName="baseFrequency" values="0.007 0.01; 0.009 0.008; 0.005 0.012; 0.008 0.009; 0.007 0.01" dur="20s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.006 0.009" numOctaves="2" result="fog-noise" seed="473">
+        <animate attributeName="baseFrequency" values="0.006 0.009; 0.007 0.008; 0.005 0.010; 0.007 0.009; 0.006 0.009" dur="20s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="10" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="8;12;7;11;8" dur="33s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="7" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="6;8;5;8;6" dur="33s" repeatCount="indefinite"/>
       </feDisplacementMap>
     </filter>
   </defs>
@@ -547,13 +547,13 @@
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
 </g>
 <!-- Vignette: bottom_heavy -->
-<linearGradient id="vigLG332" x1="0" y1="0" x2="0" y2="1">
+<linearGradient id="vigLG134" x1="0" y1="0" x2="0" y2="1">
   <stop offset="0%" stop-color="#051005" stop-opacity="0"/>
   <stop offset="50%" stop-color="#051005" stop-opacity="0.15"/>
   <stop offset="100%" stop-color="#051005" stop-opacity="0.70"/>
 </linearGradient>
-<rect width="512" height="512" fill="url(#vigLG332)" opacity="0.71">
-  <animate attributeName="opacity" values="0.71;0.76;0.71" dur="10s" repeatCount="indefinite"
+<rect width="512" height="512" fill="url(#vigLG134)" opacity="0.64">
+  <animate attributeName="opacity" values="0.64;0.6900000000000001;0.64" dur="8s" repeatCount="indefinite"
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
 </rect>
 

@@ -23,8 +23,8 @@
       <feTurbulence type="turbulence" baseFrequency="0.039 0.067" numOctaves="3" result="flame-noise" seed="537">
         <animate attributeName="baseFrequency" values="0.039 0.067; 0.049 0.057; 0.034 0.077; 0.044 0.062; 0.039 0.067" dur="3.6s" repeatCount="indefinite"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="flame-noise" scale="6" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="6;9;5;8;6;5;9;6" dur="3.6s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="flame-noise" scale="4" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="4;7;3;6;4;3;7;4" dur="3.6s" repeatCount="indefinite"/>
       </feDisplacementMap>
       <feComponentTransfer>
         <feFuncR type="linear" slope="1.0"><animate attributeName="slope" values="1.0;1.12;0.94;1.10;0.93;1.04;1.0" dur="4.0s" repeatCount="indefinite"/></feFuncR>
@@ -34,18 +34,18 @@
     </filter>
     <filter id="water-flow-water_pool" x="-5%" y="-5%" width="110%" height="110%">
       <feTurbulence type="turbulence" baseFrequency="0.018 0.047" numOctaves="2" result="noise" seed="799">
-        <animate attributeName="baseFrequency" values="0.018 0.047; 0.022 0.040; 0.014 0.054; 0.020 0.043; 0.018 0.047" dur="9s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+        <animate attributeName="baseFrequency" values="0.018 0.047; 0.022 0.041; 0.014 0.053; 0.020 0.044; 0.018 0.047" dur="9s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="8;11;5;9;8" dur="13s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="5;7;3;6;5" dur="13s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
       </feDisplacementMap>
     </filter>
     <filter id="fog-drift-fog_steam" x="-15%" y="-5%" width="130%" height="110%">
       <feTurbulence type="fractalNoise" baseFrequency="0.007 0.01" numOctaves="2" result="fog-noise" seed="235">
-        <animate attributeName="baseFrequency" values="0.007 0.01; 0.009 0.008; 0.005 0.012; 0.008 0.009; 0.007 0.01" dur="20s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+        <animate attributeName="baseFrequency" values="0.007 0.01; 0.008 0.009; 0.006 0.011; 0.007 0.010; 0.007 0.01" dur="20s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="8" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="6;10;5;9;6" dur="31s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="4" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="3;5;2;5;3" dur="31s" repeatCount="indefinite"/>
       </feDisplacementMap>
     </filter>
   </defs>
@@ -414,8 +414,8 @@
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
 </g>
 <!-- Vignette: full_heavy -->
-<rect width="512" height="512" fill="url(#vignetteGrad)" opacity="0.77">
-  <animate attributeName="opacity" values="0.77;0.8200000000000001;0.77" dur="9s" repeatCount="indefinite"
+<rect width="512" height="512" fill="url(#vignetteGrad)" opacity="0.71">
+  <animate attributeName="opacity" values="0.71;0.76;0.71" dur="9s" repeatCount="indefinite"
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
 </rect>
 

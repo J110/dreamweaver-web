@@ -10,42 +10,42 @@
     <filter id="blur-smoke_chimney"><feGaussianBlur stdDeviation="15"/></filter>
     <filter id="char-blur-smoke_chimney"><feGaussianBlur stdDeviation="20"/></filter>
     <mask id="mask-smoke_chimney">
-      <path d="M211,0 L308,0 L316,261 L190,255 Z" fill="white" filter="url(#blur-smoke_chimney)"/>
+      <path d="M205,0 L306,0 L324,250 L195,253 Z" fill="white" filter="url(#blur-smoke_chimney)"/>
       <ellipse cx="256" cy="230" rx="143" ry="179" fill="black" filter="url(#char-blur-smoke_chimney)"/>
     </mask>
     <filter id="blur-fog_dust"><feGaussianBlur stdDeviation="20"/></filter>
     <filter id="char-blur-fog_dust"><feGaussianBlur stdDeviation="20"/></filter>
     <mask id="mask-fog_dust">
-      <path d="M0,168 L512,176 L512,327 L0,323 Z" fill="white" filter="url(#blur-fog_dust)"/>
+      <path d="M0,176 L512,174 L512,323 L0,339 Z" fill="white" filter="url(#blur-fog_dust)"/>
       <ellipse cx="256" cy="230" rx="143" ry="179" fill="black" filter="url(#char-blur-fog_dust)"/>
     </mask>
     <filter id="fire-flicker-fire_hearth" x="-10%" y="-15%" width="120%" height="130%">
       <feTurbulence type="turbulence" baseFrequency="0.047 0.074" numOctaves="3" result="flame-noise" seed="695">
-        <animate attributeName="baseFrequency" values="0.047 0.074; 0.057 0.064; 0.042 0.084; 0.052 0.069; 0.047 0.074" dur="2.8s" repeatCount="indefinite"/>
+        <animate attributeName="baseFrequency" values="0.047 0.074; 0.057 0.064; 0.042 0.084; 0.052 0.069; 0.047 0.074" dur="2.9s" repeatCount="indefinite"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="flame-noise" scale="9" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="9;12;8;11;9;8;12;9" dur="2.8s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="flame-noise" scale="6" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="6;9;5;8;6;5;9;6" dur="2.9s" repeatCount="indefinite"/>
       </feDisplacementMap>
       <feComponentTransfer>
-        <feFuncR type="linear" slope="1.0"><animate attributeName="slope" values="1.0;1.18;0.91;1.14;0.89;1.05;1.0" dur="3.0s" repeatCount="indefinite"/></feFuncR>
-        <feFuncG type="linear" slope="1.0"><animate attributeName="slope" values="1.0;1.13;0.89;1.11;0.86;1.04;1.0" dur="3.0s" repeatCount="indefinite"/></feFuncG>
-        <feFuncB type="linear" slope="0.78"><animate attributeName="slope" values="0.78;0.73;0.71;0.75;0.68;0.73;0.78" dur="3.0s" repeatCount="indefinite"/></feFuncB>
+        <feFuncR type="linear" slope="1.0"><animate attributeName="slope" values="1.0;1.18;0.91;1.14;0.89;1.05;1.0" dur="3.2s" repeatCount="indefinite"/></feFuncR>
+        <feFuncG type="linear" slope="1.0"><animate attributeName="slope" values="1.0;1.13;0.89;1.11;0.86;1.04;1.0" dur="3.2s" repeatCount="indefinite"/></feFuncG>
+        <feFuncB type="linear" slope="0.78"><animate attributeName="slope" values="0.78;0.73;0.71;0.75;0.68;0.73;0.78" dur="3.2s" repeatCount="indefinite"/></feFuncB>
       </feComponentTransfer>
     </filter>
     <filter id="smoke-rise-smoke_chimney" x="-10%" y="-20%" width="120%" height="140%">
       <feTurbulence type="fractalNoise" baseFrequency="0.012 0.019" numOctaves="2" result="smoke-noise" seed="919">
-        <animate attributeName="baseFrequency" values="0.012 0.019; 0.016 0.015; 0.008 0.023; 0.014 0.018; 0.012 0.019" dur="15s" repeatCount="indefinite"/>
+        <animate attributeName="baseFrequency" values="0.012 0.019; 0.014 0.017; 0.010 0.021; 0.013 0.018; 0.012 0.019" dur="10s" repeatCount="indefinite"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="smoke-noise" scale="10" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="8;12;7;11;8" dur="15s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="smoke-noise" scale="5" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="4;6;3;6;4" dur="19s" repeatCount="indefinite"/>
       </feDisplacementMap>
     </filter>
     <filter id="fog-drift-fog_dust" x="-15%" y="-5%" width="130%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.007 0.011" numOctaves="2" result="fog-noise" seed="939">
-        <animate attributeName="baseFrequency" values="0.007 0.011; 0.009 0.009; 0.005 0.013; 0.008 0.010; 0.007 0.011" dur="24s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.008 0.012" numOctaves="2" result="fog-noise" seed="138">
+        <animate attributeName="baseFrequency" values="0.008 0.012; 0.010 0.010; 0.006 0.014; 0.009 0.011; 0.008 0.012" dur="24s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="9" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="7;11;6;10;7" dur="35s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="6" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="5;7;4;7;5" dur="34s" repeatCount="indefinite"/>
       </feDisplacementMap>
     </filter>
   </defs>
@@ -539,8 +539,8 @@
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
 </g>
 <!-- Vignette: full_soft -->
-<rect width="512" height="512" fill="url(#vignetteGrad)" opacity="0.56">
-  <animate attributeName="opacity" values="0.56;0.6100000000000001;0.56" dur="9s" repeatCount="indefinite"
+<rect width="512" height="512" fill="url(#vignetteGrad)" opacity="0.43">
+  <animate attributeName="opacity" values="0.43;0.48;0.43" dur="9s" repeatCount="indefinite"
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
 </rect>
 

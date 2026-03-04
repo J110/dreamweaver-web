@@ -4,21 +4,21 @@
     <filter id="blur-fire_candle"><feGaussianBlur stdDeviation="12"/></filter>
     <filter id="char-blur-fire_candle"><feGaussianBlur stdDeviation="20"/></filter>
     <mask id="mask-fire_candle">
-      <circle cx="392" cy="227" r="63" fill="white" filter="url(#blur-fire_candle)"/>
+      <circle cx="393" cy="228" r="63" fill="white" filter="url(#blur-fire_candle)"/>
       <ellipse cx="230" cy="307" rx="61" ry="92" fill="black" filter="url(#char-blur-fire_candle)"/>
     </mask>
     <filter id="blur-fog_dust"><feGaussianBlur stdDeviation="20"/></filter>
     <filter id="char-blur-fog_dust"><feGaussianBlur stdDeviation="20"/></filter>
     <mask id="mask-fog_dust">
-      <path d="M0,80 L512,68 L512,208 Q253.0,213 0,196 Z" fill="white" filter="url(#blur-fog_dust)"/>
+      <path d="M0,82 L512,78 L512,199 Q245.0,220 0,204 Z" fill="white" filter="url(#blur-fog_dust)"/>
       <ellipse cx="230" cy="307" rx="61" ry="92" fill="black" filter="url(#char-blur-fog_dust)"/>
     </mask>
     <filter id="fire-flicker-fire_candle" x="-10%" y="-15%" width="120%" height="130%">
       <feTurbulence type="turbulence" baseFrequency="0.049 0.075" numOctaves="3" result="flame-noise" seed="212">
-        <animate attributeName="baseFrequency" values="0.049 0.075; 0.059 0.065; 0.044 0.085; 0.054 0.070; 0.049 0.075" dur="4.9s" repeatCount="indefinite"/>
+        <animate attributeName="baseFrequency" values="0.049 0.075; 0.059 0.065; 0.044 0.085; 0.054 0.070; 0.049 0.075" dur="4.1s" repeatCount="indefinite"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="flame-noise" scale="5" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="5;8;4;7;5;4;8;5" dur="4.9s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="flame-noise" scale="3" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="3;6;2;5;3;2;6;3" dur="4.1s" repeatCount="indefinite"/>
       </feDisplacementMap>
       <feComponentTransfer>
         <feFuncR type="linear" slope="1.0"><animate attributeName="slope" values="1.0;1.10;0.95;1.08;0.94;1.03;1.0" dur="4.3s" repeatCount="indefinite"/></feFuncR>
@@ -27,11 +27,11 @@
       </feComponentTransfer>
     </filter>
     <filter id="fog-drift-fog_dust" x="-15%" y="-5%" width="130%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.008 0.013" numOctaves="2" result="fog-noise" seed="724">
-        <animate attributeName="baseFrequency" values="0.008 0.013; 0.010 0.011; 0.006 0.015; 0.009 0.012; 0.008 0.013" dur="26s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.008 0.014" numOctaves="2" result="fog-noise" seed="416">
+        <animate attributeName="baseFrequency" values="0.008 0.014; 0.010 0.012; 0.006 0.016; 0.009 0.013; 0.008 0.014" dur="22s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="8" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="6;10;5;9;6" dur="43s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="4" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="3;5;2;5;3" dur="43s" repeatCount="indefinite"/>
       </feDisplacementMap>
     </filter>
   </defs>
@@ -45,7 +45,7 @@
   </g>
   <g mask="url(#mask-fog_dust)">
     <use href="#bg" filter="url(#fog-drift-fog_dust)"/>
-      <animateTransform attributeName="transform" type="translate" values="0,0; 12,1; 0,0; -6,-1; 0,0" dur="40s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 11,1; 0,0; -5,-1; 0,0" dur="40s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
   </g>
 
   <!-- Layer 3: Full SMIL overlay (12-20 elements, 3 depth layers) -->
@@ -579,8 +579,8 @@
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
 </g>
 <!-- Vignette: full_soft -->
-<rect width="512" height="512" fill="url(#vignetteGrad)" opacity="0.59">
-  <animate attributeName="opacity" values="0.59;0.64;0.59" dur="8s" repeatCount="indefinite"
+<rect width="512" height="512" fill="url(#vignetteGrad)" opacity="0.58">
+  <animate attributeName="opacity" values="0.58;0.63;0.58" dur="10s" repeatCount="indefinite"
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
 </rect>
 

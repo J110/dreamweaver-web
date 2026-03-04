@@ -17,16 +17,16 @@
       <feTurbulence type="fractalNoise" baseFrequency="0.004 0.005" numOctaves="2" result="cloud-noise" seed="519">
         <animate attributeName="baseFrequency" values="0.004 0.005; 0.005 0.004; 0.003 0.006; 0.005 0.005; 0.004 0.005" dur="32s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="cloud-noise" scale="11" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="8;16;7;14;8" dur="48s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="cloud-noise" scale="6" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="4;8;4;7;4" dur="48s" repeatCount="indefinite"/>
       </feDisplacementMap>
     </filter>
     <filter id="fog-drift-fog_ground" x="-15%" y="-5%" width="130%" height="110%">
       <feTurbulence type="fractalNoise" baseFrequency="0.009 0.013" numOctaves="2" result="fog-noise" seed="283">
-        <animate attributeName="baseFrequency" values="0.009 0.013; 0.012 0.010; 0.006 0.016; 0.010 0.012; 0.009 0.013" dur="23s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+        <animate attributeName="baseFrequency" values="0.009 0.013; 0.011 0.011; 0.007 0.015; 0.010 0.012; 0.009 0.013" dur="23s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
       </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="6" xChannelSelector="R" yChannelSelector="G">
-        <animate attributeName="scale" values="4;8;3;7;4" dur="45s" repeatCount="indefinite"/>
+      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="3" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="2;4;1;4;2" dur="45s" repeatCount="indefinite"/>
       </feDisplacementMap>
     </filter>
   </defs>
@@ -513,11 +513,11 @@
     calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
 </g>
 <!-- Vignette: top_corners -->
-<radialGradient id="vigRC828" cx="0.5" cy="0.3" r="0.7">
+<radialGradient id="vigRC723" cx="0.5" cy="0.3" r="0.7">
   <stop offset="50%" stop-color="#1a0f00" stop-opacity="0"/>
   <stop offset="100%" stop-color="#1a0f00" stop-opacity="0.60"/>
 </radialGradient>
-<rect width="512" height="512" fill="url(#vigRC828)" opacity="0.61"/>
+<rect width="512" height="512" fill="url(#vigRC723)" opacity="0.54"/>
 
 
 </svg>
