@@ -13,58 +13,134 @@
   </defs>
 <!-- F3: Breathing Pacer (Space) -->
 <g id="breath-pacer">
-  <radialGradient id="breathG459">
-    <stop offset="0%" stop-color="#FFECD2" stop-opacity="0.35"/>
-    <stop offset="60%" stop-color="#FFB74D" stop-opacity="0.1"/>
+  <radialGradient id="breathG819">
+    <stop offset="0%" stop-color="#FFECD2" stop-opacity="0.45"/>
+    <stop offset="60%" stop-color="#FFB74D" stop-opacity="0.15"/>
     <stop offset="100%" stop-color="#FFB74D" stop-opacity="0"/>
   </radialGradient>
-  <circle cx="50%" cy="50%" r="35" fill="url(#breathG459)">
-    <animate attributeName="r" values="30;38;30" dur="8s" repeatCount="indefinite"
+  <circle cx="50%" cy="50%" r="35" fill="url(#breathG819)">
+    <animate attributeName="r" values="30;38;30" dur="5s" repeatCount="indefinite"
       calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
-    <animate attributeName="opacity" values="0.3;0.5;0.3" dur="8s" repeatCount="indefinite"
+    <animate attributeName="opacity" values="0.35;0.60;0.35" dur="5s" repeatCount="indefinite"
       calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
   </circle>
 </g>
 <!-- A4: Aurora -->
-<g id="aurora" opacity="0.2">
-  <ellipse cx="37%" cy="21%" rx="220" ry="40" fill="#D4B8A0" opacity="0.10">
+<g id="aurora" opacity="0.3">
+  <ellipse cx="37%" cy="26%" rx="210" ry="24" fill="#D4C8A0" opacity="0.25">
     <animateTransform attributeName="transform" type="translate"
-      values="0,0; 19,5; -13,4; 4,-1; 0,0" dur="31s" repeatCount="indefinite"
+      values="0,0; 15,4; -11,3; 4,-1; 0,0" dur="19s" repeatCount="indefinite"
       calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-    <animate attributeName="opacity" values="0.10;0.18;0.12;0.20;0.10"
-      dur="41s" repeatCount="indefinite"/>
-    <animate attributeName="ry" values="37;47;35;44;37"
+    <animate attributeName="opacity" values="0.25;0.33;0.27;0.35;0.25"
+      dur="23s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="21;31;19;28;21"
       dur="23s" repeatCount="indefinite"/>
   </ellipse>
-  <ellipse cx="47%" cy="21%" rx="192" ry="35" fill="#C8B0A0" opacity="0.16">
+  <ellipse cx="54%" cy="24%" rx="169" ry="34" fill="#D4B8A0" opacity="0.19">
     <animateTransform attributeName="transform" type="translate"
-      values="0,0; 19,2; -14,2; 7,-1; 0,0" dur="23s" repeatCount="indefinite"
+      values="0,0; 18,3; -12,3; 6,-3; 0,0" dur="29s" repeatCount="indefinite"
       calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-    <animate attributeName="opacity" values="0.16;0.24;0.18;0.26;0.16"
+    <animate attributeName="opacity" values="0.19;0.27;0.21;0.29;0.19"
+      dur="29s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="31;41;29;38;31"
+      dur="23s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="54%" cy="12%" rx="183" ry="35" fill="#D4C8A0" opacity="0.20">
+    <animateTransform attributeName="transform" type="translate"
+      values="0,0; 17,4; -12,2; 3,-1; 0,0" dur="19s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0.20;0.28;0.22;0.30;0.20"
       dur="29s" repeatCount="indefinite"/>
     <animate attributeName="ry" values="32;42;30;39;32"
+      dur="19s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="39%" cy="15%" rx="190" ry="37" fill="#D4C8A0" opacity="0.20">
+    <animateTransform attributeName="transform" type="translate"
+      values="0,0; 13,5; -6,2; 8,-1; 0,0" dur="37s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0.20;0.28;0.22;0.30;0.20"
+      dur="29s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="34;44;32;41;34"
       dur="23s" repeatCount="indefinite"/>
   </ellipse>
 </g>
-<!-- A2: Shooting Star -->
-<g id="shooting-star" opacity="0">
-  <line x1="0" y1="0" x2="-20" y2="-8" stroke="#FFD89C" stroke-width="1.5"
-    stroke-linecap="round" opacity="0.5"/>
-  <circle cx="0" cy="0" r="2" fill="#FFF0DB" opacity="0.6"/>
-  <circle cx="0" cy="0" r="5" fill="#FFD89C" opacity="0.15"/>
-  <animateMotion dur="11s" begin="75s" repeatCount="indefinite"
-    path="M6,-23 Q123,29 298,72"
-    calcMode="spline" keySplines="0.2 0 0.8 1"/>
-  <animate attributeName="opacity" values="0;0;0.5;0.5;0;0;0;0;0;0;0;0;0"
-    dur="75s" begin="0s" repeatCount="indefinite"
-    calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+<!-- A1: Twinkling Stars -->
+<g id="stars">
+  <circle cx="79%" cy="20%" r="2.2" fill="#FFF0DB">
+    <animate attributeName="opacity" values="0;0;0.51;0.36;0"
+      dur="7.9s" begin="9.2s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="58%" cy="17%" r="1.2" fill="#FFF5E0">
+    <animate attributeName="opacity" values="0;0;0.60;0.42;0"
+      dur="6.7s" begin="4.0s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="73%" cy="15%" r="1.1" fill="#FFF0DB">
+    <animate attributeName="opacity" values="0;0;0.47;0.33;0"
+      dur="5.3s" begin="3.2s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="32%" cy="10%" r="2.3" fill="#FFEFD5">
+    <animate attributeName="opacity" values="0;0;0.52;0.36;0"
+      dur="7.9s" begin="8.3s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="49%" cy="12%" r="1.3" fill="#FFE4B5">
+    <animate attributeName="opacity" values="0;0;0.55;0.39;0"
+      dur="6.0s" begin="0.9s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="21%" cy="12%" r="2.3" fill="#FFE8CC">
+    <animate attributeName="opacity" values="0;0;0.47;0.33;0"
+      dur="7.9s" begin="7.1s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="80%" cy="5%" r="2.9" fill="#FFEFD5">
+    <animate attributeName="opacity" values="0;0;0.57;0.40;0"
+      dur="4.6s" begin="1.6s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="46%" cy="8%" r="1.9" fill="#FFF0DB">
+    <animate attributeName="opacity" values="0;0;0.67;0.47;0"
+      dur="7.4s" begin="1.8s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="47%" cy="38%" r="1.3" fill="#FFF5E0">
+    <animate attributeName="opacity" values="0;0;0.48;0.34;0"
+      dur="7.5s" begin="3.3s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="61%" cy="17%" r="1.9" fill="#FFE4B5">
+    <animate attributeName="opacity" values="0;0;0.69;0.48;0"
+      dur="7.9s" begin="8.9s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+</g>
+<!-- A3: Moon Glow -->
+<g id="moon-glow">
+  <radialGradient id="moonH692">
+    <stop offset="0%" stop-color="#FFECD2" stop-opacity="0.35"/>
+    <stop offset="40%" stop-color="#FFB74D" stop-opacity="0.15"/>
+    <stop offset="100%" stop-color="#FFB74D" stop-opacity="0"/>
+  </radialGradient>
+  <circle cx="85%" cy="17%" r="46" fill="url(#moonH692)">
+    <animate attributeName="r" values="41;56;41" dur="7s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0.30;0.60;0.30" dur="7s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="85%" cy="17%" r="17" fill="#FFECD2" opacity="0.20">
+    <animate attributeName="opacity" values="0.15;0.25;0.15" dur="7s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
 </g>
 <!-- Vignette: corners_only -->
-<radialGradient id="vigRC643" cx="0.5" cy="0.5" r="0.6">
+<radialGradient id="vigRC805" cx="0.5" cy="0.5" r="0.6">
   <stop offset="40%" stop-color="#0a0520" stop-opacity="0"/>
   <stop offset="100%" stop-color="#0a0520" stop-opacity="0.55"/>
 </radialGradient>
-<rect width="512" height="512" fill="url(#vigRC643)" opacity="0.5"/>
+<rect width="512" height="512" fill="url(#vigRC805)" opacity="0.58"/>
 
 
 </svg>
