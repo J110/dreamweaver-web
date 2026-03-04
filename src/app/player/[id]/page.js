@@ -1116,9 +1116,6 @@ export default function PlayerPage() {
               </span>
             </div>
 
-            <button onClick={handleReportOpen} className={styles.aboutReportBtn}>
-              ⚠️ {t('playerReport')}
-            </button>
           </div>
         </div>
 
@@ -1204,6 +1201,9 @@ export default function PlayerPage() {
             className={`${styles.actionButton} ${isSaved ? styles.actionButtonActive : ''}`}
           >
             ❤️ {content.save_count || 0}
+          </button>
+          <button onClick={handleReportOpen} className={styles.actionButton}>
+            ⚠️ {t('playerReport')}
           </button>
           <button onClick={handleShare} className={styles.actionButton}>
             🔗 {shareCopied ? t('playerShareCopied') : t('playerShare')}
