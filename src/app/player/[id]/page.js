@@ -149,7 +149,8 @@ export default function PlayerPage() {
 
   // Render-phase logic: detect story changes and update music source ref.
   // This MUST run before effects so the music-start effect sees the correct source.
-  const musicSource = content?.musicParams || content?.musicProfile;
+  // Songs (lullabies) don't use ambient background music — ACE-Step output has vocals + instrument
+  const musicSource = content?.type === 'song' ? null : (content?.musicParams || content?.musicProfile);
   const currentContentId = content?.id;
   if (currentContentId && currentContentId !== musicContentIdRef.current) {
     if (musicContentIdRef.current) {
@@ -1161,7 +1162,7 @@ export default function PlayerPage() {
           </div>
         </div>
 
-        {(content.musicParams || content.musicProfile) && (
+        {(content.musicParams || content.musicProfile) && content.type !== 'song' && (
           <div className={styles.musicControls}>
             <button
               onClick={handleMusicPlayPause}
