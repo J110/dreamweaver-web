@@ -21,6 +21,7 @@
  */
 
 import { SOUNDSCAPES, MUSIC_LOOPS, getSoundscapeUrls, getMusicLoopUrl } from './soundscapeConfig';
+import { composeMusicParams, isMusicalBrief } from './musicComposer';
 
 // ── Noise Buffer Generators ──────────────────────────────────────────────────
 
@@ -310,6 +311,37 @@ export class AmbientMusicEngine {
 
     const g = ctx.createGain();
     g.gain.value = resolved.gain;
+
+    src.connect(g);
+    g.connect(this._musicLoopGain);
+    src.start(ctx.currentTime);
+
+    this._musicLoopSource = src;
+    this._nodes.push(src, g);
+  }
+
+  /** Start a music loop from a direct file path with pitch-shift playbackRate.
+   *  Used by composed Musical Briefs (3-key system). */
+  async _startMusicLoopDirect(path, gain, playbackRate = 1.0) {
+    // Safari/iOS: use native <audio> element
+    if (this._useNativeAudio) {
+      this._startNativeAudio(path, gain);
+      return;
+    }
+
+    const buffer = await this._loadAudio(path);
+    if (!buffer || !this._playing) return;
+
+    const ctx = this._ctx;
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    src.loop = true;
+    src.playbackRate.value = playbackRate;
+
+    const g = ctx.createGain();
+    g.gain.value = gain;
+    // Store reference for phase transition gain control
+    this._musicLoopGainNode = g;
 
     src.connect(g);
     g.connect(this._musicLoopGain);
@@ -2213,35 +2245,43 @@ export class AmbientMusicEngine {
     this._synthGain = originalSynthOut;
 
     // 4. MELODY LAYER A — primary
-    const melodyNotes = p.melodyNotes || chordNotes.map(f => f * 2);
+    // If melodySequence exists (composed from Musical Brief), walk sequentially.
+    // Otherwise fall back to cycling through melodyNotes (legacy behavior).
+    const melodyNotes = p.melodySequence || p.melodyNotes || chordNotes.map(f => f * 2);
     const melodyInterval = p.melodyInterval ?? 4000;
     const melodyGain = p.melodyGain ?? 0.018;
+    const melodyJitter = p.melodyIntervalJitter ?? 0.15;
     const melodyOut = this._melodyGainNode;
-    let melIdx = 0;
-    this._scheduleRepeating(() => {
-      const note = melodyNotes[melIdx % melodyNotes.length];
-      melIdx++;
-      this._playTone(note, {
-        type: 'sine', gain: melodyGain, attack: 0.1, decay: 2.5,
-        filterFreq: padFilter * 1.5, detune: (Math.random() - 0.5) * 6,
-        output: melodyOut,
-      });
-    }, melodyInterval, 0.15, melodyInterval * 1.5);
+    if (melodyGain > 0 && melodyNotes.length > 0) {
+      let melIdx = 0;
+      this._scheduleRepeating(() => {
+        const note = melodyNotes[melIdx % melodyNotes.length];
+        melIdx++;
+        this._playTone(note, {
+          type: 'sine', gain: melodyGain, attack: 0.1, decay: 2.5,
+          filterFreq: padFilter * 1.5, detune: (Math.random() - 0.5) * 6,
+          output: melodyOut,
+        });
+      }, melodyInterval, melodyJitter, melodyInterval * 1.5);
+    }
 
-    // 5. MELODY LAYER B — bass walking
-    const bassNotes = p.bassNotes || chordNotes.slice(0, 4).map(f => f / 2);
+    // 5. MELODY LAYER B — bass walking (skip when bassGain is 0 or bassInterval very high)
+    const bassGain = p.bassGain ?? (melodyGain * 0.8);
     const bassInterval = p.bassInterval ?? 6000;
     const bassOut = this._bassGainNode;
-    let bassIdx = 0;
-    this._scheduleRepeating(() => {
-      const note = bassNotes[bassIdx % bassNotes.length];
-      bassIdx++;
-      this._playTone(note, {
-        type: 'triangle', gain: melodyGain * 0.8, attack: 0.2, decay: 5.5,
-        filterFreq: 250, pan: -0.1,
-        output: bassOut,
-      });
-    }, bassInterval, 0.2, bassInterval * 1.2);
+    if (bassGain > 0 && bassInterval < 30000) {
+      const bassNotes = p.bassNotes || chordNotes.slice(0, 4).map(f => f / 2);
+      let bassIdx = 0;
+      this._scheduleRepeating(() => {
+        const note = bassNotes[bassIdx % bassNotes.length];
+        bassIdx++;
+        this._playTone(note, {
+          type: 'triangle', gain: bassGain, attack: 0.2, decay: 5.5,
+          filterFreq: 250, pan: -0.1,
+          output: bassOut,
+        });
+      }, bassInterval, 0.2, bassInterval * 1.2);
+    }
 
     // 6. COUNTER MELODY — skip when counterMelody === false (v2 sleep params)
     if (p.counterMelody !== false) {
@@ -2503,6 +2543,14 @@ export class AmbientMusicEngine {
     rampGain(this._melodyGainNode, target.melodyGain ?? p1.melodyGain, p1.melodyGain);
     rampGain(this._bassGainNode, target.melodyGain != null ? (target.melodyGain * 0.8) / (p1.melodyGain * 0.8) : 1, 1);
 
+    // Ramp music loop gain (from composed params — direct value, not ratio)
+    if (this._musicLoopGainNode) {
+      const loopTarget = target.musicLoopGain ?? p1.musicLoopGain ?? 0;
+      this._musicLoopGainNode.gain.cancelScheduledValues(now);
+      this._musicLoopGainNode.gain.setValueAtTime(this._musicLoopGainNode.gain.value, now);
+      this._musicLoopGainNode.gain.linearRampToValueAtTime(Math.max(0, loopTarget), endTime);
+    }
+
     // Phase 3: mute events
     if (this._eventGainNode) {
       const eventTarget = (target.events && target.events.length === 0) ? 0 : 1;
@@ -2554,6 +2602,11 @@ export class AmbientMusicEngine {
     let profileLabel;
 
     if (typeof profileOrParams === 'object' && profileOrParams !== null) {
+      // Musical Brief format: compose client-side into v2 params
+      if (isMusicalBrief(profileOrParams)) {
+        profileOrParams = composeMusicParams(profileOrParams);
+      }
+
       // v2 format: { version: 2, phase1: {...}, phase2: {...}, phase3: {...} }
       if (profileOrParams.version === 2 && profileOrParams.phase1) {
         this._phaseParams = profileOrParams;
@@ -2605,9 +2658,23 @@ export class AmbientMusicEngine {
       );
     }
 
-    // v4: Start music loop if specified
+    // v5: Start music loop — try 3-key file first, fall back to named preset
     const musicLoop = typeof profileOrParams === 'object' ? profileOrParams?.musicLoop : null;
-    if (musicLoop) {
+    const phase1 = typeof profileOrParams === 'object' ? profileOrParams?.phase1 : null;
+    if (phase1?.musicLoopPath) {
+      this._startMusicLoopDirect(
+        phase1.musicLoopPath,
+        phase1.musicLoopGain || 0.08,
+        phase1.musicLoopPlaybackRate || 1.0
+      ).catch(e => {
+        console.warn('AmbientMusic: 3-key loop failed, falling back to preset', e);
+        if (musicLoop) {
+          this._startMusicLoop(musicLoop).catch(e2 =>
+            console.warn('AmbientMusic: preset music loop also failed', e2)
+          );
+        }
+      });
+    } else if (musicLoop) {
       this._startMusicLoop(musicLoop).catch(e =>
         console.warn('AmbientMusic: music loop load failed', e)
       );
@@ -2713,6 +2780,7 @@ export class AmbientMusicEngine {
     if (this._reverbGain) { try { this._reverbGain.disconnect(); } catch(e) {} this._reverbGain = null; }
 
     // v5: disconnect per-layer gain nodes
+    if (this._musicLoopGainNode) { try { this._musicLoopGainNode.disconnect(); } catch(e) {} this._musicLoopGainNode = null; }
     for (const name of ['_padGainNode', '_noiseGainNode', '_droneGainNode', '_melodyGainNode', '_bassGainNode', '_eventGainNode']) {
       if (this[name]) { try { this[name].disconnect(); } catch(e) {} this[name] = null; }
     }

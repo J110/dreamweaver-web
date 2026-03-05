@@ -151,7 +151,8 @@ export default function PlayerPage() {
   // Render-phase logic: detect story changes and update music source ref.
   // This MUST run before effects so the music-start effect sees the correct source.
   // Songs (lullabies) don't use ambient background music — ACE-Step output has vocals + instrument
-  const musicSource = content?.type === 'song' ? null : (content?.musicParams || content?.musicProfile);
+  // Prefer musicalBrief (composed client-side) > musicParams (legacy v2) > musicProfile (named preset)
+  const musicSource = content?.type === 'song' ? null : (content?.musicalBrief || content?.musicParams || content?.musicProfile);
   const currentContentId = content?.id;
   if (currentContentId && currentContentId !== musicContentIdRef.current) {
     if (musicContentIdRef.current) {
@@ -645,7 +646,7 @@ export default function PlayerPage() {
   }, []);
 
   const handleMusicPlayPause = useCallback(async () => {
-    const source = musicSourceRef.current || content?.musicParams || content?.musicProfile;
+    const source = musicSourceRef.current || content?.musicalBrief || content?.musicParams || content?.musicProfile;
     if (!musicRef.current || !source) return;
     if (musicPlaying) {
       musicRef.current.pause();
@@ -662,7 +663,7 @@ export default function PlayerPage() {
       }
       setMusicPlaying(true);
     }
-  }, [musicPlaying, content?.musicParams, content?.musicProfile, musicVolume]);
+  }, [musicPlaying, content?.musicalBrief, content?.musicParams, content?.musicProfile, musicVolume]);
 
   // Stop narration audio when content changes (e.g., navigating to a different story).
   // Music cleanup is handled in the render phase above (before effects run) to avoid
@@ -711,8 +712,12 @@ export default function PlayerPage() {
             if (seedMatch.audio_variants && seedMatch.audio_variants.length > (data.audio_variants || []).length) {
               data.audio_variants = seedMatch.audio_variants;
             }
-            // Always prefer seed musicParams — they are Mistral-generated unique params;
-            // API may have stale template values that make all stories sound the same
+            // Always prefer seed music data — musicalBrief (new system, composed client-side)
+            // or musicParams (legacy, Mistral-generated unique params).
+            // API may have stale template values that make all stories sound the same.
+            if (seedMatch.musicalBrief) {
+              data.musicalBrief = seedMatch.musicalBrief;
+            }
             if (seedMatch.musicParams) {
               data.musicParams = seedMatch.musicParams;
             }
@@ -1180,7 +1185,7 @@ export default function PlayerPage() {
           </div>
         </div>
 
-        {(content.musicParams || content.musicProfile) && content.type !== 'song' && (
+        {(content.musicalBrief || content.musicParams || content.musicProfile) && content.type !== 'song' && (
           <div className={styles.musicControls}>
             <button
               onClick={handleMusicPlayPause}
