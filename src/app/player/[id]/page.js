@@ -56,6 +56,7 @@ export default function PlayerPage() {
   const progressIntervalRef = useRef(null);
   const voiceSwitchAutoPlayRef = useRef(false);
   const musicRef = useRef(null);
+  const musicPhaseRef = useRef(1); // Current sleep music phase (1=Capture, 2=Descent, 3=Sleep)
   // Web Audio analyser for breathing pacer (persists across pause/resume)
   const [narrationAnalyser, setNarrationAnalyser] = useState(null);
   const [amplitudeEnvelope, setAmplitudeEnvelope] = useState(null);
@@ -191,6 +192,7 @@ export default function PlayerPage() {
       if (musicStartedRef.current) return true;
       if (cancelled) return false;
       try {
+        musicPhaseRef.current = 1; // Reset phase on new music start
         musicRef.current.setVolume(musicVolumeRef.current / 100);
         // play() is async — it awaits AudioContext readiness.
         // The engine uses a generation counter internally so stale calls are no-ops.
@@ -321,6 +323,13 @@ export default function PlayerPage() {
         // Update lock screen progress bar
         updatePositionState(now, dur);
 
+        // Music phase transitions aligned with cover dimming
+        const targetPhase = pct <= 33 ? 1 : pct <= 66 ? 2 : 3;
+        if (targetPhase !== musicPhaseRef.current && musicRef.current) {
+          musicPhaseRef.current = targetPhase;
+          musicRef.current.transitionToPhase(targetPhase);
+        }
+
         // Record listening history (throttled: every 10s)
         const ts = Date.now();
         if (params?.id && ts - lastHistoryRecordRef.current > 10000) {
@@ -401,6 +410,15 @@ export default function PlayerPage() {
         stopProgressTracking();
         updatePlaybackState('paused');
         if (params?.id) markCompleted(params.id);
+        // Post-story: ensure Phase 3 music, then fade to silence after 30s
+        if (musicRef.current && musicRef.current.isPlaying) {
+          musicRef.current.transitionToPhase(3);
+          setTimeout(() => {
+            if (musicRef.current && musicRef.current.isPlaying) {
+              musicRef.current.stop(true);
+            }
+          }, 30000);
+        }
       });
 
       audio.addEventListener('error', () => {

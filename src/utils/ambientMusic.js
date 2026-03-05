@@ -115,7 +115,13 @@ export class AmbientMusicEngine {
       this._ctx = new (window.AudioContext || window.webkitAudioContext)();
       this._masterGain = this._ctx.createGain();
       this._masterGain.gain.value = 0;
-      this._masterGain.connect(this._ctx.destination);
+      // Master lowpass filter for sleep phase evolution (bright → warm → muffled)
+      this._masterLowpass = this._ctx.createBiquadFilter();
+      this._masterLowpass.type = 'lowpass';
+      this._masterLowpass.frequency.value = 8000;
+      this._masterLowpass.Q.value = 0.707;
+      this._masterGain.connect(this._masterLowpass);
+      this._masterLowpass.connect(this._ctx.destination);
       // Expose context globally so Android WebView can resume it on user gesture
       window.__ambientCtx = this._ctx;
     }
@@ -398,9 +404,10 @@ export class AmbientMusicEngine {
   }
 
   // ── Helper: play a single tone with envelope ──
-  _playTone(freq, { type = 'sine', gain = 0.02, attack = 0.01, decay = 2.0, filterFreq = 3000, filterQ = 0.5, detune = 0, pan = 0 } = {}) {
+  _playTone(freq, { type = 'sine', gain = 0.02, attack = 0.01, decay = 2.0, filterFreq = 3000, filterQ = 0.5, detune = 0, pan = 0, output = null } = {}) {
     const ctx = this._ctx;
     const now = ctx.currentTime;
+    const dest = output || this._synthOut;
 
     const osc = ctx.createOscillator();
     osc.type = type;
@@ -427,7 +434,7 @@ export class AmbientMusicEngine {
     } else {
       g.connect(f);
     }
-    f.connect(this._synthOut);
+    f.connect(dest);
 
     osc.start(now);
     osc.stop(now + attack + decay + 0.1);
@@ -441,9 +448,10 @@ export class AmbientMusicEngine {
   }
 
   // ── Helper: play a noise burst ──
-  _playNoiseBurst({ noiseType = 'white', duration = 1, gain = 0.01, filterFreq = 1000, filterQ = 0.5, pan = 0 } = {}) {
+  _playNoiseBurst({ noiseType = 'white', duration = 1, gain = 0.01, filterFreq = 1000, filterQ = 0.5, pan = 0, output = null } = {}) {
     const ctx = this._ctx;
     const now = ctx.currentTime;
+    const dest = output || this._synthOut;
 
     const buf = createShapedNoise(ctx, noiseType, duration);
     const src = ctx.createBufferSource();
@@ -466,7 +474,7 @@ export class AmbientMusicEngine {
     } else {
       g.connect(f);
     }
-    f.connect(this._synthOut);
+    f.connect(dest);
 
     src.start(now);
 
@@ -2115,6 +2123,35 @@ export class AmbientMusicEngine {
    */
   _buildFromParams(params = {}) {
     const p = params;
+    const ctx = this._ctx;
+
+    // ── Per-layer gain nodes for phase transitions ──
+    this._padGainNode = ctx.createGain();
+    this._padGainNode.gain.value = 1.0;
+    this._padGainNode.connect(this._synthOut);
+
+    this._noiseGainNode = ctx.createGain();
+    this._noiseGainNode.gain.value = 1.0;
+    this._noiseGainNode.connect(this._synthOut);
+
+    this._droneGainNode = ctx.createGain();
+    this._droneGainNode.gain.value = 1.0;
+    this._droneGainNode.connect(this._synthOut);
+
+    this._melodyGainNode = ctx.createGain();
+    this._melodyGainNode.gain.value = 1.0;
+    this._melodyGainNode.connect(this._synthOut);
+
+    this._bassGainNode = ctx.createGain();
+    this._bassGainNode.gain.value = 1.0;
+    this._bassGainNode.connect(this._synthOut);
+
+    this._eventGainNode = ctx.createGain();
+    this._eventGainNode.gain.value = 1.0;
+    this._eventGainNode.connect(this._synthOut);
+
+    // Save the original _synthOut and swap for each layer
+    const originalSynthOut = this._synthGain;
 
     // 1. PAD — the sustained harmonic base
     const chordNotes = p.chordNotes || [130.81, 164.81, 196.00, 261.63];
@@ -2123,6 +2160,8 @@ export class AmbientMusicEngine {
     const padLfo = p.padLfo ?? 0.06;
     const padType = p.padType || 'chorus';
 
+    // Route pad through _padGainNode
+    this._synthGain = this._padGainNode;
     if (padType === 'fm') {
       this._createFMPad(
         chordNotes[0],
@@ -2155,6 +2194,7 @@ export class AmbientMusicEngine {
     }
 
     // 2. AMBIENT NOISE texture
+    this._synthGain = this._noiseGainNode;
     const noiseType = p.noiseType || 'pink';
     const noiseGain = p.noiseGain ?? 0.01;
     if (noiseGain > 0) {
@@ -2162,16 +2202,21 @@ export class AmbientMusicEngine {
     }
 
     // 3. DRONE — deep bass
+    this._synthGain = this._droneGainNode;
     const droneFreq = p.droneFreq ?? chordNotes[0] / 2;
     const droneGain = p.droneGain ?? 0.035;
     if (droneGain > 0) {
       this._createDrone(droneFreq, { type: 'sine', gain: droneGain, filterFreq: 200 });
     }
 
+    // Restore _synthGain for scheduled callbacks (they'll use explicit output nodes)
+    this._synthGain = originalSynthOut;
+
     // 4. MELODY LAYER A — primary
     const melodyNotes = p.melodyNotes || chordNotes.map(f => f * 2);
-    const melodyInterval = p.melodyInterval ?? 3500;
+    const melodyInterval = p.melodyInterval ?? 4000;
     const melodyGain = p.melodyGain ?? 0.018;
+    const melodyOut = this._melodyGainNode;
     let melIdx = 0;
     this._scheduleRepeating(() => {
       const note = melodyNotes[melIdx % melodyNotes.length];
@@ -2179,12 +2224,14 @@ export class AmbientMusicEngine {
       this._playTone(note, {
         type: 'sine', gain: melodyGain, attack: 0.1, decay: 2.5,
         filterFreq: padFilter * 1.5, detune: (Math.random() - 0.5) * 6,
+        output: melodyOut,
       });
     }, melodyInterval, 0.15, melodyInterval * 1.5);
 
     // 5. MELODY LAYER B — bass walking
     const bassNotes = p.bassNotes || chordNotes.slice(0, 4).map(f => f / 2);
     const bassInterval = p.bassInterval ?? 6000;
+    const bassOut = this._bassGainNode;
     let bassIdx = 0;
     this._scheduleRepeating(() => {
       const note = bassNotes[bassIdx % bassNotes.length];
@@ -2192,23 +2239,27 @@ export class AmbientMusicEngine {
       this._playTone(note, {
         type: 'triangle', gain: melodyGain * 0.8, attack: 0.2, decay: 5.5,
         filterFreq: 250, pan: -0.1,
+        output: bassOut,
       });
     }, bassInterval, 0.2, bassInterval * 1.2);
 
-    // 6. MELODY LAYER C — counter melody (optional)
-    const counterNotes = p.counterNotes || melodyNotes.map(f => f * 1.25); // major third
-    const counterInterval = p.counterInterval ?? 4500;
-    let cIdx = 0;
-    this._scheduleRepeating(() => {
-      const note = counterNotes[cIdx % counterNotes.length];
-      cIdx++;
-      this._playTone(note, {
-        type: 'sine', gain: melodyGain * 0.6,
-        attack: 0.15, decay: 3.2,
-        filterFreq: padFilter * 1.2,
-        pan: 0.15,
-      });
-    }, counterInterval, 0.2, counterInterval * 1.4);
+    // 6. COUNTER MELODY — skip when counterMelody === false (v2 sleep params)
+    if (p.counterMelody !== false) {
+      const counterNotes = p.counterNotes || melodyNotes.map(f => f * 1.25);
+      const counterInterval = p.counterInterval ?? 4500;
+      let cIdx = 0;
+      this._scheduleRepeating(() => {
+        const note = counterNotes[cIdx % counterNotes.length];
+        cIdx++;
+        this._playTone(note, {
+          type: 'sine', gain: melodyGain * 0.6,
+          attack: 0.15, decay: 3.2,
+          filterFreq: padFilter * 1.2,
+          pan: 0.15,
+          output: melodyOut,
+        });
+      }, counterInterval, 0.2, counterInterval * 1.4);
+    }
 
     // 7. EVENTS — scheduled ambient sound effects
     const events = p.events || [];
@@ -2417,6 +2468,61 @@ export class AmbientMusicEngine {
    * @param {string|Object} profileOrParams - Either a profile name string (e.g. 'dreamy-clouds')
    *   or a musicParams object for a custom per-story soundscape.
    */
+  /**
+   * Transition music to a new sleep phase (1=Capture, 2=Descent, 3=Sleep).
+   * Ramps per-layer gains and master lowpass over the configured transition duration.
+   * No-op when _phaseParams is null (old format / named profiles).
+   */
+  transitionToPhase(phase) {
+    if (!this._phaseParams || !this._playing || !this._ctx) return;
+    if (phase === this._currentPhase) return;
+
+    const target = this._phaseParams[`phase${phase}`];
+    if (!target) return;
+
+    const p1 = this._phaseParams.phase1;
+    const transitions = this._phaseParams.transitions || {};
+    const transKey = `${this._currentPhase}to${phase}`;
+    const duration = (transitions[transKey]?.duration) || 30;
+    const now = this._ctx.currentTime;
+    const endTime = now + duration;
+
+    // Helper: ramp a gain node to target ratio (target / phase1 baseline)
+    const rampGain = (node, targetVal, baseVal) => {
+      if (!node) return;
+      const ratio = baseVal > 0 ? targetVal / baseVal : 0;
+      node.gain.cancelScheduledValues(now);
+      node.gain.setValueAtTime(node.gain.value, now);
+      node.gain.linearRampToValueAtTime(Math.max(0, ratio), endTime);
+    };
+
+    // Ramp per-layer gains based on ratio of target phase to phase1
+    rampGain(this._padGainNode, target.padGain ?? p1.padGain, p1.padGain);
+    rampGain(this._noiseGainNode, target.noiseGain ?? p1.noiseGain, p1.noiseGain);
+    rampGain(this._droneGainNode, target.droneGain ?? p1.droneGain, p1.droneGain);
+    rampGain(this._melodyGainNode, target.melodyGain ?? p1.melodyGain, p1.melodyGain);
+    rampGain(this._bassGainNode, target.melodyGain != null ? (target.melodyGain * 0.8) / (p1.melodyGain * 0.8) : 1, 1);
+
+    // Phase 3: mute events
+    if (this._eventGainNode) {
+      const eventTarget = (target.events && target.events.length === 0) ? 0 : 1;
+      this._eventGainNode.gain.cancelScheduledValues(now);
+      this._eventGainNode.gain.setValueAtTime(this._eventGainNode.gain.value, now);
+      this._eventGainNode.gain.linearRampToValueAtTime(eventTarget, endTime);
+    }
+
+    // Sweep master lowpass filter
+    const lowpassTargets = this._phaseParams.masterLowpass;
+    if (lowpassTargets && this._masterLowpass) {
+      const targetFreq = lowpassTargets[String(phase)] || 8000;
+      this._masterLowpass.frequency.cancelScheduledValues(now);
+      this._masterLowpass.frequency.setValueAtTime(this._masterLowpass.frequency.value, now);
+      this._masterLowpass.frequency.exponentialRampToValueAtTime(targetFreq, endTime);
+    }
+
+    this._currentPhase = phase;
+  }
+
   async play(profileOrParams) {
     // Cancel any pending fade-out cleanup from a previous stop(true).
     // Without this, the delayed _cleanup() would destroy our new nodes.
@@ -2448,8 +2554,20 @@ export class AmbientMusicEngine {
     let profileLabel;
 
     if (typeof profileOrParams === 'object' && profileOrParams !== null) {
-      // Custom musicParams object
-      builder = () => this._buildFromParams(profileOrParams);
+      // v2 format: { version: 2, phase1: {...}, phase2: {...}, phase3: {...} }
+      if (profileOrParams.version === 2 && profileOrParams.phase1) {
+        this._phaseParams = profileOrParams;
+        this._currentPhase = 1;
+        builder = () => this._buildFromParams({
+          ...profileOrParams.phase1,
+          counterMelody: profileOrParams.counterMelody,
+        });
+      } else {
+        // Old flat format
+        this._phaseParams = null;
+        this._currentPhase = 1;
+        builder = () => this._buildFromParams(profileOrParams);
+      }
       profileLabel = 'custom-params';
     } else {
       // Named profile string
@@ -2587,12 +2705,24 @@ export class AmbientMusicEngine {
       this._musicLoopSource = null;
     }
 
-    // v4: disconnect submix nodes (but keep _masterGain alive)
+    // v4: disconnect submix nodes (but keep _masterGain and _masterLowpass alive)
     if (this._synthGain) { try { this._synthGain.disconnect(); } catch(e) {} this._synthGain = null; }
     if (this._soundscapeGain) { try { this._soundscapeGain.disconnect(); } catch(e) {} this._soundscapeGain = null; }
     if (this._musicLoopGain) { try { this._musicLoopGain.disconnect(); } catch(e) {} this._musicLoopGain = null; }
     if (this._reverbNode) { try { this._reverbNode.disconnect(); } catch(e) {} this._reverbNode = null; }
     if (this._reverbGain) { try { this._reverbGain.disconnect(); } catch(e) {} this._reverbGain = null; }
+
+    // v5: disconnect per-layer gain nodes
+    for (const name of ['_padGainNode', '_noiseGainNode', '_droneGainNode', '_melodyGainNode', '_bassGainNode', '_eventGainNode']) {
+      if (this[name]) { try { this[name].disconnect(); } catch(e) {} this[name] = null; }
+    }
+    this._phaseParams = null;
+    this._currentPhase = 1;
+
+    // Reset master lowpass to bright (Phase 1 default)
+    if (this._masterLowpass) {
+      this._masterLowpass.frequency.value = 8000;
+    }
 
     // Cleanup native <audio> elements (Safari/iOS)
     this._cleanupNativeAudios();
