@@ -600,17 +600,26 @@ The character visual axis maps all 12 `lead_character_type` values from content 
 
 The `_extract_character_phrase()` helper extracts the lead character's identity from the story `description` field for use directly in the FLUX prompt. This ensures covers show the *actual* character — not a generic child.
 
+**Extraction priority:**
+1. **"named X" scan (all sentences)** — searches entire description for `"a/an <type> named <Name>"` pattern. This catches characters introduced after scene-setting sentences (e.g. "In a cottage... A little teacup named Chai watches...").
+2. **Verb-based extraction (first sentence)** — takes everything before the first verb as the character phrase.
+3. **Title fallback** — extracts name from title patterns like "X and the Y" or "X's Y".
+
+**IMPORTANT**: The "named X" scan runs across ALL sentences in the description, not just the first. This is critical for descriptions that start with scene-setting ("In a snug Arctic cottage...") before introducing the character in a later sentence.
+
 **Examples:**
-- `"A tiny raindrop named Drizzle embarks on..."` → `"a tiny raindrop named Drizzle"`
-- `"When seven-year-old Aarohi discovers..."` → `"seven-year-old Aarohi"`
-- `"A gentle tortoise named Pebble embarks..."` → `"a gentle tortoise named Pebble"`
-- `"In a futuristic city where playgrounds float, Aria discovers..."` → `"Aria"`
+- `"A tiny raindrop named Drizzle embarks on..."` → `"a tiny raindrop named Drizzle"` (named scan, sent 1)
+- `"In a cottage... A little teacup named Chai watches..."` → `"A little teacup named Chai"` (named scan, sent 2)
+- `"When seven-year-old Aarohi discovers..."` → `"seven-year-old Aarohi"` (verb extraction)
+- `"A gentle tortoise named Pebble embarks..."` → `"a gentle tortoise named Pebble"` (named scan, sent 1)
+- `"In a futuristic city where playgrounds float, Aria discovers..."` → `"Aria"` (verb extraction)
 
 **Handled edge cases:**
 - "When/As/In..." prefixes stripped; comma-separated clauses parsed
 - "A gentle lullaby about..." wrappers removed
 - "Join X as..." patterns matched
 - Phrases capped at 60 chars with natural break at "who/from/in"
+- Multi-sentence descriptions: character may appear in sentence 2+ (scene-setting first)
 
 ### Human Character Diversity
 
