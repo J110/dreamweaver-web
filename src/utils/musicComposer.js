@@ -188,53 +188,53 @@ export function generateMelodySequence(markovType, scaleFreqs, opts = {}) {
 const PAD_PRESETS = {
   warm_strings: {
     padType: 'chorus',
-    filterCutoff: 1200,
+    filterCutoff: 1000,
     lfoRate: 0.06,
-    gain: 0.10,
+    gain: 0.06,
   },
   crystal_air: {
     padType: 'simple',
-    filterCutoff: 2000,
+    filterCutoff: 1400,
     lfoRate: 0.08,
-    gain: 0.08,
+    gain: 0.05,
   },
   deep_ocean: {
     padType: 'resonant',
-    filterCutoff: 600,
+    filterCutoff: 500,
     lfoRate: 0.03,
-    gain: 0.12,
+    gain: 0.07,
     noiseType: 'brown',
   },
   forest_hum: {
     padType: 'resonant',
-    filterCutoff: 800,
+    filterCutoff: 700,
     lfoRate: 0.05,
-    gain: 0.08,
+    gain: 0.05,
     noiseType: 'pink',
   },
   starfield: {
     padType: 'simple',
-    filterCutoff: 3000,
+    filterCutoff: 1800,
     lfoRate: 0.02,
-    gain: 0.06,
+    gain: 0.04,
   },
   earth_drone: {
     padType: 'fm',
-    filterCutoff: 500,
+    filterCutoff: 450,
     lfoRate: 0.03,
-    gain: 0.10,
+    gain: 0.06,
   },
   silk_veil: {
     padType: 'chorus',
-    filterCutoff: 1500,
+    filterCutoff: 1200,
     lfoRate: 0.04,
-    gain: 0.07,
+    gain: 0.05,
   },
   cave_resonance: {
     padType: 'resonant',
-    filterCutoff: 400,
+    filterCutoff: 350,
     lfoRate: 0.02,
-    gain: 0.09,
+    gain: 0.06,
     noiseType: 'brown',
   },
 };
@@ -444,7 +444,7 @@ export function composeMusicParams(brief) {
   }));
 
   // 8. Assemble Phase 1 params (field names match _buildFromParams expectations)
-  const melodyGain = isSilent ? 0 : (ageGroup === '9-12' ? 0.03 : 0.06);
+  const melodyGain = isSilent ? 0 : (ageGroup === '9-12' ? 0.02 : 0.04);
   const phase1 = {
     chordNotes: chordFreqs,
     padType: pad.padType,
@@ -452,10 +452,10 @@ export function composeMusicParams(brief) {
     padLfo: pad.lfoRate,
     padGain: pad.gain,
     noiseType: pad.noiseType || 'pink',
-    noiseGain: 0.04,
+    noiseGain: 0.025,
     noiseFilterCenter: 500,
     droneFreq: chordFreqs[0],
-    droneGain: 0.04,
+    droneGain: 0.025,
     melodyNotes: scaleFreqs, // fallback for legacy code
     melodySequence: melodySequence,
     melodyInterval: intervals.phase1,
@@ -468,7 +468,7 @@ export function composeMusicParams(brief) {
     // music loop info for ambientMusic.js
     musicLoopPath: loopPath,
     musicLoopPlaybackRate: loopKeyInfo.playbackRate,
-    musicLoopGain: ageGroup === '9-12' ? 0.04 : 0.08,
+    musicLoopGain: ageGroup === '9-12' ? 0.03 : 0.06,
   };
 
   // 9. Derive Phase 2 and Phase 3
