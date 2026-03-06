@@ -339,20 +339,22 @@ export function hashString(str) {
 
 // ── Phase Derivation ─────────────────────────────────────────────────────────
 
+// Phase derivation: as narration voice fades (Approach C), music becomes
+// progressively MORE present. Phase 2 = audible in pauses. Phase 3 = dominant.
 function derivePhase2(p1, intervals, ageGroup) {
   return {
     ...p1,
-    padFilter: p1.padFilter * 0.70,
-    padLfo: p1.padLfo * 0.60,
-    padGain: p1.padGain * 0.85,
+    padFilter: p1.padFilter * 0.80,
+    padLfo: p1.padLfo * 0.70,
+    padGain: p1.padGain * 1.2,        // warmer pad, more present
 
     melodyInterval: intervals.phase2,
-    melodyGain: ageGroup === '9-12' ? 0 : p1.melodyGain * 0.60,
+    melodyGain: ageGroup === '9-12' ? 0 : p1.melodyGain * 0.50, // melody fades
 
-    noiseGain: p1.noiseGain * 1.5,
-    droneGain: p1.droneGain * 0.70,
+    noiseGain: p1.noiseGain * 1.8,    // nature sounds emerge
+    droneGain: p1.droneGain * 1.3,    // drone fills space
 
-    musicLoopGain: p1.musicLoopGain * 0.60,
+    musicLoopGain: p1.musicLoopGain * 1.0, // loop holds steady
 
     events: (p1.events || []).map(e => ({
       ...e,
@@ -366,18 +368,18 @@ function derivePhase3(p1) {
   return {
     ...p1,
     padType: 'simple',
-    padFilter: p1.padFilter * 0.40,
+    padFilter: p1.padFilter * 0.50,   // warmer, darker tone
     padLfo: p1.padLfo * 0.30,
-    padGain: p1.padGain * 0.50,
+    padGain: p1.padGain * 1.4,        // pad is dominant layer
 
-    melodyGain: 0,
+    melodyGain: 0,                     // no melody — pure texture
 
-    noiseGain: p1.noiseGain * 2.0,
-    droneGain: p1.droneGain * 0.40,
+    noiseGain: p1.noiseGain * 2.5,    // nature sounds fill the space
+    droneGain: p1.droneGain * 1.5,    // deep drone
 
-    musicLoopGain: 0,
+    musicLoopGain: p1.musicLoopGain * 0.5, // loop fades but doesn't vanish
 
-    events: [],
+    events: [],                        // no events — stillness
   };
 }
 
