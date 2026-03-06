@@ -1,0 +1,193 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="sh-skyGrad" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#0a0e2a"/>
+      <stop offset="50%" stop-color="#1a103d"/>
+      <stop offset="100%" stop-color="#0a0e2a"/>
+    </radialGradient>
+
+    <linearGradient id="sh-auroraGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f2c3" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#ff00e6" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#00f2c3" stop-opacity="0.8"/>
+    </linearGradient>
+
+    <linearGradient id="sh-snowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#e6f7ff" stop-opacity="0.7"/>
+    </linearGradient>
+
+    <linearGradient id="sh-unicornGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8f8ff"/>
+      <stop offset="50%" stop-color="#e6e6fa"/>
+      <stop offset="100%" stop-color="#d8bfd8"/>
+    </linearGradient>
+
+    <filter id="sh-softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="sh-mediumGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="sh-strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <radialGradient id="sh-vignette" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="1"/>
+    </radialGradient>
+
+    <pattern id="sh-snowflake" patternUnits="userSpaceOnUse" width="20" height="20">
+      <path d="M10 0 L10 20 M0 10 L20 10 M3 3 L17 17 M17 3 L3 17" stroke="#ffffff" stroke-width="0.5" opacity="0.6"/>
+    </pattern>
+  </defs>
+
+  <style>
+    @keyframes sh-auroraPulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 0.9; }
+    }
+    .sh-aurora-pulse {
+      animation: sh-auroraPulse 5s ease-in-out infinite;
+    }
+
+    @keyframes sh-starTwinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    .sh-star-twinkle {
+      animation: sh-starTwinkle 3s ease-in-out infinite;
+    }
+
+    @keyframes sh-unicornBob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .sh-unicorn-bob {
+      animation: sh-unicornBob 6s ease-in-out infinite;
+    }
+
+    @keyframes sh-snowDrift {
+      0%, 100% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(10px) translateX(5px); }
+    }
+    .sh-snow-drift {
+      animation: sh-snowDrift 8s ease-in-out infinite;
+    }
+
+    @keyframes sh-breathFrost {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 0.8; transform: scale(1.2); }
+    }
+    .sh-breath-frost {
+      animation: sh-breathFrost 4s ease-in-out infinite;
+    }
+
+    @keyframes sh-sparkleFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
+      50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+    }
+    .sh-sparkle-float {
+      animation: sh-sparkleFloat 7s ease-in-out infinite;
+    }
+
+    @keyframes sh-cloudShift {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(10px); }
+    }
+    .sh-cloud-shift {
+      animation: sh-cloudShift 10s ease-in-out infinite;
+    }
+  </style>
+
+  <!-- Layer 1: Sky/Background -->
+  <rect width="512" height="512" fill="url(#sh-skyGrad)"/>
+
+  <!-- Layer 2: Far Background -->
+  <g class="sh-cloud-shift">
+    <path d="M0,150 Q100,100 200,150 T400,150 T600,150 L512,200 L0,200 Z" fill="#ffffff" opacity="0.1"/>
+    <path d="M50,250 Q200,200 350,250 T650,250 L512,300 L0,300 Z" fill="#ffffff" opacity="0.08"/>
+  </g>
+
+  <!-- Aurora -->
+  <path d="M0,50 Q100,0 200,50 T400,50 T600,50 L512,100 L0,100 Z" fill="url(#sh-auroraGrad)" class="sh-aurora-pulse" filter="url(#sh-mediumGlow)"/>
+
+  <!-- Stars -->
+  <g>
+    <circle cx="50" cy="80" r="1.5" fill="#ffd700" class="sh-star-twinkle" filter="url(#sh-softGlow)"/>
+    <circle cx="120" cy="40" r="1" fill="#ffffff" class="sh-star-twinkle" filter="url(#sh-softGlow)"/>
+    <circle cx="200" cy="90" r="1.2" fill="#ffd700" class="sh-star-twinkle" filter="url(#sh-softGlow)"/>
+    <circle cx="300" cy="30" r="1.5" fill="#ffffff" class="sh-star-twinkle" filter="url(#sh-softGlow)"/>
+    <circle cx="400" cy="70" r="1" fill="#ffd700" class="sh-star-twinkle" filter="url(#sh-softGlow)"/>
+    <circle cx="450" cy="120" r="1.2" fill="#ffffff" class="sh-star-twinkle" filter="url(#sh-softGlow)"/>
+    <circle cx="150" cy="150" r="1" fill="#ffd700" class="sh-star-twinkle" filter="url(#sh-softGlow)"/>
+    <circle cx="350" cy="180" r="1.3" fill="#ffffff" class="sh-star-twinkle" filter="url(#sh-softGlow)"/>
+  </g>
+
+  <!-- Layer 3: Mid Background -->
+  <g class="sh-snow-drift">
+    <rect width="512" height="200" y="312" fill="url(#sh-snowGrad)"/>
+    <rect width="512" height="20" y="312" fill="url(#sh-snowflake)"/>
+  </g>
+
+  <!-- Icebergs -->
+  <path d="M0,350 Q50,300 100,350 T200,350 T300,350 L300,512 L0,512 Z" fill="#e6f7ff" opacity="0.8"/>
+  <path d="M200,380 Q250,330 300,380 T400,380 T500,380 L512,512 L300,512 Z" fill="#d6f0ff" opacity="0.7"/>
+
+  <!-- Layer 4: Middle Ground -->
+  <g transform="translate(150, 300)">
+    <path d="M0,0 Q20,-30 40,0 Q60,-20 80,0 Q100,-40 120,0 L120,50 Q100,70 80,50 Q60,70 40,50 Q20,70 0,50 Z" fill="#a0d8f3" opacity="0.6" class="sh-cloud-shift"/>
+  </g>
+
+  <!-- Layer 5: Main Character -->
+  <g transform="translate(256, 240)">
+    <g class="sh-unicorn-bob">
+      <!-- Body -->
+      <path d="M0,-50 Q-30,-30 -40,0 Q-30,30 0,50 Q30,30 40,0 Q30,-30 0,-50 Z" fill="url(#sh-unicornGrad)" filter="url(#sh-softGlow)"/>
+
+      <!-- Head -->
+      <path d="M0,-50 Q10,-70 30,-60 Q40,-50 30,-40 Q20,-30 0,-40 Z" fill="url(#sh-unicornGrad)"/>
+
+      <!-- Legs -->
+      <path d="M-20,30 L-25,80 L-15,80 L-10,30 Z" fill="url(#sh-unicornGrad)"/>
+      <path d="M20,30 L25,80 L15,80 L10,30 Z" fill="url(#sh-unicornGrad)"/>
+      <path d="M-10,40 L-15,80 L-5,80 L0,40 Z" fill="url(#sh-unicornGrad)"/>
+      <path d="M10,40 L15,80 L5,80 L0,40 Z" fill="url(#sh-unicornGrad)"/>
+
+      <!-- Horn -->
+      <path d="M20,-70 L25,-100 L30,-70 Z" fill="#ffd700" filter="url(#sh-strongGlow)"/>
+
+      <!-- Mane -->
+      <path d="M0,-50 Q-10,-70 -20,-60 Q-30,-70 -40,-50 Q-30,-30 -20,-40 Q-10,-30 0,-40 Z" fill="#ffd700" opacity="0.8"/>
+
+      <!-- Tail -->
+      <path d="M0,50 Q10,70 20,60 Q30,70 40,50 Q30,30 20,40 Q10,30 0,40 Z" fill="#ffd700" opacity="0.8"/>
+
+      <!-- Breath Frost -->
+      <g transform="translate(40, -30)" class="sh-breath-frost">
+        <circle cx="0" cy="0" r="15" fill="#ffffff" opacity="0.5" filter="url(#sh-mediumGlow)"/>
+        <circle cx="5" cy="-5" r="8" fill="#e6f7ff" opacity="0.7"/>
+        <circle cx="-5" cy="5" r="6" fill="#ffffff" opacity="0.6"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- Layer 6: Foreground Particles/Sparkles -->
+  <g>
+    <circle cx="100" cy="200" r="2" fill="#ffd700" class="sh-sparkle-float" style="animation-delay: 0s" filter="url(#sh-softGlow)"/>
+    <circle cx="400" cy="150" r="1.5" fill="#ffffff" class="sh-sparkle-float" style="animation-delay: 1s" filter="url(#sh-softGlow)"/>
+    <circle cx="200" cy="100" r="2" fill="#ffd700" class="sh-sparkle-float" style="animation-delay: 2s" filter="url(#sh-softGlow)"/>
+    <circle cx="350" cy="250" r="1.5" fill="#ffffff" class="sh-sparkle-float" style="animation-delay: 3s" filter="url(#sh-softGlow)"/>
+    <circle cx="150" cy="300" r="2" fill="#ffd700" class="sh-sparkle-float" style="animation-delay: 4s" filter="url(#sh-softGlow)"/>
+    <circle cx="450" cy="350" r="1.5" fill="#ffffff" class="sh-sparkle-float" style="animation-delay: 5s" filter="url(#sh-softGlow)"/>
+  </g>
+
+  <!-- Layer 7: Vignette Overlay -->
+  <rect width="512" height="512" fill="url(#sh-vignette)" opacity="0.4"/>
+</svg>

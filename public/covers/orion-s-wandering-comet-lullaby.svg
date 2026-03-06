@@ -1,0 +1,214 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="ow-skyGrad" cx="50%" cy="50%" r="70%" gradientTransform="rotate(90)">
+      <stop offset="0%" stop-color="#0a0e2a"/>
+      <stop offset="50%" stop-color="#1a103d"/>
+      <stop offset="100%" stop-color="#0a0e2a"/>
+    </radialGradient>
+
+    <linearGradient id="ow-cometGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd700" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#ff8c00" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#ff4500" stop-opacity="0.4"/>
+    </linearGradient>
+
+    <linearGradient id="ow-forestGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a3b2e"/>
+      <stop offset="100%" stop-color="#0a1a1a"/>
+    </linearGradient>
+
+    <filter id="ow-softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="ow-mediumGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="ow-strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <radialGradient id="ow-vignette" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="black" stop-opacity="0"/>
+      <stop offset="100%" stop-color="black" stop-opacity="0.8"/>
+    </radialGradient>
+
+    <filter id="ow-twinkle" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1" result="blur"/>
+      <feSpecularLighting result="specOut" in="blur" specularConstant="1" specularExponent="20" lighting-color="#fff">
+        <fePointLight x="0" y="0" z="200"/>
+      </feSpecularLighting>
+      <feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+    </filter>
+
+    <pattern id="ow-stars" patternUnits="userSpaceOnUse" width="20" height="20">
+      <circle cx="2" cy="2" r="1" fill="white" opacity="0.8"/>
+      <circle cx="15" cy="5" r="0.5" fill="white" opacity="0.6"/>
+      <circle cx="8" cy="12" r="0.8" fill="white" opacity="0.7"/>
+      <circle cx="18" cy="18" r="0.3" fill="white" opacity="0.5"/>
+    </pattern>
+  </defs>
+
+  <style>
+    @keyframes ow-twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    .ow-twinkle { animation: ow-twinkle 3s ease-in-out infinite; }
+
+    @keyframes ow-comet-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .ow-comet-bob { animation: ow-comet-bob 5s ease-in-out infinite; }
+
+    @keyframes ow-cloud-drift {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(20px); }
+    }
+    .ow-cloud-drift { animation: ow-cloud-drift 8s ease-in-out infinite; }
+
+    @keyframes ow-particle-drift {
+      0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translate(30px, 30px) rotate(360deg); opacity: 0; }
+    }
+    .ow-particle-drift { animation: ow-particle-drift 9s ease-in-out infinite; }
+
+    @keyframes ow-glow-pulse {
+      0%, 100% { filter: url(#ow-softGlow); }
+      50% { filter: url(#ow-mediumGlow); }
+    }
+    .ow-glow-pulse { animation: ow-glow-pulse 4s ease-in-out infinite; }
+
+    @keyframes ow-leaf-float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(5deg); }
+    }
+    .ow-leaf-float { animation: ow-leaf-float 6s ease-in-out infinite; }
+
+    @keyframes ow-wish-rise {
+      0% { transform: translateY(0) scale(0.8); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-50px) scale(1.2); opacity: 0; }
+    }
+    .ow-wish-rise { animation: ow-wish-rise 7s ease-in-out infinite; }
+  </style>
+
+  <!-- Layer 1: Sky/Background -->
+  <rect width="512" height="512" fill="url(#ow-skyGrad)"/>
+  <rect width="512" height="512" fill="url(#ow-stars)" opacity="0.3"/>
+
+  <!-- Layer 2: Far Background -->
+  <g class="ow-cloud-drift">
+    <circle cx="100" cy="80" r="40" fill="white" opacity="0.2"/>
+    <circle cx="120" cy="60" r="30" fill="white" opacity="0.2"/>
+    <circle cx="80" cy="70" r="35" fill="white" opacity="0.2"/>
+  </g>
+  <g class="ow-cloud-drift" style="animation-delay: -2s;">
+    <circle cx="400" cy="120" r="50" fill="white" opacity="0.2"/>
+    <circle cx="380" cy="100" r="40" fill="white" opacity="0.2"/>
+    <circle cx="420" cy="110" r="45" fill="white" opacity="0.2"/>
+  </g>
+
+  <!-- Layer 3: Mid Background -->
+  <rect x="0" y="350" width="512" height="162" fill="url(#ow-forestGrad)"/>
+
+  <!-- Mythical creatures in the forest -->
+  <g transform="translate(50, 380)">
+    <path d="M20,0 Q15,-10 10,-5 Q5,-15 0,-10 Q-5,-5 -10,0 Q-15,5 -10,10 Q-5,15 0,10 Q5,5 10,10 Q15,0 20,0 Z" fill="#8b4513" class="ow-leaf-float" style="animation-delay: 0s;"/>
+    <circle cx="10" cy="-5" r="3" fill="#ffd700" class="ow-twinkle" style="animation-delay: 0.5s;"/>
+  </g>
+
+  <g transform="translate(150, 360)">
+    <path d="M0,0 L10,10 L0,20 L5,15 L-5,15 L0,20 L-10,10 Z" fill="#4682b4" class="ow-leaf-float" style="animation-delay: 1s;"/>
+    <circle cx="0" cy="10" r="2" fill="white" class="ow-twinkle" style="animation-delay: 1.5s;"/>
+  </g>
+
+  <g transform="translate(300, 370)">
+    <path d="M0,0 Q5,-10 10,0 Q5,10 0,0 Q-5,10 -10,0 Q-5,-10 0,0 Z" fill="#2e8b57" class="ow-leaf-float" style="animation-delay: 2s;"/>
+    <circle cx="0" cy="-5" r="2.5" fill="#ff69b4" class="ow-twinkle" style="animation-delay: 2.5s;"/>
+  </g>
+
+  <g transform="translate(450, 390)">
+    <path d="M0,0 L8,8 L0,16 L4,12 L-4,12 L0,16 L-8,8 Z" fill="#daa520" class="ow-leaf-float" style="animation-delay: 3s;"/>
+    <circle cx="0" cy="8" r="2" fill="#ffd700" class="ow-twinkle" style="animation-delay: 3.5s;"/>
+  </g>
+
+  <!-- Layer 4: Middle Ground -->
+  <g transform="translate(200, 300)">
+    <path d="M0,0 Q-20,-10 -30,-30 Q-25,-40 -15,-40 Q-5,-40 0,-30 Q5,-40 15,-40 Q25,-40 30,-30 Q20,-10 0,0 Z" fill="#228b22" opacity="0.7"/>
+    <path d="M0,-30 Q-10,-40 -15,-50 Q-10,-60 0,-55 Q10,-60 15,-50 Q10,-40 0,-30 Z" fill="#32cd32" opacity="0.8"/>
+  </g>
+
+  <!-- Layer 5: Main Character - Comet -->
+  <g transform="translate(256, 240)">
+    <g class="ow-comet-bob ow-glow-pulse">
+      <path d="M0,-20 Q-10,-30 -20,-20 Q-30,-10 -20,0 Q-30,10 -20,20 Q-10,30 0,20 Q10,30 20,20 Q30,10 20,0 Q30,-10 20,-20 Q10,-30 0,-20 Z" fill="url(#ow-cometGrad)" filter="url(#ow-strongGlow)"/>
+      <path d="M-20,0 Q-30,-10 -40,-5 Q-50,0 -40,10 Q-30,20 -20,15 Q-10,20 0,10 Q10,20 20,15 Q30,20 40,10 Q50,0 40,-5 Q30,-10 20,0" fill="none" stroke="#ffd700" stroke-width="2" stroke-opacity="0.7"/>
+      <circle cx="0" cy="-25" r="5" fill="#ffd700" filter="url(#ow-mediumGlow)"/>
+    </g>
+  </g>
+
+  <!-- Wishes rising from creatures -->
+  <g transform="translate(100, 350)">
+    <g class="ow-wish-rise" style="animation-delay: 0s;">
+      <circle cx="0" cy="0" r="4" fill="#ffd700" opacity="0.8"/>
+      <path d="M0,-4 L2,-2 L4,0 L2,2 L0,4 L-2,2 L-4,0 L-2,-2 Z" fill="#ff8c00" opacity="0.6"/>
+    </g>
+  </g>
+
+  <g transform="translate(350, 360)">
+    <g class="ow-wish-rise" style="animation-delay: 1s;">
+      <circle cx="0" cy="0" r="3" fill="#ff69b4" opacity="0.7"/>
+      <path d="M0,-3 L1.5,-1.5 L3,0 L1.5,1.5 L0,3 L-1.5,1.5 L-3,0 L-1.5,-1.5 Z" fill="#da70d6" opacity="0.5"/>
+    </g>
+  </g>
+
+  <g transform="translate(200, 380)">
+    <g class="ow-wish-rise" style="animation-delay: 2s;">
+      <circle cx="0" cy="0" r="3.5" fill="#87ceeb" opacity="0.7"/>
+      <path d="M0,-3.5 L2,-1.75 L3.5,0 L2,1.75 L0,3.5 L-2,1.75 L-3.5,0 L-2,-1.75 Z" fill="#4682b4" opacity="0.5"/>
+    </g>
+  </g>
+
+  <!-- Layer 6: Foreground Particles/Sparkles -->
+  <g transform="translate(50, 50)">
+    <g class="ow-particle-drift" style="animation-delay: 0s;">
+      <circle cx="0" cy="0" r="2" fill="#ffd700" filter="url(#ow-softGlow)"/>
+    </g>
+  </g>
+
+  <g transform="translate(400, 80)">
+    <g class="ow-particle-drift" style="animation-delay: 1s;">
+      <path d="M0,-3 L1,-1 L3,0 L1,1 L0,3 L-1,1 L-3,0 L-1,-1 Z" fill="#ff4500" filter="url(#ow-softGlow)"/>
+    </g>
+  </g>
+
+  <g transform="translate(150, 200)">
+    <g class="ow-particle-drift" style="animation-delay: 2s;">
+      <circle cx="0" cy="0" r="1.5" fill="#ff69b4" filter="url(#ow-softGlow)"/>
+    </g>
+  </g>
+
+  <g transform="translate(350, 150)">
+    <g class="ow-particle-drift" style="animation-delay: 3s;">
+      <path d="M0,-2 L1,-0.5 L2,0 L1,0.5 L0,2 L-1,0.5 L-2,0 L-1,-0.5 Z" fill="#87ceeb" filter="url(#ow-softGlow)"/>
+    </g>
+  </g>
+
+  <g transform="translate(250, 50)">
+    <g class="ow-particle-drift" style="animation-delay: 4s;">
+      <circle cx="0" cy="0" r="2.5" fill="#ffd700" filter="url(#ow-mediumGlow)"/>
+    </g>
+  </g>
+
+  <!-- Layer 7: Vignette Overlay -->
+  <rect width="512" height="512" fill="url(#ow-vignette)" opacity="0.4"/>
+</svg>

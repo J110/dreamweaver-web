@@ -1,0 +1,171 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<defs>
+    <linearGradient id="lf-skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#0a1a2a"/>
+        <stop offset="50%" stop-color="#1a3a5a"/>
+        <stop offset="100%" stop-color="#0a1a2a"/>
+    </linearGradient>
+    <linearGradient id="lf-oceanGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#1a4a6a"/>
+        <stop offset="50%" stop-color="#2a6a8a"/>
+        <stop offset="100%" stop-color="#1a4a6a"/>
+    </linearGradient>
+    <linearGradient id="lf-sandGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#f5d7a3"/>
+        <stop offset="100%" stop-color="#e5c783"/>
+    </linearGradient>
+    <radialGradient id="lf-shellGlow" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+        <stop offset="0%" stop-color="#ffd700" stop-opacity="0.8"/>
+        <stop offset="100%" stop-color="#ffd700" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lf-vignette" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="black" stop-opacity="0"/>
+        <stop offset="100%" stop-color="black" stop-opacity="0.8"/>
+    </radialGradient>
+    <filter id="lf-softGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="2" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="lf-mediumGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="4" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="lf-strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="6" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="lf-sparkleGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1" result="blur"/>
+        <feSpecularLighting result="specOut" in="blur" specularConstant="1" specularExponent="20" lighting-color="#ffd700">
+            <fePointLight x="0" y="0" z="200"/>
+        </feSpecularLighting>
+        <feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+    </filter>
+</defs>
+<style>
+    @keyframes lf-twinkle {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 1; }
+    }
+    @keyframes lf-bob {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    @keyframes lf-wave {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(5px); }
+    }
+    @keyframes lf-drift {
+        0% { transform: translate(0, 0); }
+        25% { transform: translate(3px, -2px); }
+        50% { transform: translate(5px, 0); }
+        75% { transform: translate(3px, 2px); }
+        100% { transform: translate(0, 0); }
+    }
+    @keyframes lf-pulse {
+        0%, 100% { opacity: 0.7; }
+        50% { opacity: 1; }
+    }
+    @keyframes lf-shellSpin {
+        0%, 100% { transform: rotate(0deg); }
+        50% { transform: rotate(10deg); }
+    }
+    .lf-twinkle { animation: lf-twinkle 3s infinite ease-in-out; }
+    .lf-bob { animation: lf-bob 5s infinite ease-in-out; }
+    .lf-wave { animation: lf-wave 7s infinite ease-in-out; }
+    .lf-drift { animation: lf-drift 8s infinite ease-in-out; }
+    .lf-pulse { animation: lf-pulse 4s infinite ease-in-out; }
+    .lf-shellSpin { animation: lf-shellSpin 6s infinite ease-in-out; }
+</style>
+<g>
+    <!-- Layer 1: Sky/Background -->
+    <rect width="512" height="512" fill="url(#lf-skyGrad)"/>
+    <circle cx="100" cy="80" r="2" fill="#ffd700" class="lf-twinkle"/>
+    <circle cx="150" cy="60" r="1.5" fill="#ffd700" class="lf-twinkle" style="animation-delay: 0.5s"/>
+    <circle cx="200" cy="90" r="2.5" fill="#ffd700" class="lf-twinkle" style="animation-delay: 1s"/>
+    <circle cx="300" cy="70" r="1.8" fill="#ffd700" class="lf-twinkle" style="animation-delay: 1.5s"/>
+    <circle cx="400" cy="85" r="2.2" fill="#ffd700" class="lf-twinkle" style="animation-delay: 2s"/>
+    <circle cx="450" cy="60" r="1.5" fill="#ffd700" class="lf-twinkle" style="animation-delay: 2.5s"/>
+
+    <!-- Layer 2: Far Background -->
+    <g transform="translate(0, 350)">
+        <rect width="512" height="162" fill="url(#lf-oceanGrad)" class="lf-wave"/>
+        <path d="M0,50 Q100,30 200,50 T400,50 T600,50 L512,162 L0,162 Z" fill="#1a5a7a" opacity="0.7"/>
+        <path d="M0,80 Q150,60 300,80 T600,80 L512,162 L0,162 Z" fill="#2a7a9a" opacity="0.5"/>
+    </g>
+
+    <!-- Layer 3: Mid Background -->
+    <g transform="translate(0, 400)">
+        <rect width="512" height="112" fill="url(#lf-sandGrad)"/>
+        <path d="M0,20 Q80,10 160,20 T320,20 T480,20 L512,112 L0,112 Z" fill="#e5c783" opacity="0.8"/>
+        <circle cx="100" cy="50" r="15" fill="#d5b763" opacity="0.6"/>
+        <circle cx="200" cy="60" r="10" fill="#c5a753" opacity="0.5"/>
+        <circle cx="350" cy="40" r="12" fill="#d5b763" opacity="0.6"/>
+        <circle cx="450" cy="55" r="8" fill="#c5a753" opacity="0.5"/>
+    </g>
+
+    <!-- Layer 4: Middle Ground -->
+    <g transform="translate(100, 350)">
+        <g class="lf-wave">
+            <path d="M0,0 Q30,-20 60,0 T120,0 T180,0 L180,50 L0,50 Z" fill="#2a6a8a" opacity="0.8"/>
+            <path d="M50,10 Q80,-10 110,10 T170,10 L170,60 L50,60 Z" fill="#3a7a9a" opacity="0.6"/>
+        </g>
+    </g>
+    <g transform="translate(300, 380)">
+        <g class="lf-wave">
+            <ellipse cx="30" cy="20" rx="25" ry="10" fill="#2a6a8a" opacity="0.7"/>
+            <ellipse cx="80" cy="25" rx="20" ry="8" fill="#3a7a9a" opacity="0.5"/>
+        </g>
+    </g>
+    <g transform="translate(200, 420)">
+        <path d="M0,0 L20,10 L40,0 L60,15 L80,0 L100,10 L120,0 L120,30 L0,30 Z" fill="#a58763"/>
+        <circle cx="30" cy="15" r="3" fill="#ffd700" class="lf-twinkle"/>
+        <circle cx="70" cy="10" r="2" fill="#ffd700" class="lf-twinkle" style="animation-delay: 1s"/>
+    </g>
+
+    <!-- Layer 5: Main Character -->
+    <g transform="translate(256, 240)">
+        <g class="lf-bob">
+            <!-- Leilani -->
+            <circle cx="0" cy="-30" r="25" fill="#f5d7a3"/>
+            <path d="M-15,-20 Q0,-35 15,-20 Q15,-5 0,5 Q-15,-5 -15,-20" fill="#e5c783"/>
+            <circle cx="-8" cy="-35" r="3" fill="#3a2a1a"/>
+            <circle cx="8" cy="-35" r="3" fill="#3a2a1a"/>
+            <path d="M-5,-28 Q0,-25 5,-28" stroke="#3a2a1a" stroke-width="1.5" fill="none"/>
+            <path d="M-10,-15 Q0,-10 10,-15" stroke="#3a2a1a" stroke-width="1.5" fill="none"/>
+            <!-- Hair -->
+            <path d="M-20,-40 Q-25,-50 -15,-55 Q0,-60 15,-55 Q25,-50 20,-40 Q15,-35 0,-35 Q-15,-35 -20,-40" fill="#3a2a1a"/>
+            <!-- Body -->
+            <ellipse cx="0" cy="0" rx="20" ry="25" fill="#6a5a8a"/>
+            <!-- Arms -->
+            <path d="M-20,-5 Q-30,0 -25,15 Q-20,10 -15,15" fill="#f5d7a3"/>
+            <path d="M20,-5 Q30,0 25,15 Q20,10 15,15" fill="#f5d7a3"/>
+            <!-- Shell -->
+            <g transform="translate(25, 0)">
+                <g class="lf-shellSpin">
+                    <path d="M0,-15 Q10,-25 20,-15 Q20,0 10,5 Q0,0 0,-15" fill="#ffd700" filter="url(#lf-mediumGlow)"/>
+                    <circle cx="10" cy="-5" r="8" fill="url(#lf-shellGlow)" class="lf-pulse"/>
+                    <path d="M5,-10 L15,-10 L12,-5 L5,-10" fill="#fff" opacity="0.8"/>
+                    <path d="M8,-15 L12,-15 L10,-10 L8,-15" fill="#fff" opacity="0.8"/>
+                </g>
+            </g>
+        </g>
+    </g>
+
+    <!-- Layer 6: Foreground Particles/Sparkles -->
+    <g>
+        <circle cx="50" cy="150" r="2" fill="#ffd700" class="lf-drift lf-twinkle" style="animation-delay: 0.3s"/>
+        <circle cx="150" cy="200" r="1.5" fill="#ffd700" class="lf-drift lf-twinkle" style="animation-delay: 0.6s"/>
+        <circle cx="400" cy="180" r="2.5" fill="#ffd700" class="lf-drift lf-twinkle" style="animation-delay: 0.9s"/>
+        <circle cx="350" cy="250" r="1.8" fill="#ffd700" class="lf-drift lf-twinkle" style="animation-delay: 1.2s"/>
+        <circle cx="100" cy="300" r="2" fill="#ffd700" class="lf-drift lf-twinkle" style="animation-delay: 1.5s"/>
+        <circle cx="450" cy="350" r="1.5" fill="#ffd700" class="lf-drift lf-twinkle" style="animation-delay: 1.8s"/>
+        <circle cx="200" cy="100" r="3" fill="#ffd700" class="lf-drift lf-twinkle" style="animation-delay: 2.1s"/>
+        <path d="M250,120 L255,130 L260,120 L255,125 Z" fill="#ffd700" class="lf-drift lf-twinkle" style="animation-delay: 2.4s"/>
+        <path d="M300,150 L303,155 L306,150 L303,153 Z" fill="#ffd700" class="lf-drift lf-twinkle" style="animation-delay: 2.7s"/>
+    </g>
+
+    <!-- Layer 7: Vignette Overlay -->
+    <rect width="512" height="512" fill="url(#lf-vignette)" opacity="0.4"/>
+</g>
+</svg>
