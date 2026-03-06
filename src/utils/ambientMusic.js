@@ -97,7 +97,7 @@ export class AmbientMusicEngine {
     this._audioBufferCache = {};    // cached decoded AudioBuffers (v4)
     this._playing = false;
     this._currentProfile = null;
-    this._volume = 0.3;
+    this._volume = 0.18;
     this._fadeTime = 3;
     this._playGeneration = 0; // increments on each play() call to cancel stale async plays
     this._fadeCleanupTimer = null; // pending fade-out cleanup timeout from stop(true)
