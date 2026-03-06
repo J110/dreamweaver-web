@@ -354,7 +354,7 @@ function derivePhase2(p1, intervals, ageGroup) {
     noiseGain: p1.noiseGain * 1.8,    // nature sounds emerge
     droneGain: p1.droneGain * 1.3,    // drone fills space
 
-    musicLoopGain: p1.musicLoopGain * 1.0, // loop holds steady
+    musicLoopGain: p1.musicLoopGain * 1.2, // loop grows as voice quiets
 
     events: (p1.events || []).map(e => ({
       ...e,
@@ -377,7 +377,7 @@ function derivePhase3(p1) {
     noiseGain: p1.noiseGain * 2.5,    // nature sounds fill the space
     droneGain: p1.droneGain * 1.5,    // deep drone
 
-    musicLoopGain: p1.musicLoopGain * 0.5, // loop fades but doesn't vanish
+    musicLoopGain: p1.musicLoopGain * 0.8, // loop fades gently but stays present
 
     events: [],                        // no events — stillness
   };
@@ -470,7 +470,7 @@ export function composeMusicParams(brief) {
     // music loop info for ambientMusic.js
     musicLoopPath: loopPath,
     musicLoopPlaybackRate: loopKeyInfo.playbackRate,
-    musicLoopGain: ageGroup === '9-12' ? 0.03 : 0.06,
+    musicLoopGain: ageGroup === '9-12' ? 0.10 : 0.14,
   };
 
   // 9. Derive Phase 2 and Phase 3
