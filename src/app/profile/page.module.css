@@ -157,38 +157,10 @@
   margin: 0 0 8px 0;
 }
 
-.genderRow {
-  display: flex;
-  gap: 8px;
-}
-
-.genderBtn {
-  flex: 1;
-  padding: 10px;
-  background: rgba(13, 11, 46, 0.5);
-  border: 2px solid rgba(107, 76, 230, 0.15);
-  border-radius: 12px;
-  color: var(--color-text-light);
-  font-family: 'Quicksand', sans-serif;
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all var(--transition-normal);
-}
-
-.genderBtn:hover {
-  border-color: var(--color-primary-purple);
-}
-
-.genderBtnActive {
-  border-color: var(--color-primary-purple);
-  background: linear-gradient(135deg, rgba(107, 76, 230, 0.15), rgba(255, 107, 157, 0.1));
-  box-shadow: 0 0 12px rgba(107, 76, 230, 0.2);
-}
-
 .voiceGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 8px;
 }
 
@@ -206,6 +178,8 @@
   transition: all var(--transition-normal);
   font-family: 'Quicksand', sans-serif;
   color: var(--color-text-light);
+  width: calc(33.333% - 6px);
+  min-width: 80px;
 }
 
 .voiceCard:hover {
@@ -231,36 +205,6 @@
 .voiceName {
   font-size: 11px;
   font-weight: 600;
-}
-
-.voiceBadge,
-.voiceBadgeSecondary,
-.voiceBadgeAlt {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 9px;
-  font-weight: 800;
-  color: white;
-}
-
-.voiceBadge {
-  background: var(--color-primary-purple);
-}
-
-.voiceBadgeSecondary {
-  background: var(--color-primary-pink);
-}
-
-.voiceBadgeAlt {
-  background: var(--color-magic-teal);
-  color: var(--color-bg-dark);
 }
 
 .saveVoiceBtn {

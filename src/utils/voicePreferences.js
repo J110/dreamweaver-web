@@ -1,17 +1,14 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
-import { getVoiceId } from './voiceConfig';
+import { VOICES, getVoiceId } from './voiceConfig';
 
 const PREFS_KEY = 'dreamvalley_voice_prefs';
 
 /**
  * Voice preferences shape:
  * {
- *   preferredGender: 'female' | 'male',
- *   primaryVoice: 'female_1',      // base ID (no _hi suffix)
- *   secondaryVoice: 'female_2',
- *   alternateVoice: 'male_1',      // primary for non-preferred gender
+ *   preferredVoice: 'female_1',  // base ID (no _hi suffix)
  *   completed: true
  * }
  */
@@ -26,8 +23,13 @@ export function VoicePreferencesProvider({ children }) {
     try {
       const saved = localStorage.getItem(PREFS_KEY);
       if (saved) {
-        const parsed = JSON.parse(saved);
+        let parsed = JSON.parse(saved);
         if (parsed && parsed.completed) {
+          // Migrate old format (primaryVoice → preferredVoice)
+          if (parsed.primaryVoice && !parsed.preferredVoice) {
+            parsed = { preferredVoice: parsed.primaryVoice, completed: true };
+            localStorage.setItem(PREFS_KEY, JSON.stringify(parsed));
+          }
           setVoicePrefsState(parsed);
         }
       }
@@ -50,27 +52,21 @@ export function VoicePreferencesProvider({ children }) {
   const hasVoicePrefs = !!(voicePrefs && voicePrefs.completed);
 
   /**
-   * Get the 3 voice IDs for a story, respecting language suffix.
-   * Returns [primaryVoice, secondaryVoice, alternateVoice] with _hi if needed.
+   * Get ordered voice IDs: preferred voice first, then all others.
+   * Used by the player for voice switch ordering.
    */
   const getStoryVoices = (lang) => {
-    if (!voicePrefs) {
-      // Default fallback
-      const defaults = ['female_1', 'female_2', 'male_1'];
-      return defaults.map((id) => getVoiceId(id, lang));
-    }
-    return [
-      getVoiceId(voicePrefs.primaryVoice, lang),
-      getVoiceId(voicePrefs.secondaryVoice, lang),
-      getVoiceId(voicePrefs.alternateVoice, lang),
-    ];
+    const preferred = voicePrefs?.preferredVoice || 'female_1';
+    const allIds = Object.keys(VOICES);
+    const ordered = [preferred, ...allIds.filter(id => id !== preferred)];
+    return ordered.map((id) => getVoiceId(id, lang));
   };
 
   /**
-   * Get the default voice ID for a story (primary voice with language suffix).
+   * Get the default voice ID (preferred voice with language suffix).
    */
   const getDefaultVoice = (lang) => {
-    const baseId = voicePrefs?.primaryVoice || 'female_1';
+    const baseId = voicePrefs?.preferredVoice || 'female_1';
     return getVoiceId(baseId, lang);
   };
 

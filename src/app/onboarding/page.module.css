@@ -107,56 +107,6 @@
   margin-bottom: var(--spacing-xl);
 }
 
-.langOptions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  margin: var(--spacing-xl) 0;
-  width: 100%;
-}
-
-.langCard {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md) var(--spacing-lg);
-  background: var(--color-card-dark);
-  border: 2px solid rgba(107, 76, 230, 0.2);
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  transition: all var(--transition-normal);
-  font-family: 'Quicksand', sans-serif;
-  color: var(--color-text-light);
-  text-align: left;
-}
-
-.langCard:hover {
-  border-color: var(--color-primary-purple);
-  transform: translateY(-2px);
-}
-
-.langCardActive {
-  border-color: var(--color-primary-purple);
-  background: linear-gradient(135deg, rgba(107, 76, 230, 0.15), rgba(255, 107, 157, 0.1));
-  box-shadow: 0 0 20px rgba(107, 76, 230, 0.25);
-}
-
-.langFlag {
-  font-size: 32px;
-}
-
-.langName {
-  font-size: 18px;
-  font-weight: 700;
-  flex: 1;
-}
-
-.langSample {
-  font-size: 12px;
-  color: var(--color-text-muted);
-  font-style: italic;
-}
-
 .nextBtn,
 .startBtn {
   width: 100%;
@@ -198,64 +148,12 @@
   cursor: not-allowed;
 }
 
-/* ── Gender Selection ─────────────────────────────── */
-
-.subStepLabel {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text-muted);
-  margin: var(--spacing-lg) 0 var(--spacing-sm) 0;
-  text-align: left;
-  width: 100%;
-}
-
-.genderRow {
-  display: flex;
-  gap: var(--spacing-md);
-  width: 100%;
-}
-
-.genderCard {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: var(--spacing-md) var(--spacing-sm);
-  background: var(--color-card-dark);
-  border: 2px solid rgba(107, 76, 230, 0.2);
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  transition: all var(--transition-normal);
-  font-family: 'Quicksand', sans-serif;
-  color: var(--color-text-light);
-}
-
-.genderCard:hover {
-  border-color: var(--color-primary-purple);
-  transform: translateY(-2px);
-}
-
-.genderCardActive {
-  border-color: var(--color-primary-purple);
-  background: linear-gradient(135deg, rgba(107, 76, 230, 0.15), rgba(255, 107, 157, 0.1));
-  box-shadow: 0 0 20px rgba(107, 76, 230, 0.25);
-}
-
-.genderIcon {
-  font-size: 36px;
-}
-
-.genderName {
-  font-size: 15px;
-  font-weight: 700;
-}
-
 /* ── Voice Cards ───────────────────────────────────── */
 
 .voiceGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: var(--spacing-sm);
   width: 100%;
 }
@@ -274,6 +172,8 @@
   transition: all var(--transition-normal);
   font-family: 'Quicksand', sans-serif;
   color: var(--color-text-light);
+  width: calc(33.333% - 8px);
+  min-width: 90px;
 }
 
 .voiceCard:hover {
@@ -306,116 +206,6 @@
 .voiceCardAction {
   font-size: 14px;
   opacity: 0.7;
-}
-
-/* Rank badges */
-.voiceRank,
-.voiceRankSecondary,
-.voiceRankAlt {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 800;
-  color: white;
-}
-
-.voiceRank {
-  background: var(--color-primary-purple);
-  box-shadow: 0 2px 8px rgba(107, 76, 230, 0.5);
-}
-
-.voiceRankSecondary {
-  background: var(--color-primary-pink);
-  box-shadow: 0 2px 8px rgba(255, 107, 157, 0.5);
-}
-
-.voiceRankAlt {
-  background: var(--color-magic-teal);
-  color: var(--color-bg-dark);
-  box-shadow: 0 2px 8px rgba(76, 230, 200, 0.5);
-}
-
-/* ── Skip Prompt Modal ─────────────────────────────── */
-
-.skipOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(5, 3, 30, 0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-  padding: var(--spacing-lg);
-  animation: fadeIn 0.2s ease-out;
-}
-
-.skipModal {
-  background: var(--color-card-dark);
-  border: 1px solid rgba(107, 76, 230, 0.3);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-xl);
-  max-width: 360px;
-  text-align: center;
-  box-shadow: 0 8px 40px rgba(107, 76, 230, 0.3);
-}
-
-.skipText {
-  font-size: 15px;
-  color: var(--color-text-light);
-  line-height: 1.5;
-  margin: 0 0 var(--spacing-lg) 0;
-}
-
-.skipActions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.skipGoBack {
-  width: 100%;
-  padding: var(--spacing-md);
-  border: none;
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, var(--color-primary-purple), var(--color-primary-pink));
-  color: white;
-  font-family: 'Quicksand', sans-serif;
-  font-weight: 700;
-  font-size: 15px;
-  cursor: pointer;
-  transition: all var(--transition-normal);
-}
-
-.skipGoBack:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(107, 76, 230, 0.4);
-}
-
-.skipAnyway {
-  width: 100%;
-  padding: var(--spacing-sm);
-  border: none;
-  background: transparent;
-  color: var(--color-text-muted);
-  font-family: 'Quicksand', sans-serif;
-  font-weight: 600;
-  font-size: 13px;
-  cursor: pointer;
-  transition: color var(--transition-fast);
-}
-
-.skipAnyway:hover {
-  color: var(--color-text-light);
 }
 
 /* ── Animations ────────────────────────────────────── */

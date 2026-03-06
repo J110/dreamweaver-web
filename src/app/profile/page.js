@@ -6,21 +6,18 @@ import StarField from '@/components/StarField';
 import { isLoggedIn, getUser, logout } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
 import { useVoicePreferences } from '@/utils/voicePreferences';
-import { VOICES, getVoicesForGender, getSampleUrl, getVoiceLabel } from '@/utils/voiceConfig';
+import { getSelectableVoices, getSampleUrl, getVoiceLabel } from '@/utils/voiceConfig';
 import styles from './page.module.css';
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { t, lang, setLang } = useI18n();
-  const { voicePrefs, setVoicePrefs, hasVoicePrefs } = useVoicePreferences();
+  const { t, lang } = useI18n();
+  const { voicePrefs, setVoicePrefs } = useVoicePreferences();
   const [user, setUser] = useState(null);
 
   // Voice editing state
   const [editingVoice, setEditingVoice] = useState(false);
-  const [preferredGender, setPreferredGender] = useState(voicePrefs?.preferredGender || 'female');
-  const [primaryVoice, setPrimaryVoice] = useState(voicePrefs?.primaryVoice || 'female_1');
-  const [secondaryVoice, setSecondaryVoice] = useState(voicePrefs?.secondaryVoice || 'female_2');
-  const [alternateVoice, setAlternateVoice] = useState(voicePrefs?.alternateVoice || 'male_1');
+  const [selectedVoice, setSelectedVoice] = useState(voicePrefs?.preferredVoice || 'female_1');
   const [saved, setSaved] = useState(false);
 
   // Audio preview
@@ -30,10 +27,7 @@ export default function ProfilePage() {
   // Sync editing state when prefs load
   useEffect(() => {
     if (voicePrefs) {
-      setPreferredGender(voicePrefs.preferredGender || 'female');
-      setPrimaryVoice(voicePrefs.primaryVoice || 'female_1');
-      setSecondaryVoice(voicePrefs.secondaryVoice || 'female_2');
-      setAlternateVoice(voicePrefs.alternateVoice || 'male_1');
+      setSelectedVoice(voicePrefs.preferredVoice || 'female_1');
     }
   }, [voicePrefs]);
 
@@ -74,54 +68,19 @@ export default function ProfilePage() {
     router.push('/login');
   };
 
-  const handleLanguageChange = (newLang) => {
-    setLang(newLang);
-  };
-
-  const handleGenderChange = (gender) => {
-    setPreferredGender(gender);
-    const voices = getVoicesForGender(gender);
-    if (voices.length >= 2) {
-      setPrimaryVoice(voices[0][0]);
-      setSecondaryVoice(voices[1][0]);
-    }
-    const otherVoices = getVoicesForGender(gender === 'female' ? 'male' : 'female');
-    if (otherVoices.length > 0) {
-      setAlternateVoice(otherVoices[0][0]);
-    }
-  };
-
-  const handlePrimarySelect = (voiceId) => {
-    if (primaryVoice === voiceId) return;
-    if (secondaryVoice === voiceId) {
-      setSecondaryVoice(primaryVoice);
-    }
-    setPrimaryVoice(voiceId);
-  };
-
-  const handleSecondarySelect = (voiceId) => {
-    if (secondaryVoice === voiceId) return;
-    if (primaryVoice === voiceId) {
-      setPrimaryVoice(secondaryVoice);
-    }
-    setSecondaryVoice(voiceId);
-  };
-
-  const handleAlternateSelect = (voiceId) => {
-    setAlternateVoice(voiceId);
+  const handleVoiceSelect = (voiceId) => {
+    playVoiceSample(voiceId);
+    setSelectedVoice(voiceId);
   };
 
   const handleSaveVoice = () => {
     stopAudio();
-    setVoicePrefs({ preferredGender, primaryVoice, secondaryVoice, alternateVoice });
+    setVoicePrefs({ preferredVoice: selectedVoice });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
 
   const appName = 'Dream Valley';
-  const otherGender = preferredGender === 'female' ? 'male' : 'female';
-  const primaryGenderVoices = getVoicesForGender(preferredGender);
-  const alternateGenderVoices = getVoicesForGender(otherGender);
 
   if (!user) return null;
 
@@ -142,8 +101,6 @@ export default function ProfilePage() {
         </div>
 
         <div className={styles.settings}>
-          {/* Language Selector — hidden while Hindi content is being curated */}
-
           {/* Voice Settings — inline collapsible */}
           <div className={styles.voiceSettingsCard}>
             <button
@@ -162,86 +119,24 @@ export default function ProfilePage() {
               <div className={styles.voiceSettingsBody}>
                 <p className={styles.voiceDesc}>{t('voiceSettingsDesc')}</p>
 
-                {/* Gender Preference */}
-                <div className={styles.voiceSection}>
-                  <h3 className={styles.voiceSectionTitle}>{t('genderPrefer')}</h3>
-                  <div className={styles.genderRow}>
-                    <button
-                      onClick={() => handleGenderChange('female')}
-                      className={`${styles.genderBtn} ${preferredGender === 'female' ? styles.genderBtnActive : ''}`}
-                    >
-                      👩 {t('femaleNarrators')}
-                    </button>
-                    <button
-                      onClick={() => handleGenderChange('male')}
-                      className={`${styles.genderBtn} ${preferredGender === 'male' ? styles.genderBtnActive : ''}`}
-                    >
-                      👨 {t('maleNarrators')}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Primary Voice */}
                 <div className={styles.voiceSection}>
                   <h3 className={styles.voiceSectionTitle}>
-                    Primary Voice
+                    {lang === 'hi' ? 'अपनी आवाज़ चुनें' : 'Choose Your Narrator'}
                   </h3>
                   <div className={styles.voiceGrid}>
-                    {primaryGenderVoices.map(([id, meta]) => (
+                    {getSelectableVoices().map(([id, meta]) => (
                       <button
                         key={id}
-                        onClick={() => { handlePrimarySelect(id); playVoiceSample(id); }}
-                        className={`${styles.voiceCard} ${primaryVoice === id ? styles.voiceCardActive : ''} ${playingVoice === id ? styles.voiceCardPlaying : ''}`}
+                        onClick={() => handleVoiceSelect(id)}
+                        className={`${styles.voiceCard} ${selectedVoice === id ? styles.voiceCardActive : ''} ${playingVoice === id ? styles.voiceCardPlaying : ''}`}
                       >
                         <span className={styles.voiceIcon}>{meta.icon}</span>
                         <span className={styles.voiceName}>{getVoiceLabel(id, lang)}</span>
-                        {primaryVoice === id && <span className={styles.voiceBadge}>{t('primaryBadge')}</span>}
                       </button>
                     ))}
                   </div>
                 </div>
 
-                {/* Secondary Voice */}
-                <div className={styles.voiceSection}>
-                  <h3 className={styles.voiceSectionTitle}>
-                    Secondary Voice
-                  </h3>
-                  <div className={styles.voiceGrid}>
-                    {primaryGenderVoices.map(([id, meta]) => (
-                      <button
-                        key={id}
-                        onClick={() => { handleSecondarySelect(id); playVoiceSample(id); }}
-                        className={`${styles.voiceCard} ${secondaryVoice === id ? styles.voiceCardActive : ''} ${playingVoice === id ? styles.voiceCardPlaying : ''}`}
-                      >
-                        <span className={styles.voiceIcon}>{meta.icon}</span>
-                        <span className={styles.voiceName}>{getVoiceLabel(id, lang)}</span>
-                        {secondaryVoice === id && <span className={styles.voiceBadgeSecondary}>{t('secondaryBadge')}</span>}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Alternate Voice */}
-                <div className={styles.voiceSection}>
-                  <h3 className={styles.voiceSectionTitle}>
-                    Alternate Voice
-                  </h3>
-                  <div className={styles.voiceGrid}>
-                    {alternateGenderVoices.map(([id, meta]) => (
-                      <button
-                        key={id}
-                        onClick={() => { handleAlternateSelect(id); playVoiceSample(id); }}
-                        className={`${styles.voiceCard} ${alternateVoice === id ? styles.voiceCardActive : ''} ${playingVoice === id ? styles.voiceCardPlaying : ''}`}
-                      >
-                        <span className={styles.voiceIcon}>{meta.icon}</span>
-                        <span className={styles.voiceName}>{getVoiceLabel(id, lang)}</span>
-                        {alternateVoice === id && <span className={styles.voiceBadgeAlt}>{t('alternateBadge')}</span>}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Save Button */}
                 <button onClick={handleSaveVoice} className={styles.saveVoiceBtn}>
                   {saved ? 'Saved ✓' : 'Save Preferences'}
                 </button>

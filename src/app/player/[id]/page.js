@@ -908,13 +908,12 @@ export default function PlayerPage() {
     }
   };
 
-  // Build voice switch buttons — 3 switches: 2 preferred (non-active) + 1 ASMR
+  // Build voice switch buttons — show all valid voices that have audio variants
   const getVoiceSwitchOptions = () => {
     if (!content || !selectedVoice) return [];
     const allVariants = content.audio_variants || [];
     if (allVariants.length <= 1) return [];
 
-    const variantVoices = new Set(allVariants.map(v => v.voice));
     const options = [];
 
     // Songs: show ALL variants as switches (each is a distinct musical style)
@@ -927,57 +926,31 @@ export default function PlayerPage() {
           const meta = VOICES[variantBaseId];
           if (!meta) continue;
           const label = getVoiceLabel(variantBaseId, lang);
-          const genderLabel = lang === 'hi'
-            ? (meta.gender === 'female' ? 'महिला' : 'पुरुष')
-            : (meta.gender === 'female' ? 'Female' : 'Male');
           options.push({
             voiceId: variant.voice,
             icon: meta.icon,
-            switchLabel: `${label} ${genderLabel}`,
+            switchLabel: label,
           });
         }
       }
       return options;
     }
 
-    // Stories/poems: show preferred voices + ASMR
-    // 1. Add the 2 non-active preferred voices
-    const storyVoiceIds = getStoryVoices(lang);
-    const preferredBaseIds = storyVoiceIds.map(v => v.replace(/_hi$/, ''));
-    console.log('[VoiceSwitch] selectedVoice:', selectedVoice, 'lang:', lang,
-      'storyVoices:', storyVoiceIds, 'preferredBaseIds:', preferredBaseIds,
-      'allVariants:', allVariants.map(v => v.voice));
+    // Stories/poems: show all valid voices (ones in VOICES config) that have audio
     for (const variant of allVariants) {
       const variantBaseId = variant.voice.replace(/_hi$/, '');
-      const isPreferred = preferredBaseIds.includes(variantBaseId);
       const isActive = variant.voice === selectedVoice;
-      const isAsmr = variantBaseId === 'asmr';
-      if (isPreferred && !isActive && !isAsmr) {
+      if (!isActive) {
         const meta = VOICES[variantBaseId];
-        if (!meta) continue;
-        const label = getVoiceLabel(variantBaseId, lang);
-        const genderLabel = lang === 'hi'
-          ? (meta.gender === 'female' ? 'महिला' : 'पुरुष')
-          : (meta.gender === 'female' ? 'Female' : 'Male');
+        if (!meta) continue; // Skips retired voices (male_1, male_3) not in VOICES
         options.push({
           voiceId: variant.voice,
           icon: meta.icon,
-          switchLabel: `${label} ${genderLabel}`,
+          switchLabel: getVoiceLabel(variantBaseId, lang),
         });
       }
     }
 
-    // 2. Always add ASMR switch (if variant exists and not currently active)
-    const asmrVoiceId = lang === 'hi' ? 'asmr_hi' : 'asmr';
-    if (variantVoices.has(asmrVoiceId) && selectedVoice !== asmrVoiceId) {
-      options.push({
-        voiceId: asmrVoiceId,
-        icon: '🎧',
-        switchLabel: 'ASMR',
-      });
-    }
-
-    console.log('[VoiceSwitch] result:', options.length, 'options:', options.map(o => o.voiceId));
     return options;
   };
 
