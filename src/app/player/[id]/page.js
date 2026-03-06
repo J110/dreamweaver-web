@@ -45,7 +45,6 @@ export default function PlayerPage() {
   const [reportSubmitting, setReportSubmitting] = useState(false);
   const [audioLoading, setAudioLoading] = useState(false);
   const [audioError, setAudioError] = useState(null);
-  const [musicVolume, setMusicVolume] = useState(100);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [shareCopied, setShareCopied] = useState(false);
@@ -142,8 +141,6 @@ export default function PlayerPage() {
   // All music state lives in refs (not state) to avoid useEffect dependency issues.
   // The render phase detects story changes and resets refs BEFORE effects run.
   const musicSourceRef = useRef(null);
-  const musicVolumeRef = useRef(musicVolume);
-  musicVolumeRef.current = musicVolume;
   const musicContentIdRef = useRef(null); // tracks which story's music source is loaded
   const musicStartAttemptedRef = useRef(false); // prevents duplicate start attempts
   const retryTimerRef = useRef(null); // holds retry interval ID for cleanup
@@ -194,7 +191,9 @@ export default function PlayerPage() {
       if (cancelled) return false;
       try {
         musicPhaseRef.current = 1; // Reset phase on new music start
-        musicRef.current.setVolume(musicVolumeRef.current / 100);
+        // Per-content ambient volume (no user slider — iOS ignores audio.volume)
+        const vol = content?.musicVolume ?? (content?.type === 'poem' ? 0.30 : 0.25);
+        musicRef.current.setVolume(vol);
         // play() is async — it awaits AudioContext readiness.
         // The engine uses a generation counter internally so stale calls are no-ops.
         await musicRef.current.play(source);
@@ -270,13 +269,6 @@ export default function PlayerPage() {
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content?.id]); // re-check when content loads (musicSourceRef gets populated during render)
-
-  // Volume sync — update music volume without restarting playback
-  useEffect(() => {
-    if (musicRef.current && musicStartedRef.current) {
-      musicRef.current.setVolume(musicVolume / 100);
-    }
-  }, [musicVolume]);
 
   // Resolve audio source
   const getAudioSource = useCallback(() => {
@@ -636,15 +628,6 @@ export default function PlayerPage() {
     setSelectedVoice(voiceId);
   }, [selectedVoice, stopProgressTracking]);
 
-  // Handle music volume changes
-  const handleMusicVolumeChange = useCallback((e) => {
-    const vol = parseInt(e.target.value, 10);
-    setMusicVolume(vol);
-    if (musicRef.current) {
-      musicRef.current.setVolume(vol / 100);
-    }
-  }, []);
-
   const handleMusicPlayPause = useCallback(async () => {
     const source = musicSourceRef.current || content?.musicalBrief || content?.musicParams || content?.musicProfile;
     if (!musicRef.current || !source) return;
@@ -652,7 +635,9 @@ export default function PlayerPage() {
       musicRef.current.pause();
       setMusicPlaying(false);
     } else {
-      musicRef.current.setVolume(musicVolume / 100);
+      // Per-content ambient volume
+      const vol = content?.musicVolume ?? (content?.type === 'poem' ? 0.30 : 0.25);
+      musicRef.current.setVolume(vol);
       if (musicStartedRef.current && musicRef.current.isPlaying) {
         // Music was paused (AudioContext suspended) — resume it
         musicRef.current.resume();
@@ -663,7 +648,7 @@ export default function PlayerPage() {
       }
       setMusicPlaying(true);
     }
-  }, [musicPlaying, content?.musicalBrief, content?.musicParams, content?.musicProfile, musicVolume]);
+  }, [musicPlaying, content?.musicalBrief, content?.musicParams, content?.musicProfile, content?.musicVolume, content?.type]);
 
   // Stop narration audio when content changes (e.g., navigating to a different story).
   // Music cleanup is handled in the render phase above (before effects run) to avoid
@@ -1064,6 +1049,21 @@ export default function PlayerPage() {
         <h1 className={styles.title}>{content.title}</h1>
 
         <div className={styles.controlsRow}>
+          {/* Music toggle — small, left of narration */}
+          {(content.musicalBrief || content.musicParams || content.musicProfile) && content.type !== 'song' && (
+            <div className={styles.musicGroup}>
+              <button
+                onClick={handleMusicPlayPause}
+                className={`${styles.musicToggleBtn} ${musicPlaying ? styles.musicToggleBtnActive : ''}`}
+                title={musicPlaying ? (lang === 'hi' ? 'Sangeet rokein' : 'Pause music') : (lang === 'hi' ? 'Sangeet chalayein' : 'Play music')}
+              >
+                🎵
+              </button>
+              <span className={styles.controlLabel}>
+                {lang === 'hi' ? 'Sangeet' : 'Music'}
+              </span>
+            </div>
+          )}
           <div className={styles.playGroup}>
             <button
               onClick={handlePlayPause}
@@ -1184,32 +1184,6 @@ export default function PlayerPage() {
             <span>{formatTime(duration)}</span>
           </div>
         </div>
-
-        {(content.musicalBrief || content.musicParams || content.musicProfile) && content.type !== 'song' && (
-          <div className={styles.musicControls}>
-            <button
-              onClick={handleMusicPlayPause}
-              className={`${styles.musicPlayBtn} ${musicPlaying ? styles.musicPlayBtnActive : ''}`}
-              title={musicPlaying ? (lang === 'hi' ? 'Sangeet rokein' : 'Pause music') : (lang === 'hi' ? 'Sangeet chalayein' : 'Play music')}
-            >
-              {musicPlaying ? '⏸' : '▶'}
-            </button>
-            <div className={styles.musicLabel}>
-              <span className={styles.musicIcon}>🎵</span>
-              <span>{lang === 'hi' ? 'Sangeet' : 'Music'}</span>
-            </div>
-            <div className={styles.musicSliderWrap}>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={musicVolume}
-                onChange={handleMusicVolumeChange}
-                className={styles.musicSlider}
-              />
-            </div>
-          </div>
-        )}
 
         <div className={styles.actions}>
           <button

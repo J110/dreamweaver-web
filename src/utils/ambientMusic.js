@@ -2705,11 +2705,8 @@ export class AmbientMusicEngine {
   resume() {
     this._paused = false;
     if (this._ctx && this._playing) this._ctx.resume();
-    // Resume native <audio> elements — but only if not muted (volume > 0).
-    // iOS ignores audio.volume, so mute pauses native elements; don't undo that.
-    if (this._volume > 0) {
-      this._nativeAudios.forEach(({ audio }) => { audio.play().catch(() => {}); });
-    }
+    // Resume native <audio> elements (Safari/iOS background audio)
+    this._nativeAudios.forEach(({ audio }) => { audio.play().catch(() => {}); });
   }
 
   stop(fade = true) {
@@ -2810,23 +2807,9 @@ export class AmbientMusicEngine {
         this._masterGain.gain.linearRampToValueAtTime(this._volume, now + 0.3);
       }
     }
-    // Update native <audio> element volumes (Safari/iOS)
-    if (this._nativeAudios.length && this._playing) {
-      this._nativeAudios.forEach(({ audio, baseGain }) => {
-        audio.volume = Math.min(1, baseGain * this._volume); // works on desktop
-      });
-      // iOS ignores audio.volume entirely — pause/play as mute/unmute fallback.
-      // Only do this when music is not user-paused (pause button handles its own state).
-      if (!this._paused) {
-        if (this._volume === 0) {
-          this._nativeAudios.forEach(({ audio }) => { audio.pause(); });
-        } else {
-          this._nativeAudios.forEach(({ audio }) => {
-            if (audio.paused) audio.play().catch(() => {});
-          });
-        }
-      }
-    }
+    // Native <audio> elements (Safari/iOS) play at source file levels.
+    // iOS ignores audio.volume — no programmatic volume control possible.
+    // Volume is managed per-content via musicVolume field instead of a slider.
   }
 
   getVolume() { return this._volume; }

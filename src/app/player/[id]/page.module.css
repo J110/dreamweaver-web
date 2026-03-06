@@ -141,14 +141,15 @@
 
 .controlsRow {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   gap: 40px;
   margin-bottom: 12px;
 }
 
 .playGroup,
-.aboutGroup {
+.aboutGroup,
+.musicGroup {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -188,6 +189,34 @@
   background: linear-gradient(135deg, rgba(107, 76, 230, 0.3), rgba(255, 107, 157, 0.2));
   border-color: rgba(107, 76, 230, 0.5);
   box-shadow: 0 0 16px rgba(107, 76, 230, 0.2);
+}
+
+/* ─── Music Toggle Button (in controls row) ───── */
+
+.musicToggleBtn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(107, 76, 230, 0.15);
+  border: 1px solid rgba(107, 76, 230, 0.25);
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.musicToggleBtn:active {
+  transform: scale(0.93);
+}
+
+.musicToggleBtnActive {
+  opacity: 1;
+  background: linear-gradient(135deg, rgba(107, 76, 230, 0.4), rgba(255, 107, 157, 0.3));
+  border-color: rgba(107, 76, 230, 0.5);
+  box-shadow: 0 0 10px rgba(107, 76, 230, 0.2);
 }
 
 /* ─── About Panel (expandable) ─────────────────── */
@@ -288,18 +317,18 @@
 }
 
 .playButton {
-  width: 56px;
-  height: 56px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--color-primary-purple), var(--color-primary-pink));
   border: none;
   color: white;
-  font-size: 26px;
+  font-size: 30px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 20px rgba(107, 76, 230, 0.3);
+  box-shadow: 0 6px 24px rgba(107, 76, 230, 0.35);
   transition: transform var(--transition-fast);
 }
 
@@ -481,95 +510,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.musicControls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  background: rgba(107, 76, 230, 0.08);
-  border: 1px solid rgba(107, 76, 230, 0.15);
-  border-radius: 12px;
-  margin-bottom: 16px;
-}
-
-.musicPlayBtn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(107, 76, 230, 0.25);
-  border: 1px solid rgba(107, 76, 230, 0.35);
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition-fast);
-  flex-shrink: 0;
-}
-
-.musicPlayBtn:active {
-  transform: scale(0.9);
-}
-
-.musicPlayBtnActive {
-  background: linear-gradient(135deg, rgba(107, 76, 230, 0.5), rgba(255, 107, 157, 0.4));
-  border-color: rgba(107, 76, 230, 0.5);
-  box-shadow: 0 0 12px rgba(107, 76, 230, 0.25);
-}
-
-.musicLabel {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--color-text-muted);
-  font-size: 13px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.musicIcon {
-  font-size: 16px;
-}
-
-.musicSliderWrap {
-  flex: 1;
-  display: flex;
-  align-items: center;
-}
-
-.musicSlider {
-  width: 100%;
-  height: 4px;
-  -webkit-appearance: none;
-  appearance: none;
-  background: rgba(107, 76, 230, 0.2);
-  border-radius: 2px;
-  outline: none;
-  cursor: pointer;
-}
-
-.musicSlider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-primary-purple), var(--color-primary-pink));
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(107, 76, 230, 0.3);
-}
-
-.musicSlider::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-primary-purple), var(--color-primary-pink));
-  cursor: pointer;
-  border: none;
-  box-shadow: 0 2px 8px rgba(107, 76, 230, 0.3);
 }
 
 .actions {
