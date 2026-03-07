@@ -122,3 +122,48 @@
   transform: translateY(-2px);
   box-shadow: 0 6px 24px rgba(107, 76, 230, 0.5);
 }
+
+.linksSection {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.linksList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.linkItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--color-text-light);
+  font-family: 'Quicksand', sans-serif;
+  font-size: 15px;
+  transition: background 0.2s;
+}
+
+.linkItem:hover {
+  background: rgba(107, 76, 230, 0.1);
+}
+
+.linkIcon {
+  font-size: 20px;
+  width: 28px;
+  text-align: center;
+}
+
+.linkText {
+  flex: 1;
+  font-weight: 500;
+}
+
+.linkArrow {
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
