@@ -147,6 +147,11 @@ export default function ProfilePage() {
 
           {/* About links */}
           <div className={styles.linksSection}>
+            <Link href="/?view=landing" className={styles.linkItem}>
+              <span className={styles.linkIcon}>🌙</span>
+              <span className={styles.linkText}>Visit Our Website</span>
+              <span className={styles.linkArrow}>→</span>
+            </Link>
             <Link href="/how-it-works" className={styles.linkItem}>
               <span className={styles.linkIcon}>🧠</span>
               <span className={styles.linkText}>How It Works</span>
