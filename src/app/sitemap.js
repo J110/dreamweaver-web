@@ -1,7 +1,9 @@
 import { SEED_STORIES } from '@/utils/seedData';
 import { generateSlug, CATEGORY_MAP, AGE_RANGES } from '@/utils/slugify';
 
-export default function sitemap() {
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+export default async function sitemap() {
   const allStories = [...(SEED_STORIES.en || []), ...(SEED_STORIES.hi || [])];
   const now = new Date();
 
@@ -55,5 +57,28 @@ export default function sitemap() {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...storyUrls, ...playerUrls, ...categoryUrls, ...ageUrls];
+  // Blog pages
+  const blogStaticUrls = [
+    { url: 'https://dreamvalley.app/blog', lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
+  ];
+
+  let blogPostUrls = [];
+  try {
+    const blogRes = await fetch(`${API_URL}/api/v1/blog/posts?page_size=1000&status=published`, {
+      next: { revalidate: 3600 },
+    });
+    if (blogRes.ok) {
+      const blogData = await blogRes.json();
+      blogPostUrls = (blogData.posts || []).map((post) => ({
+        url: `https://dreamvalley.app/blog/${post.slug}`,
+        lastModified: post.updatedAt ? new Date(post.updatedAt) : (post.publishedAt ? new Date(post.publishedAt) : now),
+        changeFrequency: 'monthly',
+        priority: 0.6,
+      }));
+    }
+  } catch {
+    // Blog API not available — skip blog posts in sitemap
+  }
+
+  return [...staticPages, ...storyUrls, ...playerUrls, ...categoryUrls, ...ageUrls, ...blogStaticUrls, ...blogPostUrls];
 }

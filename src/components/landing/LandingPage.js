@@ -462,6 +462,7 @@ export default function LandingPage() {
               <h4>Product</h4>
               <Link href="/how-it-works">How It Works</Link>
               <Link href="/about">About</Link>
+              <Link href="/blog">Blog</Link>
               <Link href="/support">Contact</Link>
             </div>
             <div className={styles.footerCol}>

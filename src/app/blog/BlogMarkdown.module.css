@@ -1,0 +1,185 @@
+/* Typography styles for rendered markdown content */
+
+.markdown {
+  max-width: 720px;
+  margin: 0 auto;
+  color: #C8BFD8;
+  font-size: 17px;
+  line-height: 1.85;
+}
+
+.markdown h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #FFF5E6;
+  margin: 48px 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(107, 76, 230, 0.15);
+}
+
+.markdown h3 {
+  font-size: 21px;
+  font-weight: 700;
+  color: #F0E8FF;
+  margin: 36px 0 12px;
+}
+
+.markdown h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #E0D8F0;
+  margin: 28px 0 10px;
+}
+
+.markdown p {
+  margin: 0 0 20px;
+}
+
+.markdown strong {
+  color: #E8E0F0;
+  font-weight: 600;
+}
+
+.markdown em {
+  font-style: italic;
+  color: #D0C8E0;
+}
+
+.markdown a {
+  color: #9B7EF0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s;
+}
+
+.markdown a:hover {
+  color: #B89EFF;
+}
+
+.markdown ul,
+.markdown ol {
+  margin: 0 0 20px;
+  padding-left: 28px;
+}
+
+.markdown li {
+  margin-bottom: 8px;
+}
+
+.markdown ul li::marker {
+  color: #6B4CE6;
+}
+
+.markdown ol li::marker {
+  color: #6B4CE6;
+  font-weight: 600;
+}
+
+.markdown blockquote {
+  margin: 24px 0;
+  padding: 16px 24px;
+  border-left: 4px solid #6B4CE6;
+  background: rgba(107, 76, 230, 0.08);
+  border-radius: 0 12px 12px 0;
+  color: #D8D0E8;
+  font-style: italic;
+}
+
+.markdown blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.markdown hr {
+  border: none;
+  border-top: 1px solid rgba(107, 76, 230, 0.2);
+  margin: 40px 0;
+}
+
+.figure {
+  margin: 28px 0;
+  text-align: center;
+}
+
+.image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.caption {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #8A80A0;
+  font-style: italic;
+}
+
+.inlineCode {
+  background: rgba(107, 76, 230, 0.15);
+  color: #C8B8F0;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.9em;
+}
+
+.codeBlock {
+  background: rgba(13, 11, 46, 0.8);
+  border: 1px solid rgba(107, 76, 230, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  overflow-x: auto;
+  margin: 24px 0;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #C8BFD8;
+}
+
+.markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+}
+
+.markdown th,
+.markdown td {
+  padding: 10px 16px;
+  text-align: left;
+  border-bottom: 1px solid rgba(107, 76, 230, 0.15);
+}
+
+.markdown th {
+  color: #FFF5E6;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.markdown del {
+  color: #7A6F8E;
+  text-decoration: line-through;
+}
+
+@media (max-width: 768px) {
+  .markdown {
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  .markdown h2 {
+    font-size: 22px;
+    margin: 36px 0 12px;
+  }
+
+  .markdown h3 {
+    font-size: 19px;
+    margin: 28px 0 10px;
+  }
+
+  .codeBlock {
+    padding: 14px;
+    font-size: 13px;
+  }
+}

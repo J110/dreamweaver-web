@@ -162,6 +162,11 @@ export default function ProfilePage() {
               <span className={styles.linkText}>About Us</span>
               <span className={styles.linkArrow}>→</span>
             </Link>
+            <Link href="/blog" className={styles.linkItem}>
+              <span className={styles.linkIcon}>📝</span>
+              <span className={styles.linkText}>Blog</span>
+              <span className={styles.linkArrow}>→</span>
+            </Link>
             <Link href="/support" className={styles.linkItem}>
               <span className={styles.linkIcon}>💬</span>
               <span className={styles.linkText}>Support</span>

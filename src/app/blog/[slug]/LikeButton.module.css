@@ -1,0 +1,35 @@
+.likeBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(107, 76, 230, 0.1);
+  border: 1px solid rgba(107, 76, 230, 0.25);
+  border-radius: 24px;
+  color: #9B7EF0;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.likeBtn:hover {
+  background: rgba(107, 76, 230, 0.2);
+  border-color: rgba(107, 76, 230, 0.4);
+}
+
+.likeBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.liked {
+  background: rgba(255, 107, 157, 0.15);
+  border-color: rgba(255, 107, 157, 0.3);
+  color: #FF6B9D;
+}
+
+.liked:hover {
+  background: rgba(255, 107, 157, 0.25);
+  border-color: rgba(255, 107, 157, 0.5);
+}

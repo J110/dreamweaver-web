@@ -1,0 +1,647 @@
+.page {
+  min-height: 100vh;
+  background: #0B0A1E;
+  color: #E8E0F0;
+  padding: 40px 20px 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── Auth ────────────────────────────────── */
+.authBox {
+  max-width: 400px;
+  margin: 120px auto;
+  text-align: center;
+}
+
+.authTitle {
+  font-size: 28px;
+  color: #FFF5E6;
+  margin: 0 0 8px;
+}
+
+.authDesc {
+  color: #8A80A0;
+  margin: 0 0 24px;
+  font-size: 15px;
+}
+
+.authError {
+  color: #FF6B9D;
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+
+.authInput {
+  width: 100%;
+  padding: 14px 18px;
+  background: rgba(13, 11, 46, 0.8);
+  border: 1px solid rgba(107, 76, 230, 0.3);
+  border-radius: 12px;
+  color: #E8E0F0;
+  font-size: 15px;
+  font-family: monospace;
+  outline: none;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+}
+
+.authInput:focus {
+  border-color: #6B4CE6;
+}
+
+.authBtn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #6B4CE6, #8B6CF0);
+  border: none;
+  border-radius: 12px;
+  color: #FFF;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.authBtn:hover {
+  opacity: 0.9;
+}
+
+/* ── Admin Header ────────────────────────── */
+.adminHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.adminTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #FFF5E6;
+  margin: 0;
+}
+
+.newPostBtn {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #6B4CE6, #8B6CF0);
+  border: none;
+  border-radius: 20px;
+  color: #FFF;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.newPostBtn:hover {
+  opacity: 0.9;
+}
+
+/* ── Tabs ─────────────────────────────────── */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba(107, 76, 230, 0.15);
+}
+
+.tab {
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #8A80A0;
+  font-size: 15px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.tab:hover {
+  color: #C8BFD8;
+}
+
+.tabActive {
+  color: #9B7EF0;
+  border-bottom-color: #6B4CE6;
+}
+
+.loading {
+  color: #8A80A0;
+  text-align: center;
+  padding: 40px;
+}
+
+.emptyText {
+  color: #7A6F8E;
+  text-align: center;
+  padding: 40px;
+  font-size: 15px;
+}
+
+/* ── Posts Table ──────────────────────────── */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #7A6F8E;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(107, 76, 230, 0.15);
+}
+
+.table td {
+  padding: 14px 12px;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(107, 76, 230, 0.08);
+  color: #B5A8CC;
+}
+
+.titleCell {
+  font-weight: 600;
+  color: #E8E0F0;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dateCell {
+  white-space: nowrap;
+}
+
+.statusBadge {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.statusPublished {
+  background: rgba(78, 205, 196, 0.15);
+  color: #4ECDC4;
+}
+
+.statusDraft {
+  background: rgba(255, 217, 61, 0.12);
+  color: #FFD93D;
+}
+
+.actionsCell {
+  white-space: nowrap;
+}
+
+.editBtn {
+  padding: 5px 12px;
+  background: rgba(107, 76, 230, 0.1);
+  border: 1px solid rgba(107, 76, 230, 0.2);
+  border-radius: 8px;
+  color: #9B7EF0;
+  font-size: 13px;
+  cursor: pointer;
+  margin-right: 6px;
+  transition: background 0.2s;
+}
+
+.editBtn:hover {
+  background: rgba(107, 76, 230, 0.2);
+}
+
+.deleteBtn {
+  padding: 5px 12px;
+  background: rgba(255, 107, 157, 0.08);
+  border: 1px solid rgba(255, 107, 157, 0.2);
+  border-radius: 8px;
+  color: #FF6B9D;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.deleteBtn:hover {
+  background: rgba(255, 107, 157, 0.15);
+}
+
+/* ── Comments Moderation ─────────────────── */
+.commentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.commentCard {
+  padding: 16px;
+  background: rgba(30, 25, 60, 0.4);
+  border: 1px solid rgba(107, 76, 230, 0.1);
+  border-radius: 12px;
+}
+
+.commentMeta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.commentPost {
+  color: #9B7EF0;
+  font-weight: 600;
+}
+
+.commentDate {
+  color: #7A6F8E;
+}
+
+.commentInfo {
+  font-size: 14px;
+  color: #E0D8F0;
+  margin-bottom: 6px;
+}
+
+.replyIndicator {
+  color: #7A6F8E;
+  font-weight: 400;
+}
+
+.commentText {
+  font-size: 14px;
+  color: #B5A8CC;
+  margin: 0 0 10px;
+  line-height: 1.5;
+}
+
+/* ── Editor ──────────────────────────────── */
+.editor {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.editorHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.editorHeader h2 {
+  font-size: 24px;
+  color: #FFF5E6;
+  margin: 0;
+}
+
+.cancelBtn {
+  background: none;
+  border: none;
+  color: #8A80A0;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.cancelBtn:hover {
+  color: #E8E0F0;
+}
+
+.message {
+  padding: 10px 16px;
+  background: rgba(107, 76, 230, 0.1);
+  border: 1px solid rgba(107, 76, 230, 0.2);
+  border-radius: 10px;
+  color: #B5A8CC;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.field {
+  margin-bottom: 20px;
+}
+
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #8A80A0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(13, 11, 46, 0.6);
+  border: 1px solid rgba(107, 76, 230, 0.2);
+  border-radius: 10px;
+  color: #E8E0F0;
+  font-size: 15px;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  border-color: rgba(107, 76, 230, 0.5);
+}
+
+.inputTextarea {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(13, 11, 46, 0.6);
+  border: 1px solid rgba(107, 76, 230, 0.2);
+  border-radius: 10px;
+  color: #E8E0F0;
+  font-size: 15px;
+  font-family: inherit;
+  outline: none;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.inputTextarea:focus {
+  border-color: rgba(107, 76, 230, 0.5);
+}
+
+/* Tags */
+.tagEditor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.selectedTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tagPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  background: rgba(107, 76, 230, 0.15);
+  color: #9B7EF0;
+  border-radius: 14px;
+  font-size: 13px;
+}
+
+.tagRemove {
+  background: none;
+  border: none;
+  color: #9B7EF0;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+}
+
+.tagInputRow {
+  display: flex;
+  gap: 8px;
+}
+
+.tagInputField {
+  flex: 1;
+  padding: 8px 14px;
+  background: rgba(13, 11, 46, 0.6);
+  border: 1px solid rgba(107, 76, 230, 0.2);
+  border-radius: 10px;
+  color: #E8E0F0;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+}
+
+.tagInputField:focus {
+  border-color: rgba(107, 76, 230, 0.5);
+}
+
+.suggestedTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.suggestedTag {
+  padding: 3px 10px;
+  background: rgba(107, 76, 230, 0.06);
+  border: 1px solid rgba(107, 76, 230, 0.12);
+  border-radius: 12px;
+  color: #7A6F8E;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.suggestedTag:hover {
+  background: rgba(107, 76, 230, 0.12);
+  color: #9B7EF0;
+}
+
+/* SEO Fields */
+.seoFields {
+  padding: 16px;
+  background: rgba(30, 25, 60, 0.3);
+  border: 1px solid rgba(107, 76, 230, 0.1);
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+/* Body Editor */
+.bodyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.bodyHeader label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #8A80A0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.previewToggle {
+  padding: 4px 12px;
+  background: rgba(107, 76, 230, 0.1);
+  border: 1px solid rgba(107, 76, 230, 0.2);
+  border-radius: 8px;
+  color: #9B7EF0;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.bodyEditor {
+  display: flex;
+  gap: 16px;
+}
+
+.bodyTextarea {
+  flex: 1;
+  min-height: 400px;
+  padding: 16px;
+  background: rgba(13, 11, 46, 0.8);
+  border: 1px solid rgba(107, 76, 230, 0.2);
+  border-radius: 12px;
+  color: #E8E0F0;
+  font-size: 14px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  line-height: 1.6;
+  outline: none;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.bodyTextarea:focus {
+  border-color: rgba(107, 76, 230, 0.5);
+}
+
+.previewPane {
+  flex: 1;
+  padding: 16px;
+  background: rgba(30, 25, 60, 0.4);
+  border: 1px solid rgba(107, 76, 230, 0.1);
+  border-radius: 12px;
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+/* Cover Section */
+.coverSection {
+  margin-bottom: 24px;
+}
+
+.coverSection label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #8A80A0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.coverPreview {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.generateBtn {
+  padding: 10px 20px;
+  background: rgba(78, 205, 196, 0.12);
+  border: 1px solid rgba(78, 205, 196, 0.3);
+  border-radius: 10px;
+  color: #4ECDC4;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.generateBtn:hover {
+  background: rgba(78, 205, 196, 0.2);
+}
+
+.generateBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.hint {
+  font-size: 12px;
+  color: #7A6F8E;
+  margin: 6px 0 0;
+}
+
+/* Editor Actions */
+.editorActions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 24px;
+  border-top: 1px solid rgba(107, 76, 230, 0.15);
+}
+
+.draftBtn {
+  padding: 12px 24px;
+  background: rgba(107, 76, 230, 0.1);
+  border: 1px solid rgba(107, 76, 230, 0.3);
+  border-radius: 12px;
+  color: #9B7EF0;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.draftBtn:hover {
+  background: rgba(107, 76, 230, 0.2);
+}
+
+.draftBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.publishBtn {
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #6B4CE6, #8B6CF0);
+  border: none;
+  border-radius: 12px;
+  color: #FFF;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.publishBtn:hover {
+  opacity: 0.9;
+}
+
+.publishBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page {
+    padding: 20px 16px 40px;
+  }
+
+  .adminHeader {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .table {
+    font-size: 13px;
+  }
+
+  .table th,
+  .table td {
+    padding: 10px 8px;
+  }
+
+  .bodyEditor {
+    flex-direction: column;
+  }
+
+  .previewPane {
+    max-height: 300px;
+  }
+}

@@ -9,8 +9,8 @@ import useVersionCheck from '@/hooks/useVersionCheck';
 import BottomNav from './BottomNav';
 import InstallPrompt from './InstallPrompt';
 
-const NO_NAV_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy', '/how-it-works', '/about'];
-const PUBLIC_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy', '/how-it-works', '/about'];
+const NO_NAV_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy', '/how-it-works', '/about', '/blog'];
+const PUBLIC_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy', '/how-it-works', '/about', '/blog'];
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 function isPublicRoute(pathname) {
@@ -19,7 +19,9 @@ function isPublicRoute(pathname) {
     || pathname.startsWith('/player/')
     || pathname.startsWith('/stories/')
     || pathname.startsWith('/category/')
-    || pathname.startsWith('/ages/');
+    || pathname.startsWith('/ages/')
+    || pathname.startsWith('/blog/')
+    || pathname === '/blog';
 }
 
 export default function AppShell({ children }) {
@@ -102,7 +104,8 @@ export default function AppShell({ children }) {
   // Hide nav on public routes, player pages, SEO pages, and while checking auth
   // On home page (/), show nav for logged-in app users (story grid), hide for anonymous (landing page)
   const isSEOPage = pathname.startsWith('/stories/')
-    || pathname.startsWith('/category/') || pathname.startsWith('/ages/');
+    || pathname.startsWith('/category/') || pathname.startsWith('/ages/')
+    || pathname.startsWith('/blog/') || pathname === '/blog';
   const isLandingPage = pathname === '/' && !isLoggedIn();
   const showNav = !NO_NAV_ROUTES.includes(pathname) && !pathname.startsWith('/player/')
     && !isSEOPage && !isLandingPage && checked;
