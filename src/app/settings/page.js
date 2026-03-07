@@ -101,28 +101,26 @@ export default function SettingsPage() {
         </button>
 
         <div className={styles.linksSection}>
-          <h2 className={styles.sectionTitle}>
-            {lang === 'hi' ? 'Dream Valley के बारे में' : 'About Dream Valley'}
-          </h2>
+          <h2 className={styles.sectionTitle}>About Dream Valley</h2>
           <div className={styles.linksList}>
             <Link href="/how-it-works" className={styles.linkItem}>
               <span className={styles.linkIcon}>🧠</span>
-              <span className={styles.linkText}>{lang === 'hi' ? 'यह कैसे काम करता है' : 'How It Works'}</span>
+              <span className={styles.linkText}>How It Works</span>
               <span className={styles.linkArrow}>→</span>
             </Link>
             <Link href="/about" className={styles.linkItem}>
               <span className={styles.linkIcon}>💜</span>
-              <span className={styles.linkText}>{lang === 'hi' ? 'हमारे बारे में' : 'About Us'}</span>
+              <span className={styles.linkText}>About Us</span>
               <span className={styles.linkArrow}>→</span>
             </Link>
             <Link href="/support" className={styles.linkItem}>
               <span className={styles.linkIcon}>💬</span>
-              <span className={styles.linkText}>{lang === 'hi' ? 'सहायता' : 'Support'}</span>
+              <span className={styles.linkText}>Support</span>
               <span className={styles.linkArrow}>→</span>
             </Link>
             <Link href="/privacy" className={styles.linkItem}>
               <span className={styles.linkIcon}>🔒</span>
-              <span className={styles.linkText}>{lang === 'hi' ? 'गोपनीयता नीति' : 'Privacy Policy'}</span>
+              <span className={styles.linkText}>Privacy Policy</span>
               <span className={styles.linkArrow}>→</span>
             </Link>
           </div>
