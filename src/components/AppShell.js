@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { I18nProvider, hasCompletedOnboarding } from '@/utils/i18n';
 import { VoicePreferencesProvider } from '@/utils/voicePreferences';
 import { isLoggedIn, getToken, logout } from '@/utils/auth';
@@ -26,7 +26,6 @@ function isPublicRoute(pathname) {
 
 export default function AppShell({ children }) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const router = useRouter();
   const [checked, setChecked] = useState(false);
   const tokenValidated = useRef(false);
@@ -107,7 +106,8 @@ export default function AppShell({ children }) {
   const isSEOPage = pathname.startsWith('/stories/')
     || pathname.startsWith('/category/') || pathname.startsWith('/ages/')
     || pathname.startsWith('/blog/') || pathname === '/blog';
-  const isLandingPage = pathname === '/' && (!isLoggedIn() || searchParams.get('view') === 'landing');
+  const hasLandingParam = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('view') === 'landing';
+  const isLandingPage = pathname === '/' && (!isLoggedIn() || hasLandingParam);
   const showNav = !NO_NAV_ROUTES.includes(pathname) && !pathname.startsWith('/player/')
     && !isSEOPage && !isLandingPage && checked;
 
