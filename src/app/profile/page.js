@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import StarField from '@/components/StarField';
 import { isLoggedIn, getUser, logout } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
@@ -142,6 +143,30 @@ export default function ProfilePage() {
                 </button>
               </div>
             )}
+          </div>
+
+          {/* About links */}
+          <div className={styles.linksSection}>
+            <Link href="/how-it-works" className={styles.linkItem}>
+              <span className={styles.linkIcon}>🧠</span>
+              <span className={styles.linkText}>How It Works</span>
+              <span className={styles.linkArrow}>→</span>
+            </Link>
+            <Link href="/about" className={styles.linkItem}>
+              <span className={styles.linkIcon}>💜</span>
+              <span className={styles.linkText}>About Us</span>
+              <span className={styles.linkArrow}>→</span>
+            </Link>
+            <Link href="/support" className={styles.linkItem}>
+              <span className={styles.linkIcon}>💬</span>
+              <span className={styles.linkText}>Support</span>
+              <span className={styles.linkArrow}>→</span>
+            </Link>
+            <Link href="/privacy" className={styles.linkItem}>
+              <span className={styles.linkIcon}>🔒</span>
+              <span className={styles.linkText}>Privacy Policy</span>
+              <span className={styles.linkArrow}>→</span>
+            </Link>
           </div>
 
           {/* Logout */}

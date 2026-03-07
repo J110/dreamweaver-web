@@ -2,7 +2,6 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import StarField from '@/components/StarField';
 import { useI18n } from '@/utils/i18n';
 import { useVoicePreferences } from '@/utils/voicePreferences';
@@ -100,31 +99,6 @@ export default function SettingsPage() {
           }
         </button>
 
-        <div className={styles.linksSection}>
-          <h2 className={styles.sectionTitle}>About Dream Valley</h2>
-          <div className={styles.linksList}>
-            <Link href="/how-it-works" className={styles.linkItem}>
-              <span className={styles.linkIcon}>🧠</span>
-              <span className={styles.linkText}>How It Works</span>
-              <span className={styles.linkArrow}>→</span>
-            </Link>
-            <Link href="/about" className={styles.linkItem}>
-              <span className={styles.linkIcon}>💜</span>
-              <span className={styles.linkText}>About Us</span>
-              <span className={styles.linkArrow}>→</span>
-            </Link>
-            <Link href="/support" className={styles.linkItem}>
-              <span className={styles.linkIcon}>💬</span>
-              <span className={styles.linkText}>Support</span>
-              <span className={styles.linkArrow}>→</span>
-            </Link>
-            <Link href="/privacy" className={styles.linkItem}>
-              <span className={styles.linkIcon}>🔒</span>
-              <span className={styles.linkText}>Privacy Policy</span>
-              <span className={styles.linkArrow}>→</span>
-            </Link>
-          </div>
-        </div>
       </div>
     </>
   );
