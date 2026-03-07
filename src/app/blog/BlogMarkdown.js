@@ -15,6 +15,7 @@ export default function BlogMarkdown({ content }) {
     <div className={styles.markdown}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
+        children={content}
         components={{
           // Links open in new tab
           a: ({ href, children, ...props }) => (
