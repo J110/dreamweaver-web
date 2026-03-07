@@ -14,7 +14,7 @@ async function getPostsByTag(tag, page = 1) {
   try {
     const res = await fetch(
       `${API_URL}/api/v1/blog/posts/tag/${tag}?page=${page}&page_size=9`,
-      { next: { revalidate: 300 } }
+      { cache: 'no-store' }
     );
     if (res.ok) {
       return await res.json();

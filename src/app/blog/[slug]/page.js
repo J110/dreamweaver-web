@@ -11,7 +11,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 async function getPost(slug) {
   try {
     const res = await fetch(`${API_URL}/api/v1/blog/posts/${slug}`, {
-      next: { revalidate: 300 },
+      cache: 'no-store',
     });
     if (res.ok) {
       return await res.json();
@@ -25,7 +25,7 @@ async function getRelatedPosts(tags, currentSlug) {
   try {
     const res = await fetch(
       `${API_URL}/api/v1/blog/posts/tag/${tags[0]}?page_size=4`,
-      { next: { revalidate: 3600 } }
+      { cache: 'no-store' }
     );
     if (res.ok) {
       const data = await res.json();

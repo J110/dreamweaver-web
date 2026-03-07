@@ -22,7 +22,7 @@ async function getPosts(page = 1) {
   try {
     const res = await fetch(
       `${API_URL}/api/v1/blog/posts?page=${page}&page_size=9&status=published`,
-      { next: { revalidate: 300 } }
+      { cache: 'no-store' }
     );
     if (res.ok) {
       return await res.json();
