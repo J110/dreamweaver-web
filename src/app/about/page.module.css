@@ -1,0 +1,51 @@
+/* About Page */
+.page {
+  min-height: 100vh;
+  background: #0B0A1E;
+  color: #E8E0F0;
+  padding: 80px 20px 40px;
+}
+
+.breadcrumb { font-size: 13px; color: #7A6F8E; margin: 0 auto 24px; max-width: 760px; }
+.breadcrumb a { color: #6B4CE6; text-decoration: none; }
+
+.hero { max-width: 760px; margin: 0 auto 60px; text-align: center; }
+.heroTitle { font-size: 36px; font-weight: 700; color: #FFF5E6; margin: 0 0 16px; }
+.heroSubtitle { font-size: 17px; color: #A89BBF; line-height: 1.7; margin: 0; }
+
+.section { max-width: 760px; margin: 0 auto 56px; }
+.sectionTitle { font-size: 26px; font-weight: 700; color: #FFF5E6; margin: 0 0 20px; padding-bottom: 12px; border-bottom: 2px solid rgba(107, 76, 230, 0.2); }
+.section > p { font-size: 16px; color: #B5A8CC; line-height: 1.8; margin: 0 0 16px; }
+
+/* Team */
+.teamGrid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+.teamCard { padding: 28px; background: rgba(30, 25, 60, 0.7); border: 1px solid rgba(107, 76, 230, 0.2); border-radius: 16px; }
+.teamAvatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #6B4CE6, #FF6B9D); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: white; margin-bottom: 16px; }
+.teamCard h3 { font-size: 20px; font-weight: 700; color: #FFF5E6; margin: 0 0 4px; }
+.teamRole { font-size: 14px; color: #F5C469; font-weight: 600; margin: 0 0 12px; }
+.teamBio { font-size: 14px; color: #A89BBF; line-height: 1.7; margin: 0 0 12px; }
+.teamLink { font-size: 14px; color: #6B4CE6; text-decoration: none; font-weight: 600; }
+.teamLink:hover { color: #9B7EFF; }
+
+/* Beliefs */
+.beliefGrid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+.beliefCard { padding: 24px; background: rgba(30, 25, 60, 0.5); border: 1px solid rgba(107, 76, 230, 0.15); border-radius: 16px; }
+.beliefCard h3 { font-size: 17px; font-weight: 700; color: #F5C469; margin: 0 0 8px; }
+.beliefCard p { font-size: 14px; color: #A89BBF; line-height: 1.7; margin: 0; }
+
+/* CTA */
+.cta { text-align: center; max-width: 760px; margin: 0 auto 40px; padding: 40px 0; border-top: 1px solid rgba(107, 76, 230, 0.15); display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.ctaButton { display: inline-block; padding: 16px 36px; background: linear-gradient(135deg, #F5C469, #E8A838); color: #1A1A2E; border-radius: 30px; font-size: 17px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 20px rgba(245, 196, 105, 0.3); transition: transform 0.2s; }
+.ctaButton:hover { transform: translateY(-2px); }
+.ctaSecondary { color: #6B4CE6; text-decoration: none; font-size: 15px; font-weight: 600; }
+.ctaSecondary:hover { color: #9B7EFF; }
+
+.backLink { text-align: center; max-width: 760px; margin: 0 auto; padding-bottom: 40px; }
+.backLink a { color: #7A6F8E; text-decoration: none; font-size: 14px; }
+.backLink a:hover { color: #E8E0F0; }
+
+@media (min-width: 768px) {
+  .heroTitle { font-size: 44px; }
+  .teamGrid { grid-template-columns: repeat(2, 1fr); }
+  .beliefGrid { grid-template-columns: repeat(3, 1fr); }
+}

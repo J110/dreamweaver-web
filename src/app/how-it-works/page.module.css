@@ -1,0 +1,176 @@
+/* How It Works Page */
+.page {
+  min-height: 100vh;
+  background: #0B0A1E;
+  color: #E8E0F0;
+  padding: 80px 20px 40px;
+}
+
+.breadcrumb { font-size: 13px; color: #7A6F8E; margin: 0 auto 24px; max-width: 760px; }
+.breadcrumb a { color: #6B4CE6; text-decoration: none; }
+
+/* Hero */
+.hero {
+  max-width: 760px;
+  margin: 0 auto 60px;
+  text-align: center;
+}
+
+.heroTitle {
+  font-size: 36px;
+  font-weight: 700;
+  color: #FFF5E6;
+  margin: 0 0 16px;
+  line-height: 1.2;
+}
+
+.heroSubtitle {
+  font-size: 17px;
+  color: #A89BBF;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Sections */
+.section {
+  max-width: 760px;
+  margin: 0 auto 56px;
+}
+
+.sectionTitle {
+  font-size: 26px;
+  font-weight: 700;
+  color: #FFF5E6;
+  margin: 0 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(107, 76, 230, 0.2);
+}
+
+.sectionBody p {
+  font-size: 16px;
+  color: #B5A8CC;
+  line-height: 1.8;
+  margin: 0 0 16px;
+}
+
+.sectionBody strong {
+  color: #F5C469;
+  font-weight: 600;
+}
+
+/* Phase cards */
+.phaseCards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.phaseCard {
+  padding: 24px;
+  background: rgba(30, 25, 60, 0.7);
+  border: 1px solid rgba(107, 76, 230, 0.2);
+  border-radius: 16px;
+}
+
+.phaseIndicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-bottom: 12px;
+}
+
+.p1 { background: #F5C469; box-shadow: 0 0 8px rgba(245, 196, 105, 0.5); }
+.p2 { background: #9B7EFF; box-shadow: 0 0 8px rgba(155, 126, 255, 0.4); }
+.p3 { background: #2A2050; border: 1px solid rgba(107, 76, 230, 0.3); }
+
+.phaseCard h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #FFF5E6;
+  margin: 0 0 4px;
+}
+
+.phaseTime {
+  font-size: 13px;
+  color: #7A6F8E;
+  margin: 0 0 8px;
+  font-weight: 600;
+}
+
+.phaseCard p:last-child {
+  font-size: 14px;
+  color: #A89BBF;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Audio layers */
+.audioLayers {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.audioLayer {
+  padding: 20px;
+  background: rgba(30, 25, 60, 0.5);
+  border-left: 3px solid #6B4CE6;
+  border-radius: 0 12px 12px 0;
+}
+
+.audioLayer h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #E8E0F0;
+  margin: 0 0 8px;
+}
+
+.audioLayer p {
+  font-size: 14px;
+  color: #A89BBF;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* CTA */
+.cta {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 40px;
+  padding: 40px 0;
+  border-top: 1px solid rgba(107, 76, 230, 0.15);
+}
+
+.ctaButton {
+  display: inline-block;
+  padding: 16px 36px;
+  background: linear-gradient(135deg, #F5C469, #E8A838);
+  color: #1A1A2E;
+  border-radius: 30px;
+  font-size: 17px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(245, 196, 105, 0.3);
+  transition: transform 0.2s;
+}
+
+.ctaButton:hover { transform: translateY(-2px); }
+.ctaHint { font-size: 13px; color: #7A6F8E; margin: 12px 0 0; }
+
+.backLink {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto;
+  padding-bottom: 40px;
+}
+
+.backLink a { color: #7A6F8E; text-decoration: none; font-size: 14px; }
+.backLink a:hover { color: #E8E0F0; }
+.sep { color: #7A6F8E; margin: 0 12px; }
+
+@media (min-width: 768px) {
+  .heroTitle { font-size: 44px; }
+  .phaseCards { grid-template-columns: repeat(3, 1fr); }
+}

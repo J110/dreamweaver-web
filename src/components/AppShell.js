@@ -9,13 +9,17 @@ import useVersionCheck from '@/hooks/useVersionCheck';
 import BottomNav from './BottomNav';
 import InstallPrompt from './InstallPrompt';
 
-const NO_NAV_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy'];
-const PUBLIC_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy'];
+const NO_NAV_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy', '/how-it-works', '/about'];
+const PUBLIC_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy', '/how-it-works', '/about'];
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 function isPublicRoute(pathname) {
-  // Static public routes + shared story links (/player/*)
-  return PUBLIC_ROUTES.includes(pathname) || pathname.startsWith('/player/');
+  // Static public routes + shared story links + SEO pages
+  return PUBLIC_ROUTES.includes(pathname)
+    || pathname.startsWith('/player/')
+    || pathname.startsWith('/stories/')
+    || pathname.startsWith('/category/')
+    || pathname.startsWith('/ages/');
 }
 
 export default function AppShell({ children }) {
@@ -37,6 +41,27 @@ export default function AppShell({ children }) {
 
   useEffect(() => {
     const isPublic = isPublicRoute(pathname);
+    const isHome = pathname === '/';
+
+    // Home page handles its own routing (landing vs app grid) — don't redirect
+    if (isHome) {
+      setChecked(true);
+      // Still validate token if logged in
+      if (isLoggedIn() && !tokenValidated.current) {
+        tokenValidated.current = true;
+        const token = getToken();
+        fetch(`${API_URL}/api/v1/users/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+          .then((res) => {
+            if (res.status === 401) {
+              logout();
+            }
+          })
+          .catch(() => {});
+      }
+      return;
+    }
 
     // Check onboarding completion — skip for public/static pages and shared story links
     if (!hasCompletedOnboarding() && !isPublic) {
@@ -74,8 +99,11 @@ export default function AppShell({ children }) {
     setChecked(true);
   }, [pathname, router]);
 
-  // Hide nav on public routes, player pages, and while checking auth
-  const showNav = !NO_NAV_ROUTES.includes(pathname) && !pathname.startsWith('/player/') && checked;
+  // Hide nav on public routes, player pages, SEO pages, and while checking auth
+  const isLandingOrSEO = pathname === '/' || pathname.startsWith('/stories/')
+    || pathname.startsWith('/category/') || pathname.startsWith('/ages/');
+  const showNav = !NO_NAV_ROUTES.includes(pathname) && !pathname.startsWith('/player/')
+    && !isLandingOrSEO && checked;
 
   return (
     <I18nProvider>
