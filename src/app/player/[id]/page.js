@@ -916,19 +916,26 @@ export default function PlayerPage() {
 
     const options = [];
 
-    // Songs: show ALL variants as switches (each is a distinct musical style)
+    // Songs: show ALL variants as switches (each is a distinct musical style).
+    // Song voices map to instrument styles, independent of narrator VOICES config.
     const isSong = content.type === 'song';
+    const SONG_VOICE_LABELS = {
+      female_1: { label: 'Harp', labelHi: 'वीणा', icon: '🎵' },
+      female_2: { label: 'Guitar', labelHi: 'गिटार', icon: '🎸' },
+      female_3: { label: 'Piano', labelHi: 'पियानो', icon: '🎹' },
+      male_1:   { label: 'Cello', labelHi: 'चेलो', icon: '🎻' },
+      male_2:   { label: 'Flute', labelHi: 'बांसुरी', icon: '🪈' },
+    };
     if (isSong) {
       for (const variant of allVariants) {
         const variantBaseId = variant.voice.replace(/_hi$/, '');
         const isActive = variant.voice === selectedVoice;
         if (!isActive) {
-          const meta = VOICES[variantBaseId];
-          if (!meta) continue;
-          const label = getVoiceLabel(variantBaseId, lang);
+          const songMeta = SONG_VOICE_LABELS[variantBaseId];
+          const label = songMeta ? (lang === 'hi' ? songMeta.labelHi : songMeta.label) : variantBaseId.replace(/_/g, ' ');
           options.push({
             voiceId: variant.voice,
-            icon: meta.icon,
+            icon: songMeta?.icon || '🎶',
             switchLabel: label,
           });
         }
