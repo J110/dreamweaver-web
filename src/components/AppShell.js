@@ -100,10 +100,12 @@ export default function AppShell({ children }) {
   }, [pathname, router]);
 
   // Hide nav on public routes, player pages, SEO pages, and while checking auth
-  const isLandingOrSEO = pathname === '/' || pathname.startsWith('/stories/')
+  // On home page (/), show nav for logged-in app users (story grid), hide for anonymous (landing page)
+  const isSEOPage = pathname.startsWith('/stories/')
     || pathname.startsWith('/category/') || pathname.startsWith('/ages/');
+  const isLandingPage = pathname === '/' && !isLoggedIn();
   const showNav = !NO_NAV_ROUTES.includes(pathname) && !pathname.startsWith('/player/')
-    && !isLandingOrSEO && checked;
+    && !isSEOPage && !isLandingPage && checked;
 
   return (
     <I18nProvider>
