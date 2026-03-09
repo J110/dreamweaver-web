@@ -113,8 +113,17 @@ export function sortByDiscovery(stories) {
 
   const unlistened = [];
   const listened = [];
+  const incomplete = []; // Missing audio or cover — always at the back
 
   for (const story of stories) {
+    // Content without audio or a real cover is not ready for featuring
+    const hasAudio = story.audio_variants && story.audio_variants.length > 0;
+    const hasCover = story.cover && story.cover !== '' && !story.cover.includes('default.svg');
+    if (!hasAudio || !hasCover) {
+      incomplete.push(story);
+      continue;
+    }
+
     const entry = history[story.id];
     if (entry && entry.completionPercent >= 20) {
       listened.push({ story, lastPlayedAt: entry.lastPlayedAt });
@@ -133,5 +142,12 @@ export function sortByDiscovery(stories) {
   // Listened: sort by oldest listen first (so most recently listened are at the very end)
   listened.sort((a, b) => a.lastPlayedAt - b.lastPlayedAt);
 
-  return [...unlistened, ...listened.map((l) => l.story)];
+  // Incomplete: newest first, but always after all complete content
+  incomplete.sort((a, b) => {
+    const dateA = a.addedAt ? new Date(a.addedAt).getTime() : 0;
+    const dateB = b.addedAt ? new Date(b.addedAt).getTime() : 0;
+    return dateB - dateA;
+  });
+
+  return [...unlistened, ...listened.map((l) => l.story), ...incomplete];
 }
