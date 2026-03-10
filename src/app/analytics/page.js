@@ -560,21 +560,23 @@ export default function AnalyticsDashboard() {
             </section>
           )}
 
-          {/* Recent Errors Table */}
+          {/* Recent Issues Table */}
           {health.recentErrors?.length > 0 && (
             <section className={styles.section}>
-              <h2>Recent Errors (last hour)</h2>
+              <h2>Recent Issues (last hour)</h2>
               <div className={styles.chartBox}>
                 <div className={styles.tableWrap}>
                   <table className={styles.table}>
-                    <thead><tr><th>Time</th><th>Method</th><th>Path</th><th>Status</th><th>Duration</th></tr></thead>
+                    <thead><tr><th>Time</th><th>What Happened</th><th>Status</th><th>Duration</th></tr></thead>
                     <tbody>
                       {health.recentErrors.map((r, i) => (
                         <tr key={i}>
                           <td>{new Date(r.timestamp).toLocaleTimeString()}</td>
-                          <td>{r.method}</td>
-                          <td style={{ fontFamily: 'monospace', fontSize: 12 }}>{r.path}</td>
-                          <td style={{ color: '#ef4444' }}>{r.status}</td>
+                          <td>
+                            <div>{r.description || r.path}</div>
+                            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', fontFamily: 'monospace', marginTop: 2 }}>{r.method} {r.path}</div>
+                          </td>
+                          <td style={{ color: r.severity === 'error' ? '#ef4444' : '#f59e0b' }}>{r.status}</td>
                           <td>{r.durationMs}ms</td>
                         </tr>
                       ))}
