@@ -3,6 +3,7 @@ import BlogMarkdown from '../BlogMarkdown';
 import LikeButton from './LikeButton';
 import ShareButtons from './ShareButtons';
 import CommentsSection from './CommentsSection';
+import BlogViewTracker from './BlogViewTracker';
 import BlogPostCard from '../BlogPostCard';
 import styles from './page.module.css';
 
@@ -107,6 +108,7 @@ export default async function BlogPostPage({ params }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <BlogViewTracker slug={post.slug} />
       <div className={styles.page}>
         {/* Breadcrumb */}
         <nav className={styles.breadcrumb}>

@@ -8,9 +8,10 @@ import { isLoggedIn, getToken, logout } from '@/utils/auth';
 import useVersionCheck from '@/hooks/useVersionCheck';
 import BottomNav from './BottomNav';
 import InstallPrompt from './InstallPrompt';
+import { dvAnalytics } from '@/utils/analytics';
 
-const NO_NAV_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy', '/how-it-works', '/about', '/blog'];
-const PUBLIC_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy', '/how-it-works', '/about', '/blog'];
+const NO_NAV_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics'];
+const PUBLIC_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics'];
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 function isPublicRoute(pathname) {
@@ -39,6 +40,22 @@ export default function AppShell({ children }) {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js').catch(() => {});
     }
+  }, []);
+
+  // Analytics: track app open + session lifecycle
+  useEffect(() => {
+    dvAnalytics.track('app_open', {
+      source: dvAnalytics.parseReferrer(),
+      referrer: document.referrer || 'direct',
+      isNewUser: dvAnalytics._isNewUser,
+    });
+    dvAnalytics.track('session_start', {
+      sessionId: dvAnalytics.sessionId,
+      isNewUser: dvAnalytics._isNewUser,
+    });
+    const handleUnload = () => dvAnalytics.endSession();
+    window.addEventListener('beforeunload', handleUnload);
+    return () => window.removeEventListener('beforeunload', handleUnload);
   }, []);
 
   useEffect(() => {

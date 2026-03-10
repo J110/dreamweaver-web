@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { dvAnalytics } from '@/utils/analytics';
 import styles from './LikeButton.module.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -31,6 +32,7 @@ export default function LikeButton({ slug, initialLikes = 0 }) {
         setLiked(!liked);
         if (!liked) {
           sessionStorage.setItem(storageKey, '1');
+          dvAnalytics.track('blog_like', { postSlug: slug });
         } else {
           sessionStorage.removeItem(storageKey);
         }

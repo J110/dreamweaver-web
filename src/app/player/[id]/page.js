@@ -13,6 +13,7 @@ import { isLoggedIn } from '@/utils/auth';
 import { VOICES, getVoiceId, getVoiceLabel } from '@/utils/voiceConfig';
 import { stripEmotionMarkers } from '@/utils/textUtils';
 import { recordListen, markCompleted } from '@/utils/listeningHistory';
+import { dvAnalytics } from '@/utils/analytics';
 import BreathingPacer from '@/components/BreathingPacer';
 import {
   updateMediaSessionMetadata,
@@ -321,6 +322,11 @@ export default function PlayerPage() {
         if (targetPhase !== musicPhaseRef.current && musicRef.current) {
           musicPhaseRef.current = targetPhase;
           musicRef.current.transitionToPhase(targetPhase);
+          dvAnalytics.track('phase_enter', {
+            contentId: params?.id,
+            phase: targetPhase,
+            positionMs: Math.round(now * 1000),
+          });
         }
 
         // Record listening history (throttled: every 10s)
@@ -355,6 +361,11 @@ export default function PlayerPage() {
         setIsPlaying(false);
         stopProgressTracking();
         updatePlaybackState('paused');
+        dvAnalytics.track('play_pause', {
+          contentId: params?.id,
+          positionMs: Math.round((audioRef.current?.currentTime || 0) * 1000),
+          phase: musicPhaseRef.current,
+        });
         return;
       } else if (audioRef.current.currentTime > 0 && !audioRef.current.ended) {
         try {
@@ -362,6 +373,10 @@ export default function PlayerPage() {
           setIsPlaying(true);
           startProgressTracking();
           updatePlaybackState('playing');
+          dvAnalytics.track('play_resume', {
+            contentId: params?.id,
+            positionMs: Math.round((audioRef.current?.currentTime || 0) * 1000),
+          });
         } catch (e) {
           console.error('Resume failed:', e);
           // On iOS, if resume fails (e.g. NotAllowedError after long pause),
@@ -403,6 +418,11 @@ export default function PlayerPage() {
         stopProgressTracking();
         updatePlaybackState('paused');
         if (params?.id) markCompleted(params.id);
+        dvAnalytics.track('play_complete', {
+          contentId: params?.id,
+          durationMs: Math.round((audio.duration || 0) * 1000),
+          voice: selectedVoice,
+        });
         // Post-story: ensure Phase 3 music, then fade to silence after 30s
         if (musicRef.current && musicRef.current.isPlaying) {
           musicRef.current.transitionToPhase(3);
@@ -437,6 +457,12 @@ export default function PlayerPage() {
         setIsPlaying(true);
         startProgressTracking();
         updatePlaybackState('playing');
+        dvAnalytics.track('play_start', {
+          contentId: params?.id,
+          contentType: content?.type,
+          voice: selectedVoice,
+          ageGroup: content?.age_group || content?.target_age,
+        });
         // Connect Web Audio analyser for breathing pacer (once per audio element).
         // Strategy:
         // 1. captureStream() — audio plays via element (survives iOS background),
@@ -600,6 +626,29 @@ export default function PlayerPage() {
     return () => document.removeEventListener('visibilitychange', handleVisibility);
   }, [isPlaying, stopProgressTracking]);
 
+  // Track play_abandon on unmount (navigation away mid-play)
+  useEffect(() => {
+    return () => {
+      const audio = audioRef.current;
+      if (audio && audio.currentTime > 0 && !audio.ended) {
+        const dur = audio.duration || 0;
+        const pos = audio.currentTime || 0;
+        const pct = dur > 0 ? Math.round((pos / dur) * 100) : 0;
+        if (pct < 100) {
+          dvAnalytics.track('play_abandon', {
+            contentId: params?.id,
+            positionMs: Math.round(pos * 1000),
+            durationMs: Math.round(dur * 1000),
+            percentComplete: pct,
+            phase: musicPhaseRef.current,
+          });
+          dvAnalytics.flush();
+        }
+      }
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params?.id]);
+
   // Handle voice character change
   const handleVoiceChange = useCallback((voiceId) => {
     if (voiceId === selectedVoice) return;
@@ -624,9 +673,14 @@ export default function PlayerPage() {
     setDuration(0);
     setAudioError(null);
     stopProgressTracking();
+    dvAnalytics.track('voice_switch', {
+      contentId: params?.id,
+      fromVoice: selectedVoice,
+      toVoice: voiceId,
+    });
     voiceSwitchAutoPlayRef.current = true;
     setSelectedVoice(voiceId);
-  }, [selectedVoice, stopProgressTracking]);
+  }, [selectedVoice, stopProgressTracking, params?.id]);
 
   const handleMusicPlayPause = useCallback(async () => {
     const source = musicSourceRef.current || content?.musicalBrief || content?.musicParams || content?.musicProfile;
@@ -773,6 +827,9 @@ export default function PlayerPage() {
     });
     setSaveToast(wasSaved ? t('playerRemovedFromSaved') : t('playerSavedToProfile'));
     setTimeout(() => setSaveToast(null), 2500);
+    if (!wasSaved) {
+      dvAnalytics.track('like', { contentId: content.id, contentType: content.type });
+    }
     try {
       if (wasSaved) {
         await interactionApi.unsaveContent(content.id);
@@ -839,10 +896,12 @@ export default function PlayerPage() {
     try {
       if (navigator.share) {
         await navigator.share(shareData);
+        dvAnalytics.track('share', { contentId: params?.id, shareMethod: 'native' });
       } else {
         await navigator.clipboard.writeText(shareUrl);
         setShareCopied(true);
         setTimeout(() => setShareCopied(false), 2000);
+        dvAnalytics.track('share', { contentId: params?.id, shareMethod: 'clipboard' });
       }
     } catch (err) {
       if (err.name !== 'AbortError') {
@@ -850,6 +909,7 @@ export default function PlayerPage() {
           await navigator.clipboard.writeText(shareUrl);
           setShareCopied(true);
           setTimeout(() => setShareCopied(false), 2000);
+          dvAnalytics.track('share', { contentId: params?.id, shareMethod: 'clipboard' });
         } catch { /* ignore */ }
       }
     }

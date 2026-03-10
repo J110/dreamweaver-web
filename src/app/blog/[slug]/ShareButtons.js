@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { dvAnalytics } from '@/utils/analytics';
 import styles from './ShareButtons.module.css';
 
 export default function ShareButtons({ slug, title }) {
@@ -12,20 +13,23 @@ export default function ShareButtons({ slug, title }) {
       await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+      dvAnalytics.track('share', { postSlug: slug, shareMethod: 'clipboard' });
     } catch {}
-  }, [url]);
+  }, [url, slug]);
 
   const handleTwitter = useCallback(() => {
     const text = encodeURIComponent(`${title}\n${url}`);
     window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
-  }, [title, url]);
+    dvAnalytics.track('share', { postSlug: slug, shareMethod: 'twitter' });
+  }, [title, url, slug]);
 
   const handleFacebook = useCallback(() => {
     window.open(
       `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
       '_blank'
     );
-  }, [url]);
+    dvAnalytics.track('share', { postSlug: slug, shareMethod: 'facebook' });
+  }, [url, slug]);
 
   return (
     <div className={styles.share}>

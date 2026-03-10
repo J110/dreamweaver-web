@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { getAmbientMusic } from '@/utils/ambientMusic';
 import { isListened } from '@/utils/listeningHistory';
+import { dvAnalytics } from '@/utils/analytics';
 import styles from './ContentCard.module.css';
 
 export default function ContentCard({ content, onClick }) {
@@ -10,6 +11,12 @@ export default function ContentCard({ content, onClick }) {
   // This is called inside the user's click gesture, so AudioContext.resume()
   // will succeed. The player page can then start music immediately.
   const handleCardClick = async () => {
+    dvAnalytics.track('content_view', {
+      contentId: content.id,
+      contentType: content.type,
+      ageGroup: content.age_group,
+      category: content.category,
+    });
     try {
       const engine = getAmbientMusic();
       engine._ensureContext();
