@@ -139,6 +139,7 @@ export default function AnalyticsDashboard() {
   const [usersActivity, setUsersActivity] = useState(null);
   const [realtime, setRealtime] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [tab, setTab] = useState('dashboard');
 
   // Check if already authed
   useEffect(() => {
@@ -285,6 +286,60 @@ export default function AnalyticsDashboard() {
         </div>
       </header>
 
+      {/* Tabs */}
+      <div className={styles.tabs}>
+        <button className={`${styles.tab} ${tab === 'dashboard' ? styles.activeTab : ''}`} onClick={() => setTab('dashboard')}>Dashboard</button>
+        <button className={`${styles.tab} ${tab === 'users' ? styles.activeTab : ''}`} onClick={() => setTab('users')}>Users</button>
+      </div>
+
+      {tab === 'users' && (
+        <section className={styles.section}>
+          <h2>User Activity</h2>
+          {usersActivity?.users?.length > 0 ? (
+            <div className={styles.tableWrap}>
+              <table className={styles.usersTable}>
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Sessions</th>
+                    <th>Plays</th>
+                    <th>Completed</th>
+                    <th>Events</th>
+                    <th>Device</th>
+                    <th>Last Seen</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {usersActivity.users.map((u) => (
+                    <tr key={u.userId}>
+                      <td className={styles.userCell}>
+                        {u.username ? (
+                          <>
+                            <span className={styles.username}>{u.username}</span>
+                            <span className={styles.userId}>{u.userId.slice(0, 8)}</span>
+                          </>
+                        ) : (
+                          <span className={styles.userId} style={{ fontSize: '13px' }}>{u.userId}</span>
+                        )}
+                      </td>
+                      <td>{u.sessions}</td>
+                      <td>{u.plays}</td>
+                      <td>{u.completions}</td>
+                      <td>{u.totalEvents}</td>
+                      <td>{u.device || '—'}</td>
+                      <td>{new Date(u.lastSeen).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className={styles.noData}>No user activity in this period.</p>
+          )}
+        </section>
+      )}
+
+      {tab === 'dashboard' && (<>
       {/* Section 1: Overview */}
       <section className={styles.section}>
         <h2>Overview</h2>
@@ -296,46 +351,6 @@ export default function AnalyticsDashboard() {
           <MetricCard label="Avg Session" value={today.avgSessionDurationMin || 0} unit="min" sparkData={sessionSpark} color="#ec4899" />
           <MetricCard label="Active Now" value={realtime?.activeUsers ?? '—'} live color="#10b981" />
         </div>
-      </section>
-
-      {/* User Activity */}
-      <section className={styles.section}>
-        <h2>User Activity</h2>
-        {usersActivity?.users?.length > 0 ? (
-          <div className={styles.tableWrap}>
-            <table className={styles.usersTable}>
-              <thead>
-                <tr>
-                  <th>User</th>
-                  <th>Sessions</th>
-                  <th>Plays</th>
-                  <th>Completed</th>
-                  <th>Events</th>
-                  <th>Device</th>
-                  <th>Last Seen</th>
-                </tr>
-              </thead>
-              <tbody>
-                {usersActivity.users.map((u) => (
-                  <tr key={u.userId}>
-                    <td className={styles.userCell}>
-                      <span className={styles.username}>{u.username || 'Anonymous'}</span>
-                      <span className={styles.userId}>{u.userId.slice(0, 8)}</span>
-                    </td>
-                    <td>{u.sessions}</td>
-                    <td>{u.plays}</td>
-                    <td>{u.completions}</td>
-                    <td>{u.totalEvents}</td>
-                    <td>{u.device || '—'}</td>
-                    <td>{new Date(u.lastSeen).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className={styles.noData}>No user activity in this period.</p>
-        )}
       </section>
 
       {/* Section 2: Users */}
@@ -551,6 +566,7 @@ export default function AnalyticsDashboard() {
           </div>
         </section>
       )}
+      </>)}
     </div>
   );
 }
