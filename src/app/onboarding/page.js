@@ -6,6 +6,7 @@ import StarField from '@/components/StarField';
 import { useI18n } from '@/utils/i18n';
 import { useVoicePreferences } from '@/utils/voicePreferences';
 import { getSelectableVoices, getSampleUrl, getVoiceLabel } from '@/utils/voiceConfig';
+import { dvAnalytics } from '@/utils/analytics';
 import styles from './page.module.css';
 
 const TOTAL_STEPS = 3;
@@ -62,6 +63,7 @@ export default function OnboardingPage() {
     } else if (step === 2) {
       stopAudio();
       setVoicePrefs({ preferredVoice: selectedVoice });
+      dvAnalytics.track('onboarding_complete', { voice: selectedVoice });
       router.push('/login');
     }
   };

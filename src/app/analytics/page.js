@@ -137,6 +137,7 @@ export default function AnalyticsDashboard() {
   const [retention, setRetention] = useState(null);
   const [engagement, setEngagement] = useState(null);
   const [usersActivity, setUsersActivity] = useState(null);
+  const [funnel, setFunnel] = useState(null);
   const [realtime, setRealtime] = useState(null);
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState('dashboard');
@@ -163,7 +164,7 @@ export default function AnalyticsDashboard() {
     setLoading(true);
     const range = getDateRange(preset);
     try {
-      const [ov, us, aq, ct, rt, en, ua] = await Promise.all([
+      const [ov, us, aq, ct, rt, en, ua, fn] = await Promise.all([
         fetchApi('/overview', range),
         fetchApi('/users', range),
         fetchApi('/acquisition', range),
@@ -171,6 +172,7 @@ export default function AnalyticsDashboard() {
         fetchApi('/retention', { start_date: range.to }),
         fetchApi('/engagement', range),
         fetchApi('/users-activity', range),
+        fetchApi('/funnel', range),
       ]);
       setOverview(ov);
       setUsers(us);
@@ -179,6 +181,7 @@ export default function AnalyticsDashboard() {
       setRetention(rt);
       setEngagement(en);
       setUsersActivity(ua);
+      setFunnel(fn);
     } catch (e) {
       console.error('Analytics load error:', e);
     }
@@ -289,6 +292,7 @@ export default function AnalyticsDashboard() {
       {/* Tabs */}
       <div className={styles.tabs}>
         <button className={`${styles.tab} ${tab === 'dashboard' ? styles.activeTab : ''}`} onClick={() => setTab('dashboard')}>Dashboard</button>
+        <button className={`${styles.tab} ${tab === 'funnel' ? styles.activeTab : ''}`} onClick={() => setTab('funnel')}>Funnel</button>
         <button className={`${styles.tab} ${tab === 'users' ? styles.activeTab : ''}`} onClick={() => setTab('users')}>Users</button>
       </div>
 
@@ -335,6 +339,49 @@ export default function AnalyticsDashboard() {
             </div>
           ) : (
             <p className={styles.noData}>No user activity in this period.</p>
+          )}
+        </section>
+      )}
+
+      {tab === 'funnel' && (
+        <section className={styles.section}>
+          <h2>Conversion Funnel</h2>
+          {funnel?.steps?.length > 0 ? (
+            <div className={styles.funnelWrap}>
+              {funnel.steps.map((step, i) => {
+                const maxCount = funnel.steps[0].count || 1;
+                const widthPct = maxCount > 0 ? Math.max((step.count / maxCount) * 100, 8) : 8;
+                const prevCount = i > 0 ? funnel.steps[i - 1].count : null;
+                const convRate = prevCount > 0 ? Math.round((step.count / prevCount) * 100) : null;
+                return (
+                  <div key={step.label} className={styles.funnelStep}>
+                    <div className={styles.funnelInfo}>
+                      <span className={styles.funnelLabel}>{step.label}</span>
+                      <span className={styles.funnelCount}>{step.count.toLocaleString()}</span>
+                    </div>
+                    <div className={styles.funnelBarTrack}>
+                      <div
+                        className={styles.funnelBar}
+                        style={{
+                          width: `${widthPct}%`,
+                          background: COLORS[i % COLORS.length],
+                        }}
+                      />
+                    </div>
+                    {convRate !== null && (
+                      <div className={styles.funnelConv}>{convRate}% conversion</div>
+                    )}
+                  </div>
+                );
+              })}
+              {funnel.steps[0].count > 0 && funnel.steps[funnel.steps.length - 1] && (
+                <div className={styles.funnelTotal}>
+                  Overall: {Math.round((funnel.steps[funnel.steps.length - 1].count / funnel.steps[0].count) * 100)}% end-to-end conversion
+                </div>
+              )}
+            </div>
+          ) : (
+            <p className={styles.empty}>No funnel data yet. Events will appear as users visit and interact.</p>
           )}
         </section>
       )}

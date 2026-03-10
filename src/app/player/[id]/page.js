@@ -57,6 +57,7 @@ export default function PlayerPage() {
   const voiceSwitchAutoPlayRef = useRef(false);
   const musicRef = useRef(null);
   const musicPhaseRef = useRef(1); // Current sleep music phase (1=Capture, 2=Descent, 3=Sleep)
+  const tracked1MinRef = useRef(false); // Track 1-min milestone once per play
   // Web Audio analyser for breathing pacer (persists across pause/resume)
   const [narrationAnalyser, setNarrationAnalyser] = useState(null);
   const [amplitudeEnvelope, setAmplitudeEnvelope] = useState(null);
@@ -329,6 +330,16 @@ export default function PlayerPage() {
           });
         }
 
+        // Track 1-minute listening milestone (once per play)
+        if (!tracked1MinRef.current && now >= 60) {
+          tracked1MinRef.current = true;
+          dvAnalytics.track('play_1min', {
+            contentId: params?.id,
+            contentType: content?.type,
+            voice: selectedVoice,
+          });
+        }
+
         // Record listening history (throttled: every 10s)
         const ts = Date.now();
         if (params?.id && ts - lastHistoryRecordRef.current > 10000) {
@@ -457,6 +468,7 @@ export default function PlayerPage() {
         setIsPlaying(true);
         startProgressTracking();
         updatePlaybackState('playing');
+        tracked1MinRef.current = false;
         dvAnalytics.track('play_start', {
           contentId: params?.id,
           contentType: content?.type,
