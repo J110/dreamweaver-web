@@ -2049,7 +2049,7 @@ export const SEED_STORIES = {
       categories: ["Adventure", "Nature"],
       theme: "adventure",
       musicParams: {},
-      musicalBrief: {"storyId": "gen-bfea572c7a73", "ageGroup": "6-8", "musicalIdentity": {"culturalReference": "latin", "primaryLoop": "guitar_fingerpick", "padCharacter": "deep_ocean"}, "tonality": {"mode": "dorian", "rootNote": "Bb"}, "melodicCharacter": "cycling_arpeggio", "rhythm": {"feel": "gentle_pulse", "baseTempo": 62}, "environment": {"natureSoundPrimary": "ocean_waves_distant", "natureSoundSecondary": "underwater_bubbling", "ambientEvents": ["waterDrop", "waveCycle"]}, "emotionalArc": {"phase1": "curious_wander", "phase2": "gentle_discovery", "phase3": "deep_stillness"}},
+      musicalBrief: {"storyId": "gen-bfea572c7a73", "ageGroup": "6-8", "musicalIdentity": {"culturalReference": "latin", "primaryLoop": "guitar_fingerpick", "padCharacter": "deep_ocean"}, "tonality": {"mode": "minor_pentatonic", "rootNote": "Eb"}, "melodicCharacter": "cycling_arpeggio", "rhythm": {"feel": "gentle_pulse", "baseTempo": 66}, "environment": {"natureSoundPrimary": "ocean_waves_close", "natureSoundSecondary": "underwater_bubbling", "ambientEvents": ["waterDrop", "waveCycle"]}, "emotionalArc": {"phase1": "curious_wonder", "phase2": "gentle_exploration", "phase3": "deep_stillness"}},
       audio_variants: [
         { voice: "female_1", url: "/audio/pre-gen/gen-bfea_female_1.mp3", duration_seconds: 717.82 },
         { voice: "female_2", url: "/audio/pre-gen/gen-bfea_female_2.mp3", duration_seconds: 609.29 },
