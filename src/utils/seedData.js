@@ -2228,6 +2228,8 @@ export const SEED_STORIES = {
         { voice: "female_1", url: "/audio/pre-gen/gen-9d8e_female_1.mp3", duration_seconds: 472.73 },
         { voice: "female_2", url: "/audio/pre-gen/gen-9d8e_female_2.mp3", duration_seconds: 407.18 },
         { voice: "female_3", url: "/audio/pre-gen/gen-9d8e_female_3.mp3", duration_seconds: 377.52 },
+        { voice: "asmr", url: "/audio/pre-gen/gen-9d8e_asmr.mp3", duration_seconds: 418.85 },
+        { voice: "male_2", url: "/audio/pre-gen/gen-9d8e_male_2.mp3", duration_seconds: 373.68 },
       ],
     },],
   hi: [
