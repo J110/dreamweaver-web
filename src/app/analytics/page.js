@@ -138,6 +138,7 @@ export default function AnalyticsDashboard() {
   const [engagement, setEngagement] = useState(null);
   const [usersActivity, setUsersActivity] = useState(null);
   const [funnel, setFunnel] = useState(null);
+  const [health, setHealth] = useState(null);
   const [realtime, setRealtime] = useState(null);
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState('dashboard');
@@ -203,6 +204,23 @@ export default function AnalyticsDashboard() {
     const timer = setInterval(poll, 30000);
     return () => clearInterval(timer);
   }, [authed]);
+
+  // Health tab polling (60s refresh when active)
+  useEffect(() => {
+    if (!authed || tab !== 'health') return;
+    const hoursMap = { today: 24, '7d': 168, '30d': 720, '90d': 168 };
+    const loadHealth = async () => {
+      try {
+        const data = await fetchApi('/server-health', { hours: hoursMap[preset] || 168 });
+        setHealth(data);
+      } catch (e) {
+        console.error('Health load error:', e);
+      }
+    };
+    loadHealth();
+    const timer = setInterval(loadHealth, 60000);
+    return () => clearInterval(timer);
+  }, [authed, tab, preset]);
 
   // ── Auth Screen ────────────────────────────────────────────────
 
@@ -294,6 +312,7 @@ export default function AnalyticsDashboard() {
         <button className={`${styles.tab} ${tab === 'dashboard' ? styles.activeTab : ''}`} onClick={() => setTab('dashboard')}>Dashboard</button>
         <button className={`${styles.tab} ${tab === 'funnel' ? styles.activeTab : ''}`} onClick={() => setTab('funnel')}>Funnel</button>
         <button className={`${styles.tab} ${tab === 'users' ? styles.activeTab : ''}`} onClick={() => setTab('users')}>Users</button>
+        <button className={`${styles.tab} ${tab === 'health' ? styles.activeTab : ''}`} onClick={() => setTab('health')}>Health</button>
       </div>
 
       {tab === 'users' && (
@@ -385,6 +404,189 @@ export default function AnalyticsDashboard() {
           )}
         </section>
       )}
+
+      {tab === 'health' && (<>
+        {health ? (() => {
+          const peak = health.peakHealth || {};
+          const cur = health.current || {};
+          const scoreColor = peak.status === 'green' ? '#10b981' : peak.status === 'yellow' ? '#f59e0b' : '#ef4444';
+          const statusLabel = peak.status === 'green' ? 'Healthy' : peak.status === 'yellow' ? 'Degraded' : 'Critical';
+          const peakTime = peak.timestamp ? new Date(peak.timestamp).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '';
+
+          // History for charts
+          const healthHistory = (health.history || []).map(h => ({
+            time: new Date(h.timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+            p50: h.p50, p95: h.p95, p99: h.p99,
+            errorRate: h.errorRate, requestCount: h.requestCount,
+            healthScore: h.healthScore,
+          }));
+
+          return (
+          <>
+          {/* Health Score Slider */}
+          <section className={styles.section}>
+            <h2>Peak Traffic Health <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', fontWeight: 400 }}>(worst in last 6h)</span></h2>
+            <div className={styles.healthSlider}>
+              <div className={styles.healthScoreRow}>
+                <span className={styles.healthScoreNum} style={{ color: scoreColor }}>{peak.score ?? '—'}</span>
+                <span className={styles.healthStatusBadge} style={{ background: `${scoreColor}15`, color: scoreColor }}>{statusLabel}</span>
+                {peakTime && <span className={styles.healthPeakTime}>at {peakTime}</span>}
+              </div>
+              <div className={styles.healthTrack}>
+                <div className={styles.healthTrackFill} />
+                <div className={styles.healthPointer} style={{ left: `${Math.max(0, Math.min(100, peak.score || 0))}%` }}>
+                  <div className={styles.healthPointerDot} style={{ background: scoreColor }} />
+                </div>
+              </div>
+              <div className={styles.healthTrackLabels}>
+                <span>Critical</span><span>Degraded</span><span>Healthy</span>
+              </div>
+              {/* Component breakdown */}
+              <div className={styles.healthComponents}>
+                {(peak.components || []).map(c => {
+                  const cColor = c.status === 'green' ? '#10b981' : c.status === 'yellow' ? '#f59e0b' : '#ef4444';
+                  return (
+                    <div key={c.name} className={styles.healthComp}>
+                      <div className={styles.healthCompHeader}>
+                        <span className={styles.healthCompDot} style={{ background: cColor }} />
+                        <span className={styles.healthCompName}>{c.name}</span>
+                        <span className={styles.healthCompValue}>{c.value}</span>
+                        <span className={styles.healthCompScore}>{c.score}/{c.max}</span>
+                      </div>
+                      <div className={styles.healthCompBar}>
+                        <div style={{ width: `${(c.score / c.max) * 100}%`, background: cColor, height: '100%', borderRadius: 3, transition: 'width 0.4s' }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+
+          {/* Status Cards */}
+          <section className={styles.section}>
+            <h2>Current Status</h2>
+            <div className={styles.metricsGrid}>
+              <MetricCard label="Uptime" value={cur.uptimeHuman || '—'} color="#10b981" />
+              <MetricCard label="CPU Load" value={cur.cpuLoad1m ?? '—'} color={(cur.cpuLoad1m || 0) > 2 ? '#ef4444' : '#10b981'} />
+              <MetricCard label="Memory" value={cur.memoryUsedPct ?? '—'} unit="%" color={(cur.memoryUsedPct || 0) > 80 ? '#ef4444' : '#f59e0b'} />
+              <MetricCard label="Disk" value={cur.diskUsedPct ?? '—'} unit="%" color={(cur.diskUsedPct || 0) > 85 ? '#ef4444' : '#06b6d4'} />
+              <MetricCard label="DB Size" value={cur.dbSizeMb ?? 0} unit="MB" color="#8b5cf6" />
+              <MetricCard label="Req/5min" value={cur.latency?.request_count ?? 0} live color="#f59e0b" />
+            </div>
+          </section>
+
+          {/* Response Time Chart */}
+          <section className={styles.section}>
+            <h2>Response Time</h2>
+            <div className={styles.chartBox}>
+              {healthHistory.length > 1 ? (
+                <ResponsiveContainer width="100%" height={280}>
+                  <AreaChart data={healthHistory}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} />
+                    <XAxis dataKey="time" stroke={CHART_AXIS} tick={{ fontSize: 11 }} />
+                    <YAxis stroke={CHART_AXIS} unit="ms" />
+                    <Tooltip contentStyle={TT_STYLE} />
+                    <defs>
+                      <linearGradient id="p50Grad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#10b981" stopOpacity={0.15} />
+                        <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="p95Grad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.15} />
+                        <stop offset="100%" stopColor="#f59e0b" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <Area type="monotone" dataKey="p50" stroke="#10b981" strokeWidth={1.5} fill="url(#p50Grad)" name="p50" />
+                    <Area type="monotone" dataKey="p95" stroke="#f59e0b" strokeWidth={2} fill="url(#p95Grad)" name="p95" />
+                    <Area type="monotone" dataKey="p99" stroke="#ef4444" strokeWidth={1.5} fill="rgba(239,68,68,0.05)" name="p99" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              ) : <p className={styles.empty}>Collecting data... Charts appear after ~10 minutes.</p>}
+              <div className={styles.legend}>
+                <span style={{ color: '#10b981' }}>p50</span>
+                <span style={{ color: '#f59e0b' }}>p95</span>
+                <span style={{ color: '#ef4444' }}>p99</span>
+              </div>
+            </div>
+          </section>
+
+          {/* Error Rate + Volume Chart */}
+          <section className={styles.section}>
+            <h2>Error Rate & Request Volume</h2>
+            <div className={styles.chartBox}>
+              {healthHistory.length > 1 ? (
+                <ResponsiveContainer width="100%" height={280}>
+                  <LineChart data={healthHistory}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} />
+                    <XAxis dataKey="time" stroke={CHART_AXIS} tick={{ fontSize: 11 }} />
+                    <YAxis yAxisId="left" stroke={CHART_AXIS} unit="%" />
+                    <YAxis yAxisId="right" orientation="right" stroke={CHART_AXIS} />
+                    <Tooltip contentStyle={TT_STYLE} />
+                    <Line yAxisId="left" type="monotone" dataKey="errorRate" stroke="#ef4444" strokeWidth={2} dot={false} name="Error Rate %" />
+                    <Line yAxisId="right" type="monotone" dataKey="requestCount" stroke="#06b6d4" strokeWidth={1.5} dot={false} name="Requests" />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : <p className={styles.empty}>Collecting data...</p>}
+              <div className={styles.legend}>
+                <span style={{ color: '#ef4444' }}>Error Rate</span>
+                <span style={{ color: '#06b6d4' }}>Requests</span>
+              </div>
+            </div>
+          </section>
+
+          {/* Slow Requests Table */}
+          {health.slowRequests?.length > 0 && (
+            <section className={styles.section}>
+              <h2>Slow Requests (last hour, &gt;500ms)</h2>
+              <div className={styles.chartBox}>
+                <div className={styles.tableWrap}>
+                  <table className={styles.table}>
+                    <thead><tr><th>Time</th><th>Method</th><th>Path</th><th>Status</th><th>Duration</th></tr></thead>
+                    <tbody>
+                      {health.slowRequests.map((r, i) => (
+                        <tr key={i}>
+                          <td>{new Date(r.timestamp).toLocaleTimeString()}</td>
+                          <td>{r.method}</td>
+                          <td style={{ fontFamily: 'monospace', fontSize: 12 }}>{r.path}</td>
+                          <td>{r.status}</td>
+                          <td style={{ color: r.durationMs > 2000 ? '#ef4444' : '#f59e0b' }}>{r.durationMs}ms</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Recent Errors Table */}
+          {health.recentErrors?.length > 0 && (
+            <section className={styles.section}>
+              <h2>Recent Errors (last hour)</h2>
+              <div className={styles.chartBox}>
+                <div className={styles.tableWrap}>
+                  <table className={styles.table}>
+                    <thead><tr><th>Time</th><th>Method</th><th>Path</th><th>Status</th><th>Duration</th></tr></thead>
+                    <tbody>
+                      {health.recentErrors.map((r, i) => (
+                        <tr key={i}>
+                          <td>{new Date(r.timestamp).toLocaleTimeString()}</td>
+                          <td>{r.method}</td>
+                          <td style={{ fontFamily: 'monospace', fontSize: 12 }}>{r.path}</td>
+                          <td style={{ color: '#ef4444' }}>{r.status}</td>
+                          <td>{r.durationMs}ms</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+          )}
+          </>);
+        })() : <p className={styles.empty}>Loading health data...</p>}
+      </>)}
 
       {tab === 'dashboard' && (<>
       {/* Section 1: Overview */}
