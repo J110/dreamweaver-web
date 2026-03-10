@@ -334,6 +334,61 @@
   }
 }
 
+/* Users activity table */
+.tableWrap {
+  overflow-x: auto;
+}
+
+.usersTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.usersTable th {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.6);
+  font-weight: 500;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.usersTable td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.85);
+}
+
+.usersTable tbody tr:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+.userCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.username {
+  font-weight: 600;
+  color: #f59e0b;
+}
+
+.userId {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  font-family: monospace;
+}
+
+.noData {
+  color: rgba(255,255,255,0.4);
+  text-align: center;
+  padding: 24px;
+}
+
 @media (max-width: 480px) {
   .metricsGrid {
     grid-template-columns: 1fr;

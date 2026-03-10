@@ -56,10 +56,14 @@ class Analytics {
 
     this.sessionId = this._getOrCreateSessionId();
 
+    // Include logged-in username if available
+    const username = this._getUsername();
+
     this.queue.push({
       event: eventName,
       userId: this.userId,
       sessionId: this.sessionId,
+      username: username,
       timestamp: new Date().toISOString(),
       payload: {
         ...payload,
@@ -99,6 +103,17 @@ class Analytics {
     if (/Android/i.test(ua)) return 'android';
     if (/Mobile/i.test(ua)) return 'mobile_other';
     return 'desktop';
+  }
+
+  _getUsername() {
+    try {
+      const user = localStorage.getItem('dreamweaver_user');
+      if (user) {
+        const parsed = JSON.parse(user);
+        return parsed.username || null;
+      }
+    } catch { /* ignore */ }
+    return null;
   }
 
   parseReferrer() {
