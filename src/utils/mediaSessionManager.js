@@ -1,6 +1,6 @@
 /**
  * Media Session Manager — Lock screen / Now Playing integration
- * via the Web Media Session API.
+ * via the Web Media Session API + native Android bridge.
  *
  * Handles:
  * - Setting metadata (title, artist, artwork) for the lock screen
@@ -8,6 +8,7 @@
  * - Updating playback state and position
  * - Converting SVG cover art to PNG data URLs (Android needs self-contained URLs;
  *   blob URLs are page-scoped and can't be fetched by the OS notification system)
+ * - Native Android bridge via DreamValleyMedia JavaScript channel (for WebView app)
  */
 
 // Cache rasterized cover data URLs to avoid re-rendering
@@ -15,6 +16,32 @@ const _artworkCache = new Map();
 
 // Fallback app icon for lock screen when cover art fails to load
 const FALLBACK_ICON = '/icon-512x512.png';
+
+/**
+ * Detect if running inside the DreamValley Android app (WebView).
+ * The Flutter app sets user agent to include "DreamValleyApp".
+ */
+function isInNativeAndroidApp() {
+  if (typeof navigator === 'undefined') return false;
+  return (
+    navigator.userAgent.includes('DreamValleyApp') &&
+    typeof window.DreamValleyMedia !== 'undefined'
+  );
+}
+
+/**
+ * Send a message to the native Android layer via the DreamValleyMedia JS channel.
+ * @param {Object} data - JSON-serializable message
+ */
+function sendToNative(data) {
+  try {
+    if (window.DreamValleyMedia && window.DreamValleyMedia.postMessage) {
+      window.DreamValleyMedia.postMessage(JSON.stringify(data));
+    }
+  } catch (err) {
+    console.warn('[MediaSession] Native bridge error:', err.message);
+  }
+}
 
 /**
  * Rasterize an SVG (or any image) URL to a PNG data URL using an offscreen canvas.
@@ -78,6 +105,18 @@ async function rasterizeCover(imgUrl, size = 512) {
  * @param {string|null} params.coverUrl - SVG or raster cover URL
  */
 export async function updateMediaSessionMetadata({ title, artist, album, coverUrl }) {
+  // Send to native Android bridge (WebView app)
+  if (isInNativeAndroidApp()) {
+    sendToNative({
+      type: 'metadata',
+      title: title || 'Dream Valley Story',
+      artist: artist || 'Dream Valley',
+      album: album || 'Bedtime Stories',
+      artworkUrl: coverUrl || null,
+    });
+  }
+
+  // Also set via Web Media Session API (works in Chrome, Safari, iOS app)
   if (!('mediaSession' in navigator)) return;
 
   let artwork = [];
@@ -119,6 +158,9 @@ export async function updateMediaSessionMetadata({ title, artist, album, coverUr
  * Register Media Session action handlers.
  * Maps lock screen button presses to app callbacks.
  *
+ * On the Android native app, also registers a global handler for lock screen
+ * button taps that come back from Kotlin via the DreamValleyMedia bridge.
+ *
  * @param {Object} handlers
  * @param {Function} handlers.onPlay
  * @param {Function} handlers.onPause
@@ -126,6 +168,25 @@ export async function updateMediaSessionMetadata({ title, artist, album, coverUr
  * @param {Function} [handlers.onSeekForward]
  */
 export function registerMediaSessionHandlers({ onPlay, onPause, onSeekBackward, onSeekForward }) {
+  // Register native Android bridge handler for lock screen button taps
+  if (isInNativeAndroidApp()) {
+    window.__onNativeMediaAction = (action, value) => {
+      switch (action) {
+        case 'play': onPlay?.(); break;
+        case 'pause': onPause?.(); break;
+        case 'seekbackward': onSeekBackward?.(); break;
+        case 'seekforward': onSeekForward?.(); break;
+        case 'seekto':
+          // Seek to a specific position (in seconds)
+          if (value != null && window.__dvAudioElement) {
+            window.__dvAudioElement.currentTime = value;
+          }
+          break;
+      }
+    };
+  }
+
+  // Also register via Web Media Session API
   if (!('mediaSession' in navigator)) return;
 
   const trySet = (action, handler) => {
@@ -151,6 +212,15 @@ export function registerMediaSessionHandlers({ onPlay, onPause, onSeekBackward, 
  * @param {'playing'|'paused'|'none'} state
  */
 export function updatePlaybackState(state) {
+  // Send to native Android bridge
+  if (isInNativeAndroidApp()) {
+    sendToNative({
+      type: 'state',
+      playing: state === 'playing',
+    });
+  }
+
+  // Also update via Web Media Session API
   if (!('mediaSession' in navigator)) return;
   try {
     navigator.mediaSession.playbackState = state;
@@ -164,6 +234,16 @@ export function updatePlaybackState(state) {
  * @param {number} [playbackRate=1.0]
  */
 export function updatePositionState(position, duration, playbackRate = 1.0) {
+  // Send to native Android bridge
+  if (isInNativeAndroidApp()) {
+    sendToNative({
+      type: 'position',
+      position: position || 0,
+      duration: duration || 0,
+    });
+  }
+
+  // Also update via Web Media Session API
   if (!('mediaSession' in navigator) || !navigator.mediaSession.setPositionState) return;
   if (!duration || isNaN(duration) || duration <= 0) return;
 
@@ -182,6 +262,13 @@ export function updatePositionState(position, duration, playbackRate = 1.0) {
  * Clean up: remove handlers and metadata.
  */
 export function clearMediaSession() {
+  // Tell native Android to stop the media service
+  if (isInNativeAndroidApp()) {
+    sendToNative({ type: 'stop' });
+    window.__onNativeMediaAction = null;
+  }
+
+  // Clean up Web Media Session API
   if (!('mediaSession' in navigator)) return;
 
   try {

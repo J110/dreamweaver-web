@@ -106,6 +106,7 @@ export default function PlayerPage() {
         audioRef.current.pause();
         audioRef.current.src = '';
         audioRef.current = null;
+        window.__dvAudioElement = null;
       }
       if (progressIntervalRef.current) {
         clearInterval(progressIntervalRef.current);
@@ -416,6 +417,8 @@ export default function PlayerPage() {
     try {
       const audio = new Audio();
       audioRef.current = audio;
+      // Expose for native Android lock screen seek control
+      window.__dvAudioElement = audio;
 
       audio.addEventListener('loadedmetadata', () => {
         if (audio.duration && !isNaN(audio.duration)) {
