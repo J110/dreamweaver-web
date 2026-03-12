@@ -25,6 +25,33 @@ async function fetchApi(path, params = {}) {
   return res.json();
 }
 
+async function fetchClipsApi(path, params = {}, method = 'GET') {
+  const qs = new URLSearchParams(params).toString();
+  const url = `${API_URL}/api/v1/clips${path}${qs ? '?' + qs : ''}`;
+  const res = await fetch(url, { method, headers: authHeaders() });
+  if (!res.ok) throw new Error(`Clips API error: ${res.status}`);
+  return res.json();
+}
+
+// ── Clip helpers ──────────────────────────────────────────────────
+
+const MOOD_CONFIG = {
+  wired:   { label: 'Silly',      emoji: '\u{1F604}', color: '#FFB946' },
+  curious: { label: 'Adventure',  emoji: '\u{1F52E}', color: '#7B68EE' },
+  calm:    { label: 'Gentle',     emoji: '\u{1F319}', color: '#6BB5C9' },
+  sad:     { label: 'Comfort',    emoji: '\u{1F49B}', color: '#E8A87C' },
+  anxious: { label: 'Brave',      emoji: '\u{1F6E1}', color: '#85C88A' },
+  angry:   { label: 'Let It Out', emoji: '\u{1F30A}', color: '#C9896D' },
+};
+
+const VOICE_LABELS = { female_1: 'Calm voice', asmr: 'ASMR voice', default: 'Lullaby' };
+
+function formatFileSize(bytes) {
+  if (!bytes) return '—';
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 // ── Date helpers ─────────────────────────────────────────────────
 
 function formatDate(d) {
@@ -142,6 +169,9 @@ export default function AnalyticsDashboard() {
   const [realtime, setRealtime] = useState(null);
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState('dashboard');
+  const [clips, setClips] = useState(null);
+  const [clipsFilters, setClipsFilters] = useState({ mood: '', voice: '', posted: '', sort: 'newest' });
+  const [copiedCaption, setCopiedCaption] = useState(null);
 
   // Check if already authed
   useEffect(() => {
@@ -204,6 +234,26 @@ export default function AnalyticsDashboard() {
     const timer = setInterval(poll, 30000);
     return () => clearInterval(timer);
   }, [authed]);
+
+  // Clips tab: lazy-load when tab switches to clips
+  const loadClips = useCallback(async () => {
+    if (!authed) return;
+    try {
+      const params = {};
+      if (clipsFilters.mood) params.mood = clipsFilters.mood;
+      if (clipsFilters.voice) params.voice = clipsFilters.voice;
+      if (clipsFilters.posted) params.posted = clipsFilters.posted;
+      if (clipsFilters.sort) params.sort = clipsFilters.sort;
+      const data = await fetchClipsApi('/', params);
+      setClips(data);
+    } catch (e) {
+      console.error('Clips load error:', e);
+    }
+  }, [authed, clipsFilters]);
+
+  useEffect(() => {
+    if (tab === 'clips') loadClips();
+  }, [tab, loadClips]);
 
   // Health tab polling (60s refresh when active)
   useEffect(() => {
@@ -313,6 +363,7 @@ export default function AnalyticsDashboard() {
         <button className={`${styles.tab} ${tab === 'funnel' ? styles.activeTab : ''}`} onClick={() => setTab('funnel')}>Funnel</button>
         <button className={`${styles.tab} ${tab === 'users' ? styles.activeTab : ''}`} onClick={() => setTab('users')}>Users</button>
         <button className={`${styles.tab} ${tab === 'health' ? styles.activeTab : ''}`} onClick={() => setTab('health')}>Health</button>
+        <button className={`${styles.tab} ${tab === 'clips' ? styles.activeTab : ''}`} onClick={() => setTab('clips')}>Clips</button>
       </div>
 
       {tab === 'users' && (
@@ -589,6 +640,169 @@ export default function AnalyticsDashboard() {
           </>);
         })() : <p className={styles.empty}>Loading health data...</p>}
       </>)}
+
+      {tab === 'clips' && (
+        <section className={styles.section}>
+          <h2>Social Media Clips</h2>
+
+          {/* Filters */}
+          <div className={styles.clipFilters}>
+            <select
+              value={clipsFilters.mood}
+              onChange={e => setClipsFilters(f => ({ ...f, mood: e.target.value }))}
+              className={styles.clipSelect}
+            >
+              <option value="">All moods</option>
+              {Object.entries(MOOD_CONFIG).map(([key, m]) => (
+                <option key={key} value={key}>{m.emoji} {m.label}</option>
+              ))}
+            </select>
+
+            <select
+              value={clipsFilters.voice}
+              onChange={e => setClipsFilters(f => ({ ...f, voice: e.target.value }))}
+              className={styles.clipSelect}
+            >
+              <option value="">All voices</option>
+              <option value="female_1">Calm voice</option>
+              <option value="asmr">ASMR voice</option>
+              <option value="default">Lullaby</option>
+            </select>
+
+            <select
+              value={clipsFilters.posted}
+              onChange={e => setClipsFilters(f => ({ ...f, posted: e.target.value }))}
+              className={styles.clipSelect}
+            >
+              <option value="">All status</option>
+              <option value="posted">Posted</option>
+              <option value="unposted">Not posted</option>
+            </select>
+
+            <select
+              value={clipsFilters.sort}
+              onChange={e => setClipsFilters(f => ({ ...f, sort: e.target.value }))}
+              className={styles.clipSelect}
+            >
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="title">By title</option>
+            </select>
+
+            <span className={styles.clipCount}>{clips?.total ?? 0} clips</span>
+          </div>
+
+          {/* Clip Cards */}
+          {clips?.clips?.length > 0 ? (
+            <div className={styles.clipGrid}>
+              {clips.clips.map(clip => {
+                const moodCfg = MOOD_CONFIG[clip.mood] || MOOD_CONFIG.calm;
+                const voiceLabel = VOICE_LABELS[clip.voice] || clip.voice;
+                const posted = clip.posted || {};
+                const clipKey = `${clip.storyId}_${clip.voice}`;
+
+                return (
+                  <div key={clipKey} className={styles.clipCard}>
+                    <div className={styles.clipInfo}>
+                      <div className={styles.clipTitle}>{clip.title}</div>
+                      <div className={styles.clipTags}>
+                        <span className={styles.moodTag} style={{ color: moodCfg.color, borderColor: moodCfg.color }}>
+                          {moodCfg.emoji} {moodCfg.label}
+                        </span>
+                        <span className={styles.voiceTag}>{voiceLabel}</span>
+                      </div>
+                      <div className={styles.clipMeta}>
+                        Ages {clip.ageGroup || '—'} · {clip.contentType || 'story'} · {formatFileSize(clip.fileSize)}
+                      </div>
+                      <div className={styles.clipDate}>
+                        {clip.generatedAt ? new Date(clip.generatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : ''}
+                      </div>
+                    </div>
+
+                    <div className={styles.clipActions}>
+                      {/* Download */}
+                      <a
+                        href={`${API_URL}/api/v1/clips/${clip.storyId}/${clip.voice}/download`}
+                        className={styles.downloadBtn}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={e => {
+                          e.preventDefault();
+                          const link = document.createElement('a');
+                          link.href = `${API_URL}/api/v1/clips/${clip.storyId}/${clip.voice}/download?${new URLSearchParams({ Authorization: `Bearer ${getKey()}` })}`;
+                          // Use fetch for auth'd download
+                          fetch(`${API_URL}/api/v1/clips/${clip.storyId}/${clip.voice}/download`, { headers: authHeaders() })
+                            .then(r => r.blob())
+                            .then(blob => {
+                              const url = URL.createObjectURL(blob);
+                              const a = document.createElement('a');
+                              a.href = url;
+                              a.download = `dreamvalley-${clip.storyId}-${clip.voice}.mp4`;
+                              a.click();
+                              URL.revokeObjectURL(url);
+                            });
+                        }}
+                      >
+                        ⬇ Download
+                      </a>
+
+                      {/* Caption Copy Buttons */}
+                      <div className={styles.captionBtns}>
+                        {['youtube', 'instagram', 'tiktok'].map(platform => (
+                          <button
+                            key={platform}
+                            className={styles.captionBtn}
+                            title={`Copy ${platform} caption`}
+                            onClick={() => {
+                              const text = clip.captions?.[platform] || '';
+                              navigator.clipboard.writeText(text);
+                              setCopiedCaption(`${clipKey}_${platform}`);
+                              setTimeout(() => setCopiedCaption(null), 2000);
+                            }}
+                          >
+                            {platform === 'youtube' ? '▶' : platform === 'instagram' ? '📷' : '♪'}
+                            {copiedCaption === `${clipKey}_${platform}` ? ' ✓' : ''}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Posted Toggles */}
+                      <div className={styles.postedRow}>
+                        {['youtube', 'instagram', 'tiktok'].map(platform => (
+                          <button
+                            key={platform}
+                            className={`${styles.postedToggle} ${posted[platform] ? styles.postedActive : ''}`}
+                            title={posted[platform] ? `Posted to ${platform} (click to unpost)` : `Mark as posted to ${platform}`}
+                            onClick={async () => {
+                              try {
+                                const endpoint = posted[platform] ? 'unpost' : 'posted';
+                                await fetchClipsApi(
+                                  `/${clip.storyId}/${clip.voice}/${endpoint}`,
+                                  { platform },
+                                  'PUT',
+                                );
+                                loadClips();
+                              } catch (e) {
+                                console.error('Toggle posted error:', e);
+                              }
+                            }}
+                          >
+                            {platform === 'youtube' ? 'YT' : platform === 'instagram' ? 'IG' : 'TT'}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className={styles.empty}>
+              {clips ? 'No clips found. Run the clip generation script to create clips.' : 'Loading clips...'}
+            </p>
+          )}
+        </section>
+      )}
 
       {tab === 'dashboard' && (<>
       {/* Section 1: Overview */}
