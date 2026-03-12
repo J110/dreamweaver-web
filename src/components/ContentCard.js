@@ -6,6 +6,15 @@ import { isListened } from '@/utils/listeningHistory';
 import { dvAnalytics } from '@/utils/analytics';
 import styles from './ContentCard.module.css';
 
+const MOOD_CONFIG = {
+  calm: { emoji: '\uD83D\uDE0C', label: 'Calm' },
+  curious: { emoji: '\uD83D\uDD0D', label: 'Curious' },
+  wired: { emoji: '\u26A1', label: 'Wired' },
+  sad: { emoji: '\uD83D\uDCA7', label: 'Sad' },
+  anxious: { emoji: '\uD83C\uDF00', label: 'Anxious' },
+  angry: { emoji: '\uD83D\uDD25', label: 'Angry' },
+};
+
 export default function ContentCard({ content, onClick }) {
   // Pre-unlock AudioContext on card click (before navigation to player page).
   // This is called inside the user's click gesture, so AudioContext.resume()
@@ -129,6 +138,11 @@ export default function ContentCard({ content, onClick }) {
           <span className={`badge ${getTypeBadge(content.type)}`}>
             {content.type?.toLowerCase() === 'long_story' ? 'Long Story' : content.type?.toLowerCase() === 'story' ? 'Story' : content.type?.toLowerCase() === 'song' ? 'Lullaby' : content.type || 'Story'}
           </span>
+          {content.mood && MOOD_CONFIG[content.mood] && (
+            <span className={`${styles.moodBadge} ${styles[`mood_${content.mood}`]}`}>
+              {MOOD_CONFIG[content.mood].emoji} {MOOD_CONFIG[content.mood].label}
+            </span>
+          )}
         </div>
         <h3 className={styles.cardTitle}>{content.title || 'Untitled'}</h3>
         <div className={styles.cardFooter}>
