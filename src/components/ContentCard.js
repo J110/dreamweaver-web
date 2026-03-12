@@ -138,20 +138,15 @@ export default function ContentCard({ content, onClick }) {
           <span className={`badge ${getTypeBadge(content.type)}`}>
             {content.type?.toLowerCase() === 'long_story' ? 'Long Story' : content.type?.toLowerCase() === 'story' ? 'Story' : content.type?.toLowerCase() === 'song' ? 'Lullaby' : content.type || 'Story'}
           </span>
-          {content.mood && MOOD_CONFIG[content.mood] && (
-            <span className={`${styles.moodBadge} ${styles[`mood_${content.mood}`]}`}>
-              {MOOD_CONFIG[content.mood].emoji} {MOOD_CONFIG[content.mood].label}
-            </span>
-          )}
         </div>
         <h3 className={styles.cardTitle}>{content.title || 'Untitled'}</h3>
         <div className={styles.cardFooter}>
           <span className={styles.cardMeta}>
             {durationLabel && <><span className={styles.clockIcon}>&#128336;</span> {durationLabel}</>}
           </span>
-          <span className={styles.cardLikes}>
-            ❤️ {content.save_count || 0}
-          </span>
+          {content.mood && MOOD_CONFIG[content.mood] && (
+            <span className={`${styles.moodBadge} ${styles[`mood_${content.mood}`]}`}>{MOOD_CONFIG[content.mood].emoji} {MOOD_CONFIG[content.mood].label}</span>
+          )}
         </div>
       </div>
     </>
