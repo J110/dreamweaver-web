@@ -150,6 +150,303 @@ function RetentionTable({ cohorts }) {
   );
 }
 
+// ── Diversity Tab ────────────────────────────────────────────────
+
+const TIER_COLORS = {
+  1: '#f59e0b',
+  2: '#a78bfa',
+  3: '#6BB5C9',
+};
+
+const TIER_LABELS = {
+  1: 'Tier 1 — Hard Rules',
+  2: 'Tier 2 — Medium Weight',
+  3: 'Tier 3 — Lower Weight',
+};
+
+function DiversityTab({ data, loading, view, onViewChange, openTiers, setOpenTiers }) {
+  if (loading && !data) return <p className={styles.empty}>Loading diversity data...</p>;
+  if (!data) return <p className={styles.empty}>No diversity data available</p>;
+  if (data.error) return <p className={styles.empty}>{data.error}</p>;
+
+  const { catalog, mood, content, covers } = data;
+
+  // Group dimensions by tier
+  const dimsByTier = { 1: [], 2: [], 3: [] };
+  if (content?.dimensions) {
+    Object.entries(content.dimensions).forEach(([name, dim]) => {
+      dimsByTier[dim.tier]?.push({ name, ...dim });
+    });
+  }
+
+  const formatDimLabel = (s) => s.replace(/_/g, ' ');
+
+  const coverageClass = (cov) =>
+    cov >= 0.7 ? styles.coverageGood : cov >= 0.4 ? styles.coverageWarn : styles.coverageBad;
+
+  return (
+    <>
+      {/* View toggle */}
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 20 }}>
+        <div className={styles.viewToggle}>
+          <button
+            className={`${styles.viewBtn} ${view === 'current' ? styles.viewBtnActive : ''}`}
+            onClick={() => onViewChange('current')}
+          >Current</button>
+          <button
+            className={`${styles.viewBtn} ${view === 'previous' ? styles.viewBtnActive : ''}`}
+            onClick={() => onViewChange('previous')}
+          >Previous</button>
+        </div>
+        {data.generatedAt && (
+          <span className={styles.snapshotTime}>
+            {view === 'previous' ? 'Snapshot' : 'Live'}: {new Date(data.generatedAt).toLocaleString()}
+          </span>
+        )}
+        {loading && <span className={styles.loadingDot} style={{ marginLeft: 8 }}>Loading...</span>}
+      </div>
+
+      {/* Catalog Overview */}
+      <section className={styles.section}>
+        <h2>Catalog Overview</h2>
+        <div className={styles.metricsGrid}>
+          <MetricCard label="Total Items" value={catalog?.total || 0} />
+          <MetricCard label="With Fingerprint" value={catalog?.withFingerprint || 0} color="#8b5cf6" />
+          <MetricCard label="With Mood" value={catalog?.withMood || 0} color="#10b981" />
+          <MetricCard label="With Cover" value={catalog?.withCover || 0} color="#06b6d4" />
+          <MetricCard label="Stories" value={catalog?.byType?.story || 0} />
+          <MetricCard label="Poems" value={catalog?.byType?.poem || 0} />
+          <MetricCard label="Songs" value={catalog?.byType?.song || 0} />
+          <MetricCard label="Long Stories" value={catalog?.byType?.long_story || 0} />
+        </div>
+      </section>
+
+      {/* Mood Distribution */}
+      <section className={styles.section}>
+        <h2>Mood Distribution</h2>
+        <div className={styles.moodGrid}>
+          {(mood?.config?.moods || []).map(m => {
+            const info = MOOD_CONFIG[m] || {};
+            const d = mood?.distribution?.[m] || { count: 0, pct: 0 };
+            return (
+              <div key={m} className={styles.moodCard} style={{ borderColor: `${info.color || '#555'}33` }}>
+                <div className={styles.moodEmoji}>{info.emoji || '?'}</div>
+                <div className={styles.moodName}>{info.label || m}</div>
+                <div className={styles.moodCount} style={{ color: info.color }}>{d.count}</div>
+                <div className={styles.moodPct}>{d.pct}%</div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Mood by type */}
+        {mood?.byType && (
+          <div className={styles.chartBox}>
+            <h3>Mood × Content Type</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={Object.entries(mood.byType).map(([type, counts]) => ({
+                type,
+                ...Object.fromEntries((mood.config?.moods || []).map(m => [m, counts[m] || 0])),
+              }))}>
+                <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} />
+                <XAxis dataKey="type" stroke={CHART_AXIS} tick={{ fontSize: 11 }} />
+                <YAxis stroke={CHART_AXIS} />
+                <Tooltip contentStyle={TT_STYLE} />
+                {(mood.config?.moods || []).map(m => (
+                  <Bar key={m} dataKey={m} stackId="mood" fill={MOOD_CONFIG[m]?.color || '#555'} />
+                ))}
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+
+        {/* Mood by age */}
+        {mood?.byAge && (
+          <div className={styles.chartBox}>
+            <h3>Mood × Age Group</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={['0-1', '2-5', '6-8', '9-12'].map(ag => ({
+                age: ag,
+                ...Object.fromEntries((mood.config?.moods || []).map(m => [m, mood.byAge[ag]?.[m] || 0])),
+              }))}>
+                <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} />
+                <XAxis dataKey="age" stroke={CHART_AXIS} tick={{ fontSize: 11 }} />
+                <YAxis stroke={CHART_AXIS} />
+                <Tooltip contentStyle={TT_STYLE} />
+                {(mood.config?.moods || []).map(m => (
+                  <Bar key={m} dataKey={m} stackId="mood" fill={MOOD_CONFIG[m]?.color || '#555'} />
+                ))}
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </section>
+
+      {/* Content Diversity (13 dimensions) */}
+      <section className={styles.section}>
+        <h2>Content Diversity — 13 Dimensions</h2>
+        <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', marginTop: -8, marginBottom: 16 }}>
+          {content?.totalFingerprinted || 0} / {catalog?.total || 0} items fingerprinted
+        </p>
+
+        {[1, 2, 3].map(tier => {
+          const dims = dimsByTier[tier];
+          if (!dims || dims.length === 0) return null;
+          const isOpen = openTiers[tier];
+          return (
+            <div key={tier} className={styles.dimSection}>
+              <div
+                className={styles.dimSectionHeader}
+                onClick={() => setOpenTiers(prev => ({ ...prev, [tier]: !prev[tier] }))}
+              >
+                <span className={`${styles.tierBadge} ${styles[`tier${tier}`]}`}>Tier {tier}</span>
+                <span className={styles.dimSectionTitle}>{TIER_LABELS[tier]}</span>
+                <span className={styles.dimToggle}>{isOpen ? '▾' : '▸'} {dims.length} dimensions</span>
+              </div>
+              {isOpen && (
+                <div className={styles.dimGroup}>
+                  {dims.map(dim => {
+                    const maxCount = Math.max(1, ...Object.values(dim.distribution || {}));
+                    return (
+                      <div key={dim.name} className={styles.dimCard}>
+                        <div className={styles.dimCardHeader}>
+                          <span className={styles.dimName}>{formatDimLabel(dim.name)}</span>
+                          <span className={styles.dimWeight}>w:{dim.weight}</span>
+                          {dim.hardRule && <span className={styles.dimWeight}>hard</span>}
+                          <span className={`${styles.coverageBadge} ${coverageClass(dim.coverage)}`}>
+                            {Math.round(dim.coverage * 100)}%
+                          </span>
+                        </div>
+                        <div className={styles.dimBars}>
+                          {(dim.values || []).map(val => {
+                            const count = dim.distribution?.[val] || 0;
+                            const pct = Math.round(count / maxCount * 100);
+                            return (
+                              <div key={val} className={styles.dimBar}>
+                                <span className={styles.dimLabel} title={val}>{formatDimLabel(val)}</span>
+                                <div className={styles.dimBarTrack}>
+                                  <div
+                                    className={styles.dimBarFill}
+                                    style={{
+                                      width: `${pct}%`,
+                                      background: count === 0
+                                        ? 'rgba(239,68,68,0.2)'
+                                        : TIER_COLORS[tier] || '#f59e0b',
+                                      opacity: count === 0 ? 0.3 : 0.7,
+                                    }}
+                                  />
+                                </div>
+                                <span className={styles.dimCount}>{count}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </section>
+
+      {/* Catalog Gaps */}
+      {content?.gaps && Object.keys(content.gaps).length > 0 && (
+        <section className={styles.section}>
+          <h2>Catalog Gaps</h2>
+          <div className={styles.chartBox}>
+            <h3>Missing / Underrepresented Values</h3>
+            <div className={styles.gapsList}>
+              {Object.entries(content.gaps).map(([dim, values]) => (
+                <div key={dim} className={styles.gapRow}>
+                  <span className={styles.gapDim}>{formatDimLabel(dim)}</span>
+                  <span className={styles.gapValues}>
+                    {values.map(v => (
+                      <span key={v} className={styles.gapTag}>{formatDimLabel(v)}</span>
+                    ))}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Cover Diversity */}
+      <section className={styles.section}>
+        <h2>Cover Diversity — 7 Axes</h2>
+        <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', marginTop: -8, marginBottom: 16 }}>
+          {covers?.historyCount || 0} covers in history
+        </p>
+
+        {covers?.axes && (
+          <div className={styles.dimGroup}>
+            {Object.entries(covers.axes).map(([axisName, axis]) => {
+              const maxCount = Math.max(1, ...Object.values(axis.distribution || {}));
+              return (
+                <div key={axisName} className={styles.dimCard}>
+                  <div className={styles.dimCardHeader}>
+                    <span className={styles.dimName}>{formatDimLabel(axisName)}</span>
+                    <span className={`${styles.coverageBadge} ${coverageClass(axis.coverage)}`}>
+                      {Math.round(axis.coverage * 100)}%
+                    </span>
+                  </div>
+                  <div className={styles.dimBars}>
+                    {(axis.values || []).map(val => {
+                      const count = axis.distribution?.[val] || 0;
+                      const pct = Math.round(count / maxCount * 100);
+                      return (
+                        <div key={val} className={styles.dimBar}>
+                          <span className={styles.dimLabel} title={val}>{formatDimLabel(val)}</span>
+                          <div className={styles.dimBarTrack}>
+                            <div
+                              className={styles.dimBarFill}
+                              style={{
+                                width: `${pct}%`,
+                                background: count === 0 ? 'rgba(239,68,68,0.2)' : '#ec4899',
+                                opacity: count === 0 ? 0.3 : 0.7,
+                              }}
+                            />
+                          </div>
+                          <span className={styles.dimCount}>{count}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      {/* Lead Character Type */}
+      {covers?.leadCharacterType && Object.keys(covers.leadCharacterType).length > 0 && (
+        <section className={styles.section}>
+          <h2>Lead Character Types</h2>
+          <div className={styles.chartBox}>
+            <ResponsiveContainer width="100%" height={Math.max(200, Object.keys(covers.leadCharacterType).length * 28)}>
+              <BarChart
+                data={Object.entries(covers.leadCharacterType)
+                  .sort((a, b) => b[1] - a[1])
+                  .map(([name, count]) => ({ name: formatDimLabel(name), count }))}
+                layout="vertical"
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} />
+                <XAxis type="number" stroke={CHART_AXIS} />
+                <YAxis type="category" dataKey="name" stroke={CHART_AXIS} tick={{ fontSize: 11 }} width={120} />
+                <Tooltip contentStyle={TT_STYLE} />
+                <Bar dataKey="count" fill="#8b5cf6" radius={[0, 4, 4, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </section>
+      )}
+    </>
+  );
+}
+
 // ── Main Dashboard ───────────────────────────────────────────────
 
 export default function AnalyticsDashboard() {
@@ -172,6 +469,10 @@ export default function AnalyticsDashboard() {
   const [clips, setClips] = useState(null);
   const [clipsFilters, setClipsFilters] = useState({ mood: '', voice: '', posted: '', sort: 'newest' });
   const [copiedCaption, setCopiedCaption] = useState(null);
+  const [diversity, setDiversity] = useState(null);
+  const [diversityView, setDiversityView] = useState('current');
+  const [diversityLoading, setDiversityLoading] = useState(false);
+  const [openTiers, setOpenTiers] = useState({ 1: true, 2: false, 3: false });
 
   // Check if already authed
   useEffect(() => {
@@ -254,6 +555,32 @@ export default function AnalyticsDashboard() {
   useEffect(() => {
     if (tab === 'clips') loadClips();
   }, [tab, loadClips]);
+
+  // Diversity tab: lazy-load
+  const loadDiversity = useCallback(async (view) => {
+    if (!authed) return;
+    setDiversityLoading(true);
+    try {
+      const data = await fetchApi('/diversity', { view: view || diversityView });
+      setDiversity(data);
+    } catch (e) {
+      console.error('Diversity load error:', e);
+    }
+    setDiversityLoading(false);
+  }, [authed, diversityView]);
+
+  useEffect(() => {
+    if (tab === 'diversity') loadDiversity();
+  }, [tab, loadDiversity]);
+
+  const switchDiversityView = (v) => {
+    setDiversityView(v);
+    setDiversityLoading(true);
+    fetchApi('/diversity', { view: v }).then(data => {
+      setDiversity(data);
+      setDiversityLoading(false);
+    }).catch(() => setDiversityLoading(false));
+  };
 
   // Health tab polling (60s refresh when active)
   useEffect(() => {
@@ -364,6 +691,7 @@ export default function AnalyticsDashboard() {
         <button className={`${styles.tab} ${tab === 'users' ? styles.activeTab : ''}`} onClick={() => setTab('users')}>Users</button>
         <button className={`${styles.tab} ${tab === 'health' ? styles.activeTab : ''}`} onClick={() => setTab('health')}>Health</button>
         <button className={`${styles.tab} ${tab === 'clips' ? styles.activeTab : ''}`} onClick={() => setTab('clips')}>Clips</button>
+        <button className={`${styles.tab} ${tab === 'diversity' ? styles.activeTab : ''}`} onClick={() => setTab('diversity')}>Diversity</button>
       </div>
 
       {tab === 'users' && (
@@ -802,6 +1130,17 @@ export default function AnalyticsDashboard() {
             </p>
           )}
         </section>
+      )}
+
+      {tab === 'diversity' && (
+        <DiversityTab
+          data={diversity}
+          loading={diversityLoading}
+          view={diversityView}
+          onViewChange={switchDiversityView}
+          openTiers={openTiers}
+          setOpenTiers={setOpenTiers}
+        />
       )}
 
       {tab === 'dashboard' && (<>

@@ -789,6 +789,271 @@
   background: rgba(16,185,129,0.25);
 }
 
+/* Diversity Tab */
+
+.viewToggle {
+  display: flex;
+  gap: 0;
+  margin-bottom: 20px;
+}
+
+.viewBtn {
+  padding: 8px 20px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.viewBtn:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.viewBtn:last-child {
+  border-radius: 0 8px 8px 0;
+  border-left: none;
+}
+
+.viewBtnActive {
+  background: rgba(245,158,11,0.15);
+  border-color: #f59e0b;
+  color: #f59e0b;
+}
+
+.snapshotTime {
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+  margin-left: 12px;
+  line-height: 36px;
+}
+
+.dimSection {
+  margin-bottom: 28px;
+}
+
+.dimSectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.dimSectionHeader:hover {
+  opacity: 0.8;
+}
+
+.dimSectionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.8);
+}
+
+.tierBadge {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.tier1 {
+  background: rgba(245,158,11,0.15);
+  color: #f59e0b;
+}
+
+.tier2 {
+  background: rgba(139,92,246,0.15);
+  color: #a78bfa;
+}
+
+.tier3 {
+  background: rgba(107,181,201,0.15);
+  color: #6BB5C9;
+}
+
+.dimToggle {
+  font-size: 12px;
+  color: rgba(255,255,255,0.3);
+  margin-left: auto;
+}
+
+.dimGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dimCard {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.dimCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.dimName {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  text-transform: capitalize;
+}
+
+.dimWeight {
+  font-size: 10px;
+  color: rgba(255,255,255,0.3);
+  font-family: monospace;
+}
+
+.coverageBadge {
+  margin-left: auto;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.coverageGood {
+  background: rgba(16,185,129,0.12);
+  color: #10b981;
+}
+
+.coverageWarn {
+  background: rgba(245,158,11,0.12);
+  color: #f59e0b;
+}
+
+.coverageBad {
+  background: rgba(239,68,68,0.12);
+  color: #ef4444;
+}
+
+.dimBars {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.dimBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dimLabel {
+  min-width: 140px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.dimBarTrack {
+  flex: 1;
+  height: 12px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.dimBarFill {
+  height: 100%;
+  border-radius: 3px;
+  min-width: 1px;
+  transition: width 0.4s;
+}
+
+.dimCount {
+  min-width: 24px;
+  font-size: 11px;
+  text-align: right;
+  color: rgba(255,255,255,0.4);
+  font-family: monospace;
+}
+
+.moodGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.moodCard {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 14px 10px;
+  text-align: center;
+}
+
+.moodEmoji {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.moodName {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 2px;
+}
+
+.moodCount {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.moodPct {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+}
+
+.gapsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gapRow {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.gapDim {
+  min-width: 120px;
+  font-weight: 600;
+  color: #f59e0b;
+  text-transform: capitalize;
+}
+
+.gapValues {
+  color: rgba(255,255,255,0.5);
+  line-height: 1.5;
+}
+
+.gapTag {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(239,68,68,0.08);
+  color: rgba(255,255,255,0.55);
+  font-size: 11px;
+  margin: 1px 3px 1px 0;
+}
+
 @media (max-width: 480px) {
   .metricsGrid {
     grid-template-columns: 1fr;
@@ -809,5 +1074,14 @@
 
   .postedRow {
     margin-left: 0;
+  }
+
+  .dimLabel {
+    min-width: 100px;
+    font-size: 10px;
+  }
+
+  .moodGrid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
