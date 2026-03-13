@@ -1002,9 +1002,17 @@
 }
 
 .moodName {
-  font-size: 11px;
-  color: rgba(255,255,255,0.5);
-  margin-bottom: 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 1px;
+  text-transform: capitalize;
+}
+
+.moodLabel {
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 4px;
 }
 
 .moodCount {

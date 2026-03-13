@@ -231,7 +231,8 @@ function DiversityTab({ data, loading, view, onViewChange, openTiers, setOpenTie
             return (
               <div key={m} className={styles.moodCard} style={{ borderColor: `${info.color || '#555'}33` }}>
                 <div className={styles.moodEmoji}>{info.emoji || '?'}</div>
-                <div className={styles.moodName}>{info.label || m}</div>
+                <div className={styles.moodName}>{m}</div>
+                <div className={styles.moodLabel}>{info.label || m}</div>
                 <div className={styles.moodCount} style={{ color: info.color }}>{d.count}</div>
                 <div className={styles.moodPct}>{d.pct}%</div>
               </div>
