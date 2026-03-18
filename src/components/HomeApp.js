@@ -67,7 +67,7 @@ export default function HomeApp() {
   const loadStories = async () => {
     setLoading(true);
     try {
-      const data = await trendingApi.getTrending(100, lang);
+      const data = await trendingApi.getTrending(200, lang);
       const apiItems = data.content || [];
       const seedItems = getStories(lang);
       const seedById = {};
