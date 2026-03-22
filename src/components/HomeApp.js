@@ -16,46 +16,31 @@ import { getStories } from '@/utils/seedData';
 import { sortByDiscovery } from '@/utils/listeningHistory';
 import styles from '@/app/page.module.css';
 
-const THEMES = [
-  { id: 'all', emoji: '\u2728' },
-  { id: 'dreamy', emoji: '\uD83C\uDF19' },
-  { id: 'adventure', emoji: '\u2694\uFE0F' },
-  { id: 'animals', emoji: '\uD83E\uDD81' },
-  { id: 'space', emoji: '\uD83D\uDE80' },
-  { id: 'fantasy', emoji: '\uD83E\uDDD9' },
-  { id: 'fairy_tale', emoji: '\uD83E\uDDDA' },
-  { id: 'nature', emoji: '\uD83C\uDF3F' },
-  { id: 'ocean', emoji: '\uD83C\uDF0A' },
-  { id: 'bedtime', emoji: '\uD83D\uDECF\uFE0F' },
-  { id: 'friendship', emoji: '\uD83E\uDD1D' },
-  { id: 'family', emoji: '\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67' },
-  { id: 'mystery', emoji: '\uD83D\uDD0D' },
-  { id: 'science', emoji: '\uD83D\uDD2C' },
+const AGE_GROUPS = [
+  { id: 'all', emoji: '\u2728', label: { en: 'All', hi: 'Sabhi' } },
+  { id: '0-1', emoji: '\uD83D\uDC76', label: { en: '0-1 yrs', hi: '0-1 saal' }, min: 0, max: 1 },
+  { id: '2-5', emoji: '\uD83E\uDDD2', label: { en: '2-5 yrs', hi: '2-5 saal' }, min: 2, max: 5 },
+  { id: '6-8', emoji: '\uD83D\uDC66', label: { en: '6-8 yrs', hi: '6-8 saal' }, min: 6, max: 8 },
+  { id: '9-12', emoji: '\uD83E\uDDD1', label: { en: '9-12 yrs', hi: '9-12 saal' }, min: 9, max: 12 },
 ];
 
-const THEME_LABELS = {
-  all: { en: 'All', hi: 'Sabhi' },
-  dreamy: { en: 'Dreamy', hi: 'Sapne' },
-  adventure: { en: 'Adventure', hi: 'Sahas' },
-  animals: { en: 'Animals', hi: 'Janwar' },
-  space: { en: 'Space', hi: 'Antariksh' },
-  fantasy: { en: 'Fantasy', hi: 'Kalpana' },
-  fairy_tale: { en: 'Fairy Tales', hi: 'Pari Kathayein' },
-  nature: { en: 'Nature', hi: 'Prakriti' },
-  ocean: { en: 'Ocean', hi: 'Samudra' },
-  bedtime: { en: 'Bedtime', hi: 'Sone ka Samay' },
-  friendship: { en: 'Friendship', hi: 'Dosti' },
-  family: { en: 'Family', hi: 'Parivar' },
-  mystery: { en: 'Mystery', hi: 'Rahasya' },
-  science: { en: 'Science', hi: 'Vigyan' },
-};
+const MOODS = [
+  { id: 'all', emoji: '\u2728', label: { en: 'All', hi: 'Sabhi' } },
+  { id: 'calm', emoji: '\uD83D\uDE0C', label: { en: 'Calm', hi: 'Shant' } },
+  { id: 'curious', emoji: '\uD83E\uDD14', label: { en: 'Curious', hi: 'Jigyasu' } },
+  { id: 'sad', emoji: '\uD83E\uDD79', label: { en: 'Sad', hi: 'Udaas' } },
+  { id: 'anxious', emoji: '\uD83D\uDE1F', label: { en: 'Anxious', hi: 'Chintit' } },
+  { id: 'wired', emoji: '\u26A1', label: { en: 'Energetic', hi: 'Chanchal' } },
+  { id: 'angry', emoji: '\uD83D\uDE24', label: { en: 'Angry', hi: 'Gussa' } },
+];
 
 export default function HomeApp() {
   const { t, lang } = useI18n();
   const [user, setUser] = useState(null);
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTheme, setActiveTheme] = useState('all');
+  const [activeAge, setActiveAge] = useState('all');
+  const [activeMood, setActiveMood] = useState('all');
 
   useEffect(() => {
     if (isLoggedIn()) {
@@ -108,9 +93,17 @@ export default function HomeApp() {
     }
   };
 
-  const filteredStories = activeTheme === 'all'
-    ? stories
-    : stories.filter((s) => s.theme === activeTheme);
+  const filteredStories = stories.filter((s) => {
+    if (activeAge !== 'all') {
+      const group = AGE_GROUPS.find((g) => g.id === activeAge);
+      const age = s.target_age;
+      if (age == null || age < group.min || age > group.max) return false;
+    }
+    if (activeMood !== 'all') {
+      if (s.mood !== activeMood) return false;
+    }
+    return true;
+  });
 
   const storyItems = sortByDiscovery(filteredStories.filter((s) => s.type === 'story'));
   const longStoryItems = sortByDiscovery(filteredStories.filter((s) => s.type === 'long_story'));
@@ -148,18 +141,36 @@ export default function HomeApp() {
           </div>
         </div>
 
-        {/* Theme Filter Pills */}
-        <div className={styles.themeFilter}>
-          {THEMES.map((theme) => (
-            <button
-              key={theme.id}
-              onClick={() => setActiveTheme(theme.id)}
-              className={`${styles.themePill} ${activeTheme === theme.id ? styles.themePillActive : ''}`}
-            >
-              <span>{theme.emoji}</span>
-              <span>{THEME_LABELS[theme.id]?.[lang] || THEME_LABELS[theme.id]?.en}</span>
-            </button>
-          ))}
+        {/* Filter Pills */}
+        <div className={styles.filterGroup}>
+          <span className={styles.filterLabel}>{lang === 'hi' ? 'Umra' : 'Age'}</span>
+          <div className={styles.themeFilter}>
+            {AGE_GROUPS.map((g) => (
+              <button
+                key={g.id}
+                onClick={() => setActiveAge(g.id)}
+                className={`${styles.themePill} ${activeAge === g.id ? styles.themePillActive : ''}`}
+              >
+                <span>{g.emoji}</span>
+                <span>{g.label[lang] || g.label.en}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className={styles.filterGroup}>
+          <span className={styles.filterLabel}>{lang === 'hi' ? 'Mood' : 'Mood'}</span>
+          <div className={styles.themeFilter}>
+            {MOODS.map((m) => (
+              <button
+                key={m.id}
+                onClick={() => setActiveMood(m.id)}
+                className={`${styles.themePill} ${activeMood === m.id ? styles.themePillActive : ''}`}
+              >
+                <span>{m.emoji}</span>
+                <span>{m.label[lang] || m.label.en}</span>
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Content */}
