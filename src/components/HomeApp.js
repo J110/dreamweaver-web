@@ -30,7 +30,7 @@ const MOODS = [
   { id: 'curious', emoji: '\uD83E\uDD14', label: { en: 'Curious', hi: 'Jigyasu' } },
   { id: 'sad', emoji: '\uD83E\uDD79', label: { en: 'Sad', hi: 'Udaas' } },
   { id: 'anxious', emoji: '\uD83D\uDE1F', label: { en: 'Anxious', hi: 'Chintit' } },
-  { id: 'wired', emoji: '\u26A1', label: { en: 'Energetic', hi: 'Chanchal' } },
+  { id: 'wired', emoji: '\u26A1', label: { en: 'Wired', hi: 'Chanchal' } },
   { id: 'angry', emoji: '\uD83D\uDE24', label: { en: 'Angry', hi: 'Gussa' } },
 ];
 
@@ -93,11 +93,21 @@ export default function HomeApp() {
     }
   };
 
+  // Match ContentCard's age resolution: prefer age_group, fall back to target_age
+  const getAgeGroup = (s) => {
+    if (s.age_group) return s.age_group;
+    const age = s.target_age;
+    if (age == null) return null;
+    if (age <= 1) return '0-1';
+    if (age <= 5) return '2-5';
+    if (age <= 8) return '6-8';
+    return '9-12';
+  };
+
   const filteredStories = stories.filter((s) => {
     if (activeAge !== 'all') {
-      const group = AGE_GROUPS.find((g) => g.id === activeAge);
-      const age = s.target_age;
-      if (age == null || age < group.min || age > group.max) return false;
+      const ageGroup = getAgeGroup(s);
+      if (ageGroup !== activeAge) return false;
     }
     if (activeMood !== 'all') {
       if (s.mood !== activeMood) return false;
