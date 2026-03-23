@@ -7,6 +7,7 @@ export const VOICES = {
   female_1: { label: 'Calm',    labelHi: 'शांत',   icon: '🌙' },
   female_2: { label: 'Soft',    labelHi: 'कोमल',   icon: '🌿' },
   female_3: { label: 'Melodic', labelHi: 'मधुर',   icon: '🎵' },
+  female_4: { label: 'Musical', labelHi: 'संगीतमय', icon: '🎶' },
   male_2:   { label: 'Gentle',  labelHi: 'सौम्य',  icon: '🌊' },
   asmr:     { label: 'ASMR',    labelHi: 'ASMR',   icon: '🎧' },
 };
