@@ -6,10 +6,38 @@
  * 'use client' for interactivity (scroll, play button) — SSR still renders HTML.
  */
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { dvAnalytics } from '@/utils/analytics';
 import styles from './landing.module.css';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.dreamvalley.app';
+const PREVIEW_LIMIT = 60; // seconds
+
+/* ─── Fallback content when API is unavailable ─── */
+const FALLBACK_PREVIEWS = [
+  {
+    title: 'The Sleepy Cloud',
+    type: 'story',
+    cover: '/covers/sleepy-cloud.svg',
+    audioUrl: '/audio/pre-gen/7fe248e1_female_1.mp3',
+  },
+  {
+    title: 'Twinkle Dream',
+    type: 'poem',
+    cover: '/covers/twinkle-dream.svg',
+    audioUrl: '/audio/pre-gen/c8796852_female_1.mp3',
+  },
+  {
+    title: 'Sailing to Dreamland',
+    type: 'song',
+    cover: '/covers/sailing-dreamland.svg',
+    audioUrl: '/audio/pre-gen/a3945b7b_female_1.mp3',
+  },
+];
+
+const TYPE_LABELS = { story: 'Story', poem: 'Poem', song: 'Lullaby', long_story: 'Story' };
+const TYPE_ICONS = { story: '📖', poem: '📝', song: '🎵', long_story: '📖' };
 
 /* ─── Featured FLUX covers for the landing page ─── */
 const FEATURED_COVERS = [
@@ -44,6 +72,14 @@ export default function LandingPage() {
   const howItWorksRef = useRef(null);
   const previewRef = useRef(null);
 
+  // ── Audio preview state ──
+  const [previews, setPreviews] = useState(FALLBACK_PREVIEWS);
+  const [playingIdx, setPlayingIdx] = useState(null);
+  const [elapsed, setElapsed] = useState(0);
+  const [previewEnded, setPreviewEnded] = useState(null); // index of ended card
+  const audioRef = useRef(null);
+  const progressRef = useRef(null);
+
   // Rotate hero carousel every 5 seconds
   useEffect(() => {
     const timer = setInterval(() => {
@@ -51,6 +87,144 @@ export default function LandingPage() {
     }, 5000);
     return () => clearInterval(timer);
   }, []);
+
+  // Fetch latest content for previews
+  useEffect(() => {
+    async function fetchPreviews() {
+      try {
+        const types = ['story', 'poem', 'song'];
+        const results = await Promise.all(
+          types.map(async (type) => {
+            const res = await fetch(
+              `${API_URL}/api/v1/content?content_type=${type}&page_size=5&sort_by=created_at`,
+              { next: { revalidate: 3600 } }
+            );
+            if (!res.ok) return null;
+            const json = await res.json();
+            const items = json.data?.items || [];
+            // Pick first item with audio
+            return items.find(
+              (it) => it.audio_variants && it.audio_variants.length > 0
+            ) || null;
+          })
+        );
+        const mapped = results.map((item, i) => {
+          if (!item) return FALLBACK_PREVIEWS[i];
+          const variant = item.audio_variants[0];
+          return {
+            title: item.title,
+            type: item.type,
+            cover: item.cover,
+            audioUrl: variant.url,
+          };
+        });
+        setPreviews(mapped);
+      } catch {
+        // Keep fallback
+      }
+    }
+    fetchPreviews();
+  }, []);
+
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+      if (progressRef.current) clearInterval(progressRef.current);
+    };
+  }, []);
+
+  const stopPlayback = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    if (progressRef.current) {
+      clearInterval(progressRef.current);
+      progressRef.current = null;
+    }
+    setPlayingIdx(null);
+    setElapsed(0);
+  }, []);
+
+  const handlePreviewPlay = useCallback((idx) => {
+    // Toggle pause/resume
+    if (playingIdx === idx && audioRef.current) {
+      if (audioRef.current.paused) {
+        audioRef.current.play().catch(() => {});
+        progressRef.current = setInterval(() => {
+          setElapsed((e) => {
+            if (e >= PREVIEW_LIMIT - 1) {
+              // Fade out
+              const audio = audioRef.current;
+              if (audio) {
+                let vol = 1;
+                const fade = setInterval(() => {
+                  vol -= 0.05;
+                  if (vol <= 0) { clearInterval(fade); audio.pause(); }
+                  else audio.volume = vol;
+                }, 100);
+              }
+              clearInterval(progressRef.current);
+              progressRef.current = null;
+              setPlayingIdx(null);
+              setPreviewEnded(idx);
+              return PREVIEW_LIMIT;
+            }
+            return e + 1;
+          });
+        }, 1000);
+      } else {
+        audioRef.current.pause();
+        clearInterval(progressRef.current);
+        progressRef.current = null;
+      }
+      return;
+    }
+
+    // Stop current if different
+    stopPlayback();
+    setPreviewEnded(null);
+
+    const preview = previews[idx];
+    if (!preview?.audioUrl) return;
+
+    const audio = new Audio(preview.audioUrl);
+    audioRef.current = audio;
+    setPlayingIdx(idx);
+    setElapsed(0);
+
+    audio.play().catch(() => { setPlayingIdx(null); });
+
+    audio.onended = () => {
+      stopPlayback();
+      setPreviewEnded(idx);
+    };
+
+    progressRef.current = setInterval(() => {
+      setElapsed((e) => {
+        if (e >= PREVIEW_LIMIT - 1) {
+          const a = audioRef.current;
+          if (a) {
+            let vol = 1;
+            const fade = setInterval(() => {
+              vol -= 0.05;
+              if (vol <= 0) { clearInterval(fade); a.pause(); }
+              else a.volume = vol;
+            }, 100);
+          }
+          clearInterval(progressRef.current);
+          progressRef.current = null;
+          setPlayingIdx(null);
+          setPreviewEnded(idx);
+          return PREVIEW_LIMIT;
+        }
+        return e + 1;
+      });
+    }, 1000);
+
+    dvAnalytics.track('landing_preview_play', { title: preview.title, type: preview.type });
+  }, [playingIdx, previews, stopPlayback]);
 
   const scrollTo = (ref) => {
     ref.current?.scrollIntoView({ behavior: 'smooth' });
@@ -236,22 +410,73 @@ export default function LandingPage() {
       {/* ━━━ SECTION 4: EXPERIENCE IT ━━━ */}
       <section className={styles.experience} ref={previewRef}>
         <div className={styles.sectionInner}>
-          <h2 className={styles.sectionTitle}>Try tonight&apos;s story</h2>
-          <p className={styles.sectionSubtitle}>No signup needed. Just press play.</p>
-          <div className={styles.previewPlayer}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={FEATURED_COVERS[0]} alt="Story preview" className={styles.previewCover} />
-            <Link href="/onboarding" className={styles.playButton} aria-label="Play story preview">
-              <svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </Link>
+          <h2 className={styles.sectionTitle}>Listen now — no signup needed</h2>
+          <p className={styles.sectionSubtitle}>A story, a poem, and a lullaby. Just press play.</p>
+          <div className={styles.previewGrid}>
+            {previews.map((preview, idx) => (
+              <div key={idx} className={styles.previewCard}>
+                <div className={styles.previewCoverWrap}>
+                  {preview.cover ? (
+                    <object
+                      type="image/svg+xml"
+                      data={preview.cover}
+                      className={styles.previewCoverImg}
+                      aria-label={`Cover for ${preview.title}`}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={preview.cover} alt={preview.title} className={styles.previewCoverImg} />
+                    </object>
+                  ) : (
+                    <div className={styles.previewCoverPlaceholder}>
+                      {TYPE_ICONS[preview.type] || '📖'}
+                    </div>
+                  )}
+                  {/* Play/Pause button */}
+                  {previewEnded !== idx ? (
+                    <button
+                      className={`${styles.previewPlayBtn} ${playingIdx === idx && !audioRef.current?.paused ? styles.previewPlaying : ''}`}
+                      onClick={() => handlePreviewPlay(idx)}
+                      aria-label={playingIdx === idx ? 'Pause preview' : 'Play preview'}
+                    >
+                      {playingIdx === idx && audioRef.current && !audioRef.current.paused ? (
+                        <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+                          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                        </svg>
+                      ) : (
+                        <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      )}
+                    </button>
+                  ) : (
+                    <div className={styles.previewOverlay}>
+                      <p>Want to hear more?</p>
+                      <Link href="/onboarding" className={styles.previewOverlayCta}>
+                        Explore free
+                      </Link>
+                    </div>
+                  )}
+                  {/* Progress bar */}
+                  {playingIdx === idx && (
+                    <div className={styles.previewBarTrack}>
+                      <div
+                        className={styles.previewBar}
+                        style={{ width: `${(elapsed / PREVIEW_LIMIT) * 100}%` }}
+                      />
+                    </div>
+                  )}
+                </div>
+                <div className={styles.previewMeta}>
+                  <span className={styles.previewTypeBadge}>
+                    {TYPE_ICONS[preview.type]} {TYPE_LABELS[preview.type] || 'Story'}
+                  </span>
+                  <h3 className={styles.previewTitle}>{preview.title}</h3>
+                </div>
+              </div>
+            ))}
           </div>
-          <p className={styles.previewHint}>
-            Your child would be drifting off by now. Get the full experience — free.
-          </p>
           <Link href="/onboarding" className={styles.ctaPrimary}>
-            Start free tonight
+            Explore all stories — free
           </Link>
         </div>
       </section>
