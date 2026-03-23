@@ -169,6 +169,7 @@ export default function LandingPage() {
                     <div className={styles.voiceCard}><span>🌿</span> Soft</div>
                     <div className={styles.voiceCard}><span>🎵</span> Melodic</div>
                     <div className={styles.voiceCard}><span>🌊</span> Gentle</div>
+                    <div className={styles.voiceCard}><span>🎶</span> Musical</div>
                     <div className={styles.voiceCard}><span>🎧</span> ASMR</div>
                   </div>
                 </div>
@@ -185,9 +186,9 @@ export default function LandingPage() {
               </div>
             </div>
             <div className={styles.pillarContent}>
-              <h3 className={styles.pillarTitle}>Five voices. Original music. Living art.</h3>
+              <h3 className={styles.pillarTitle}>Six voices. Original music. Living art.</h3>
               <p className={styles.pillarText}>
-                Pick from five narration voices for stories and poems — from calm whispers to melodic tones.
+                Pick from six narration voices for stories and poems — from calm whispers to melodic tones.
                 Lullabies come with their own instrument themes: harp, guitar, piano, cello, or flute.
                 Every story has its own original ambient music. And each cover is a living scene —
                 water flows, fireflies glow, clouds drift — bringing your child into the story world.
@@ -290,6 +291,19 @@ export default function LandingPage() {
                 Every element — visual, auditory, narrative — moves in the same direction: toward rest.
               </p>
             </div>
+            <div className={styles.scienceCard}>
+              <div className={styles.scienceIcon}>😌</div>
+              <h3>Meets your child where they are</h3>
+              <p>
+                A hyper child and a worried child need different stories.
+                Every Dream Valley story is tuned to a specific mood —
+                matching your child&apos;s emotional state before guiding them toward sleep.
+                This isn&apos;t new — lullabies across cultures have always done this,
+                from Mesopotamian protection chants for anxious babies
+                to nonsense-syllable songs for restless toddlers.
+                We&apos;re just doing it with precision.
+              </p>
+            </div>
           </div>
           <Link href="/how-it-works" className={styles.learnMore}>
             Learn more about our approach →
@@ -387,6 +401,20 @@ export default function LandingPage() {
               <p>Original musical pieces with sleep-safe melodies. Perfect for winding down the last few minutes.</p>
             </div>
           </div>
+          <h3 className={styles.exploreSubtitle}>Tuned to your child&apos;s mood</h3>
+          <p className={styles.moodExplainer}>
+            Bedtime isn&apos;t one-size-fits-all. A wired child needs a different story
+            than an anxious one. Dream Valley matches content to how your child feels right now.
+          </p>
+          <div className={styles.moodRow}>
+            <span className={styles.moodTag}>😌 Calm</span>
+            <span className={styles.moodTag}>🔍 Curious</span>
+            <span className={styles.moodTag}>⚡ Wired</span>
+            <span className={styles.moodTag}>💧 Sad</span>
+            <span className={styles.moodTag}>🌀 Anxious</span>
+            <span className={styles.moodTag}>🔥 Angry</span>
+          </div>
+
           <div className={styles.tagRow}>
             {CATEGORIES.map((cat) => (
               <Link key={cat} href={`/category/${CATEGORY_SLUGS[cat]}`} className={styles.tag}>

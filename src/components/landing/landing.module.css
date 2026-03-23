@@ -689,6 +689,49 @@
   background: rgba(245, 196, 105, 0.2);
 }
 
+/* ─── Mood showcase ─── */
+.exploreSubtitle {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--lp-text);
+  margin: 32px 0 8px;
+}
+
+.moodExplainer {
+  text-align: center;
+  font-size: 14px;
+  color: var(--lp-text-dim);
+  max-width: 480px;
+  margin: 0 auto 16px;
+  line-height: 1.5;
+}
+
+.moodRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.moodTag {
+  display: inline-block;
+  padding: 8px 18px;
+  background: rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(196, 167, 255, 0.9);
+  letter-spacing: 0.3px;
+  transition: background 0.2s;
+}
+
+.moodTag:hover {
+  background: rgba(139, 92, 246, 0.25);
+}
+
 /* ─── SECTION 9: FINAL CTA ─── */
 .finalCta {
   position: relative;
