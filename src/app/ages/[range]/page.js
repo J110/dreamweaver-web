@@ -17,7 +17,7 @@ async function getStoriesByAge(min, max) {
   let stories = [];
 
   try {
-    const res = await fetch(`${API_URL}/api/v1/content?page_size=200`, {
+    const res = await fetch(`${API_URL}/api/v1/content?page_size=100`, {
       next: { revalidate: 3600 },
     });
     if (res.ok) {
