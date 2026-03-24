@@ -784,6 +784,9 @@ export default function PlayerPage() {
             if (seedMatch.character && (!data.character || !data.character.name)) {
               data.character = seedMatch.character;
             }
+            if (!data.story_type && seedMatch.story_type) {
+              data.story_type = seedMatch.story_type;
+            }
           }
           setContent(data);
           setIsSaved(data.is_saved || false);
@@ -1099,7 +1102,7 @@ export default function PlayerPage() {
         </div>
 
         <div className={styles.badge}>
-          {content.type?.toLowerCase() === 'long_story' ? 'LONG STORY' : content.type?.toLowerCase() === 'story' ? 'STORY' : content.type?.toLowerCase() === 'song' ? 'LULLABY' : content.type?.toUpperCase() || 'STORY'}
+          {(content.story_type && {'folk_tale':'FOLK TALE','mythological':'MYTHOLOGICAL','fable':'FABLE','nature':'NATURE STORY','slice_of_life':'SLICE OF LIFE','dream':'DREAM'}[content.story_type]) || (content.type?.toLowerCase() === 'long_story' ? 'LONG STORY' : content.type?.toLowerCase() === 'story' ? 'STORY' : content.type?.toLowerCase() === 'song' ? 'LULLABY' : content.type?.toUpperCase() || 'STORY')}
         </div>
         <h1 className={styles.title}>{content.title}</h1>
 
@@ -1176,7 +1179,7 @@ export default function PlayerPage() {
 
             <div className={styles.aboutDetails}>
               <span>
-                {content.type === 'long_story' ? 'Long Story' : content.type === 'song' ? 'Lullaby' : content.type === 'poem' ? 'Poem' : 'Story'}
+                {content.story_type && {'folk_tale':'Folk Tale','mythological':'Mythological','fable':'Fable','nature':'Nature Story','slice_of_life':'Slice of Life','dream':'Dream'}[content.story_type] || (content.type === 'long_story' ? 'Long Story' : content.type === 'song' ? 'Lullaby' : content.type === 'poem' ? 'Poem' : 'Story')}
                 {' · ~'}{content.duration || '?'}{' min'}
               </span>
               <span>

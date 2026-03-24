@@ -15,6 +15,15 @@ const MOOD_CONFIG = {
   angry: { emoji: '\uD83D\uDD25', label: 'Angry' },
 };
 
+const STORY_TYPE_LABELS = {
+  folk_tale: 'Folk Tale',
+  mythological: 'Mythological',
+  fable: 'Fable',
+  nature: 'Nature Story',
+  slice_of_life: 'Slice of Life',
+  dream: 'Dream',
+};
+
 export default function ContentCard({ content, onClick }) {
   // Pre-unlock AudioContext on card click (before navigation to player page).
   // This is called inside the user's click gesture, so AudioContext.resume()
@@ -136,7 +145,13 @@ export default function ContentCard({ content, onClick }) {
       <div className={styles.cardContent}>
         <div className={styles.cardHeader}>
           <span className={`badge ${getTypeBadge(content.type)}`}>
-            {content.type?.toLowerCase() === 'long_story' ? 'Long Story' : content.type?.toLowerCase() === 'story' ? 'Story' : content.type?.toLowerCase() === 'song' ? 'Lullaby' : content.type || 'Story'}
+            {content.story_type && STORY_TYPE_LABELS[content.story_type]
+              ? STORY_TYPE_LABELS[content.story_type]
+              : content.type?.toLowerCase() === 'long_story' ? 'Long Story'
+              : content.type?.toLowerCase() === 'story' ? 'Story'
+              : content.type?.toLowerCase() === 'song' ? 'Lullaby'
+              : content.type?.toLowerCase() === 'poem' ? 'Poem'
+              : content.type || 'Story'}
           </span>
         </div>
         <h3 className={styles.cardTitle}>{content.title || 'Untitled'}</h3>

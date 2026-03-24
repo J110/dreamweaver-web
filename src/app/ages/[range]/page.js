@@ -109,7 +109,7 @@ export default async function AgePage({ params }) {
               )}
               <div className={styles.cardInfo}>
                 <span className={styles.cardType}>
-                  {{ story: 'Story', poem: 'Poem', song: 'Lullaby', long_story: 'Long Story' }[s.type] || 'Story'}
+                  {s.story_type && {'folk_tale':'Folk Tale','mythological':'Mythological','fable':'Fable','nature':'Nature Story','slice_of_life':'Slice of Life','dream':'Dream'}[s.story_type] || { story: 'Story', poem: 'Poem', song: 'Lullaby', long_story: 'Long Story' }[s.type] || 'Story'}
                 </span>
                 <h3 className={styles.cardTitle}>{s.title}</h3>
               </div>

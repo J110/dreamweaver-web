@@ -77,6 +77,7 @@ export default function HomeApp() {
           musicProfile: item.musicProfile || seed.musicProfile,
           addedAt: item.addedAt || seed.addedAt || item.created_at,
           duration: item.duration || seed.duration,
+          story_type: item.story_type || seed.story_type,
         };
       });
       const apiIds = new Set(apiItems.map((s) => s.id));
