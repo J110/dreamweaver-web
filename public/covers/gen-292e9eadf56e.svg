@@ -517,4 +517,18 @@
     stroke-linecap="round" opacity="0.5"/>
   <circle cx="0" cy="0" r="2" fill="#FFF5E0" opacity="0.6"/>
   <circle cx="0" cy="0" r="5" fill="#FFCA78" opacity="0.15"/>
-  <
+  <animateMotion dur="5.7s" begin="68s" repeatCount="indefinite"
+    path="M12,-6 Q93,37 220,69"
+    calcMode="spline" keySplines="0.2 0 0.8 1"/>
+  <animate attributeName="opacity" values="0;0;0.76;0.76;0;0;0;0;0;0;0;0;0"
+    dur="68s" begin="0s" repeatCount="indefinite"
+    calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+</g>
+<!-- Vignette: full_heavy -->
+<rect width="512" height="512" fill="url(#vignetteGrad)" opacity="0.81">
+  <animate attributeName="opacity" values="0.81;0.8600000000000001;0.81" dur="8s" repeatCount="indefinite"
+    calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+</rect>
+
+
+</svg>

@@ -513,4 +513,71 @@
 
       <!-- Cheek blush -->
       <circle cx="-10" cy="0" r="3.5" fill="#ffb6c1" opacity="0.4"/>
-     
+      <circle cx="10" cy="0" r="3.5" fill="#ffb6c1" opacity="0.4"/>
+
+      <!-- Feet/sandals -->
+      <ellipse cx="-6" cy="64" rx="6" ry="2.5" fill="#8b5a3c"/>
+      <ellipse cx="6" cy="64" rx="6" ry="2.5" fill="#8b5a3c"/>
+    </g>
+  </g>
+
+  <!-- LAYER 6: Foreground - floating magic feather, sparkles, particles -->
+
+  <!-- === FLOATING MAGIC FEATHER === -->
+  <g class="pm-floatingFeather" transform-origin="155 320">
+    <g transform="translate(155, 315)">
+      <!-- Feather aura glow -->
+      <ellipse cx="0" cy="0" rx="30" ry="35" fill="url(#pm-magicGlow)" class="pm-magicAura" filter="url(#pm-strongGlow)"/>
+
+      <!-- Feather shaft -->
+      <path d="M0 25 Q-1 0 2 -25" stroke="#ffd700" stroke-width="1.5" fill="none" opacity="0.9"/>
+      <!-- Feather barbs left -->
+      <path d="M0 20 Q-12 12 -14 8" stroke="#00d4aa" stroke-width="1" fill="none" opacity="0.7"/>
+      <path d="M0 12 Q-14 4 -16 -2" stroke="#00a86b" stroke-width="1" fill="none" opacity="0.7"/>
+      <path d="M1 4 Q-13 -4 -15 -10" stroke="#00d4aa" stroke-width="1" fill="none" opacity="0.7"/>
+      <path d="M1 -4 Q-12 -12 -13 -18" stroke="#00a86b" stroke-width="1" fill="none" opacity="0.7"/>
+      <!-- Feather barbs right -->
+      <path d="M0 20 Q12 12 14 8" stroke="#00d4aa" stroke-width="1" fill="none" opacity="0.7"/>
+      <path d="M0 12 Q14 4 16 -2" stroke="#00a86b" stroke-width="1" fill="none" opacity="0.7"/>
+      <path d="M1 4 Q13 -4 15 -10" stroke="#00d4aa" stroke-width="1" fill="none" opacity="0.7"/>
+      <path d="M1 -4 Q12 -12 13 -18" stroke="#00a86b" stroke-width="1" fill="none" opacity="0.7"/>
+
+      <!-- Feather eye at top -->
+      <ellipse cx="2" cy="-22" rx="8" ry="10" fill="url(#pm-featherEye)" filter="url(#pm-softGlow)"/>
+      <circle cx="2" cy="-22" r="3.5" fill="#ffd700" filter="url(#pm-softGlow)"/>
+      <circle cx="2" cy="-22" r="1.5" fill="#ffffff" opacity="0.9"/>
+    </g>
+  </g>
+
+  <!-- Magic sparkle cascade from feather -->
+  <g filter="url(#pm-softGlow)">
+    <circle cx="148" cy="330" r="2.5" fill="#ffd700" class="pm-sparkle1"/>
+    <circle cx="162" cy="335" r="2" fill="#ffffff" class="pm-sparkle2"/>
+    <circle cx="145" cy="325" r="1.8" fill="#ff69b4" class="pm-sparkle3"/>
+    <circle cx="158" cy="340" r="2.2" fill="#ffd700" class="pm-sparkle4"/>
+    <circle cx="140" cy="332" r="1.5" fill="#4d8aff" class="pm-sparkle5"/>
+    <circle cx="165" cy="328" r="1.8" fill="#ffd700" class="pm-sparkle6"/>
+    <circle cx="152" cy="345" r="2" fill="#ff69b4" class="pm-sparkle7"/>
+    <circle cx="143" cy="338" r="1.6" fill="#ffffff" class="pm-sparkle8"/>
+  </g>
+
+  <!-- Additional ambient sparkles near boy's hand -->
+  <g filter="url(#pm-softGlow)" opacity="0.7">
+    <circle cx="130" cy="348" r="1.2" fill="#ffd700" class="pm-sparkle3"/>
+    <circle cx="138" cy="355" r="1" fill="#ff69b4" class="pm-sparkle5"/>
+    <circle cx="125" cy="352" r="1.5" fill="#4d8aff" class="pm-sparkle1"/>
+  </g>
+
+  <!-- Foreground foliage (nearest) -->
+  <ellipse cx="-10" cy="470" rx="55" ry="30" fill="#0d3a1e" opacity="0.6"/>
+  <ellipse cx="520" cy="465" rx="50" ry="28" fill="#0d3a1e" opacity="0.6"/>
+
+  <!-- Ground flowers foreground -->
+  <circle cx="45" cy="480" r="3.5" fill="#ff69b4" opacity="0.4"/>
+  <circle cx="55" cy="485" r="2.5" fill="#ffd700" opacity="0.35"/>
+  <circle cx="460" cy="478" r="3" fill="#9370db" opacity="0.4"/>
+  <circle cx="470" cy="483" r="2" fill="#ff69b4" opacity="0.35"/>
+
+  <!-- LAYER 7: Vignette overlay -->
+  <rect width="512" height="512" fill="url(#pm-vignette)" opacity="0.45"/>
+</svg>

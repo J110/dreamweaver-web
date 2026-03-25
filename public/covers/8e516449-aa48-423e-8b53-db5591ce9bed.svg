@@ -482,4 +482,12 @@
 <linearGradient id="vigLG259" x1="0" y1="0" x2="0" y2="1">
   <stop offset="0%" stop-color="#1a0a05" stop-opacity="0"/>
   <stop offset="50%" stop-color="#1a0a05" stop-opacity="0.15"/>
-  <
+  <stop offset="100%" stop-color="#1a0a05" stop-opacity="0.70"/>
+</linearGradient>
+<rect width="512" height="512" fill="url(#vigLG259)" opacity="0.62">
+  <animate attributeName="opacity" values="0.62;0.67;0.62" dur="10s" repeatCount="indefinite"
+    calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+</rect>
+
+
+</svg>

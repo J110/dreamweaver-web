@@ -1,0 +1,207 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<defs>
+    <radialGradient id="at-skyGrad" cx="50%" cy="30%" r="70%">
+        <stop offset="0%" stop-color="#0a1a2a"/>
+        <stop offset="50%" stop-color="#0d2b45"/>
+        <stop offset="100%" stop-color="#0a1a2a"/>
+    </radialGradient>
+
+    <linearGradient id="at-oceanGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#1a3a5a"/>
+        <stop offset="50%" stop-color="#0d2b45"/>
+        <stop offset="100%" stop-color="#0a1a2a"/>
+    </linearGradient>
+
+    <linearGradient id="at-caveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#3a5a7a"/>
+        <stop offset="100%" stop-color="#1a3a5a"/>
+    </linearGradient>
+
+    <filter id="at-softGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="2" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="at-mediumGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="4" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="at-strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="6" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <radialGradient id="at-vignette" cx="50%" cy="50%" r="70%">
+        <stop offset="0%" stop-color="black" stop-opacity="0"/>
+        <stop offset="100%" stop-color="black" stop-opacity="1"/>
+    </radialGradient>
+
+    <filter id="at-bubbleGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+        <feSpecularLighting result="specOut" in="blur" specularConstant="1" specularExponent="20" lighting-color="#aaddff">
+            <fePointLight x="100" y="100" z="200"/>
+        </feSpecularLighting>
+        <feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+    </filter>
+</defs>
+
+<style>
+    @keyframes at-twinkle {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 1; }
+    }
+    .at-twinkle {
+        animation: at-twinkle 2.5s infinite ease-in-out;
+    }
+
+    @keyframes at-bob {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+    .at-bob {
+        animation: at-bob 5s infinite ease-in-out;
+    }
+
+    @keyframes at-wave {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(6px); }
+    }
+    .at-wave {
+        animation: at-wave 7s infinite ease-in-out;
+    }
+
+    @keyframes at-drift {
+        0% { transform: translate(0, 0); }
+        25% { transform: translate(4px, -6px); }
+        50% { transform: translate(8px, 0); }
+        75% { transform: translate(4px, 6px); }
+        100% { transform: translate(0, 0); }
+    }
+    .at-drift {
+        animation: at-drift 8s infinite ease-in-out;
+    }
+
+    @keyframes at-pulse {
+        0%, 100% { opacity: 0.6; filter: url(#at-softGlow); }
+        50% { opacity: 1; filter: url(#at-mediumGlow); }
+    }
+    .at-pulse {
+        animation: at-pulse 4s infinite ease-in-out;
+    }
+
+    @keyframes at-caveGlow {
+        0%, 100% { opacity: 0.7; }
+        50% { opacity: 1; }
+    }
+    .at-caveGlow {
+        animation: at-caveGlow 6s infinite ease-in-out;
+    }
+
+    @keyframes at-float {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-12px) rotate(2deg); }
+    }
+    .at-float {
+        animation: at-float 6s infinite ease-in-out;
+    }
+</style>
+
+<!-- Layer 1: Sky/Background -->
+<rect width="512" height="512" fill="url(#at-skyGrad)"/>
+
+<!-- Distant stars -->
+<g>
+    <circle cx="80" cy="60" r="1.5" fill="#ffd700" class="at-twinkle" filter="url(#at-softGlow)"/>
+    <circle cx="150" cy="40" r="1.2" fill="#aaddff" class="at-twinkle" filter="url(#at-softGlow)" style="animation-delay: 0.5s"/>
+    <circle cx="220" cy="80" r="1.8" fill="#ffd700" class="at-twinkle" filter="url(#at-softGlow)" style="animation-delay: 1s"/>
+    <circle cx="300" cy="30" r="1.3" fill="#aaddff" class="at-twinkle" filter="url(#at-softGlow)" style="animation-delay: 1.5s"/>
+    <circle cx="380" cy="70" r="1.6" fill="#ffd700" class="at-twinkle" filter="url(#at-softGlow)" style="animation-delay: 2s"/>
+    <circle cx="450" cy="50" r="1.4" fill="#aaddff" class="at-twinkle" filter="url(#at-softGlow)" style="animation-delay: 0.8s"/>
+</g>
+
+<!-- Layer 2: Far Background - Distant ocean surface -->
+<rect y="120" width="512" height="392" fill="url(#at-oceanGrad)"/>
+
+<!-- Distant waves -->
+<path d="M0,140 Q128,130 256,140 T512,140 L512,120 L0,120 Z" fill="#0d2b45" opacity="0.6" class="at-wave"/>
+<path d="M0,160 Q192,150 384,160 T512,160 L512,140 L0,140 Z" fill="#0a1a2a" opacity="0.4" class="at-wave" style="animation-delay: 1s"/>
+
+<!-- Layer 3: Mid Background - Underwater terrain -->
+<path d="M0,250 Q128,230 256,250 T512,250 L512,512 L0,512 Z" fill="#0d2b45" opacity="0.8"/>
+<path d="M50,300 Q150,280 256,300 T460,300 L460,512 L50,512 Z" fill="#1a3a5a" opacity="0.6"/>
+
+<!-- Distant coral -->
+<g transform="translate(50, 350)" class="at-float">
+    <path d="M0,0 L20,-40 L40,0 L20,40 Z" fill="#ff6b6b" opacity="0.7"/>
+    <path d="M10,-10 L30,-50 L50,-10 L30,30 Z" fill="#4ecdc4" opacity="0.7"/>
+</g>
+<g transform="translate(400, 380)" class="at-float" style="animation-delay: 1s">
+    <path d="M0,0 L15,-30 L30,0 L15,30 Z" fill="#ffd93d" opacity="0.7"/>
+    <path d="M10,-5 L25,-35 L40,-5 L25,25 Z" fill="#6a4c93" opacity="0.7"/>
+</g>
+
+<!-- Layer 4: Middle Ground - Underwater cave -->
+<path d="M150,200 Q256,150 360,200 Q400,250 360,300 Q256,350 150,300 Q110,250 150,200 Z" fill="url(#at-caveGrad)" class="at-caveGlow" filter="url(#at-mediumGlow)"/>
+
+<!-- Bioluminescent patterns -->
+<g transform="translate(256, 250)">
+    <circle cx="0" cy="-30" r="8" fill="#aaddff" class="at-pulse" filter="url(#at-strongGlow)"/>
+    <circle cx="-40" cy="0" r="6" fill="#ffd700" class="at-pulse" filter="url(#at-mediumGlow)" style="animation-delay: 1s"/>
+    <circle cx="40" cy="0" r="6" fill="#aaddff" class="at-pulse" filter="url(#at-mediumGlow)" style="animation-delay: 2s"/>
+    <circle cx="0" cy="30" r="8" fill="#ffd700" class="at-pulse" filter="url(#at-strongGlow)" style="animation-delay: 0.5s"/>
+    <path d="M-20,-20 Q0,-40 20,-20 Q40,0 20,20 Q0,40 -20,20 Q-40,0 -20,-20 Z" fill="none" stroke="#aaddff" stroke-width="2" class="at-pulse" filter="url(#at-softGlow)" style="animation-delay: 1.5s"/>
+</g>
+
+<!-- Layer 5: Main Character - Aarav -->
+<g transform="translate(256, 240)">
+    <g class="at-bob">
+        <!-- Diving suit -->
+        <ellipse cx="0" cy="20" rx="25" ry="35" fill="#ff6b6b" filter="url(#at-softGlow)"/>
+        <rect x="-20" y="-10" width="40" height="50" rx="5" fill="#ff6b6b"/>
+        <circle cx="-12" cy="0" r="6" fill="#333"/>
+        <circle cx="12" cy="0" r="6" fill="#333"/>
+
+        <!-- Helmet -->
+        <circle cx="0" cy="-15" r="22" fill="#aaddff" opacity="0.8" filter="url(#at-softGlow)"/>
+        <circle cx="0" cy="-15" r="18" fill="#0d2b45" opacity="0.6"/>
+
+        <!-- Face -->
+        <circle cx="-6" cy="-20" r="3" fill="#333"/>
+        <circle cx="6" cy="-20" r="3" fill="#333"/>
+        <path d="M-8,-12 Q0,-8 8,-12" stroke="#333" stroke-width="2" fill="none"/>
+
+        <!-- Oxygen tank -->
+        <rect x="-25" y="-5" width="10" height="30" rx="3" fill="#333"/>
+        <rect x="15" y="-5" width="10" height="30" rx="3" fill="#333"/>
+
+        <!-- Arms -->
+        <path d="M-25,5 Q-35,15 -30,25" stroke="#ff6b6b" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <path d="M25,5 Q35,15 30,25" stroke="#ff6b6b" stroke-width="8" fill="none" stroke-linecap="round"/>
+
+        <!-- Notepad -->
+        <rect x="20" y="10" width="15" height="20" rx="2" fill="#f8f8f8"/>
+        <path d="M22,12 L33,12 M22,16 L33,16 M22,20 L30,20" stroke="#333" stroke-width="1"/>
+    </g>
+</g>
+
+<!-- Layer 6: Foreground Particles - Bubbles and sparkles -->
+<g>
+    <!-- Bubbles -->
+    <circle cx="100" cy="150" r="4" fill="#aaddff" opacity="0.7" class="at-drift" filter="url(#at-bubbleGlow)"/>
+    <circle cx="150" cy="120" r="3" fill="#aaddff" opacity="0.6" class="at-drift" style="animation-delay: 1s" filter="url(#at-bubbleGlow)"/>
+    <circle cx="300" cy="100" r="5" fill="#aaddff" opacity="0.8" class="at-drift" style="animation-delay: 2s" filter="url(#at-bubbleGlow)"/>
+    <circle cx="400" cy="130" r="3" fill="#aaddff" opacity="0.5" class="at-drift" style="animation-delay: 0.5s" filter="url(#at-bubbleGlow)"/>
+    <circle cx="200" cy="80" r="4" fill="#aaddff" opacity="0.7" class="at-drift" style="animation-delay: 1.5s" filter="url(#at-bubbleGlow)"/>
+
+    <!-- Sparkles -->
+    <path d="M120,200 L125,190 L130,200 L125,210 Z" fill="#ffd700" class="at-twinkle" filter="url(#at-softGlow)"/>
+    <path d="M350,180 L355,170 L360,180 L355,190 Z" fill="#aaddff" class="at-twinkle" style="animation-delay: 0.8s" filter="url(#at-softGlow)"/>
+    <path d="M200,350 L205,340 L210,350 L205,360 Z" fill="#ffd700" class="at-twinkle" style="animation-delay: 1.2s" filter="url(#at-softGlow)"/>
+    <path d="M400,300 L405,290 L410,300 L405,310 Z" fill="#aaddff" class="at-twinkle" style="animation-delay: 1.8s" filter="url(#at-softGlow)"/>
+    <path d="M80,250 L85,240 L90,250 L85,260 Z" fill="#ffd700" class="at-twinkle" style="animation-delay: 0.3s" filter="url(#at-softGlow)"/>
+</g>
+
+<!-- Layer 7: Vignette Overlay -->
+<rect width="512" height="512" fill="url(#at-vignette)" opacity="0.4"/>
+</svg>

@@ -427,4 +427,43 @@
     <!-- Wing/Fin left -->
     <polygon points="-20,4 -28,8 -22,8" fill="#a8d4e8" opacity="0.8"/>
     <!-- Wing/Fin right -->
-    <polygon points="20,4 2
+    <polygon points="20,4 28,8 22,8" fill="#a8d4e8" opacity="0.8"/>
+
+    <!-- Stabilizer fins -->
+    <rect x="-16" y="8" width="4" height="6" fill="#7fc7ff" opacity="0.7"/>
+    <rect x="12" y="8" width="4" height="6" fill="#7fc7ff" opacity="0.7"/>
+
+    <!-- Stardust sparkles behind ship -->
+    <g opacity="0.8">
+      <polygon points="-30,10 -27,12 -28,15 -31,14" fill="#ffff99"/>
+    </g>
+    <g opacity="0.6">
+      <polygon points="-25,20 -22,22 -23,25 -26,24" fill="#ccddff"/>
+    </g>
+  </g>
+
+  <!-- Foreground Sparkles (large elements for depth) -->
+  <!-- Large sparkle 1 (left side) -->
+  <g class="foreground-sparkle-1" transform="translate(80, 140)">
+    <polygon points="0,-12 3,-3 12,0 3,3 0,12 -3,3 -12,0 -3,-3" fill="#ffff99" opacity="0.9" filter="url(#strongGlow)"/>
+  </g>
+
+  <!-- Large sparkle 2 (right side) -->
+  <g class="foreground-sparkle-2" transform="translate(420, 200)">
+    <polygon points="0,-15 4,-4 15,0 4,4 0,15 -4,4 -15,0 -4,-4" fill="#ccddff" opacity="0.85" filter="url(#glow)"/>
+  </g>
+
+  <!-- Large sparkle 3 (bottom left) -->
+  <g class="foreground-sparkle-1" transform="translate(100, 450)" style="animation-delay: 0.5s;">
+    <polygon points="0,-10 2.5,-2 10,0 2.5,2 0,10 -2.5,2 -10,0 -2.5,-2" fill="#ffddaa" opacity="0.8" filter="url(#glow)"/>
+  </g>
+
+  <!-- Large sparkle 4 (bottom right) -->
+  <g class="foreground-sparkle-2" transform="translate(430, 380)" style="animation-delay: 1s;">
+    <polygon points="0,-14 3.5,-3 14,0 3.5,3 0,14 -3.5,3 -14,0 -3.5,-3" fill="#aaccff" opacity="0.8" filter="url(#strongGlow)"/>
+  </g>
+
+  <!-- Distant dust clouds (subtle background elements) -->
+  <ellipse cx="150" cy="250" rx="80" ry="60" fill="#6b21a8" opacity="0.08" filter="url(#nebulaDiffuse)"/>
+  <ellipse cx="350" cy="300" rx="70" ry="50" fill="#1e3a9a" opacity="0.06" filter="url(#nebulaDiffuse)"/>
+</svg>

@@ -459,3 +459,70 @@
     <!-- Note 1 (eighth note shape) -->
     <g transform="translate(240, 240)">
       <g class="fm-note1">
+      <circle cx="0" cy="0" r="5" fill="url(#fm-noteGlow)" />
+      <circle cx="0" cy="0" r="3" fill="#ffd700" opacity="0.9" />
+      <line x1="3" y1="0" x2="3" y2="-14" stroke="#ffd700" stroke-width="1" />
+      <path d="M3,-14 Q8,-12 6,-8" fill="none" stroke="#ffd700" stroke-width="1" />
+      </g>
+    </g>
+
+    <!-- Note 2 (quarter note) -->
+    <g transform="translate(220, 225)">
+      <g class="fm-note2">
+      <circle cx="0" cy="0" r="4" fill="url(#fm-noteGlow)" />
+      <circle cx="0" cy="0" r="2.5" fill="#ffd700" opacity="0.8" />
+      <line x1="2.5" y1="0" x2="2.5" y2="-12" stroke="#ffd700" stroke-width="0.8" />
+      </g>
+    </g>
+
+    <!-- Note 3 (double eighth) -->
+    <g transform="translate(260, 235)">
+      <g class="fm-note3">
+      <circle cx="0" cy="0" r="3.5" fill="url(#fm-noteGlow)" />
+      <circle cx="0" cy="0" r="2" fill="#ffd700" opacity="0.85" />
+      <line x1="2" y1="0" x2="2" y2="-11" stroke="#ffd700" stroke-width="0.8" />
+      <circle cx="8" cy="2" r="2" fill="#ffd700" opacity="0.7" />
+      <line x1="10" y1="2" x2="10" y2="-9" stroke="#ffd700" stroke-width="0.8" />
+      <line x1="2" y1="-11" x2="10" y2="-9" stroke="#ffd700" stroke-width="0.8" />
+      </g>
+    </g>
+  </g>
+
+  <!-- Golden sparkles around the music -->
+  <g filter="url(#fm-softGlow)">
+    <circle cx="230" cy="250" r="1.2" fill="#ffd700" class="fm-star1" opacity="0.7" />
+    <circle cx="255" cy="245" r="0.9" fill="#ffe4b5" class="fm-star3" opacity="0.6" />
+    <circle cx="245" cy="220" r="1" fill="#ffd700" class="fm-star5" opacity="0.5" />
+    <circle cx="270" cy="230" r="0.8" fill="#ffe4b5" class="fm-star2" opacity="0.6" />
+    <circle cx="215" cy="240" r="1.1" fill="#ffd700" class="fm-star4" opacity="0.5" />
+  </g>
+
+  <!-- Snowflake particles -->
+  <g>
+    <circle cx="30" cy="120" r="1.5" fill="#e0f0ff" class="fm-snow1" opacity="0.5" />
+    <circle cx="90" cy="160" r="1" fill="#ffffff" class="fm-snow2" opacity="0.4" />
+    <circle cx="150" cy="130" r="1.2" fill="#e0f0ff" class="fm-snow3" opacity="0.5" />
+    <circle cx="350" cy="140" r="1.3" fill="#ffffff" class="fm-snow4" opacity="0.4" />
+    <circle cx="420" cy="110" r="1" fill="#e0f0ff" class="fm-snow1" opacity="0.45" />
+    <circle cx="480" cy="150" r="1.4" fill="#ffffff" class="fm-snow2" opacity="0.35" />
+    <circle cx="260" cy="145" r="0.9" fill="#e0f0ff" class="fm-snow3" opacity="0.4" />
+    <circle cx="190" cy="170" r="1.1" fill="#ffffff" class="fm-snow4" opacity="0.45" />
+    <circle cx="70" cy="200" r="0.8" fill="#e0f0ff" class="fm-snow1" opacity="0.35" />
+    <circle cx="330" cy="180" r="1" fill="#ffffff" class="fm-snow2" opacity="0.4" />
+    <circle cx="460" cy="195" r="1.2" fill="#e0f0ff" class="fm-snow3" opacity="0.35" />
+  </g>
+
+  <!-- Aurora reflections on water surface -->
+  <g class="fm-auroraShim" filter="url(#fm-mediumGlow)">
+    <path d="M120,295 Q180,290 240,296 Q300,290 360,297"
+          fill="none" stroke="#44ffaa" stroke-width="1.5" opacity="0.15" />
+    <path d="M140,308 Q200,302 260,309 Q320,303 380,310"
+          fill="none" stroke="#aa44ff" stroke-width="1" opacity="0.1" />
+  </g>
+
+  <!-- ======================== -->
+  <!-- LAYER 7: VIGNETTE        -->
+  <!-- ======================== -->
+  <rect width="512" height="512" fill="url(#fm-vignette)" opacity="0.4" />
+
+</svg>

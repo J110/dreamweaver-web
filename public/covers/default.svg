@@ -86,4 +86,60 @@
     <circle cx="250" cy="55" r="0.7" fill="#fff" class="df-s4" />
     <circle cx="320" cy="25" r="1.2" fill="#ffd700" class="df-s5" />
     <circle cx="380" cy="60" r="0.9" fill="#fff" class="df-s1" />
-    <circle cx="440" cy="35" r
+    <circle cx="440" cy="35" r="0.8" fill="#ffd700" class="df-s3" />
+    <circle cx="480" cy="70" r="1" fill="#fff" class="df-s2" />
+    <circle cx="70" cy="100" r="0.7" fill="#ffd700" class="df-s4" />
+    <circle cx="160" cy="90" r="0.9" fill="#fff" class="df-s5" />
+    <circle cx="290" cy="80" r="0.6" fill="#ffd700" class="df-s1" />
+    <circle cx="410" cy="95" r="0.8" fill="#fff" class="df-s3" />
+    <circle cx="500" cy="50" r="0.7" fill="#ffd700" class="df-s5" />
+    <circle cx="35" cy="130" r="0.8" fill="#ffd700" class="df-s2" />
+    <circle cx="350" cy="110" r="0.9" fill="#fff" class="df-s4" />
+    <g class="df-s2" filter="url(#df-softGlow)">
+      <circle cx="200" cy="48" r="1.4" fill="#ffd700" />
+    </g>
+    <g class="df-s4" filter="url(#df-softGlow)">
+      <circle cx="460" cy="42" r="1.3" fill="#ffd700" />
+    </g>
+  </g>
+
+  <!-- LAYER 3: Clouds -->
+  <g class="df-cl" opacity="0.15" filter="url(#df-mediumGlow)">
+    <ellipse cx="130" cy="160" rx="80" ry="12" fill="#3a3060" />
+    <ellipse cx="380" cy="140" rx="65" ry="10" fill="#3a3060" />
+  </g>
+
+  <!-- LAYER 4: Center glow -->
+  <circle cx="256" cy="280" r="180" fill="url(#df-centerGlow)" />
+
+  <!-- LAYER 5: Moon -->
+  <g class="df-moon">
+    <circle cx="256" cy="180" r="50" fill="url(#df-moonGlow)" filter="url(#df-strongGlow)" />
+    <circle cx="256" cy="180" r="22" fill="#ffeedd" opacity="0.9" />
+    <circle cx="250" cy="174" r="3" fill="#eeddcc" opacity="0.35" />
+    <circle cx="262" cy="184" r="2.2" fill="#eeddcc" opacity="0.3" />
+    <circle cx="254" cy="190" r="1.5" fill="#eeddcc" opacity="0.25" />
+  </g>
+
+  <!-- LAYER 6: Sparkle dust -->
+  <g filter="url(#df-softGlow)">
+    <circle cx="200" cy="300" r="1.5" fill="#ffd700" class="df-d1" opacity="0.5" />
+    <circle cx="280" cy="320" r="1.2" fill="#ffe4b5" class="df-d2" opacity="0.4" />
+    <circle cx="320" cy="290" r="1" fill="#ffd700" class="df-d3" opacity="0.5" />
+    <circle cx="180" cy="340" r="1.3" fill="#ffe4b5" class="df-d1" opacity="0.4" />
+    <circle cx="340" cy="330" r="1.1" fill="#ffd700" class="df-d2" opacity="0.45" />
+    <circle cx="230" cy="350" r="0.9" fill="#ffe4b5" class="df-d3" opacity="0.4" />
+    <circle cx="150" cy="280" r="1.4" fill="#ffd700" class="df-d1" opacity="0.35" />
+    <circle cx="370" cy="300" r="1" fill="#ffe4b5" class="df-d2" opacity="0.4" />
+    <circle cx="260" cy="360" r="1.2" fill="#ffd700" class="df-d3" opacity="0.45" />
+  </g>
+
+  <!-- Gentle glow areas -->
+  <g class="df-gp" filter="url(#df-mediumGlow)">
+    <circle cx="200" cy="260" r="30" fill="#6a50a0" opacity="0.1" />
+    <circle cx="320" cy="280" r="25" fill="#5040a0" opacity="0.08" />
+  </g>
+
+  <!-- LAYER 7: Vignette -->
+  <rect width="512" height="512" fill="url(#df-vignette)" opacity="0.4" />
+</svg>

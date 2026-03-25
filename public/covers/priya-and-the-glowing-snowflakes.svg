@@ -191,4 +191,15 @@
     <!-- Floating particles -->
     <circle class="pr-particle" cx="100" cy="150" r="1.5" fill="#ffd700" opacity="0.8"/>
     <circle class="pr-particle" cx="400" cy="100" r="1.2" fill="#ffd700" opacity="0.8" style="animation-delay: 1s"/>
-    <circle class="pr-particle" cx="200" cy="200" r="2" fill="#ffd700" o
+    <circle class="pr-particle" cx="200" cy="200" r="2" fill="#ffd700" opacity="0.8" style="animation-delay: 2s"/>
+    <circle class="pr-particle" cx="350" cy="180" r="1.5" fill="#ffd700" opacity="0.8" style="animation-delay: 3s"/>
+
+    <!-- Sparkles -->
+    <path class="pr-particle" d="M50,200 L55,190 L60,200 L55,210 Z" fill="#ffffff" opacity="0.9" style="animation-duration: 5s"/>
+    <path class="pr-particle" d="M450,150 L455,140 L460,150 L455,160 Z" fill="#ffffff" opacity="0.9" style="animation-delay: 1s; animation-duration: 5s"/>
+    <path class="pr-particle" d="M250,100 L255,90 L260,100 L255,110 Z" fill="#ffffff" opacity="0.9" style="animation-delay: 2s; animation-duration: 5s"/>
+</g>
+
+<!-- Layer 7: Vignette Overlay -->
+<rect width="512" height="512" fill="url(#pr-vignette)" opacity="0.4"/>
+</svg>
