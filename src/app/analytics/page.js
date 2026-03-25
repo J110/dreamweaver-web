@@ -17,10 +17,10 @@ function authHeaders() {
   return { Authorization: `Bearer ${getKey()}` };
 }
 
-async function fetchApi(path, params = {}) {
+async function fetchApi(path, params = {}, method = 'GET') {
   const qs = new URLSearchParams(params).toString();
   const url = `${API_URL}/api/v1/analytics${path}${qs ? '?' + qs : ''}`;
-  const res = await fetch(url, { headers: authHeaders() });
+  const res = await fetch(url, { method, headers: authHeaders() });
   if (!res.ok) throw new Error(`API error: ${res.status}`);
   return res.json();
 }
@@ -464,6 +464,8 @@ export default function AnalyticsDashboard() {
   const [usersActivity, setUsersActivity] = useState(null);
   const [funnel, setFunnel] = useState(null);
   const [health, setHealth] = useState(null);
+  const [contentAudit, setContentAudit] = useState(null);
+  const [recovering, setRecovering] = useState(false);
   const [realtime, setRealtime] = useState(null);
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState('dashboard');
@@ -589,8 +591,12 @@ export default function AnalyticsDashboard() {
     const hoursMap = { today: 24, '7d': 168, '30d': 720, '90d': 168 };
     const loadHealth = async () => {
       try {
-        const data = await fetchApi('/server-health', { hours: hoursMap[preset] || 168 });
-        setHealth(data);
+        const [healthData, auditData] = await Promise.all([
+          fetchApi('/server-health', { hours: hoursMap[preset] || 168 }),
+          fetchApi('/content-audit'),
+        ]);
+        setHealth(healthData);
+        setContentAudit(auditData);
       } catch (e) {
         console.error('Health load error:', e);
       }
@@ -966,6 +972,75 @@ export default function AnalyticsDashboard() {
               </div>
             </section>
           )}
+          {/* Content Audio Audit */}
+          <section className={styles.section}>
+            <h2>Content Audio Audit</h2>
+            {contentAudit ? (() => {
+              const s = contentAudit.summary || {};
+              const auditColor = s.missing_files === 0 ? '#10b981' : s.missing_files > 20 ? '#ef4444' : '#f59e0b';
+              const auditLabel = s.missing_files === 0 ? 'All Clear' : `${s.affected_stories} stories affected`;
+              return (
+                <div>
+                  <div className={styles.metricsGrid}>
+                    <MetricCard label="Stories w/ Audio" value={s.total_stories_with_audio || 0} color="#06b6d4" />
+                    <MetricCard label="Total Audio Files" value={s.total_audio_files || 0} color="#8b5cf6" />
+                    <MetricCard label="Missing Files" value={s.missing_files || 0} color={auditColor} />
+                    <MetricCard label="Recoverable" value={s.recoverable || 0} color="#10b981" />
+                  </div>
+                  <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: auditColor }} />
+                    <span style={{ color: auditColor, fontWeight: 600, fontSize: 14 }}>{auditLabel}</span>
+                    {s.missing_files > 0 && s.recoverable > 0 && (
+                      <button
+                        onClick={async () => {
+                          setRecovering(true);
+                          try {
+                            const result = await fetchApi('/content-audit/recover', {}, 'POST');
+                            alert(`Recovered ${result.recovered} files. Still missing: ${result.still_missing}`);
+                            // Refresh audit
+                            const auditData = await fetchApi('/content-audit');
+                            setContentAudit(auditData);
+                          } catch (e) {
+                            alert('Recovery failed: ' + e.message);
+                          }
+                          setRecovering(false);
+                        }}
+                        disabled={recovering}
+                        style={{
+                          marginLeft: 'auto', padding: '6px 16px', borderRadius: 8,
+                          background: '#10b981', color: '#fff', border: 'none', cursor: 'pointer',
+                          fontSize: 13, fontWeight: 600, opacity: recovering ? 0.5 : 1,
+                        }}
+                      >
+                        {recovering ? 'Recovering...' : 'Recover from Store'}
+                      </button>
+                    )}
+                  </div>
+                  {(contentAudit.missing_stories || []).length > 0 && (
+                    <div style={{ marginTop: 16 }}>
+                      <div className={styles.tableWrap}>
+                        <table className={styles.dataTable}>
+                          <thead><tr><th>Created</th><th>Title</th><th>Type</th><th>Lang</th><th>Missing</th></tr></thead>
+                          <tbody>
+                            {contentAudit.missing_stories.map((s, i) => (
+                              <tr key={i}>
+                                <td>{s.created_at ? s.created_at.slice(0, 10) : '—'}</td>
+                                <td>{s.title}</td>
+                                <td>{s.type || '—'}</td>
+                                <td>{s.lang}</td>
+                                <td style={{ color: '#ef4444' }}>{s.missing_count}/{s.total_variants}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })() : <p className={styles.empty}>Loading audit data...</p>}
+          </section>
+
           </>);
         })() : <p className={styles.empty}>Loading health data...</p>}
       </>)}
