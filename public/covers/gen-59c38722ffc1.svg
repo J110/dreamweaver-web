@@ -281,47 +281,4 @@
   </circle>
   <circle cx="61%" cy="37%" r="2.4" fill="#FFEFD5">
     <animate attributeName="opacity" values="0;0;0.40;0.28;0"
-      dur="4.2s" begin="6.7s" repeatCount="indefinite"
-      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-  </circle>
-</g>
-<!-- D2: Sleeping Butterfly -->
-<g id="butterfly-0" transform="translate(21%, 65%)">
-  <ellipse cx="-5" cy="0" rx="5" ry="3" fill="#C8A080" opacity="0.32"
-    transform="rotate(-14,-5,0)">
-    <animateTransform attributeName="transform" type="rotate"
-      values="-14,-5,0; -34,-5,0; -14,-5,0"
-      dur="13s" repeatCount="indefinite"
-      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
-  </ellipse>
-  <ellipse cx="5" cy="0" rx="5" ry="3" fill="#C8A080" opacity="0.32"
-    transform="rotate(14,5,0)">
-    <animateTransform attributeName="transform" type="rotate"
-      values="14,5,0; 34,5,0; 14,5,0"
-      dur="13s" repeatCount="indefinite"
-      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
-  </ellipse>
-  <ellipse cx="0" cy="0" rx="1.5" ry="4" fill="#8B7355" opacity="0.35"/>
-</g>
-<!-- A2: Shooting Star -->
-<g id="shooting-star" opacity="0">
-  <line x1="0" y1="0" x2="-20" y2="-8" stroke="#FFD080" stroke-width="1.5"
-    stroke-linecap="round" opacity="0.5"/>
-  <circle cx="0" cy="0" r="2" fill="#FFE4B5" opacity="0.6"/>
-  <circle cx="0" cy="0" r="5" fill="#FFD080" opacity="0.15"/>
-  <animateMotion dur="5.9s" begin="67s" repeatCount="indefinite"
-    path="M31,10 Q130,47 277,82"
-    calcMode="spline" keySplines="0.2 0 0.8 1"/>
-  <animate attributeName="opacity" values="0;0;0.51;0.51;0;0;0;0;0;0;0;0;0"
-    dur="67s" begin="0s" repeatCount="indefinite"
-    calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-</g>
-<!-- Vignette: corners_only -->
-<radialGradient id="vigRC291" cx="0.5" cy="0.5" r="0.6">
-  <stop offset="40%" stop-color="#100510" stop-opacity="0"/>
-  <stop offset="100%" stop-color="#100510" stop-opacity="0.55"/>
-</radialGradient>
-<rect width="512" height="512" fill="url(#vigRC291)" opacity="0.58"/>
-
-
-</svg>
+      dur="4.2s" begin="6

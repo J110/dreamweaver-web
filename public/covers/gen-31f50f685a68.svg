@@ -542,20 +542,4 @@
   <animateMotion dur="6.2s" begin="62s" repeatCount="indefinite"
     path="M-25,20 Q104,48 240,56"
     calcMode="spline" keySplines="0.2 0 0.8 1"/>
-  <animate attributeName="opacity" values="0;0;0.7;0.7;0;0;0;0;0;0;0;0;0"
-    dur="62s" begin="0s" repeatCount="indefinite"
-    calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-</g>
-<!-- Vignette: bottom_heavy -->
-<linearGradient id="vigLG134" x1="0" y1="0" x2="0" y2="1">
-  <stop offset="0%" stop-color="#051005" stop-opacity="0"/>
-  <stop offset="50%" stop-color="#051005" stop-opacity="0.15"/>
-  <stop offset="100%" stop-color="#051005" stop-opacity="0.70"/>
-</linearGradient>
-<rect width="512" height="512" fill="url(#vigLG134)" opacity="0.64">
-  <animate attributeName="opacity" values="0.64;0.6900000000000001;0.64" dur="8s" repeatCount="indefinite"
-    calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
-</rect>
-
-
-</svg>
+  <animate attributeName="opacity" v

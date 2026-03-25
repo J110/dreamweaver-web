@@ -378,19 +378,4 @@
   <circle cx="0" cy="0" r="2" fill="#FFE8CC" opacity="0.6"/>
   <circle cx="0" cy="0" r="5" fill="#FFD080" opacity="0.15"/>
   <animateMotion dur="5.9s" begin="44s" repeatCount="indefinite"
-    path="M23,16 Q118,47 243,77"
-    calcMode="spline" keySplines="0.2 0 0.8 1"/>
-  <animate attributeName="opacity" values="0;0;0.68;0.68;0;0;0;0;0;0;0;0;0"
-    dur="44s" begin="0s" repeatCount="indefinite"
-    calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
-</g>
-<!-- Vignette: bottom_light -->
-<linearGradient id="vigLG553" x1="0" y1="0" x2="0" y2="1">
-  <stop offset="0%" stop-color="#0a0520" stop-opacity="0"/>
-  <stop offset="70%" stop-color="#0a0520" stop-opacity="0"/>
-  <stop offset="100%" stop-color="#0a0520" stop-opacity="0.40"/>
-</linearGradient>
-<rect width="512" height="512" fill="url(#vigLG553)" opacity="0.5"/>
-
-
-</svg>
+    p

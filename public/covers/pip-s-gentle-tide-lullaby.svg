@@ -200,16 +200,4 @@
     </g>
   </g>
 
-  <!-- Layer 6: Foreground Particles/Sparkles -->
-  <g>
-    <circle cx="100" cy="200" r="2" fill="white" class="pg-sparkleDrift" style="animation-delay: 0s"/>
-    <circle cx="400" cy="180" r="1.5" fill="#ffd700" class="pg-sparkleDrift" style="animation-delay: 1s"/>
-    <circle cx="200" cy="150" r="2.5" fill="white" class="pg-sparkleDrift" style="animation-delay: 2s"/>
-    <circle cx="350" cy="220" r="1.8" fill="#ffa500" class="pg-sparkleDrift" style="animation-delay: 3s"/>
-    <circle cx="150" cy="250" r="2" fill="white" class="pg-sparkleDrift" style="animation-delay: 4s"/>
-    <circle cx="450" cy="200" r="1.5" fill="#ff6b00" class="pg-sparkleDrift" style="animation-delay: 5s"/>
-  </g>
-
-  <!-- Layer 7: Vignette Overlay -->
-  <rect width="512" height="512" fill="url(#pg-vignette)" opacity="0.4"/>
-</svg>
+  <!-- Layer 6: Foregro

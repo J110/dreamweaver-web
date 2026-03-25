@@ -428,7 +428,4 @@
   <stop offset="40%" stop-color="#050810" stop-opacity="0"/>
   <stop offset="100%" stop-color="#050810" stop-opacity="0.55"/>
 </radialGradient>
-<rect width="512" height="512" fill="url(#vigRC818)" opacity="0.67"/>
-
-
-</svg>
+<rect width="512" height="512" fill="url(#vigRC818)" opac

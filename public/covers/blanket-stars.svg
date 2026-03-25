@@ -458,25 +458,4 @@
   <circle class="bs-dust1" cx="230" cy="180" r="1" fill="#ffd700" opacity="0.5"/>
   <circle class="bs-dust2" cx="280" cy="170" r="0.8" fill="#ffe4b5" opacity="0.4"/>
   <circle class="bs-dust3" cx="310" cy="190" r="1" fill="#ffd700" opacity="0.5"/>
-  <circle class="bs-dust4" cx="260" cy="185" r="0.7" fill="#ffe4b5" opacity="0.4"/>
-
-  <!-- Small stuffed bunny on floor -->
-  <g opacity="0.6">
-    <ellipse cx="100" cy="380" rx="10" ry="12" fill="#e8d8c8"/>
-    <circle cx="100" cy="370" r="8" fill="#e8d8c8"/>
-    <ellipse cx="95" cy="362" rx="3" ry="7" fill="#e8d8c8"/>
-    <ellipse cx="105" cy="362" rx="3" ry="7" fill="#e8d8c8"/>
-    <ellipse cx="95" cy="364" rx="1.5" ry="4" fill="#f5c8c8"/>
-    <ellipse cx="105" cy="364" rx="1.5" ry="4" fill="#f5c8c8"/>
-    <circle cx="96" cy="368" r="1" fill="#2a2a2a"/>
-    <circle cx="104" cy="368" r="1" fill="#2a2a2a"/>
-    <circle cx="100" cy="372" r="1.5" fill="#f5a5a5"/>
-  </g>
-
-  <!-- Rug on floor -->
-  <ellipse cx="250" cy="400" rx="130" ry="25" fill="#5a3a6a" opacity="0.3"/>
-  <ellipse cx="250" cy="400" rx="110" ry="18" fill="#6a4a7a" opacity="0.2"/>
-
-  <!-- LAYER 7: Vignette overlay -->
-  <rect width="512" height="512" fill="url(#bs-vignette)" opacity="0.4"/>
-</svg>
+  <circle class="bs-dust4" cx="260" cy="185" r="0.7" fill="

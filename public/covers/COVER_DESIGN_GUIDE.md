@@ -747,21 +747,4 @@ This produces:
 
 ```bash
 # Generate cover for a specific story
-python3 scripts/generate_cover_experimental.py \
-    --story-json seed_output/experimental_6_8_gen-XXXX.json
-
-# Override diversity axes
-python3 scripts/generate_cover_experimental.py \
-    --story-json seed_output/experimental_6_8_gen-XXXX.json \
-    --world-setting enchanted_forest \
-    --palette golden_hour
-
-# Dry run (show prompt only)
-python3 scripts/generate_cover_experimental.py \
-    --story-json seed_output/experimental_6_8_gen-XXXX.json \
-    --dry-run
-```
-
----
-
-*This guide is maintained alongside the codebase. Last updated: March 2026 — overlay diversity, character diversity, progressive dimming.*
+python3 scripts/generate_cover
