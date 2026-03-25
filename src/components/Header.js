@@ -40,8 +40,8 @@ export default function Header() {
           <Link href="/" className={styles.navLink}>
             Home
           </Link>
-          <Link href="/explore" className={styles.navLink}>
-            Explore
+          <Link href="/before-bed" className={styles.navLink}>
+            Before Bed
           </Link>
           <Link href="/my-stories" className={styles.navLink}>
             My Stories

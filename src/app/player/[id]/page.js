@@ -1057,7 +1057,7 @@ export default function PlayerPage() {
         <div className={styles.app}>
           <div className={styles.errorMessage}>
             {error || t('playerNotFound')}
-            <Link href="/explore" className={styles.exploreBtn}>
+            <Link href="/before-bed" className={styles.exploreBtn}>
               {t('playerExplore')}
             </Link>
           </div>

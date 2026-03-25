@@ -21,7 +21,7 @@ const translations = {
     loginError: 'Oops! That didn\'t work. Try a different name.',
     // Navigation
     navHome: 'Home',
-    navExplore: 'Explore',
+    navBeforeBed: 'Before Bed',
     navMyStories: 'My Stories',
     navProfile: 'Profile',
     // Home
@@ -44,11 +44,9 @@ const translations = {
     themeFriendship: 'Friendship',
     themeDreamy: 'Dreamy',
     themeFairyTale: 'Fairy Tales',
-    // Explore
-    exploreTitle: 'Explore',
-    exploreSearch: 'Search stories...',
-    exploreAll: 'All',
-    exploreEmpty: 'No stories found. Try a different filter!',
+    // Before Bed
+    beforeBedTitle: 'Before Bed',
+    beforeBedEmpty: 'No funny shorts yet — check back soon!',
     // My Stories
     myStoriesTitle: 'My Stories',
     myStoriesSubtitle: 'Your favorite stories, all in one place',
@@ -144,7 +142,7 @@ const translations = {
     loginError: 'Oho! Kuch gadbad ho gayi. Doosra naam try karein.',
     // Navigation
     navHome: 'Home',
-    navExplore: 'Khojein',
+    navBeforeBed: 'Sone Se Pehle',
     navMyStories: 'Meri Kahaniyan',
     navProfile: 'Profile',
     // Home
@@ -167,11 +165,9 @@ const translations = {
     themeFriendship: 'Dosti',
     themeDreamy: 'Sapne',
     themeFairyTale: 'Pari Kathayein',
-    // Explore
-    exploreTitle: 'Khojein',
-    exploreSearch: 'Kahaniyan khojein...',
-    exploreAll: 'Sabhi',
-    exploreEmpty: 'Koi kahani nahi mili. Kuch aur try karein!',
+    // Before Bed
+    beforeBedTitle: 'Sone Se Pehle',
+    beforeBedEmpty: 'Abhi koi mazedaar short nahi — jaldi aayega!',
     // My Stories
     myStoriesTitle: 'Meri Kahaniyan',
     myStoriesSubtitle: 'Aapki pasandida kahaniyan, ek jagah pe',

@@ -11,7 +11,7 @@ export default function BottomNav() {
 
   const tabs = [
     { href: '/', label: t('navHome'), icon: '🏠', activeIcon: '🏠' },
-    { href: '/explore', label: t('navExplore'), icon: '🔍', activeIcon: '🔍' },
+    { href: '/before-bed', label: t('navBeforeBed'), icon: '🌙', activeIcon: '🌙' },
     { href: '/my-stories', label: t('navMyStories'), icon: '📚', activeIcon: '📚' },
     { href: '/profile', label: t('navProfile'), icon: '👤', activeIcon: '👤' },
   ];

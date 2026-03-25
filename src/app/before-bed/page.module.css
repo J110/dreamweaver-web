@@ -1,0 +1,214 @@
+.app {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  padding: 0 16px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.header {
+  padding: 16px 0 8px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-light);
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin: 4px 0 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 12px 0 16px;
+}
+
+.card {
+  background: var(--color-card-dark);
+  border: 1px solid rgba(107, 76, 230, 0.15);
+  border-radius: 16px;
+  padding: 0;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 140px;
+}
+
+.cardCover {
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 16px 16px 0 0;
+}
+
+.cardCoverImg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+/* When no cover, add padding back for emoji-only cards */
+.card > .cardEmojis {
+  padding: 16px 16px 0;
+}
+
+.card:active {
+  transform: scale(0.97);
+}
+
+.cardPlaying {
+  border-color: var(--color-primary-purple);
+  background: linear-gradient(135deg, rgba(107, 76, 230, 0.15), rgba(255, 107, 157, 0.08));
+}
+
+.cardEmojis {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.cardTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-light);
+  line-height: 1.3;
+  flex: 1;
+  padding: 8px 12px 0;
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 12px 12px;
+}
+
+.cardDuration {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.playBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary-purple), var(--color-primary-pink));
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.playBtn:active {
+  transform: scale(0.9);
+}
+
+.loadingMsg {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--color-text-muted);
+  font-size: 15px;
+}
+
+.emptyMsg {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--color-text-muted);
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+/* Mini player bar at bottom when audio is playing */
+.miniPlayer {
+  position: fixed;
+  bottom: 72px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: 0 16px;
+}
+
+.miniPlayerInner {
+  max-width: 480px;
+  margin: 0 auto;
+  background: rgba(30, 25, 50, 0.95);
+  border: 1px solid rgba(107, 76, 230, 0.3);
+  border-radius: 14px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  backdrop-filter: blur(12px);
+}
+
+.miniPlayerEmoji {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.miniPlayerTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-light);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.miniPlayerBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(107, 76, 230, 0.3);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--color-text-light);
+  flex-shrink: 0;
+}
+
+.progressBar {
+  position: absolute;
+  bottom: 0;
+  left: 14px;
+  right: 14px;
+  height: 2px;
+  background: rgba(107, 76, 230, 0.2);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--color-primary-purple);
+  border-radius: 1px;
+  transition: width 0.3s linear;
+}
+
+@media (min-width: 480px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

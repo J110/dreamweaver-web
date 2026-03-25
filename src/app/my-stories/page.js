@@ -141,7 +141,7 @@ export default function MyStoriesPage() {
                 <p className={styles.emptyText}>
                   {t('myEmptyFavoritesText')}
                 </p>
-                <button onClick={() => router.push('/explore')} className="btn btn-primary">
+                <button onClick={() => router.push('/before-bed')} className="btn btn-primary">
                   {t('myExplore')}
                 </button>
               </div>
