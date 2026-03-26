@@ -24,6 +24,35 @@
   margin: 4px 0 0;
 }
 
+.agePills {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.agePill {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(107, 76, 230, 0.3);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.agePill:hover {
+  border-color: rgba(107, 76, 230, 0.6);
+  color: var(--color-text-light);
+}
+
+.agePillActive {
+  background: rgba(107, 76, 230, 0.25);
+  border-color: rgba(107, 76, 230, 0.6);
+  color: var(--color-text-light);
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

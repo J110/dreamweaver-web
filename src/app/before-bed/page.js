@@ -25,17 +25,20 @@ function formatDuration(seconds) {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
+const AGE_GROUPS = ['2-5', '6-8', '9-12'];
+
 function BeforeBedContent() {
   const { t } = useI18n();
   const [shorts, setShorts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [playingId, setPlayingId] = useState(null);
   const [progress, setProgress] = useState(0);
+  const [ageGroup, setAgeGroup] = useState(null);
   const audioRef = useRef(null);
   const sessionPlayed = useRef(new Set());
 
   // Get child's age group from localStorage
-  const getAgeGroup = () => {
+  const getDefaultAgeGroup = () => {
     if (typeof window === 'undefined') return '6-8';
     try {
       const user = JSON.parse(localStorage.getItem('dreamweaver_user') || '{}');
@@ -48,22 +51,37 @@ function BeforeBedContent() {
     }
   };
 
-  useEffect(() => {
-    const load = async () => {
-      setLoading(true);
-      try {
-        const ageGroup = getAgeGroup();
-        const result = await funnyShortsApi.list(ageGroup);
-        setShorts(result);
-      } catch (err) {
-        console.error('Failed to load funny shorts:', err);
-        setShorts([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
+  const loadShorts = useCallback(async (group) => {
+    setLoading(true);
+    try {
+      const result = await funnyShortsApi.list(group);
+      setShorts(result);
+    } catch (err) {
+      console.error('Failed to load funny shorts:', err);
+      setShorts([]);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    const defaultGroup = getDefaultAgeGroup();
+    setAgeGroup(defaultGroup);
+    loadShorts(defaultGroup);
+  }, [loadShorts]);
+
+  const handleAgeChange = (group) => {
+    if (group === ageGroup) return;
+    // Stop current audio when switching
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    setPlayingId(null);
+    setProgress(0);
+    setAgeGroup(group);
+    loadShorts(group);
+  };
 
   const handlePlay = useCallback((short) => {
     if (!short.audio_file) return;
@@ -147,6 +165,17 @@ function BeforeBedContent() {
       <div className={styles.header}>
         <h1 className={styles.title}>{t('beforeBedTitle')}</h1>
         <p className={styles.subtitle}>Funny shorts to enjoy before sleep</p>
+        <div className={styles.agePills}>
+          {AGE_GROUPS.map((group) => (
+            <button
+              key={group}
+              className={`${styles.agePill} ${ageGroup === group ? styles.agePillActive : ''}`}
+              onClick={() => handleAgeChange(group)}
+            >
+              Ages {group}
+            </button>
+          ))}
+        </div>
       </div>
 
       {loading ? (
