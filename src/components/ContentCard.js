@@ -15,6 +15,12 @@ const MOOD_CONFIG = {
   angry: { emoji: '\uD83D\uDD25', label: 'Angry' },
 };
 
+const LANGUAGE_LEVEL_LABELS = {
+  basic: 'Keep Simple',
+  intermediate: 'Medium',
+  advanced: 'Challenge',
+};
+
 const STORY_TYPE_LABELS = {
   folk_tale: 'Folk Tale',
   mythological: 'Mythological',
@@ -159,6 +165,9 @@ export default function ContentCard({ content, onClick }) {
           <span className={styles.cardMeta}>
             {durationLabel && <><span className={styles.clockIcon}>&#128336;</span> {durationLabel}</>}
           </span>
+          {content.language_level && LANGUAGE_LEVEL_LABELS[content.language_level] && (
+            <span className={styles.languageLevelBadge}>{LANGUAGE_LEVEL_LABELS[content.language_level]}</span>
+          )}
           {content.mood && MOOD_CONFIG[content.mood] && (
             <span className={`${styles.moodBadge} ${styles[`mood_${content.mood}`]}`}>{MOOD_CONFIG[content.mood].emoji} {MOOD_CONFIG[content.mood].label}</span>
           )}

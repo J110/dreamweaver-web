@@ -34,6 +34,12 @@ const MOODS = [
   { id: 'angry', emoji: '\uD83D\uDE24', label: { en: 'Angry', hi: 'Gussa' } },
 ];
 
+const LANGUAGE_LEVELS = [
+  { id: 'basic', label: { en: 'Keep Simple', hi: 'Saral' } },
+  { id: 'intermediate', label: { en: 'Medium', hi: 'Madhyam' } },
+  { id: 'advanced', label: { en: 'Challenge', hi: 'Chunauti' } },
+];
+
 export default function HomeApp() {
   const { t, lang } = useI18n();
   const [user, setUser] = useState(null);
@@ -41,6 +47,12 @@ export default function HomeApp() {
   const [loading, setLoading] = useState(true);
   const [activeAge, setActiveAge] = useState('all');
   const [activeMood, setActiveMood] = useState('all');
+  const [activeLanguageLevel, setActiveLanguageLevel] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('dv_language_filter') || 'all';
+    }
+    return 'all';
+  });
 
   useEffect(() => {
     if (isLoggedIn()) {
@@ -94,6 +106,18 @@ export default function HomeApp() {
     }
   };
 
+  const handleLanguageLevelChange = (levelId) => {
+    const newLevel = activeLanguageLevel === levelId ? 'all' : levelId;
+    setActiveLanguageLevel(newLevel);
+    if (typeof window !== 'undefined') {
+      if (newLevel === 'all') {
+        localStorage.removeItem('dv_language_filter');
+      } else {
+        localStorage.setItem('dv_language_filter', newLevel);
+      }
+    }
+  };
+
   // Match ContentCard's age resolution: prefer age_group, fall back to target_age
   const getAgeGroup = (s) => {
     if (s.age_group) return s.age_group;
@@ -112,6 +136,9 @@ export default function HomeApp() {
     }
     if (activeMood !== 'all') {
       if (s.mood !== activeMood) return false;
+    }
+    if (activeLanguageLevel !== 'all') {
+      if (s.language_level !== activeLanguageLevel) return false;
     }
     return true;
   });
@@ -164,6 +191,20 @@ export default function HomeApp() {
               >
                 <span>{g.emoji}</span>
                 <span>{g.label[lang] || g.label.en}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className={styles.filterGroup}>
+          <span className={styles.filterLabel}>{lang === 'hi' ? 'Bhasha' : 'Level'}</span>
+          <div className={styles.themeFilter}>
+            {LANGUAGE_LEVELS.map((l) => (
+              <button
+                key={l.id}
+                onClick={() => handleLanguageLevelChange(l.id)}
+                className={`${styles.themePill} ${activeLanguageLevel === l.id ? styles.themePillActive : ''}`}
+              >
+                <span>{l.label[lang] || l.label.en}</span>
               </button>
             ))}
           </div>
