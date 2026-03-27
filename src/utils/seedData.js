@@ -1180,6 +1180,7 @@ export const SEED_STORIES = {
     {
       id: "gen-50e929bf696c",
       type: "story",
+      story_type: "folk_tale",
       title: "Chai’s Moonlit Steam Song",
       description: "A tiny porcelain teacup named Chai hums a gentle lullaby as moonlight dances through the kitchen, discovering the warmth of family and the quiet magic of night.",
       cover: "/covers/chai-s-moonlit-steam-song.svg",
@@ -1758,6 +1759,7 @@ export const SEED_STORIES = {
     {
       id: "gen-ec195d66e808",
       type: "story",
+      story_type: "folk_tale",
       musicalBrief: {"storyId":"gen-ec195d66e808","ageGroup":"2-5","musicalIdentity":{"culturalReference":"nordic","primaryLoop":"singing_bowl_rings","padCharacter":"crystal_air"},"tonality":{"mode":"minor_pentatonic","rootNote":"E"},"melodicCharacter":"descending_lullaby","rhythm":{"feel":"gentle_pulse","baseTempo":60},"environment":{"natureSoundPrimary":"wind_gentle","natureSoundSecondary":"distant_stream","ambientEvents":["chimes","waterDrop"]},"emotionalArc":{"phase1":"gentle_wonder","phase2":"warm_stillness","phase3":"deep_stillness"}},
       title: "Bolt’s Midnight Lesson in the Snowy Schoolhouse",
       description: "Under the shimmering Northern Lights, a tiny toy robot named Bolt hears the soft hum of an old Arctic schoolhouse. When its door creaks open, he discovers a world where snowflakes teach secrets—and tonight, they’re waiting just for him.",
@@ -1785,6 +1787,7 @@ export const SEED_STORIES = {
     {
       id: "gen-3f1cd792afd9",
       type: "poem",
+      story_type: "folk_tale",
       musicalBrief: {"storyId":"gen-3f1cd792afd9","ageGroup":"0-1","musicalIdentity":{"culturalReference":"middle_eastern","primaryLoop":"dulcimer_gentle","padCharacter":"warm_strings"},"tonality":{"mode":"minor_pentatonic","rootNote":"Ab"},"melodicCharacter":"descending_lullaby","rhythm":{"feel":"free_rubato","baseTempo":58},"environment":{"natureSoundPrimary":"wind_gentle","natureSoundSecondary":"distant_stream","ambientEvents":["chimes","heartbeat"]},"emotionalArc":{"phase1":"mystical_wonder","phase2":"gentle_fading","phase3":"warm_silence"}},
       title: "The Wandering Star’s Silk Road Lullaby",
       description: "High above the ancient Silk Road, a lonely comet hums a forgotten tune. As lanterns flicker in village homes below, he glides past paper windows, weaving his glow into the dreams of sleeping children. But tonight, something pulls him closer—a melody only the earth can sing.",
@@ -1813,6 +1816,7 @@ export const SEED_STORIES = {
     {
       id: "gen-50e929bf696c",
       type: "story",
+      story_type: "folk_tale",
       title: "Chai's Moonlit Steam Song",
       description: "A tiny porcelain teacup named Chai hums a gentle lullaby as moonlight dances through the kitchen, discovering the warmth of family and the quiet magic of night.",
       cover: "/covers/gen-50e929bf696c.svg",
@@ -2057,6 +2061,7 @@ export const SEED_STORIES = {
     {
       id: "gen-b12dc68672e3",
       type: "story",
+      story_type: "folk_tale",
       title: "Tilly and the Glowing Coral Cradle",
       description: "Beneath the shimmering twilight waves, tiny glowing corals begin to hum with soft light. Tilly the little sea turtle feels a gentle pull to build something special with her father—something that will make their ocean home even brighter.",
       cover: "/covers/gen-b12dc68672e3.svg",
@@ -4266,6 +4271,7 @@ export const SEED_STORIES = {
     {
       id: "gen-593c43ad1c11",
       type: "story",
+      story_type: "folk_tale",
       title: "Nanha Sitara Aur Uski Neend Ki Lori",
       description: "Ek chhota sitara jungle mein sabko neend dilata hai apni komal roshni se.",
       cover: "/covers/owl-goodnight.svg",
@@ -4294,6 +4300,7 @@ export const SEED_STORIES = {
     {
       id: "gen-b2e7514e8b8f",
       type: "story",
+      story_type: "folk_tale",
       title: "Nano Khargosh Aur Samudri Dost",
       description: "Ek chhota khargosh aur uska naya samudri dost saath mein sote hain.",
       cover: "/covers/samudri-dost.svg",
@@ -4322,6 +4329,7 @@ export const SEED_STORIES = {
     {
       id: "gen-376993c8e295",
       type: "poem",
+      story_type: "folk_tale",
       title: "Asha Ki Barf Mein Soft Bistar Ki Talash",
       description: "Ek brave ladki Asha Arctic mein apne polar bear dost ke saath sabse soft bistar dhundne ka journey karti hai.",
       cover: "/covers/barf-bistar.svg",
@@ -4350,6 +4358,7 @@ export const SEED_STORIES = {
     {
       id: "gen-aad0a6e0c0c0",
       type: "poem",
+      story_type: "folk_tale",
       title: "Kira Ka Samudri Ghar Ki Khoj",
       description: "Ek brave chhoti ladki Kira apne island ghar mein family ke saath naye kamre discover karti hai aur cozy sleeping jagah paati hai.",
       cover: "/covers/samudri-ghar.svg",
@@ -4378,6 +4387,7 @@ export const SEED_STORIES = {
     {
       id: "gen-ddc437037568",
       type: "story",
+      story_type: "folk_tale",
       title: "Dosti ki Kahani",
       description: "Ek fantasy realm mein, Nova aur uske doston ne milkar ek mushkil ko hal kiya aur dosti ki sachchai samjhe. Ye kahani dosti, teamwork, aur samajh ki mahatta ko darshati hai.",
       cover: "/covers/dosti-kahani.svg",
@@ -4436,6 +4446,7 @@ export const SEED_STORIES = {
     {
       id: "gen-60370cf66525",
       type: "poem",
+      story_type: "folk_tale",
       title: "Naina Ki Baraf Waley School Mein Seal Dost Ki Khoj",
       description: "Brave Naina discovers a magical Arctic school where she learns from friendly seals and makes wonderful new friends.",
       cover: "/covers/seal-school.svg",
@@ -4464,6 +4475,7 @@ export const SEED_STORIES = {
     {
       id: "gen-032fdef6f753",
       type: "poem",
+      story_type: "folk_tale",
       title: "Vaanar Mitra Ka Jaadui Khel Samrajya",
       description: "Ek chhote vaanar ka ek magical playground mein transformation ka safar, jahaan woh seekhta hai ki khel mein discovery ki shakti hai.",
       cover: "/covers/monkey-kingdom.svg",
@@ -4491,6 +4503,7 @@ export const SEED_STORIES = {
     {
       id: "gen-febbf324eecb",
       type: "poem",
+      story_type: "folk_tale",
       title: "Kiran Aur Samudar Ke Upar Ke Floating Islands Ki Dosti",
       description: "Bhavishya mein samudar ke upar tairte hue magical islands par rehne wala ek brave ladka Kiran apne robot dost ke saath naye friends banata hai.",
       cover: "/covers/floating-islands.svg",
@@ -4550,6 +4563,7 @@ export const SEED_STORIES = {
     {
       id: "gen-bb82f62942d0",
       type: "poem",
+      story_type: "folk_tale",
       title: "Samudra ki Chhupi Duniya",
       description: "Ek bahadur bachche ki kahani jo samudra ki gahrayi mein jaati hai aur wahaan ke jaadui jeevan ko dekhti hai",
       cover: "/covers/samudra-duniya.svg",
@@ -4578,6 +4592,7 @@ export const SEED_STORIES = {
     {
       id: "gen-0027e1835f09",
       type: "story",
+      story_type: "dream",
       title: "Advait aur Uske Doston ki Bhavishya Yatra",
       description: "Ek 10 varsh ka ladka advait apne doston ke saath ek bhavishya yatra par jata hai, jaha unhe nayi cheezein seekhne aur apne doston ke saath masti karne ka mauka milta hai. Is yatra mein ve apne aaspas ke sansar ko samajhne aur apne lakshyon ko praapt karne ke liye kai chunautiyon ka saamna karte hain.",
       cover: "/covers/bhavishya-yatra.svg",
