@@ -107,13 +107,12 @@ export default function HomeApp() {
   };
 
   const handleLanguageLevelChange = (levelId) => {
-    const newLevel = activeLanguageLevel === levelId ? 'all' : levelId;
-    setActiveLanguageLevel(newLevel);
+    setActiveLanguageLevel(levelId);
     if (typeof window !== 'undefined') {
-      if (newLevel === 'all') {
+      if (levelId === 'all') {
         localStorage.removeItem('dv_language_filter');
       } else {
-        localStorage.setItem('dv_language_filter', newLevel);
+        localStorage.setItem('dv_language_filter', levelId);
       }
     }
   };
@@ -196,12 +195,19 @@ export default function HomeApp() {
           </div>
         </div>
         <div className={styles.filterGroup}>
-          <span className={styles.filterLabel}>{lang === 'hi' ? 'Bhasha' : 'Level'}</span>
+          <span className={styles.filterLabel}>{lang === 'hi' ? 'Bhasha' : 'Language'}</span>
           <div className={styles.themeFilter}>
+            <button
+              onClick={() => setActiveLanguageLevel('all')}
+              className={`${styles.themePill} ${activeLanguageLevel === 'all' ? styles.themePillActive : ''}`}
+            >
+              <span>✨</span>
+              <span>{lang === 'hi' ? 'Sabhi' : 'All'}</span>
+            </button>
             {LANGUAGE_LEVELS.map((l) => (
               <button
                 key={l.id}
-                onClick={() => handleLanguageLevelChange(l.id)}
+                onClick={() => setActiveLanguageLevel(l.id)}
                 className={`${styles.themePill} ${activeLanguageLevel === l.id ? styles.themePillActive : ''}`}
               >
                 <span>{l.label[lang] || l.label.en}</span>
