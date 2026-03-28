@@ -53,6 +53,23 @@
   color: var(--color-text-light);
 }
 
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 0 0;
+}
+
+.sectionIcon {
+  font-size: 20px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-light);
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -86,6 +103,7 @@
   height: 100%;
   display: block;
   pointer-events: none;
+  object-fit: cover;
 }
 
 .newBadge {

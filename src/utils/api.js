@@ -213,6 +213,34 @@ export const funnyShortsApi = {
   },
 };
 
+// ─── Silly Songs API ──────────────────────────────────────────
+// Backend: /api/v1/silly-songs
+
+export const sillySongsApi = {
+  list: async (ageGroup = '6-8') => {
+    const params = new URLSearchParams({ age_group: ageGroup });
+    const res = await fetchApi(`/api/v1/silly-songs?${params.toString()}`, {
+      method: 'GET',
+    });
+    return res.data?.items || [];
+  },
+
+  getById: async (id) => {
+    const res = await fetchApi(`/api/v1/silly-songs/${id}`, {
+      method: 'GET',
+    });
+    return res.data || {};
+  },
+
+  play: async (id) => {
+    return fetchApi(`/api/v1/silly-songs/${id}/play`, { method: 'POST' }).catch(() => {});
+  },
+
+  replay: async (id) => {
+    return fetchApi(`/api/v1/silly-songs/${id}/replay`, { method: 'POST' }).catch(() => {});
+  },
+};
+
 // ─── Trending API ───────────────────────────────────────────
 // Backend: /api/v1/trending
 
