@@ -27,6 +27,12 @@ function formatDuration(seconds) {
 
 const AGE_GROUPS = ['2-5', '6-8', '9-12'];
 
+function isAddedToday(createdAt) {
+  if (!createdAt) return false;
+  const today = new Date().toISOString().slice(0, 10);
+  return createdAt.slice(0, 10) === today;
+}
+
 function BeforeBedContent() {
   const { t } = useI18n();
   const [shorts, setShorts] = useState([]);
@@ -188,6 +194,9 @@ function BeforeBedContent() {
               className={`${styles.card} ${playingId === short.id ? styles.cardPlaying : ''}`}
               onClick={() => handlePlay(short)}
             >
+              {isAddedToday(short.created_at) && (
+                <span className={styles.newBadge}>NEW</span>
+              )}
               {short.cover_file ? (
                 <div className={styles.cardCover}>
                   <object

@@ -61,6 +61,7 @@
 }
 
 .card {
+  position: relative;
   background: var(--color-card-dark);
   border: 1px solid rgba(107, 76, 230, 0.15);
   border-radius: 16px;
@@ -85,6 +86,21 @@
   height: 100%;
   display: block;
   pointer-events: none;
+}
+
+.newBadge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: linear-gradient(135deg, #ff6b9d, #ff9100);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  z-index: 2;
+  text-transform: uppercase;
 }
 
 /* When no cover, add padding back for emoji-only cards */
