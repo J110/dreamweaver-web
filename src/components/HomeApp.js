@@ -6,12 +6,12 @@
  * This is shown to logged-in users and native app WebView users.
  */
 
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import StarField from '@/components/StarField';
 import ContentCard from '@/components/ContentCard';
 import { isLoggedIn, getUser } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
-import { trendingApi, lullabiesApi } from '@/utils/api';
+import { trendingApi } from '@/utils/api';
 import { getStories } from '@/utils/seedData';
 import { sortByDiscovery } from '@/utils/listeningHistory';
 import styles from '@/app/page.module.css';
@@ -53,27 +53,12 @@ export default function HomeApp() {
     }
     return 'all';
   });
-  const [lullabies, setLullabies] = useState([]);
-  const [lullabyPlaying, setLullabyPlaying] = useState(null);
-  const lullabyAudioRef = useRef(null);
-
   useEffect(() => {
     if (isLoggedIn()) {
       setUser(getUser());
     }
     loadStories();
-    loadLullabies();
   }, [lang]);
-
-  // Cleanup lullaby audio on unmount
-  useEffect(() => {
-    return () => {
-      if (lullabyAudioRef.current) {
-        lullabyAudioRef.current.pause();
-        lullabyAudioRef.current = null;
-      }
-    };
-  }, []);
 
   const loadStories = async () => {
     setLoading(true);
@@ -120,40 +105,6 @@ export default function HomeApp() {
     }
   };
 
-  const loadLullabies = async () => {
-    try {
-      const items = await lullabiesApi.list();
-      setLullabies(items);
-    } catch (err) {
-      console.error('Failed to load lullabies:', err);
-    }
-  };
-
-  const handleLullabyPlay = useCallback((lullaby) => {
-    if (!lullaby.audio_file) return;
-
-    if (lullabyPlaying === lullaby.id && lullabyAudioRef.current) {
-      if (lullabyAudioRef.current.paused) {
-        lullabyAudioRef.current.play();
-      } else {
-        lullabyAudioRef.current.pause();
-      }
-      return;
-    }
-
-    if (lullabyAudioRef.current) {
-      lullabyAudioRef.current.pause();
-      lullabyAudioRef.current = null;
-    }
-
-    const audio = new Audio(`/audio/lullabies/${lullaby.audio_file}`);
-    lullabyAudioRef.current = audio;
-    setLullabyPlaying(lullaby.id);
-
-    audio.addEventListener('ended', () => setLullabyPlaying(null));
-    audio.play().catch(() => setLullabyPlaying(null));
-  }, [lullabyPlaying]);
-
   const handleLanguageLevelChange = (levelId) => {
     setActiveLanguageLevel(levelId);
     if (typeof window !== 'undefined') {
@@ -194,35 +145,6 @@ export default function HomeApp() {
   const longStoryItems = sortByDiscovery(filteredStories.filter((s) => s.type === 'long_story'));
   const poemItems = sortByDiscovery(filteredStories.filter((s) => s.type === 'poem'));
   const songItems = sortByDiscovery(filteredStories.filter((s) => s.type === 'song'));
-
-  // Map MiniMax lullabies to ContentCard-compatible format and merge with old songItems
-  const lullabyAsCards = lullabies
-    .filter((l) => {
-      if (activeAge !== 'all' && l.age_group !== activeAge) return false;
-      if (activeMood !== 'all' && l.mood !== activeMood) return false;
-      return true;
-    })
-    .map((l) => ({
-      id: l.id,
-      type: 'song',
-      title: l.title || l.card_label,
-      description: l.card_subtitle,
-      cover: `/covers/lullabies/${l.cover_file}`,
-      age_group: l.age_group,
-      target_age: l.age_group === '0-1' ? 0 : l.age_group === '2-5' ? 3 : l.age_group === '6-8' ? 7 : 10,
-      duration: Math.ceil((l.duration_seconds || 120) / 60),
-      mood: l.mood,
-      addedAt: l.created_at,
-      audio_variants: l.audio_file ? [{
-        voice: 'female_1',
-        url: `/audio/lullabies/${l.audio_file}`,
-        duration_seconds: l.duration_seconds,
-      }] : [],
-      _isLullaby: true,
-    }));
-
-  // Combine: new MiniMax lullabies first, then old ACE-Step songs
-  const allSongItems = [...lullabyAsCards, ...songItems];
 
   const appName = lang === 'hi' ? 'Sapno ki Duniya' : 'Dream Valley';
   const logoSrc = lang === 'hi' ? '/logo-hi.png' : '/logo-new.png';
@@ -358,13 +280,13 @@ export default function HomeApp() {
               </section>
             )}
 
-            {allSongItems.length > 0 && (
+            {songItems.length > 0 && (
               <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>
                   {lang === 'hi' ? '🎵 Loriyaan' : '🎵 Lullabies'}
                 </h2>
                 <div className={styles.horizontalScroll}>
-                  {allSongItems.map((item) => (
+                  {songItems.map((item) => (
                     <div key={item.id} className={styles.cardWrapper}>
                       <ContentCard content={item} />
                     </div>
