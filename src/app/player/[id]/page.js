@@ -4,7 +4,7 @@ import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import StarField from '@/components/StarField';
-import { contentApi, interactionApi, feedbackApi } from '@/utils/api';
+import { contentApi, interactionApi, feedbackApi, lullabiesApi } from '@/utils/api';
 import { getStories } from '@/utils/seedData';
 import { getAmbientMusic } from '@/utils/ambientMusic';
 import { useI18n, hasCompletedOnboarding } from '@/utils/i18n';
@@ -795,7 +795,26 @@ export default function PlayerPage() {
           if (seedMatch) {
             setContent(seedMatch);
           } else {
-            setError(t('playerNotFound'));
+            // Try lullabies API as last resort
+            try {
+              const lullaby = await lullabiesApi.getById(params.id);
+              if (lullaby && lullaby.id) {
+                setContent({
+                  ...lullaby,
+                  type: 'song',
+                  cover: `/covers/lullabies/${lullaby.cover_file}`,
+                  audio_variants: lullaby.audio_file ? [{
+                    voice: 'female_1',
+                    url: `/audio/lullabies/${lullaby.audio_file}`,
+                    duration_seconds: lullaby.duration_seconds,
+                  }] : [],
+                });
+              } else {
+                setError(t('playerNotFound'));
+              }
+            } catch {
+              setError(t('playerNotFound'));
+            }
           }
         }
       } catch (err) {
@@ -804,7 +823,26 @@ export default function PlayerPage() {
         if (seedMatch) {
           setContent(seedMatch);
         } else {
-          setError(t('playerError'));
+          // Try lullabies API as last resort
+          try {
+            const lullaby = await lullabiesApi.getById(params.id);
+            if (lullaby && lullaby.id) {
+              setContent({
+                ...lullaby,
+                type: 'song',
+                cover: `/covers/lullabies/${lullaby.cover_file}`,
+                audio_variants: lullaby.audio_file ? [{
+                  voice: 'female_1',
+                  url: `/audio/lullabies/${lullaby.audio_file}`,
+                  duration_seconds: lullaby.duration_seconds,
+                }] : [],
+              });
+            } else {
+              setError(t('playerError'));
+            }
+          } catch {
+            setError(t('playerError'));
+          }
         }
       } finally {
         setLoading(false);

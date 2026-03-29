@@ -241,6 +241,29 @@ export const sillySongsApi = {
   },
 };
 
+// ─── Lullabies API ───────────────────────────────────────────
+// Backend: /api/v1/lullabies
+
+export const lullabiesApi = {
+  list: async (ageGroup = null, mood = null) => {
+    const params = new URLSearchParams();
+    if (ageGroup) params.append('age_group', ageGroup);
+    if (mood) params.append('mood', mood);
+    const query = params.toString() ? `?${params.toString()}` : '';
+    const res = await fetchApi(`/api/v1/lullabies${query}`, {
+      method: 'GET',
+    });
+    return res.data?.items || [];
+  },
+
+  getById: async (id) => {
+    const res = await fetchApi(`/api/v1/lullabies/${id}`, {
+      method: 'GET',
+    });
+    return res.data || {};
+  },
+};
+
 // ─── Trending API ───────────────────────────────────────────
 // Backend: /api/v1/trending
 

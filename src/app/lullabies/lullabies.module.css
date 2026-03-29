@@ -8,7 +8,7 @@
 
 .header {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 20px;
 }
 
 .title {
@@ -24,10 +24,51 @@
   margin: 0;
 }
 
+/* ── Filters ── */
+
+.filterRow {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 0 12px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.filterRow::-webkit-scrollbar {
+  display: none;
+}
+
+.filterBtn {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: #8888bb;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.filterBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.filterActive {
+  background: rgba(138, 120, 200, 0.25);
+  border-color: rgba(138, 120, 200, 0.4);
+  color: #c4b8e8;
+}
+
+/* ── Grid ── */
+
 .grid {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
+  margin-top: 8px;
 }
 
 .card {
@@ -39,10 +80,16 @@
   border-radius: 16px;
   padding: 12px;
   transition: background 0.2s;
+  cursor: pointer;
 }
 
 .card:hover {
   background: rgba(255, 255, 255, 0.08);
+}
+
+.cardPlaying {
+  background: rgba(138, 120, 200, 0.12);
+  border-color: rgba(138, 120, 200, 0.25);
 }
 
 .coverWrap {
@@ -100,7 +147,8 @@
 .meta {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .badge {
@@ -116,6 +164,25 @@
   font-size: 11px;
   color: #6666aa;
 }
+
+/* ── Progress bar ── */
+
+.progressBar {
+  margin-top: 6px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: rgba(138, 120, 200, 0.6);
+  border-radius: 2px;
+  transition: width 0.3s linear;
+}
+
+/* ── Play button ── */
 
 .playBtn {
   width: 48px;
@@ -147,6 +214,8 @@
   0%, 100% { box-shadow: 0 0 0 0 rgba(138, 120, 200, 0.3); }
   50% { box-shadow: 0 0 0 8px rgba(138, 120, 200, 0); }
 }
+
+/* ── Empty state ── */
 
 .empty {
   text-align: center;
