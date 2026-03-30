@@ -153,7 +153,7 @@ export default function PlayerPage() {
   // Songs (lullabies) don't use ambient background music — ACE-Step output has vocals + instrument
   // experimental_v2 stories have bed music baked into the audio file — skip ambient music
   // Prefer musicalBrief (composed client-side) > musicParams (legacy v2) > musicProfile (named preset)
-  const hasBakedMusic = content?.experimental_v2 === true || content?.id?.startsWith('exp2-');
+  const hasBakedMusic = content?.experimental_v2 === true || content?.has_baked_music === true || content?.id?.startsWith('exp2-');
   const musicSource = (content?.type === 'song' || hasBakedMusic) ? null : (content?.musicalBrief || content?.musicParams || content?.musicProfile);
   const currentContentId = content?.id;
   if (currentContentId && currentContentId !== musicContentIdRef.current) {

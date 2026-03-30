@@ -4521,6 +4521,7 @@ export const SEED_STORIES = {
       view_count: 0,
       categories: ["Nature", "Bedtime"],
       theme: "nature",
+      has_baked_music: true,
       musicParams: {},
       musicalBrief: {"storyId": "gen-041123d72402", "ageGroup": "2-5", "musicalIdentity": {"culturalReference": "ambient_electronic", "primaryLoop": "harp_arpeggios", "padCharacter": "starfield"}, "tonality": {"mode": "major_pentatonic", "rootNote": "F"}, "melodicCharacter": "descending_lullaby", "rhythm": {"feel": "gentle_pulse", "baseTempo": 58}, "environment": {"natureSoundPrimary": "forest_night", "natureSoundSecondary": "wind_chimes", "ambientEvents": ["cricket", "waterDrop", "starTwinkle"]}, "emotionalArc": {"phase1": "gentle_wonder", "phase2": "soft_floating", "phase3": "deep_stillness"}},
       audio_variants: [
