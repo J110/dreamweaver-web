@@ -4515,7 +4515,7 @@ export const SEED_STORIES = {
       text: "Did you know the lake listens to the moon? Soft night. Dark sky. One bright moon.\nLittle Frog sits on a wide green leaf.\nThe leaf is his boat.\nThe lake is still.\n\nThen—\nthe moon breathes.\nA tiny wave.\nJust one more ripple...\n\nLittle Frog feels it under his toes.\nCool. Gentle. Can you feel it too?\nClose your eyes.\nJust one more ripple...\n\nThe moon breathes again.\nAnother wave.\nSmaller now.\nJust one more ripple...\n\nLittle Frog blinks.\nHis eyes grow heavy.\nThe lake grows quiet.\nJust one more ripple...\n\nThe moon stays.\nThe lake stays.\nLittle Frog closes his eyes.\nThe ripples stop.\n\nAnd right now, somewhere,\nthe lake still listens.",
       character: {"name": "Little Frog", "identity": "a frog", "special": "sits very still", "personality_tags": ["gentle", "quiet"]},
       target_age: 3,
-      duration: 2,
+      duration: 3,
       like_count: 0,
       save_count: 0,
       view_count: 0,
@@ -4524,8 +4524,8 @@ export const SEED_STORIES = {
       musicParams: {},
       musicalBrief: {"storyId": "gen-041123d72402", "ageGroup": "2-5", "musicalIdentity": {"culturalReference": "ambient_electronic", "primaryLoop": "harp_arpeggios", "padCharacter": "starfield"}, "tonality": {"mode": "major_pentatonic", "rootNote": "F"}, "melodicCharacter": "descending_lullaby", "rhythm": {"feel": "gentle_pulse", "baseTempo": 58}, "environment": {"natureSoundPrimary": "forest_night", "natureSoundSecondary": "wind_chimes", "ambientEvents": ["cricket", "waterDrop", "starTwinkle"]}, "emotionalArc": {"phase1": "gentle_wonder", "phase2": "soft_floating", "phase3": "deep_stillness"}},
       audio_variants: [
-        { voice: "female_1", url: "/audio/pre-gen/gen-0411_female_1.mp3", duration_seconds: 125.61 },
-        { voice: "asmr", url: "/audio/pre-gen/gen-0411_asmr.mp3", duration_seconds: 107.39 },
+        { voice: "female_1", url: "/audio/pre-gen/gen-0411_female_1.mp3", duration_seconds: 141.4 },
+        { voice: "asmr", url: "/audio/pre-gen/gen-0411_asmr.mp3", duration_seconds: 121.52 },
       ],
     },],
   hi: [
