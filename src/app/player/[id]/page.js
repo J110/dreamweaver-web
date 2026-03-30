@@ -151,8 +151,10 @@ export default function PlayerPage() {
   // Render-phase logic: detect story changes and update music source ref.
   // This MUST run before effects so the music-start effect sees the correct source.
   // Songs (lullabies) don't use ambient background music — ACE-Step output has vocals + instrument
+  // experimental_v2 stories have bed music baked into the audio file — skip ambient music
   // Prefer musicalBrief (composed client-side) > musicParams (legacy v2) > musicProfile (named preset)
-  const musicSource = content?.type === 'song' ? null : (content?.musicalBrief || content?.musicParams || content?.musicProfile);
+  const hasBakedMusic = content?.experimental_v2 === true || content?.id?.startsWith('exp2-');
+  const musicSource = (content?.type === 'song' || hasBakedMusic) ? null : (content?.musicalBrief || content?.musicParams || content?.musicProfile);
   const currentContentId = content?.id;
   if (currentContentId && currentContentId !== musicContentIdRef.current) {
     if (musicContentIdRef.current) {
