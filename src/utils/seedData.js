@@ -4501,8 +4501,8 @@ export const SEED_STORIES = {
       musicParams: {},
       musicalBrief: {"storyId": "gen-041123d72402", "ageGroup": "2-5", "musicalIdentity": {"culturalReference": "ambient_electronic", "primaryLoop": "harp_arpeggios", "padCharacter": "starfield"}, "tonality": {"mode": "major_pentatonic", "rootNote": "F"}, "melodicCharacter": "descending_lullaby", "rhythm": {"feel": "gentle_pulse", "baseTempo": 58}, "environment": {"natureSoundPrimary": "forest_night", "natureSoundSecondary": "wind_chimes", "ambientEvents": ["cricket", "waterDrop", "starTwinkle"]}, "emotionalArc": {"phase1": "gentle_wonder", "phase2": "soft_floating", "phase3": "deep_stillness"}},
       audio_variants: [
-        { voice: "female_1", url: "/audio/pre-gen/gen-0411_female_1.mp3", duration_seconds: 141.4 },
-        { voice: "asmr", url: "/audio/pre-gen/gen-0411_asmr.mp3", duration_seconds: 121.52 },
+        { voice: "female_1", url: "/audio/pre-gen/gen-0411_female_1.mp3", duration_seconds: 179.5 },
+        { voice: "asmr", url: "/audio/pre-gen/gen-0411_asmr.mp3", duration_seconds: 164.7 },
       ],
     },
     {
@@ -4528,8 +4528,8 @@ export const SEED_STORIES = {
       musicParams: {},
       musicalBrief: {"storyId": "exp2-d586859ee5", "ageGroup": "6-8", "musicalIdentity": {"culturalReference": "ambient_electronic", "primaryLoop": "hang_drum_melody", "padCharacter": "starfield"}, "tonality": {"mode": "major_pentatonic", "rootNote": "E"}, "melodicCharacter": "descending_lullaby", "rhythm": {"feel": "gentle_pulse", "baseTempo": 58}, "environment": {"natureSoundPrimary": "forest_night", "natureSoundSecondary": "wind_chimes", "ambientEvents": ["starTwinkle", "cricket", "leaves"]}, "emotionalArc": {"phase1": "gentle_wonder", "phase2": "soft_floating", "phase3": "deep_stillness"}},
       audio_variants: [
-        { voice: "female_1", url: "/audio/pre-gen/exp2-d586859ee5_female_1.mp3", duration_seconds: 238.96 },
-        { voice: "asmr", url: "/audio/pre-gen/exp2-d586859ee5_asmr.mp3", duration_seconds: 233.57 },
+        { voice: "female_3", url: "/audio/pre-gen/exp2-d586859ee5_female_3.mp3", duration_seconds: 220.7 },
+        { voice: "male_2", url: "/audio/pre-gen/exp2-d586859ee5_male_2.mp3", duration_seconds: 233.69 },
       ],
     },
   ],
