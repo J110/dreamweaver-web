@@ -107,6 +107,113 @@
   margin-bottom: var(--spacing-xl);
 }
 
+/* ── Age Selection ───────────────────────────────── */
+
+.ageSection {
+  margin: var(--spacing-lg) 0 var(--spacing-md) 0;
+}
+
+.ageLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-light);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.optional {
+  font-weight: 400;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.ageGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-sm);
+}
+
+.ageCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: var(--spacing-sm) var(--spacing-xs, 4px);
+  background: var(--color-card-dark);
+  border: 2px solid rgba(107, 76, 230, 0.15);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  font-family: 'Quicksand', sans-serif;
+  color: var(--color-text-light);
+}
+
+.ageCard:hover {
+  border-color: var(--color-primary-purple);
+  transform: translateY(-1px);
+}
+
+.ageCardSelected {
+  border-color: var(--color-primary-purple);
+  background: linear-gradient(135deg, rgba(107, 76, 230, 0.15), rgba(255, 107, 157, 0.1));
+  box-shadow: 0 0 12px rgba(107, 76, 230, 0.2);
+}
+
+.ageEmoji {
+  font-size: 28px;
+}
+
+.ageText {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ── Username Section ────────────────────────────── */
+
+.usernameSection {
+  margin: var(--spacing-md) 0;
+  text-align: left;
+}
+
+.usernameHint {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.usernameInput {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-card-dark);
+  border: 2px solid rgba(107, 76, 230, 0.2);
+  border-radius: var(--radius-md);
+  color: var(--color-text-light);
+  font-family: 'Quicksand', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  outline: none;
+  transition: border-color var(--transition-normal);
+  box-sizing: border-box;
+}
+
+.usernameInput:focus {
+  border-color: var(--color-primary-purple);
+}
+
+.usernameInput::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+  font-weight: 500;
+}
+
+.errorMessage {
+  background: rgba(255, 80, 80, 0.15);
+  border: 1px solid rgba(255, 80, 80, 0.3);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-xs, 4px) var(--spacing-sm);
+  color: #ff6b6b;
+  font-size: 13px;
+  margin-bottom: var(--spacing-sm);
+}
+
 .nextBtn,
 .startBtn {
   width: 100%;

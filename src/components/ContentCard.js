@@ -184,7 +184,7 @@ export default function ContentCard({ content, onClick }) {
       {onClick ? (
         cardContent
       ) : (
-        <Link href={`/player/${content.id}`}>
+        <Link href={`/player/${content.id}?autoplay=1`}>
           {cardContent}
         </Link>
       )}

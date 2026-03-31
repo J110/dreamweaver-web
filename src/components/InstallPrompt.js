@@ -1,150 +1,103 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import styles from './InstallPrompt.module.css';
 
-const DISMISSED_KEY = 'installPromptDismissed';
+const DISMISSED_KEY = 'appBannerDismissed';
 const SHOW_DELAY_MS = 3000;
 
+const APP_STORE_URL = 'https://apps.apple.com/sg/app/dream-valley-stories/id6759262548';
+const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.vervetogether.dreamvalley';
+
 /**
- * Cross-platform PWA install prompt.
+ * App download banner for mobile web users.
  *
- * - Only shows on the home page ('/') — not during onboarding, login, or player.
- * - Android / Desktop Chrome: captures `beforeinstallprompt`, shows "Add" button
- *   that triggers the native install dialog (adds to home screen as PWA).
- * - iOS Safari: shows step-by-step instructions (··· menu → Add to Home Screen).
- *   iOS has no API to trigger this — user must do it manually.
- * - Already installed (standalone mode): hidden.
- * - Auto-hides when app is installed (listens for `appinstalled` event).
- * - Dismissable with ✕ — persists in localStorage so it only shows once.
+ * - Detects iOS or Android from user agent.
+ * - Shows App Store or Play Store link on all pages.
+ * - Hidden when: inside native app (Flutter WebView), standalone PWA, or dismissed.
+ * - Dismissable with X — persists in localStorage.
  */
 export default function InstallPrompt() {
   const pathname = usePathname();
   const [visible, setVisible] = useState(false);
-  const [platform, setPlatform] = useState(null); // 'chrome' | 'ios' | null
-  const deferredPromptRef = useRef(null);
-  const listenerSetup = useRef(false);
+  const [platform, setPlatform] = useState(null); // 'ios' | 'android' | null
 
-  // Always listen for beforeinstallprompt and appinstalled
   useEffect(() => {
-    if (listenerSetup.current) return;
-    listenerSetup.current = true;
+    // Don't show during onboarding or login
+    if (pathname === '/onboarding' || pathname === '/login' || pathname === '/signup') return;
 
-    const handleBeforeInstall = (e) => {
-      e.preventDefault();
-      deferredPromptRef.current = e;
-      setPlatform('chrome');
-    };
-
-    // Auto-dismiss when app is installed
-    const handleAppInstalled = () => {
-      setVisible(false);
-      localStorage.setItem(DISMISSED_KEY, '1');
-      deferredPromptRef.current = null;
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
-    window.addEventListener('appinstalled', handleAppInstalled);
-
-    // Detect iOS Safari
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome|CriOS|FxiOS/.test(navigator.userAgent);
-    if (isIOS && isSafari) {
-      setPlatform('ios');
-    }
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
-      window.removeEventListener('appinstalled', handleAppInstalled);
-    };
-  }, []);
-
-  // Show/hide based on pathname — only on home page
-  useEffect(() => {
-    if (pathname !== '/') {
-      setVisible(false);
-      return;
-    }
-
-    // Already dismissed or already standalone?
+    // Already dismissed?
     if (localStorage.getItem(DISMISSED_KEY)) return;
+
+    // Already in standalone PWA?
     const isStandalone =
       window.matchMedia('(display-mode: standalone)').matches ||
       window.navigator.standalone === true;
     if (isStandalone) return;
 
-    // Show after delay once we're on home page
-    const timer = setTimeout(() => {
-      if (deferredPromptRef.current || platform === 'ios') {
-        setVisible(true);
-      }
-    }, SHOW_DELAY_MS);
+    // Inside native app (Flutter WebView)?
+    const ua = navigator.userAgent || '';
+    if (ua.includes('DreamValleyApp')) return;
+    try {
+      if (localStorage.getItem('dreamvalley_native_app') === '1') return;
+    } catch {}
 
+    // Detect platform
+    const isIOS = /iPad|iPhone|iPod/.test(ua) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const isAndroid = /Android/i.test(ua);
+
+    if (isIOS) {
+      setPlatform('ios');
+    } else if (isAndroid) {
+      setPlatform('android');
+    } else {
+      // Desktop — don't show app banner
+      return;
+    }
+
+    const timer = setTimeout(() => setVisible(true), SHOW_DELAY_MS);
     return () => clearTimeout(timer);
-  }, [pathname, platform]);
+  }, [pathname]);
 
   const handleDismiss = () => {
     setVisible(false);
     localStorage.setItem(DISMISSED_KEY, '1');
   };
 
-  const handleInstallClick = async () => {
-    if (!deferredPromptRef.current) {
-      // Prompt already used or expired — just dismiss
-      handleDismiss();
-      return;
-    }
-    try {
-      deferredPromptRef.current.prompt();
-      const result = await deferredPromptRef.current.userChoice;
-      if (result.outcome === 'accepted') {
-        setVisible(false);
-        localStorage.setItem(DISMISSED_KEY, '1');
-      }
-    } catch (e) {
-      // prompt() can throw if already used — dismiss gracefully
-      handleDismiss();
-    }
-    deferredPromptRef.current = null;
-  };
+  if (!visible || !platform) return null;
 
-  if (!visible) return null;
+  const storeUrl = platform === 'ios' ? APP_STORE_URL : PLAY_STORE_URL;
+  const storeName = platform === 'ios' ? 'App Store' : 'Google Play';
 
   return (
     <div className={styles.banner}>
       <div className={styles.content}>
-        <div className={styles.icon}>✨</div>
-        <div className={styles.text}>
-          {platform === 'ios' ? (
-            <>
-              <span className={styles.title}>Create a shortcut for Dream Valley</span>
-              <span className={styles.subtitle}>
-                Add to your home screen for a full screen experience!
-              </span>
-              <span className={styles.steps}>
-                1. Tap <strong>···</strong> below → 2. Tap{' '}
-                <svg className={styles.shareIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13" />
-                </svg>
-                {' '}Share → 3. Scroll up → 4. &ldquo;Add to Home Screen&rdquo;
-              </span>
-            </>
-          ) : (
-            <>
-              <span className={styles.title}>Create a shortcut for Dream Valley</span>
-              <span className={styles.subtitle}>
-                Add to your home screen for a full screen experience!
-              </span>
-            </>
-          )}
+        <div className={styles.icon}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo-new.png" alt="Dream Valley" className={styles.appIcon} />
         </div>
-        {platform === 'chrome' && (
-          <button className={styles.installBtn} onClick={handleInstallClick}>
-            Add
-          </button>
-        )}
+        <div className={styles.text}>
+          <span className={styles.title}>Get the Dream Valley app</span>
+          <span className={styles.subtitle}>
+            A better experience on the {storeName}
+          </span>
+        </div>
+        <a
+          href={storeUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.installBtn}
+          onClick={() => {
+            try {
+              const { dvAnalytics } = require('@/utils/analytics');
+              dvAnalytics.track('app_banner_click', { platform, page: pathname });
+            } catch {}
+          }}
+        >
+          Get
+        </a>
       </div>
       <button className={styles.closeBtn} onClick={handleDismiss} aria-label="Dismiss">
         ✕

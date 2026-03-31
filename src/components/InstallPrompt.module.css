@@ -41,6 +41,13 @@
   flex-shrink: 0;
 }
 
+.appIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
 .text {
   flex: 1;
   display: flex;

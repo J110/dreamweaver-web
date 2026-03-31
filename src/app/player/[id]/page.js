@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import StarField from '@/components/StarField';
 import { contentApi, interactionApi, feedbackApi } from '@/utils/api';
@@ -29,6 +29,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 export default function PlayerPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { t, lang } = useI18n();
   const { getStoryVoices, getDefaultVoice, hasVoicePrefs, voicePrefs } = useVoicePreferences();
   const [content, setContent] = useState(null);
@@ -576,6 +577,23 @@ export default function PlayerPage() {
       return () => clearTimeout(timer);
     }
   }, [selectedVoice, handlePlayPause]);
+
+  // Auto-play narration when arriving from content card click (?autoplay=1).
+  // Waits for content + voice to be ready, then triggers play once.
+  const autoPlayTriggeredRef = useRef(false);
+  useEffect(() => {
+    if (autoPlayTriggeredRef.current) return;
+    if (searchParams.get('autoplay') !== '1') return;
+    if (!content || !selectedVoice || loading) return;
+    // Don't auto-play if already playing (e.g., voice switch just triggered)
+    if (isPlaying || audioRef.current?.src) return;
+    autoPlayTriggeredRef.current = true;
+    // Small delay to ensure music engine and audio context are ready
+    const timer = setTimeout(() => {
+      handlePlayPause();
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [content, selectedVoice, loading, isPlaying, searchParams, handlePlayPause]);
 
   // Media Session: Register lock screen controls (play/pause/seek)
   useEffect(() => {
