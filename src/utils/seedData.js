@@ -3963,6 +3963,7 @@ export const SEED_STORIES = {
       categories: ["Friendship", "Miniature Adventures"],
       theme: "friendship",
       musicParams: {},
+      musicalBrief: {"storyId": "gen-3324b5de2c64", "ageGroup": "6-8", "musicalIdentity": {"culturalReference": "japanese", "primaryLoop": "piano_lullaby", "padCharacter": "silk_veil"}, "tonality": {"mode": "major_pentatonic", "rootNote": "A"}, "melodicCharacter": "cycling_arpeggio", "rhythm": {"feel": "gentle_pulse", "baseTempo": 66}, "environment": {"natureSoundPrimary": "forest_night", "natureSoundSecondary": "distant_stream", "ambientEvents": ["cricket", "leaves"]}, "emotionalArc": {"phase1": "playful_curiosity", "phase2": "gentle_warmth", "phase3": "deep_stillness"}, "density": "sparse"},
       audio_variants: [
         { voice: "female_3", url: "/audio/pre-gen/gen-3324_female_3.mp3", duration_seconds: 663.7 },
         { voice: "male_2", url: "/audio/pre-gen/gen-3324_male_2.mp3", duration_seconds: 706.54 },
@@ -3987,6 +3988,7 @@ export const SEED_STORIES = {
       categories: ["Friendship", "Self-Discovery"],
       theme: "space",
       musicParams: {},
+      musicalBrief: {"storyId": "gen-6134b0c7424e", "ageGroup": "6-8", "musicalIdentity": {"culturalReference": "nordic", "primaryLoop": "piano_lullaby", "padCharacter": "starfield"}, "tonality": {"mode": "dorian", "rootNote": "G"}, "melodicCharacter": "descending_lullaby", "rhythm": {"feel": "gentle_pulse", "baseTempo": 66}, "environment": {"natureSoundPrimary": "wind_gentle", "natureSoundSecondary": "distant_thunder", "ambientEvents": ["chimes", "waterDrop"]}, "emotionalArc": {"phase1": "whimsical_wonder", "phase2": "gentle_journey", "phase3": "deep_stillness"}, "density": "sparse"},
       audio_variants: [
         { voice: "female_3", url: "/audio/pre-gen/gen-6134_female_3.mp3", duration_seconds: 119.12 },
         { voice: "male_2", url: "/audio/pre-gen/gen-6134_male_2.mp3", duration_seconds: 123.68 },
@@ -4011,6 +4013,7 @@ export const SEED_STORIES = {
       categories: ["Family & Togetherness", "Whimsical Adventures"],
       theme: "family",
       musicParams: {},
+      musicalBrief: {"storyId": "gen-abc9935e9a8c", "ageGroup": "2-5", "musicalIdentity": {"culturalReference": "japanese", "primaryLoop": "piano_lullaby", "padCharacter": "warm_strings"}, "tonality": {"mode": "major_pentatonic", "rootNote": "A"}, "melodicCharacter": "cycling_arpeggio", "rhythm": {"feel": "gentle_pulse", "baseTempo": 66}, "environment": {"natureSoundPrimary": "forest_night", "natureSoundSecondary": "distant_stream", "ambientEvents": ["leaves", "waterDrop"]}, "emotionalArc": {"phase1": "whimsical_discovery", "phase2": "gentle_warmth", "phase3": "deep_stillness"}, "density": "sparse"},
       audio_variants: [
         { voice: "female_3", url: "/audio/pre-gen/gen-abc9_female_3.mp3", duration_seconds: 65.88 },
         { voice: "female_4", url: "/audio/pre-gen/gen-abc9_female_4.mp3", duration_seconds: 75.5 },
@@ -4035,6 +4038,7 @@ export const SEED_STORIES = {
       categories: ["Fantasy", "Emotional Growth"],
       theme: "mystery",
       musicParams: {},
+      musicalBrief: {"storyId": "gen-728f2c9e4615", "ageGroup": "9-12", "musicalIdentity": {"culturalReference": "nordic", "primaryLoop": "piano_lullaby", "padCharacter": "deep_ocean"}, "tonality": {"mode": "aeolian", "rootNote": "G"}, "melodicCharacter": "drone_with_ornaments", "rhythm": {"feel": "free_rubato", "baseTempo": 62}, "environment": {"natureSoundPrimary": "rain_steady", "natureSoundSecondary": "distant_thunder", "ambientEvents": []}, "emotionalArc": {"phase1": "floating_uncertainty", "phase2": "ethereal_contemplation", "phase3": "deep_stillness"}, "density": "sparse"},
       audio_variants: [
         { voice: "female_1", url: "/audio/pre-gen/gen-728f_female_1.mp3", duration_seconds: 719.27 },
         { voice: "male_2", url: "/audio/pre-gen/gen-728f_male_2.mp3", duration_seconds: 651.66 },
@@ -4059,6 +4063,7 @@ export const SEED_STORIES = {
       categories: ["Comfort", "Nature"],
       theme: "animals",
       musicParams: {},
+      musicalBrief: {"storyId": "gen-7b207c25a434", "ageGroup": "2-5", "musicalIdentity": {"culturalReference": "japanese", "primaryLoop": "piano_lullaby", "padCharacter": "deep_ocean"}, "tonality": {"mode": "minor_pentatonic", "rootNote": "A"}, "melodicCharacter": "descending_lullaby", "rhythm": {"feel": "free_rubato", "baseTempo": 62}, "environment": {"natureSoundPrimary": "wind_gentle", "natureSoundSecondary": "distant_stream", "ambientEvents": ["leaves", "waterDrop"]}, "emotionalArc": {"phase1": "soft_wonder", "phase2": "gentle_curiosity", "phase3": "deep_stillness"}, "density": "sparse"},
       audio_variants: [
         { voice: "female_1", url: "/audio/pre-gen/gen-7b20_female_1.mp3", duration_seconds: 127.6 },
         { voice: "male_2", url: "/audio/pre-gen/gen-7b20_male_2.mp3", duration_seconds: 118.46 },
@@ -4083,6 +4088,7 @@ export const SEED_STORIES = {
       categories: ["Cosmic Comfort", "Whimsical Wisdom"],
       theme: "space",
       musicParams: {},
+      musicalBrief: {"storyId": "gen-913ac4fe8d55", "ageGroup": "9-12", "musicalIdentity": {"culturalReference": "nordic", "primaryLoop": "flute_breathy", "padCharacter": "earth_drone"}, "tonality": {"mode": "aeolian", "rootNote": "G"}, "melodicCharacter": "drone_with_ornaments", "rhythm": {"feel": "free_rubato", "baseTempo": 62}, "environment": {"natureSoundPrimary": "rain_light", "natureSoundSecondary": "distant_thunder", "ambientEvents": []}, "emotionalArc": {"phase1": "mysterious_wonder", "phase2": "gentle_revelation", "phase3": "deep_stillness"}, "density": "sparse"},
       audio_variants: [
         { voice: "female_1", url: "/audio/pre-gen/gen-913a_female_1.mp3", duration_seconds: 99.34 },
         { voice: "male_2", url: "/audio/pre-gen/gen-913a_male_2.mp3", duration_seconds: 93.48 },
