@@ -248,111 +248,107 @@ function BeforeBedContent() {
         <>
           {/* Funny Shorts Section */}
           {shorts.length > 0 && (
-            <>
-              <div className={styles.sectionHeader}>
-                <span className={styles.sectionIcon}>😂</span>
-                <span className={styles.sectionTitle}>Funny Shorts</span>
-              </div>
-              <div className={styles.grid}>
+            <section className={styles.section}>
+              <h2 className={styles.sectionTitle}>😂 Funny Shorts</h2>
+              <div className={styles.horizontalScroll}>
                 {shorts.map((short) => (
-                  <div
-                    key={short.id}
-                    className={`${styles.card} ${playingId === short.id ? styles.cardPlaying : ''}`}
-                    onClick={() => handlePlayShort(short)}
-                  >
-                    {isAddedToday(short.created_at) && (
-                      <span className={styles.newBadge}>NEW</span>
-                    )}
-                    {short.cover_file ? (
-                      <div className={styles.cardCover}>
-                        {short.cover_file.endsWith('.svg') ? (
-                          <object
-                            data={`/covers/funny-shorts/${short.cover_file}`}
-                            type="image/svg+xml"
-                            className={styles.cardCoverImg}
-                            aria-label={short.title}
-                          >
-                            <div className={styles.cardEmojis}>{getVoiceEmojis(short.voices)}</div>
-                          </object>
-                        ) : (
-                          <img
-                            src={`/covers/funny-shorts/${short.cover_file}`}
-                            className={styles.cardCoverImg}
-                            alt={short.title}
-                          />
-                        )}
+                  <div key={short.id} className={styles.cardWrapper}>
+                    <div
+                      className={`${styles.card} ${playingId === short.id ? styles.cardPlaying : ''}`}
+                      onClick={() => handlePlayShort(short)}
+                    >
+                      {isAddedToday(short.created_at) && (
+                        <span className={styles.newBadge}>NEW</span>
+                      )}
+                      {short.cover_file ? (
+                        <div className={styles.cardCover}>
+                          {short.cover_file.endsWith('.svg') ? (
+                            <object
+                              data={`/covers/funny-shorts/${short.cover_file}`}
+                              type="image/svg+xml"
+                              className={styles.cardCoverImg}
+                              aria-label={short.title}
+                            >
+                              <div className={styles.cardEmojis}>{getVoiceEmojis(short.voices)}</div>
+                            </object>
+                          ) : (
+                            <img
+                              src={`/covers/funny-shorts/${short.cover_file}`}
+                              className={styles.cardCoverImg}
+                              alt={short.title}
+                            />
+                          )}
+                        </div>
+                      ) : (
+                        <div className={styles.cardEmojis}>{getVoiceEmojis(short.voices)}</div>
+                      )}
+                      <div className={styles.cardTitle}>{short.title}</div>
+                      <div className={styles.cardMeta}>
+                        <span className={styles.cardDuration}>
+                          {formatDuration(short.duration_seconds)}
+                        </span>
+                        <button
+                          className={styles.playBtn}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handlePlayShort(short);
+                          }}
+                        >
+                          {playingId === short.id ? '⏸' : '▶'}
+                        </button>
                       </div>
-                    ) : (
-                      <div className={styles.cardEmojis}>{getVoiceEmojis(short.voices)}</div>
-                    )}
-                    <div className={styles.cardTitle}>{short.title}</div>
-                    <div className={styles.cardMeta}>
-                      <span className={styles.cardDuration}>
-                        {formatDuration(short.duration_seconds)}
-                      </span>
-                      <button
-                        className={styles.playBtn}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handlePlayShort(short);
-                        }}
-                      >
-                        {playingId === short.id ? '⏸' : '▶'}
-                      </button>
                     </div>
                   </div>
                 ))}
               </div>
-            </>
+            </section>
           )}
 
           {/* Silly Songs Section */}
           {songs.length > 0 && (
-            <>
-              <div className={styles.sectionHeader}>
-                <span className={styles.sectionIcon}>🎵</span>
-                <span className={styles.sectionTitle}>Silly Songs</span>
-              </div>
-              <div className={styles.grid}>
+            <section className={styles.section}>
+              <h2 className={styles.sectionTitle}>🎵 Silly Songs</h2>
+              <div className={styles.horizontalScroll}>
                 {songs.map((song) => (
-                  <div
-                    key={song.id}
-                    className={`${styles.card} ${playingId === song.id ? styles.cardPlaying : ''}`}
-                    onClick={() => handlePlaySong(song)}
-                  >
-                    {isAddedToday(song.created_at) && (
-                      <span className={styles.newBadge}>NEW</span>
-                    )}
-                    {song.cover_file ? (
-                      <div className={styles.cardCover}>
-                        <img
-                          src={`/covers/silly-songs/${song.cover_file}`}
-                          className={styles.cardCoverImg}
-                          alt={song.title}
-                        />
+                  <div key={song.id} className={styles.cardWrapper}>
+                    <div
+                      className={`${styles.card} ${playingId === song.id ? styles.cardPlaying : ''}`}
+                      onClick={() => handlePlaySong(song)}
+                    >
+                      {isAddedToday(song.created_at) && (
+                        <span className={styles.newBadge}>NEW</span>
+                      )}
+                      {song.cover_file ? (
+                        <div className={styles.cardCover}>
+                          <img
+                            src={`/covers/silly-songs/${song.cover_file}`}
+                            className={styles.cardCoverImg}
+                            alt={song.title}
+                          />
+                        </div>
+                      ) : (
+                        <div className={styles.cardEmojis}>🎵</div>
+                      )}
+                      <div className={styles.cardTitle}>{song.title}</div>
+                      <div className={styles.cardMeta}>
+                        <span className={styles.cardDuration}>
+                          {formatDuration(song.duration_seconds)}
+                        </span>
+                        <button
+                          className={styles.playBtn}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handlePlaySong(song);
+                          }}
+                        >
+                          {playingId === song.id ? '⏸' : '▶'}
+                        </button>
                       </div>
-                    ) : (
-                      <div className={styles.cardEmojis}>🎵</div>
-                    )}
-                    <div className={styles.cardTitle}>{song.title}</div>
-                    <div className={styles.cardMeta}>
-                      <span className={styles.cardDuration}>
-                        {formatDuration(song.duration_seconds)}
-                      </span>
-                      <button
-                        className={styles.playBtn}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handlePlaySong(song);
-                        }}
-                      >
-                        {playingId === song.id ? '⏸' : '▶'}
-                      </button>
                     </div>
                   </div>
                 ))}
               </div>
-            </>
+            </section>
           )}
 
           {shorts.length === 0 && songs.length === 0 && (
