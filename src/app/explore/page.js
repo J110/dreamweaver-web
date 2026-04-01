@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useState, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import StarField from '@/components/StarField';
 import ContentCard from '@/components/ContentCard';
@@ -39,8 +39,17 @@ function ExploreContent() {
   const [filterType, setFilterType] = useState('all');
   const [theme, setTheme] = useState(searchParams.get('theme') || '');
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [content, setContent] = useState([]);
   const [loading, setLoading] = useState(true);
+  const searchTimer = useRef(null);
+
+  // Debounce search input — wait 400ms after user stops typing
+  useEffect(() => {
+    clearTimeout(searchTimer.current);
+    searchTimer.current = setTimeout(() => setDebouncedSearch(search), 400);
+    return () => clearTimeout(searchTimer.current);
+  }, [search]);
 
   useEffect(() => {
     const loadContent = async () => {
@@ -49,7 +58,7 @@ function ExploreContent() {
         const filters = {
           type: filterType === 'all' ? undefined : filterType,
           theme: theme || undefined,
-          search: search || undefined,
+          search: debouncedSearch || undefined,
           lang: lang,
         };
         const result = await contentApi.getContent(filters);
@@ -98,7 +107,7 @@ function ExploreContent() {
       }
     };
     loadContent();
-  }, [filterType, theme, search, lang]);
+  }, [filterType, theme, debouncedSearch, lang]);
 
   return (
     <div className={styles.app}>

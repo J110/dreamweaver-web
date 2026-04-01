@@ -5,9 +5,37 @@ const getAuthToken = () => {
   return localStorage.getItem('dreamweaver_token');
 };
 
+// In-memory cache for GET requests — avoids re-fetching on tab switches
+const _cache = new Map();
+const CACHE_TTL = 3 * 60 * 1000; // 3 minutes
+
+function getCached(key) {
+  const entry = _cache.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.ts > CACHE_TTL) {
+    _cache.delete(key);
+    return null;
+  }
+  return entry;
+}
+
 const fetchApi = async (endpoint, options = {}) => {
   const url = `${API_URL}${endpoint}`;
+  const method = (options.method || 'GET').toUpperCase();
   const token = getAuthToken();
+
+  // Cache GET requests (use endpoint as key)
+  if (method === 'GET') {
+    const cached = getCached(endpoint);
+    if (cached) {
+      // Return cached data immediately, revalidate in background
+      if (Date.now() - cached.ts > 60_000) {
+        // Stale (>1min): revalidate silently in the background
+        fetchApi._revalidate(endpoint, options);
+      }
+      return cached.data;
+    }
+  }
 
   const headers = {
     'Content-Type': 'application/json',
@@ -29,11 +57,42 @@ const fetchApi = async (endpoint, options = {}) => {
       throw new Error(error.detail || error.message || `API error: ${response.status}`);
     }
 
-    return await response.json();
+    const data = await response.json();
+
+    // Cache successful GET responses
+    if (method === 'GET') {
+      _cache.set(endpoint, { data, ts: Date.now() });
+    }
+
+    return data;
   } catch (error) {
+    // On network error for GET, return stale cache if available
+    if (method === 'GET') {
+      const stale = _cache.get(endpoint);
+      if (stale) return stale.data;
+    }
     console.error('API Error:', error);
     throw error;
   }
+};
+
+// Background revalidation — updates cache without blocking UI
+fetchApi._revalidate = (endpoint, options = {}) => {
+  const url = `${API_URL}${endpoint}`;
+  const token = getAuthToken();
+  const headers = { 'Content-Type': 'application/json', ...options.headers };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  fetch(url, { ...options, headers })
+    .then((res) => res.ok ? res.json() : null)
+    .then((data) => { if (data) _cache.set(endpoint, { data, ts: Date.now() }); })
+    .catch(() => {});
+};
+
+// Invalidate cache for a specific endpoint or all
+fetchApi.invalidate = (endpoint) => {
+  if (endpoint) _cache.delete(endpoint);
+  else _cache.clear();
 };
 
 // ─── Auth API ───────────────────────────────────────────────

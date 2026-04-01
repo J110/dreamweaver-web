@@ -61,6 +61,10 @@ export default function HomeApp() {
   }, [lang]);
 
   const loadStories = async () => {
+    // Show seed data instantly so the page isn't blank while API loads
+    if (stories.length === 0) {
+      setStories(getStories(lang));
+    }
     setLoading(true);
     try {
       const data = await trendingApi.getTrending(200, lang);
