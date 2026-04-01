@@ -1207,7 +1207,7 @@ export default function PlayerPage() {
             <div className={styles.aboutDetails}>
               <span>
                 {content.story_type && {'folk_tale':'Folk Tale','mythological':'Mythological','fable':'Fable','nature':'Nature Story','slice_of_life':'Slice of Life','dream':'Dream'}[content.story_type] || (content.type === 'long_story' ? 'Long Story' : content.type === 'song' ? 'Lullaby' : content.type === 'poem' ? 'Poem' : 'Story')}
-                {' · ~'}{content.duration || '?'}{' min'}
+                {' · ~'}{content.duration || (content.duration_seconds ? Math.max(1, Math.round(content.duration_seconds / 60)) : '?')}{' min'}
               </span>
               <span>
                 Best for ages {content.age_min || content.target_age || '?'}-{content.age_max || ((content.target_age || 0) + 3) || '?'}
