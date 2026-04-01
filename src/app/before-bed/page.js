@@ -265,14 +265,22 @@ function BeforeBedContent() {
                     )}
                     {short.cover_file ? (
                       <div className={styles.cardCover}>
-                        <object
-                          data={`/covers/funny-shorts/${short.cover_file}`}
-                          type="image/svg+xml"
-                          className={styles.cardCoverImg}
-                          aria-label={short.title}
-                        >
-                          <div className={styles.cardEmojis}>{getVoiceEmojis(short.voices)}</div>
-                        </object>
+                        {short.cover_file.endsWith('.svg') ? (
+                          <object
+                            data={`/covers/funny-shorts/${short.cover_file}`}
+                            type="image/svg+xml"
+                            className={styles.cardCoverImg}
+                            aria-label={short.title}
+                          >
+                            <div className={styles.cardEmojis}>{getVoiceEmojis(short.voices)}</div>
+                          </object>
+                        ) : (
+                          <img
+                            src={`/covers/funny-shorts/${short.cover_file}`}
+                            className={styles.cardCoverImg}
+                            alt={short.title}
+                          />
+                        )}
                       </div>
                     ) : (
                       <div className={styles.cardEmojis}>{getVoiceEmojis(short.voices)}</div>
