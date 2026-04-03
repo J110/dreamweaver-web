@@ -23,12 +23,6 @@ const FALLBACK_PREVIEWS = [
     audioUrl: '/audio/pre-gen/7fe248e1_female_1.mp3',
   },
   {
-    title: 'Twinkle Dream',
-    type: 'poem',
-    cover: '/covers/twinkle-dream.svg',
-    audioUrl: '/audio/pre-gen/c8796852_female_1.mp3',
-  },
-  {
     title: 'Sailing to Dreamland',
     type: 'song',
     cover: '/covers/sailing-dreamland.svg',
@@ -92,7 +86,7 @@ export default function LandingPage() {
   useEffect(() => {
     async function fetchPreviews() {
       try {
-        const types = ['story', 'poem', 'song'];
+        const types = ['story', 'song'];
         const results = await Promise.all(
           types.map(async (type) => {
             const res = await fetch(

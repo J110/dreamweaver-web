@@ -147,7 +147,6 @@ export default function HomeApp() {
 
   const storyItems = sortByDiscovery(filteredStories.filter((s) => s.type === 'story'));
   const longStoryItems = sortByDiscovery(filteredStories.filter((s) => s.type === 'long_story'));
-  const poemItems = sortByDiscovery(filteredStories.filter((s) => s.type === 'poem'));
   const songItems = sortByDiscovery(filteredStories.filter((s) => s.type === 'song'));
 
   const appName = lang === 'hi' ? 'Sapno ki Duniya' : 'Dream Valley';
@@ -261,21 +260,6 @@ export default function HomeApp() {
                 </h2>
                 <div className={styles.horizontalScroll}>
                   {longStoryItems.map((item) => (
-                    <div key={item.id} className={styles.cardWrapper}>
-                      <ContentCard content={item} />
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {poemItems.length > 0 && (
-              <section className={styles.section}>
-                <h2 className={styles.sectionTitle}>
-                  {lang === 'hi' ? '📝 Kavitayein' : '📝 Poems'}
-                </h2>
-                <div className={styles.horizontalScroll}>
-                  {poemItems.map((item) => (
                     <div key={item.id} className={styles.cardWrapper}>
                       <ContentCard content={item} />
                     </div>

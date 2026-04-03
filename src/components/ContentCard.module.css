@@ -125,10 +125,6 @@
   background: linear-gradient(135deg, rgba(107, 76, 230, 0.4), rgba(255, 107, 157, 0.3));
 }
 
-.cardPoemGradient {
-  background: linear-gradient(135deg, rgba(255, 107, 157, 0.4), rgba(255, 217, 61, 0.3));
-}
-
 .cardSongGradient {
   background: linear-gradient(135deg, rgba(78, 205, 196, 0.4), rgba(107, 76, 230, 0.3));
 }

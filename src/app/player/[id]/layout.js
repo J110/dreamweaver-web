@@ -4,7 +4,6 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.dreamvalley.app'
 
 function getStoryTypeLabel(type) {
   switch (type) {
-    case 'poem': return 'Poem';
     case 'song': return 'Lullaby';
     case 'long_story': return 'Long Story';
     default: return 'Story';

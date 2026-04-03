@@ -58,7 +58,7 @@ export default async function Image({ params }) {
   }
 
   const title = story?.title || 'A Magical Bedtime Story';
-  const storyType = story?.type === 'poem' ? 'POEM' : story?.type === 'song' ? 'LULLABY' : story?.type === 'long_story' ? 'LONG STORY' : 'STORY';
+  const storyType = story?.type === 'song' ? 'LULLABY' : story?.type === 'long_story' ? 'LONG STORY' : 'STORY';
 
   return new ImageResponse(
     (

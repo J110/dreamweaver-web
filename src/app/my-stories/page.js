@@ -115,7 +115,6 @@ export default function MyStoriesPage() {
               {[
                 { id: 'all', label: lang === 'hi' ? 'Sabhi' : 'All' },
                 { id: 'story', label: lang === 'hi' ? 'Kahaniyan' : 'Short Stories' },
-                { id: 'poem', label: lang === 'hi' ? 'Kavitayein' : 'Poems' },
                 { id: 'song', label: lang === 'hi' ? 'Loriyaan' : 'Lullabies' },
               ].map((type) => (
                 <button key={type.id} onClick={() => setFilterType(type.id)}
@@ -167,7 +166,6 @@ export default function MyStoriesPage() {
               <div className={styles.prefOptions}>
                 {[
                   { id: 'story', icon: '✨', en: 'Short Stories', hi: 'Kahaniyan' },
-                  { id: 'poem', icon: '📖', en: 'Poems', hi: 'Kavitayein' },
                   { id: 'song', icon: '🎵', en: 'Lullabies', hi: 'Loriyaan' },
                 ].map((type) => (
                   <button key={type.id} onClick={() => setPrefContentType(type.id)}

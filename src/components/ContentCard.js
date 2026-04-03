@@ -52,8 +52,6 @@ export default function ContentCard({ content, onClick }) {
   };
   const getTypeColor = (type) => {
     switch (type?.toLowerCase()) {
-      case 'poem':
-        return styles.cardPoemGradient;
       case 'song':
         return styles.cardSongGradient;
       case 'story':
@@ -64,8 +62,6 @@ export default function ContentCard({ content, onClick }) {
 
   const getTypeBadge = (type) => {
     switch (type?.toLowerCase()) {
-      case 'poem':
-        return 'badge-poem';
       case 'song':
         return 'badge-song';
       case 'long_story':
@@ -130,7 +126,6 @@ export default function ContentCard({ content, onClick }) {
           )
         ) : (
           <div className={styles.cardIcon}>
-            {content.type?.toLowerCase() === 'poem' && '📖'}
             {content.type?.toLowerCase() === 'song' && '🎵'}
             {content.type?.toLowerCase() === 'story' && '✨'}
           </div>
@@ -156,7 +151,6 @@ export default function ContentCard({ content, onClick }) {
               : content.type?.toLowerCase() === 'long_story' ? 'Long Story'
               : content.type?.toLowerCase() === 'story' ? 'Story'
               : content.type?.toLowerCase() === 'song' ? 'Lullaby'
-              : content.type?.toLowerCase() === 'poem' ? 'Poem'
               : content.type || 'Story'}
           </span>
         </div>
