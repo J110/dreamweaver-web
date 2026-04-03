@@ -300,6 +300,34 @@ export const sillySongsApi = {
   },
 };
 
+// ─── Poems API ──────────────────────────────────────────────
+// Backend: /api/v1/poems
+
+export const poemsApi = {
+  list: async (ageGroup = '6-8') => {
+    const params = new URLSearchParams({ age_group: ageGroup });
+    const res = await fetchApi(`/api/v1/poems?${params.toString()}`, {
+      method: 'GET',
+    });
+    return res.data?.items || [];
+  },
+
+  getById: async (id) => {
+    const res = await fetchApi(`/api/v1/poems/${id}`, {
+      method: 'GET',
+    });
+    return res.data || {};
+  },
+
+  play: async (id) => {
+    return fetchApi(`/api/v1/poems/${id}/play`, { method: 'POST' }).catch(() => {});
+  },
+
+  replay: async (id) => {
+    return fetchApi(`/api/v1/poems/${id}/replay`, { method: 'POST' }).catch(() => {});
+  },
+};
+
 // ─── Lullabies API ───────────────────────────────────────────
 // Backend: /api/v1/lullabies
 

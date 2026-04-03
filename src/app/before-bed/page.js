@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react';
 import StarField from '@/components/StarField';
-import { funnyShortsApi, sillySongsApi } from '@/utils/api';
+import { funnyShortsApi, sillySongsApi, poemsApi } from '@/utils/api';
 import { useI18n } from '@/utils/i18n';
 import styles from './page.module.css';
 
@@ -37,9 +37,10 @@ function BeforeBedContent() {
   const { t } = useI18n();
   const [shorts, setShorts] = useState([]);
   const [songs, setSongs] = useState([]);
+  const [poems, setPoems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [playingId, setPlayingId] = useState(null);
-  const [playingType, setPlayingType] = useState(null); // 'short' or 'song'
+  const [playingType, setPlayingType] = useState(null); // 'short', 'song', or 'poem'
   const [progress, setProgress] = useState(0);
   const [ageGroup, setAgeGroup] = useState(null);
   const audioRef = useRef(null);
@@ -61,16 +62,19 @@ function BeforeBedContent() {
   const loadContent = useCallback(async (group) => {
     setLoading(true);
     try {
-      const [shortsResult, songsResult] = await Promise.all([
+      const [shortsResult, songsResult, poemsResult] = await Promise.all([
         funnyShortsApi.list(group).catch(() => []),
         sillySongsApi.list(group).catch(() => []),
+        poemsApi.list(group).catch(() => []),
       ]);
       setShorts(shortsResult);
       setSongs(songsResult);
+      setPoems(poemsResult);
     } catch (err) {
       console.error('Failed to load before bed content:', err);
       setShorts([]);
       setSongs([]);
+      setPoems([]);
     } finally {
       setLoading(false);
     }
@@ -201,6 +205,59 @@ function BeforeBedContent() {
     });
   }, [playingId]);
 
+  const handlePlayPoem = useCallback((poem) => {
+    if (!poem.audio_file) return;
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+    if (playingId === poem.id && audioRef.current) {
+      if (audioRef.current.paused) {
+        audioRef.current.play();
+      } else {
+        audioRef.current.pause();
+      }
+      return;
+    }
+
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+
+    const audio = new Audio(`${API_URL}/audio/poems/${poem.audio_file}`);
+    audioRef.current = audio;
+    setPlayingId(poem.id);
+    setPlayingType('poem');
+    setProgress(0);
+
+    const isReplay = sessionPlayed.current.has(poem.id);
+    if (isReplay) {
+      poemsApi.replay(poem.id).catch(() => {});
+    } else {
+      poemsApi.play(poem.id).catch(() => {});
+      sessionPlayed.current.add(poem.id);
+    }
+
+    audio.addEventListener('timeupdate', () => {
+      if (audio.duration) {
+        setProgress((audio.currentTime / audio.duration) * 100);
+      }
+    });
+    audio.addEventListener('ended', () => {
+      setPlayingId(null);
+      setPlayingType(null);
+      setProgress(0);
+    });
+    audio.addEventListener('error', () => {
+      setPlayingId(null);
+      setPlayingType(null);
+      setProgress(0);
+    });
+    audio.play().catch(() => {
+      setPlayingId(null);
+      setPlayingType(null);
+    });
+  }, [playingId]);
+
   const handleStop = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.pause();
@@ -222,7 +279,8 @@ function BeforeBedContent() {
 
   const playingShort = shorts.find((s) => s.id === playingId);
   const playingSong = songs.find((s) => s.id === playingId);
-  const playingItem = playingShort || playingSong;
+  const playingPoem = poems.find((p) => p.id === playingId);
+  const playingItem = playingShort || playingSong || playingPoem;
 
   return (
     <div className={styles.app}>
@@ -351,7 +409,65 @@ function BeforeBedContent() {
             </section>
           )}
 
-          {shorts.length === 0 && songs.length === 0 && (
+          {/* Musical Poems Section */}
+          {poems.length > 0 && (
+            <section className={styles.section}>
+              <h2 className={styles.sectionTitle}>✨ Musical Poems</h2>
+              <div className={styles.horizontalScroll}>
+                {poems.map((poem) => (
+                  <div key={poem.id} className={styles.cardWrapper}>
+                    <div
+                      className={`${styles.card} ${playingId === poem.id ? styles.cardPlaying : ''}`}
+                      onClick={() => handlePlayPoem(poem)}
+                    >
+                      {isAddedToday(poem.created_at) && (
+                        <span className={styles.newBadge}>NEW</span>
+                      )}
+                      {poem.cover_file ? (
+                        <div className={styles.cardCover}>
+                          {poem.cover_file.endsWith('.svg') ? (
+                            <object
+                              data={`/covers/poems/${poem.cover_file}`}
+                              type="image/svg+xml"
+                              className={styles.cardCoverImg}
+                              aria-label={poem.title}
+                            >
+                              <div className={styles.cardEmojis}>✨</div>
+                            </object>
+                          ) : (
+                            <img
+                              src={`/covers/poems/${poem.cover_file}`}
+                              className={styles.cardCoverImg}
+                              alt={poem.title}
+                            />
+                          )}
+                        </div>
+                      ) : (
+                        <div className={styles.cardEmojis}>✨</div>
+                      )}
+                      <div className={styles.cardTitle}>{poem.title}</div>
+                      <div className={styles.cardMeta}>
+                        <span className={styles.cardDuration}>
+                          {formatDuration(poem.duration_seconds)}
+                        </span>
+                        <button
+                          className={styles.playBtn}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handlePlayPoem(poem);
+                          }}
+                        >
+                          {playingId === poem.id ? '⏸' : '▶'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {shorts.length === 0 && songs.length === 0 && poems.length === 0 && (
             <div className={styles.emptyMsg}>
               <div className={styles.emptyIcon}>🌙</div>
               <p>{t('beforeBedEmpty')}</p>
@@ -365,7 +481,7 @@ function BeforeBedContent() {
         <div className={styles.miniPlayer}>
           <div className={styles.miniPlayerInner}>
             <span className={styles.miniPlayerEmoji}>
-              {playingType === 'song' ? '🎵' : getVoiceEmojis(playingItem.voices)}
+              {playingType === 'poem' ? '✨' : playingType === 'song' ? '🎵' : getVoiceEmojis(playingItem.voices)}
             </span>
             <span className={styles.miniPlayerTitle}>{playingItem.title}</span>
             <button className={styles.miniPlayerBtn} onClick={handleStop}>
