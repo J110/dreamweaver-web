@@ -342,13 +342,11 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <div className={styles.voiceGroup}>
-                  <div className={styles.voiceGroupLabel}>Lullaby instruments</div>
+                  <div className={styles.voiceGroupLabel}>Original music</div>
                   <div className={styles.voiceCards}>
-                    <div className={styles.voiceCard}><span>🎵</span> Harp</div>
-                    <div className={styles.voiceCard}><span>🎸</span> Guitar</div>
-                    <div className={styles.voiceCard}><span>🎹</span> Piano</div>
-                    <div className={styles.voiceCard}><span>🎻</span> Cello</div>
-                    <div className={styles.voiceCard}><span>🪈</span> Flute</div>
+                    <div className={styles.voiceCard}><span>🎵</span> Lullabies</div>
+                    <div className={styles.voiceCard}><span>🌙</span> Ambient</div>
+                    <div className={styles.voiceCard}><span>🎶</span> Soundscapes</div>
                   </div>
                 </div>
               </div>
@@ -357,8 +355,9 @@ export default function LandingPage() {
               <h3 className={styles.pillarTitle}>Six voices. Original music. Living art.</h3>
               <p className={styles.pillarText}>
                 Pick from six narration voices — from calm whispers to melodic tones.
-                Lullabies come with their own instrument themes: harp, guitar, piano, cello, or flute.
-                Every story has its own original ambient music. And each cover is a living scene —
+                Every lullaby is an original song with real vocals and instrumentation.
+                Every story has its own ambient music that fades as your child drifts off.
+                And each cover is a living scene —
                 water flows, fireflies glow, clouds drift — bringing your child into the story world.
               </p>
             </div>
