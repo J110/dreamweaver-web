@@ -481,45 +481,28 @@ export default function LandingPage() {
           <div className={styles.scienceGrid}>
             <div className={styles.scienceCard}>
               <div className={styles.scienceIcon}>🎯</div>
-              <h3>Starts where your child is</h3>
+              <h3>Matches your child&apos;s energy</h3>
               <p>
-                Our stories begin warm and engaging — matching your child&apos;s current energy.
-                We don&apos;t start with whispers. We start with wonder.
-                This is called arousal matching, and it&apos;s why your child actually pays attention
-                instead of fighting the calm.
-              </p>
-            </div>
-            <div className={styles.scienceCard}>
-              <div className={styles.scienceIcon}>🌙</div>
-              <h3>Guides them down naturally</h3>
-              <p>
-                As the story progresses, everything slows together. The narration pace drops.
-                The music tempo eases. The animated cover dims and stills.
-                Your child doesn&apos;t decide to get sleepy — the story takes them there,
-                the way a car ride does.
+                Stories start engaging — matching your child&apos;s current mood.
+                Then gradually slow the narration, dim the visuals, and quiet the music,
+                guiding them naturally toward sleep.
               </p>
             </div>
             <div className={styles.scienceCard}>
               <div className={styles.scienceIcon}>✨</div>
-              <h3>Uses every sense</h3>
+              <h3>Every sense works together</h3>
               <p>
-                Warm-spectrum visuals protect melatonin production.
-                Breathing-rate music encourages slower respiration.
-                Gradually dimming art signals the brain that it&apos;s time for sleep.
-                Every element — visual, auditory, narrative — moves in the same direction: toward rest.
+                Warm-spectrum visuals protect melatonin. Breathing-rate music slows respiration.
+                Dimming art signals bedtime. Voice, music, and visuals all move toward rest.
               </p>
             </div>
             <div className={styles.scienceCard}>
               <div className={styles.scienceIcon}>😌</div>
-              <h3>Meets your child where they are</h3>
+              <h3>Tuned to how they feel</h3>
               <p>
-                A hyper child and a worried child need different stories.
-                Every Dream Valley story is tuned to a specific mood —
-                matching your child&apos;s emotional state before guiding them toward sleep.
-                This isn&apos;t new — lullabies across cultures have always done this,
-                from Mesopotamian protection chants for anxious babies
-                to nonsense-syllable songs for restless toddlers.
-                We&apos;re just doing it with precision.
+                A wired child needs a different story than an anxious one.
+                Every story is matched to a specific mood — calming your child
+                from wherever they are right now.
               </p>
             </div>
           </div>
@@ -613,6 +596,11 @@ export default function LandingPage() {
               <h3>Lullabies</h3>
               <p>Original musical pieces with sleep-safe melodies. Perfect for winding down the last few minutes.</p>
             </div>
+            <Link href="/before-bed" className={styles.exploreCard}>
+              <div className={styles.exploreIcon}>🌛</div>
+              <h3>Before Bed</h3>
+              <p>Funny shorts, silly songs, and musical poems. A wind-down ritual before the bedtime story.</p>
+            </Link>
           </div>
           <h3 className={styles.exploreSubtitle}>Tuned to your child&apos;s mood</h3>
           <p className={styles.moodExplainer}>
