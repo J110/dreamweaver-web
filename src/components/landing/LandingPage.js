@@ -35,7 +35,7 @@ const TYPE_ICONS = { story: '📖', song: '🎵', long_story: '📖' };
 
 /* ─── Featured FLUX covers for the landing page ─── */
 const FEATURED_COVERS = [
-  '/covers/blanket-stars.svg',
+  '/covers/gen-31f50f685a68.svg',
   '/covers/gen-6e675d15e1f5.svg',
   '/covers/gen-586908c26fc2.svg',
   '/covers/gen-146a4028274a.svg',
