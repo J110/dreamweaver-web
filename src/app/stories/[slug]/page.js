@@ -51,7 +51,7 @@ export async function generateMetadata({ params }) {
     return { title: 'Story Not Found | Dream Valley' };
   }
 
-  const typeLabel = { story: 'Story', poem: 'Poem', song: 'Lullaby', long_story: 'Long Story' }[story.type] || 'Story';
+  const typeLabel = { story: 'Story', song: 'Lullaby', long_story: 'Long Story' }[story.type] || 'Story';
   const ageLabel = story.age_group || (story.target_age <= 1 ? '0-1' : story.target_age <= 5 ? '2-5' : story.target_age <= 8 ? '6-8' : '9-12');
 
   const title = `${story.title} — Bedtime ${typeLabel} for Ages ${ageLabel} | Dream Valley`;
@@ -97,7 +97,7 @@ export default async function StoryPage({ params }) {
   }
 
   const related = await getRelatedStories(story);
-  const typeLabel = { story: 'Story', poem: 'Poem', song: 'Lullaby', long_story: 'Long Story' }[story.type] || 'Story';
+  const typeLabel = { story: 'Story', song: 'Lullaby', long_story: 'Long Story' }[story.type] || 'Story';
   const ageLabel = story.age_group || (story.target_age <= 1 ? '0-1' : story.target_age <= 5 ? '2-5' : story.target_age <= 8 ? '6-8' : '9-12');
   const duration = story.duration || (story.audio_variants?.[0]?.duration_seconds ? Math.round(story.audio_variants[0].duration_seconds / 60) : null);
   const categories = story.categories || [];

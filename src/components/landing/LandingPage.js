@@ -30,14 +30,14 @@ const FALLBACK_PREVIEWS = [
   },
 ];
 
-const TYPE_LABELS = { story: 'Story', poem: 'Poem', song: 'Lullaby', long_story: 'Story' };
-const TYPE_ICONS = { story: '📖', poem: '📝', song: '🎵', long_story: '📖' };
+const TYPE_LABELS = { story: 'Story', song: 'Lullaby', long_story: 'Story' };
+const TYPE_ICONS = { story: '📖', song: '🎵', long_story: '📖' };
 
 /* ─── Featured FLUX covers for the landing page ─── */
 const FEATURED_COVERS = [
-  '/covers/gen-638cb2facd22.svg',
+  '/covers/gen-3de58fd2aa2d.svg',
   '/covers/gen-6e675d15e1f5.svg',
-  '/covers/gen-e77b10c51e8f.svg',
+  '/covers/gen-586908c26fc2.svg',
   '/covers/gen-146a4028274a.svg',
   '/covers/gen-b5438a861ba4.svg',
   '/covers/gen-292e9eadf56e.svg',
@@ -356,7 +356,7 @@ export default function LandingPage() {
             <div className={styles.pillarContent}>
               <h3 className={styles.pillarTitle}>Six voices. Original music. Living art.</h3>
               <p className={styles.pillarText}>
-                Pick from six narration voices for stories and poems — from calm whispers to melodic tones.
+                Pick from six narration voices — from calm whispers to melodic tones.
                 Lullabies come with their own instrument themes: harp, guitar, piano, cello, or flute.
                 Every story has its own original ambient music. And each cover is a living scene —
                 water flows, fireflies glow, clouds drift — bringing your child into the story world.
@@ -405,7 +405,7 @@ export default function LandingPage() {
       <section className={styles.experience} ref={previewRef}>
         <div className={styles.sectionInner}>
           <h2 className={styles.sectionTitle}>Listen now — no signup needed</h2>
-          <p className={styles.sectionSubtitle}>A story, a poem, and a lullaby. Just press play.</p>
+          <p className={styles.sectionSubtitle}>A story and a lullaby. Just press play.</p>
           <div className={styles.previewGrid}>
             {previews.map((preview, idx) => (
               <div key={idx} className={styles.previewCard}>
@@ -608,11 +608,6 @@ export default function LandingPage() {
               <div className={styles.exploreIcon}>🌙</div>
               <h3>Long Stories</h3>
               <p>Extended narratives for deeper immersion. Three-phase sleep journeys with rich worlds and characters.</p>
-            </div>
-            <div className={styles.exploreCard}>
-              <div className={styles.exploreIcon}>📝</div>
-              <h3>Poems</h3>
-              <p>Rhythmic, gentle verse that naturally slows breathing through cadence and repetition.</p>
             </div>
             <div className={styles.exploreCard}>
               <div className={styles.exploreIcon}>🎵</div>
