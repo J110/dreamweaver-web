@@ -600,7 +600,7 @@ export const SEED_STORIES = {
       story_type: "folk_tale",
       title: "Chai’s Moonlit Steam Song",
       description: "A tiny porcelain teacup named Chai hums a gentle lullaby as moonlight dances through the kitchen, discovering the warmth of family and the quiet magic of night.",
-      cover: "/covers/chai-s-moonlit-steam-song.svg",
+      cover: "/covers/gen-8ea1861bffab.svg",
       addedAt: "2026-02-25",
       mood: "calm",
       text: "[GENTLE] Hush, hush, little Chai. \nMoon glows soft, night is near. \nMama pours warm, steam swirls high. \nChai sings low, sweet and clear.\n\n[CALM] Shh, shh, steam whispers back. \nPapa’s hands hold, safe and tight. \nMoonlight spills on wooden floor. \nAll is still, all is bright.\n\n[SLEEPY] Hush now, Chai, rest your rim. \nDreams will come on silver beams. \nFamily hums, the night sings too. \nSleep, little cup, in moonlit dreams.",

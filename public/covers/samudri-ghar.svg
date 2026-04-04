@@ -1,0 +1,651 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background ocean gradient (deep to shallow underwater) -->
+    <linearGradient id="sg-skyGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a2040"/>
+      <stop offset="40%" stop-color="#1a3a5a"/>
+      <stop offset="75%" stop-color="#2a4a6a"/>
+      <stop offset="100%" stop-color="#1e3850"/>
+    </linearGradient>
+
+    <!-- Sand floor gradient -->
+    <linearGradient id="sg-sandGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d4c4a0"/>
+      <stop offset="100%" stop-color="#c4b490"/>
+    </linearGradient>
+
+    <!-- Light ray gradient from surface -->
+    <linearGradient id="sg-lightRay" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#88ccff" stop-opacity="0.15"/>
+      <stop offset="50%" stop-color="#aaddff" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#88ccff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Crab body gradient -->
+    <radialGradient id="sg-crabBody" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#ff8c42"/>
+      <stop offset="60%" stop-color="#ff6b35"/>
+      <stop offset="100%" stop-color="#cc5522"/>
+    </radialGradient>
+
+    <!-- Shell on crab gradient -->
+    <radialGradient id="sg-crabShell" cx="40%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#e8c4a0"/>
+      <stop offset="50%" stop-color="#d4a87a"/>
+      <stop offset="100%" stop-color="#b08860"/>
+    </radialGradient>
+
+    <!-- Character glow -->
+    <radialGradient id="sg-charGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffaa44" stop-opacity="0.4"/>
+      <stop offset="50%" stop-color="#ffaa44" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#ffaa44" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Shell sparkle gradient -->
+    <radialGradient id="sg-shellSparkle" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Coral glow -->
+    <radialGradient id="sg-coralGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff6b8a" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#ff6b8a" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Vignette gradient -->
+    <radialGradient id="sg-vignette">
+      <stop offset="45%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.55"/>
+    </radialGradient>
+
+    <!-- Fish gradient -->
+    <linearGradient id="sg-fishGradient1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#88ccff"/>
+      <stop offset="100%" stop-color="#55aadd"/>
+    </linearGradient>
+    <linearGradient id="sg-fishGradient2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ff9ec4"/>
+      <stop offset="100%" stop-color="#ff6b8a"/>
+    </linearGradient>
+
+    <!-- Soft glow -->
+    <filter id="sg-softGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Medium glow -->
+    <filter id="sg-mediumGlow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Strong glow -->
+    <filter id="sg-strongGlow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Drop shadow -->
+    <filter id="sg-shadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+      <feOffset in="blur" dy="2" result="offset"/>
+      <feMerge>
+        <feMergeNode in="offset"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    /* === ANIMATION KEYFRAMES === */
+
+    /* 1. Hermit crab scuttle/bob (3.5s) */
+    @keyframes sg-crabBob {
+      0%, 100% { transform: translateY(0) translateX(0); }
+      25% { transform: translateY(-4px) translateX(2px); }
+      50% { transform: translateY(-6px) translateX(0); }
+      75% { transform: translateY(-3px) translateX(-2px); }
+    }
+
+    /* 2. Seaweed sway (5-7s) */
+    @keyframes sg-seaweedSway1 {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(3deg); }
+    }
+    @keyframes sg-seaweedSway2 {
+      0%, 100% { transform: rotate(2deg); }
+      50% { transform: rotate(-4deg); }
+    }
+
+    /* 3. Bubble float up (6-8s staggered) */
+    @keyframes sg-bubbleFloat1 {
+      0% { transform: translateY(0) translateX(0); opacity: 0.5; }
+      40% { transform: translateY(-130px) translateX(10px); opacity: 0.4; }
+      100% { transform: translateY(-280px) translateX(-5px); opacity: 0; }
+    }
+    @keyframes sg-bubbleFloat2 {
+      0% { transform: translateY(0) translateX(0); opacity: 0.45; }
+      40% { transform: translateY(-110px) translateX(-8px); opacity: 0.35; }
+      100% { transform: translateY(-260px) translateX(6px); opacity: 0; }
+    }
+    @keyframes sg-bubbleFloat3 {
+      0% { transform: translateY(0) translateX(0); opacity: 0.55; }
+      40% { transform: translateY(-140px) translateX(6px); opacity: 0.3; }
+      100% { transform: translateY(-300px) translateX(-10px); opacity: 0; }
+    }
+
+    /* 4. Light ray shimmer from surface (8s) */
+    @keyframes sg-lightShimmer {
+      0%, 100% { opacity: 0.06; }
+      30% { opacity: 0.14; }
+      60% { opacity: 0.08; }
+      80% { opacity: 0.16; }
+    }
+
+    /* 5. Small fish dart (10-12s) */
+    @keyframes sg-fishDart1 {
+      0% { transform: translateX(0) translateY(0); }
+      15% { transform: translateX(25px) translateY(-8px); }
+      30% { transform: translateX(50px) translateY(-3px); }
+      50% { transform: translateX(30px) translateY(5px); }
+      70% { transform: translateX(10px) translateY(8px); }
+      85% { transform: translateX(-10px) translateY(3px); }
+      100% { transform: translateX(0) translateY(0); }
+    }
+    @keyframes sg-fishDart2 {
+      0% { transform: translateX(0) translateY(0); }
+      20% { transform: translateX(-20px) translateY(6px); }
+      45% { transform: translateX(-40px) translateY(-4px); }
+      65% { transform: translateX(-20px) translateY(3px); }
+      100% { transform: translateX(0) translateY(0); }
+    }
+
+    /* 6. Shell sparkle (2.5s) */
+    @keyframes sg-shellSparkle {
+      0%, 100% { opacity: 0.15; transform: scale(0.7); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+
+    /* 7. Crab eye blink */
+    @keyframes sg-eyeBlink {
+      0%, 42%, 48%, 100% { transform: scaleY(1); }
+      45% { transform: scaleY(0.05); }
+    }
+
+    /* 8. Claw pinch */
+    @keyframes sg-clawPinch {
+      0%, 70%, 80%, 100% { transform: rotate(0deg); }
+      75% { transform: rotate(-8deg); }
+    }
+
+    /* 9. Coral pulse glow */
+    @keyframes sg-coralPulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.8; }
+    }
+
+    /* 10. Sand particle drift */
+    @keyframes sg-sandDrift {
+      0%, 100% { transform: translateX(0); opacity: 0.3; }
+      50% { transform: translateX(8px); opacity: 0.5; }
+    }
+
+    /* === ANIMATION ASSIGNMENTS === */
+
+    .sg-crab-group {
+      animation: sg-crabBob 3.5s ease-in-out infinite;
+    }
+
+    .sg-seaweed-1 {
+      transform-origin: 60px 420px;
+      animation: sg-seaweedSway1 5.5s ease-in-out infinite;
+    }
+    .sg-seaweed-2 {
+      transform-origin: 95px 430px;
+      animation: sg-seaweedSway2 6.2s ease-in-out 0.5s infinite;
+    }
+    .sg-seaweed-3 {
+      transform-origin: 430px 415px;
+      animation: sg-seaweedSway1 5.8s ease-in-out 1s infinite;
+    }
+    .sg-seaweed-4 {
+      transform-origin: 465px 425px;
+      animation: sg-seaweedSway2 6.8s ease-in-out 0.3s infinite;
+    }
+    .sg-seaweed-5 {
+      transform-origin: 360px 430px;
+      animation: sg-seaweedSway1 7s ease-in-out 0.7s infinite;
+    }
+
+    .sg-bubble-1 { animation: sg-bubbleFloat1 7s ease-in-out infinite; }
+    .sg-bubble-2 { animation: sg-bubbleFloat2 6.5s ease-in-out 1.5s infinite; }
+    .sg-bubble-3 { animation: sg-bubbleFloat3 8s ease-in-out 0.8s infinite; }
+    .sg-bubble-4 { animation: sg-bubbleFloat1 7.5s ease-in-out 2.5s infinite; }
+    .sg-bubble-5 { animation: sg-bubbleFloat2 6s ease-in-out 3.5s infinite; }
+    .sg-bubble-6 { animation: sg-bubbleFloat3 7.2s ease-in-out 4s infinite; }
+    .sg-bubble-7 { animation: sg-bubbleFloat1 8s ease-in-out 1s infinite; }
+    .sg-bubble-8 { animation: sg-bubbleFloat2 6.8s ease-in-out 5s infinite; }
+
+    .sg-light-ray-1 { animation: sg-lightShimmer 8s ease-in-out infinite; }
+    .sg-light-ray-2 { animation: sg-lightShimmer 8s ease-in-out 2s infinite; }
+    .sg-light-ray-3 { animation: sg-lightShimmer 8s ease-in-out 4s infinite; }
+    .sg-light-ray-4 { animation: sg-lightShimmer 8s ease-in-out 6s infinite; }
+
+    .sg-fish-1 { animation: sg-fishDart1 11s ease-in-out infinite; }
+    .sg-fish-2 { animation: sg-fishDart2 10s ease-in-out 3s infinite; }
+    .sg-fish-3 { animation: sg-fishDart1 12s ease-in-out 5s infinite; }
+
+    .sg-sparkle-1 { animation: sg-shellSparkle 2.5s ease-in-out infinite; }
+    .sg-sparkle-2 { animation: sg-shellSparkle 2.3s ease-in-out 0.4s infinite; }
+    .sg-sparkle-3 { animation: sg-shellSparkle 2.7s ease-in-out 0.9s infinite; }
+    .sg-sparkle-4 { animation: sg-shellSparkle 2.4s ease-in-out 1.3s infinite; }
+    .sg-sparkle-5 { animation: sg-shellSparkle 2.6s ease-in-out 1.7s infinite; }
+    .sg-sparkle-6 { animation: sg-shellSparkle 2.2s ease-in-out 0.6s infinite; }
+
+    .sg-eyelid-left {
+      transform-origin: 240px 260px;
+      animation: sg-eyeBlink 5s ease-in-out infinite;
+    }
+    .sg-eyelid-right {
+      transform-origin: 260px 260px;
+      animation: sg-eyeBlink 5s ease-in-out infinite;
+    }
+
+    .sg-claw-left {
+      transform-origin: 218px 290px;
+      animation: sg-clawPinch 4s ease-in-out infinite;
+    }
+    .sg-claw-right {
+      transform-origin: 282px 290px;
+      animation: sg-clawPinch 4s ease-in-out 0.5s infinite;
+    }
+
+    .sg-coral-pulse-1 { animation: sg-coralPulse 2.8s ease-in-out infinite; }
+    .sg-coral-pulse-2 { animation: sg-coralPulse 3s ease-in-out 0.6s infinite; }
+    .sg-coral-pulse-3 { animation: sg-coralPulse 3.2s ease-in-out 1.2s infinite; }
+
+    .sg-sand-1 { animation: sg-sandDrift 5s ease-in-out infinite; }
+    .sg-sand-2 { animation: sg-sandDrift 6s ease-in-out 1s infinite; }
+  </style>
+
+  <!-- ============================================ -->
+  <!-- LAYER 1: Background — deep ocean gradient    -->
+  <!-- ============================================ -->
+  <rect width="512" height="512" fill="url(#sg-skyGradient)"/>
+
+  <!-- Subtle water color layers -->
+  <ellipse cx="256" cy="150" rx="320" ry="180" fill="#1a3a5a" opacity="0.2"/>
+  <ellipse cx="256" cy="380" rx="300" ry="160" fill="#2a4a6a" opacity="0.15"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 2: Far background — light rays, water  -->
+  <!-- ============================================ -->
+
+  <!-- Underwater light rays filtering from surface -->
+  <g class="sg-light-ray-1">
+    <polygon points="140,0 180,0 250,320 120,320" fill="url(#sg-lightRay)" opacity="0.1"/>
+  </g>
+  <g class="sg-light-ray-2">
+    <polygon points="260,0 300,0 350,300 220,300" fill="url(#sg-lightRay)" opacity="0.08"/>
+  </g>
+  <g class="sg-light-ray-3">
+    <polygon points="350,0 385,0 420,280 310,280" fill="url(#sg-lightRay)" opacity="0.07"/>
+  </g>
+  <g class="sg-light-ray-4">
+    <polygon points="70,0 100,0 140,260 50,260" fill="url(#sg-lightRay)" opacity="0.06"/>
+  </g>
+
+  <!-- Surface shimmer (very faint) -->
+  <ellipse cx="256" cy="8" rx="260" ry="25" fill="#88ccff" opacity="0.05"/>
+  <ellipse cx="200" cy="5" rx="120" ry="12" fill="#aaddff" opacity="0.04"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 3: Mid background — distant reef, far fish -->
+  <!-- ============================================ -->
+
+  <!-- Distant coral cluster (far left) -->
+  <g opacity="0.2">
+    <ellipse cx="30" cy="400" rx="22" ry="45" fill="#ff6b8a"/>
+    <ellipse cx="55" cy="395" rx="16" ry="35" fill="#ff9ec4"/>
+    <circle cx="25" cy="375" r="10" fill="#ff6b8a"/>
+    <circle cx="48" cy="372" r="8" fill="#ffaa44"/>
+  </g>
+
+  <!-- Distant coral cluster (far right) -->
+  <g opacity="0.18">
+    <ellipse cx="490" cy="405" rx="20" ry="40" fill="#ff9ec4"/>
+    <ellipse cx="475" cy="398" rx="14" ry="30" fill="#ff6b8a"/>
+    <circle cx="495" cy="380" r="8" fill="#ffaa44"/>
+  </g>
+
+  <!-- Far background tiny fish school -->
+  <g class="sg-fish-3" opacity="0.2">
+    <ellipse cx="400" cy="100" rx="6" ry="3" fill="#88ccff"/>
+    <polygon points="394,100 390,97 390,103" fill="#88ccff"/>
+    <ellipse cx="415" cy="105" rx="5" ry="2.5" fill="#88ccff"/>
+    <polygon points="410,105 407,103 407,107" fill="#88ccff"/>
+    <ellipse cx="405" cy="95" rx="4" ry="2" fill="#88ccff"/>
+    <polygon points="401,95 398,93 398,97" fill="#88ccff"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 4: Middle ground — ocean floor, coral, seaweed, shells, fish -->
+  <!-- ============================================ -->
+
+  <!-- Sandy ocean floor -->
+  <path d="M 0 420 Q 60 410 130 418 Q 200 425 256 415 Q 320 410 400 420 Q 460 425 512 418 L 512 512 L 0 512 Z" fill="url(#sg-sandGradient)"/>
+  <!-- Sand texture layer -->
+  <path d="M 0 430 Q 80 422 160 428 Q 260 435 350 425 Q 440 420 512 430 L 512 512 L 0 512 Z" fill="#e8d8c0" opacity="0.5"/>
+  <!-- Sand ripple details -->
+  <path d="M 20 450 Q 80 446 140 450 Q 200 454 260 449 Q 320 445 380 450 Q 440 454 500 449" stroke="#c4b490" stroke-width="0.8" fill="none" opacity="0.4"/>
+  <path d="M 10 470 Q 70 466 130 470 Q 190 474 250 469 Q 310 465 370 470 Q 430 474 490 469" stroke="#c4b490" stroke-width="0.7" fill="none" opacity="0.3"/>
+
+  <!-- Sand particles -->
+  <g class="sg-sand-1">
+    <circle cx="150" cy="445" r="1" fill="#e8d8c0" opacity="0.4"/>
+    <circle cx="280" cy="455" r="0.8" fill="#d4c4a0" opacity="0.35"/>
+    <circle cx="350" cy="440" r="1.2" fill="#e8d8c0" opacity="0.4"/>
+  </g>
+  <g class="sg-sand-2">
+    <circle cx="100" cy="460" r="0.9" fill="#e8d8c0" opacity="0.35"/>
+    <circle cx="420" cy="450" r="1.1" fill="#d4c4a0" opacity="0.4"/>
+  </g>
+
+  <!-- Left seaweed cluster -->
+  <g class="sg-seaweed-1">
+    <path d="M 60 420 Q 48 385 55 350 Q 62 325 50 300" stroke="#2d8a4a" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M 60 420 Q 68 390 62 360 Q 56 340 65 315" stroke="#3da05a" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <!-- Leaf shapes -->
+    <ellipse cx="52" cy="330" rx="10" ry="4" fill="#3da05a" opacity="0.7" transform="rotate(-20 52 330)"/>
+    <ellipse cx="63" cy="345" rx="8" ry="3.5" fill="#2d8a4a" opacity="0.6" transform="rotate(15 63 345)"/>
+  </g>
+  <g class="sg-seaweed-2">
+    <path d="M 95 430 Q 88 400 92 370 Q 96 345 85 320" stroke="#2d8a4a" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+    <path d="M 95 430 Q 100 395 95 365 Q 90 345 98 325" stroke="#3da05a" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <ellipse cx="87" cy="340" rx="8" ry="3" fill="#3da05a" opacity="0.6" transform="rotate(-25 87 340)"/>
+  </g>
+
+  <!-- Right seaweed cluster -->
+  <g class="sg-seaweed-3">
+    <path d="M 430 415 Q 440 380 434 345 Q 428 320 438 295" stroke="#2d8a4a" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M 430 415 Q 424 385 430 355 Q 436 335 428 310" stroke="#3da05a" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="436" cy="325" rx="10" ry="4" fill="#3da05a" opacity="0.7" transform="rotate(20 436 325)"/>
+    <ellipse cx="426" cy="340" rx="8" ry="3.5" fill="#2d8a4a" opacity="0.6" transform="rotate(-15 426 340)"/>
+  </g>
+  <g class="sg-seaweed-4">
+    <path d="M 465 425 Q 458 395 462 365 Q 468 340 460 318" stroke="#2d8a4a" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+    <path d="M 465 425 Q 472 398 466 370 Q 462 350 470 330" stroke="#3da05a" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- Small center-right seaweed -->
+  <g class="sg-seaweed-5">
+    <path d="M 360 430 Q 355 408 358 385 Q 362 368 355 350" stroke="#2d8a4a" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M 363 430 Q 368 405 364 382 Q 360 368 366 352" stroke="#3da05a" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- Coral reef left (branching coral) -->
+  <g>
+    <path d="M 130 430 Q 125 400 115 380 Q 108 368 118 360" stroke="#ff6b8a" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path d="M 130 430 Q 140 405 135 385 Q 130 372 140 365" stroke="#ff9ec4" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M 130 430 Q 120 410 112 395" stroke="#ffaa44" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <!-- Coral tip glows -->
+    <circle class="sg-coral-pulse-1" cx="118" cy="360" r="5" fill="#ff6b8a" filter="url(#sg-softGlow)" opacity="0.5"/>
+    <circle class="sg-coral-pulse-2" cx="140" cy="365" r="4.5" fill="#ff9ec4" filter="url(#sg-softGlow)" opacity="0.5"/>
+    <circle class="sg-coral-pulse-3" cx="112" cy="395" r="3.5" fill="#ffaa44" filter="url(#sg-softGlow)" opacity="0.4"/>
+  </g>
+
+  <!-- Brain coral right -->
+  <g>
+    <ellipse cx="390" cy="435" rx="28" ry="16" fill="#ff6b8a" opacity="0.6"/>
+    <ellipse cx="390" cy="435" rx="28" ry="16" fill="none" stroke="#ff9ec4" stroke-width="1" opacity="0.4"/>
+    <!-- Texture lines -->
+    <path d="M 370 433 Q 380 428 390 433 Q 400 438 410 433" stroke="#ff9ec4" stroke-width="0.8" fill="none" opacity="0.3"/>
+    <path d="M 372 438 Q 382 433 392 438 Q 402 443 412 438" stroke="#ff9ec4" stroke-width="0.8" fill="none" opacity="0.3"/>
+  </g>
+
+  <!-- Scattered shells on ocean floor -->
+  <!-- Shell 1 (spiral conch, left of crab) -->
+  <g>
+    <ellipse cx="175" cy="425" rx="12" ry="9" fill="#d4a87a" transform="rotate(-10 175 425)"/>
+    <ellipse cx="175" cy="425" rx="8" ry="6" fill="#e8c4a0" transform="rotate(-10 175 425)"/>
+    <path d="M 170 420 Q 175 418 180 420" stroke="#c89660" stroke-width="1" fill="none" opacity="0.6"/>
+    <path d="M 168 425 Q 175 422 182 425" stroke="#c89660" stroke-width="0.8" fill="none" opacity="0.5"/>
+    <circle class="sg-sparkle-1" cx="178" cy="421" r="2" fill="url(#sg-shellSparkle)"/>
+  </g>
+
+  <!-- Shell 2 (scallop, right of crab) -->
+  <g>
+    <path d="M 320 430 Q 330 415 340 430" fill="#e8c4a0" stroke="#c89660" stroke-width="0.8"/>
+    <path d="M 324 428 L 330 418" stroke="#d4a87a" stroke-width="0.6" fill="none" opacity="0.5"/>
+    <path d="M 330 428 L 330 416" stroke="#d4a87a" stroke-width="0.6" fill="none" opacity="0.5"/>
+    <path d="M 336 428 L 330 418" stroke="#d4a87a" stroke-width="0.6" fill="none" opacity="0.5"/>
+    <circle class="sg-sparkle-2" cx="332" cy="420" r="1.8" fill="url(#sg-shellSparkle)"/>
+  </g>
+
+  <!-- Shell 3 (round clam, far left) -->
+  <g>
+    <ellipse cx="50" cy="442" rx="10" ry="7" fill="#c89660"/>
+    <ellipse cx="50" cy="442" rx="7" ry="5" fill="#d4a87a"/>
+    <path d="M 43 442 Q 50 438 57 442" stroke="#b08860" stroke-width="0.7" fill="none" opacity="0.5"/>
+    <circle class="sg-sparkle-3" cx="53" cy="439" r="1.5" fill="url(#sg-shellSparkle)"/>
+  </g>
+
+  <!-- Shell 4 (pink shell, right side) -->
+  <g>
+    <ellipse cx="410" cy="442" rx="9" ry="7" fill="#ff9ec4" opacity="0.7"/>
+    <ellipse cx="410" cy="442" rx="6" ry="4.5" fill="#ffbbd4" opacity="0.6"/>
+    <circle class="sg-sparkle-4" cx="413" cy="439" r="1.5" fill="url(#sg-shellSparkle)"/>
+  </g>
+
+  <!-- Shell 5 (small nautilus, near center) -->
+  <g>
+    <circle cx="290" cy="438" r="6" fill="#d4a87a"/>
+    <circle cx="290" cy="438" r="4" fill="#e8c4a0"/>
+    <path d="M 288 435 Q 292 433 294 436" stroke="#c89660" stroke-width="0.6" fill="none"/>
+    <circle class="sg-sparkle-5" cx="292" cy="435" r="1.3" fill="url(#sg-shellSparkle)"/>
+  </g>
+
+  <!-- Darting fish 1 (upper left) -->
+  <g class="sg-fish-1">
+    <ellipse cx="120" cy="200" rx="12" ry="6" fill="url(#sg-fishGradient1)" filter="url(#sg-softGlow)"/>
+    <polygon points="108,200 101,195 101,205" fill="#55aadd" opacity="0.7"/>
+    <!-- Dorsal fin -->
+    <polygon points="118,194 122,188 126,194" fill="#88ccff" opacity="0.5"/>
+    <!-- Eye -->
+    <circle cx="127" cy="199" r="2.2" fill="#ffffff"/>
+    <circle cx="128" cy="199" r="1.4" fill="#1a3a5a"/>
+    <circle cx="129" cy="198" r="0.5" fill="#ffffff" opacity="0.9"/>
+  </g>
+
+  <!-- Darting fish 2 (right, facing left) -->
+  <g class="sg-fish-2">
+    <ellipse cx="380" cy="260" rx="10" ry="5" fill="url(#sg-fishGradient2)" filter="url(#sg-softGlow)"/>
+    <polygon points="390,260 396,256 396,264" fill="#ff6b8a" opacity="0.7"/>
+    <!-- Dorsal fin -->
+    <polygon points="382,255 378,250 375,255" fill="#ff9ec4" opacity="0.5"/>
+    <!-- Eye -->
+    <circle cx="374" cy="259" r="1.8" fill="#ffffff"/>
+    <circle cx="373" cy="259" r="1.1" fill="#1a3a5a"/>
+    <circle cx="372" cy="258" r="0.4" fill="#ffffff" opacity="0.9"/>
+    <!-- Glow -->
+    <circle cx="380" cy="260" r="14" fill="url(#sg-coralGlow)" opacity="0.2"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 5: Primary character — Kira the hermit crab -->
+  <!-- ============================================ -->
+  <g class="sg-crab-group">
+    <!-- Character warm glow -->
+    <circle cx="250" cy="290" r="55" fill="url(#sg-charGlow)" filter="url(#sg-strongGlow)" opacity="0.35"/>
+
+    <!-- Shadow on sand -->
+    <ellipse cx="250" cy="320" rx="28" ry="6" fill="#1a3a5a" opacity="0.2" filter="url(#sg-mediumGlow)"/>
+
+    <!-- Back legs (behind body) -->
+    <!-- Left back legs -->
+    <path d="M 232 302 Q 220 310 212 318" stroke="#cc5522" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M 228 306 Q 215 316 208 325" stroke="#cc5522" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <!-- Right back legs -->
+    <path d="M 268 302 Q 280 310 288 318" stroke="#cc5522" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M 272 306 Q 285 316 292 325" stroke="#cc5522" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+    <!-- Crab body (lower round body) -->
+    <ellipse cx="250" cy="296" rx="26" ry="18" fill="url(#sg-crabBody)"/>
+    <!-- Body highlight -->
+    <ellipse cx="245" cy="290" rx="12" ry="8" fill="#ff8c42" opacity="0.5"/>
+
+    <!-- Shell on crab's back (the imperfect current home) -->
+    <ellipse cx="250" cy="275" rx="22" ry="20" fill="url(#sg-crabShell)" filter="url(#sg-softGlow)"/>
+    <!-- Shell spiral detail -->
+    <path d="M 252 265 Q 260 268 258 278 Q 256 286 248 284 Q 242 282 244 274" stroke="#b08860" stroke-width="1.2" fill="none" opacity="0.5"/>
+    <path d="M 250 269 Q 255 271 254 277 Q 253 281 249 280" stroke="#b08860" stroke-width="0.8" fill="none" opacity="0.4"/>
+    <!-- Shell highlight -->
+    <ellipse cx="244" cy="268" rx="6" ry="5" fill="#e8d8c0" opacity="0.35"/>
+
+    <!-- Front walking legs -->
+    <!-- Left front legs -->
+    <path d="M 236 300 Q 224 308 216 314" stroke="#ff6b35" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+    <circle cx="216" cy="314" r="2" fill="#ff8c42"/>
+    <path d="M 230 298 Q 216 304 208 310" stroke="#ff6b35" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+    <circle cx="208" cy="310" r="1.8" fill="#ff8c42"/>
+    <!-- Right front legs -->
+    <path d="M 264 300 Q 276 308 284 314" stroke="#ff6b35" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+    <circle cx="284" cy="314" r="2" fill="#ff8c42"/>
+    <path d="M 270 298 Q 284 304 292 310" stroke="#ff6b35" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+    <circle cx="292" cy="310" r="1.8" fill="#ff8c42"/>
+
+    <!-- Left claw arm -->
+    <g class="sg-claw-left">
+      <path d="M 232 290 Q 218 285 210 280" stroke="#ff6b35" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <!-- Left claw (pincer) -->
+      <ellipse cx="206" cy="278" rx="8" ry="5" fill="#ff8c42" transform="rotate(-15 206 278)"/>
+      <ellipse cx="206" cy="278" rx="5" ry="3.5" fill="#ffaa66" transform="rotate(-15 206 278)"/>
+      <!-- Claw gap (pincer slit) -->
+      <path d="M 200 275 L 206 278" stroke="#cc5522" stroke-width="1" fill="none"/>
+    </g>
+
+    <!-- Right claw arm -->
+    <g class="sg-claw-right">
+      <path d="M 268 290 Q 282 285 290 280" stroke="#ff6b35" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <!-- Right claw (pincer) -->
+      <ellipse cx="294" cy="278" rx="8" ry="5" fill="#ff8c42" transform="rotate(15 294 278)"/>
+      <ellipse cx="294" cy="278" rx="5" ry="3.5" fill="#ffaa66" transform="rotate(15 294 278)"/>
+      <!-- Claw gap -->
+      <path d="M 300 275 L 294 278" stroke="#cc5522" stroke-width="1" fill="none"/>
+    </g>
+
+    <!-- Eye stalks -->
+    <!-- Left eye stalk -->
+    <path d="M 240 280 Q 238 265 236 255" stroke="#ff6b35" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <!-- Right eye stalk -->
+    <path d="M 260 280 Q 262 265 264 255" stroke="#ff6b35" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+
+    <!-- Left eye -->
+    <circle cx="236" cy="252" r="8" fill="#ffffff"/>
+    <circle cx="236" cy="254" r="5.5" fill="#3a2a1a"/>
+    <circle cx="236" cy="255" r="3.5" fill="#2C3E6E"/>
+    <circle cx="238" cy="251" r="1.8" fill="#ffffff" opacity="0.95"/>
+    <circle cx="234" cy="256" r="0.9" fill="#ffffff" opacity="0.6"/>
+    <!-- Left eyelid -->
+    <ellipse class="sg-eyelid-left" cx="236" cy="249" rx="9" ry="5" fill="#ff6b35"/>
+
+    <!-- Right eye -->
+    <circle cx="264" cy="252" r="8" fill="#ffffff"/>
+    <circle cx="264" cy="254" r="5.5" fill="#3a2a1a"/>
+    <circle cx="264" cy="255" r="3.5" fill="#2C3E6E"/>
+    <circle cx="266" cy="251" r="1.8" fill="#ffffff" opacity="0.95"/>
+    <circle cx="262" cy="256" r="0.9" fill="#ffffff" opacity="0.6"/>
+    <!-- Right eyelid -->
+    <ellipse class="sg-eyelid-right" cx="264" cy="249" rx="9" ry="5" fill="#ff6b35"/>
+
+    <!-- Cute mouth — happy smile -->
+    <path d="M 243 300 Q 250 307 257 300" stroke="#993311" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+    <!-- Rosy cheeks -->
+    <ellipse cx="230" cy="298" rx="5" ry="3" fill="#ffb6c1" opacity="0.4"/>
+    <ellipse cx="270" cy="298" rx="5" ry="3" fill="#ffb6c1" opacity="0.4"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- LAYER 6: Foreground — bubbles, sparkles, particles -->
+  <!-- ============================================ -->
+
+  <!-- Bubbles (rising from various positions) -->
+  <circle class="sg-bubble-1" cx="200" cy="380" r="4" fill="none" stroke="#88ccff" stroke-width="0.8" opacity="0.5"/>
+  <circle class="sg-bubble-2" cx="260" cy="400" r="3" fill="none" stroke="#aaddff" stroke-width="0.7" opacity="0.4"/>
+  <circle class="sg-bubble-3" cx="310" cy="370" r="5" fill="none" stroke="#88ccff" stroke-width="0.8" opacity="0.5"/>
+  <circle class="sg-bubble-4" cx="160" cy="360" r="3.5" fill="none" stroke="#aaddff" stroke-width="0.7" opacity="0.45"/>
+  <circle class="sg-bubble-5" cx="350" cy="390" r="4" fill="none" stroke="#88ccff" stroke-width="0.8" opacity="0.5"/>
+  <circle class="sg-bubble-6" cx="230" cy="410" r="2.5" fill="none" stroke="#aaddff" stroke-width="0.6" opacity="0.4"/>
+  <circle class="sg-bubble-7" cx="140" cy="350" r="3" fill="none" stroke="#88ccff" stroke-width="0.7" opacity="0.45"/>
+  <circle class="sg-bubble-8" cx="300" cy="405" r="2" fill="none" stroke="#aaddff" stroke-width="0.6" opacity="0.35"/>
+
+  <!-- Bubble inner highlights -->
+  <circle class="sg-bubble-1" cx="199" cy="379" r="1" fill="#ffffff" opacity="0.3"/>
+  <circle class="sg-bubble-3" cx="309" cy="369" r="1.3" fill="#ffffff" opacity="0.25"/>
+  <circle class="sg-bubble-5" cx="349" cy="389" r="1" fill="#ffffff" opacity="0.3"/>
+
+  <!-- Shell sparkle particles scattered around ocean floor -->
+  <g class="sg-sparkle-1">
+    <circle cx="175" cy="420" r="1.5" fill="#ffe4b5" filter="url(#sg-softGlow)"/>
+  </g>
+  <g class="sg-sparkle-2">
+    <circle cx="330" cy="425" r="1.2" fill="#ffd700" filter="url(#sg-softGlow)"/>
+  </g>
+  <g class="sg-sparkle-3">
+    <circle cx="50" cy="438" r="1.3" fill="#ffe4b5" filter="url(#sg-softGlow)"/>
+  </g>
+  <g class="sg-sparkle-4">
+    <circle cx="410" cy="438" r="1.5" fill="#ffd700" filter="url(#sg-softGlow)"/>
+  </g>
+  <g class="sg-sparkle-5">
+    <circle cx="290" cy="432" r="1" fill="#ffe4b5" filter="url(#sg-softGlow)"/>
+  </g>
+  <g class="sg-sparkle-6">
+    <circle cx="195" cy="445" r="1.2" fill="#ffd700" filter="url(#sg-softGlow)"/>
+  </g>
+
+  <!-- 4-pointed sparkle stars (underwater glints) -->
+  <g class="sg-sparkle-1">
+    <line x1="150" y1="180" x2="150" y2="188" stroke="#aaddff" stroke-width="0.7" opacity="0.5"/>
+    <line x1="146" y1="184" x2="154" y2="184" stroke="#aaddff" stroke-width="0.7" opacity="0.5"/>
+  </g>
+  <g class="sg-sparkle-3">
+    <line x1="380" y1="160" x2="380" y2="168" stroke="#88ccff" stroke-width="0.6" opacity="0.4"/>
+    <line x1="376" y1="164" x2="384" y2="164" stroke="#88ccff" stroke-width="0.6" opacity="0.4"/>
+  </g>
+  <g class="sg-sparkle-5">
+    <line x1="80" y1="230" x2="80" y2="236" stroke="#aaddff" stroke-width="0.6" opacity="0.4"/>
+    <line x1="77" y1="233" x2="83" y2="233" stroke="#aaddff" stroke-width="0.6" opacity="0.4"/>
+  </g>
+  <g class="sg-sparkle-2">
+    <line x1="460" y1="280" x2="460" y2="286" stroke="#88ccff" stroke-width="0.6" opacity="0.4"/>
+    <line x1="457" y1="283" x2="463" y2="283" stroke="#88ccff" stroke-width="0.6" opacity="0.4"/>
+  </g>
+
+  <!-- Floating plankton / water particles -->
+  <circle class="sg-sparkle-2" cx="70" cy="300" r="1" fill="#88ccff" opacity="0.3"/>
+  <circle class="sg-sparkle-4" cx="440" cy="320" r="0.8" fill="#aaddff" opacity="0.25"/>
+  <circle class="sg-sparkle-6" cx="180" cy="150" r="0.9" fill="#88ccff" opacity="0.3"/>
+  <circle class="sg-sparkle-1" cx="340" cy="140" r="0.7" fill="#aaddff" opacity="0.25"/>
+  <circle class="sg-sparkle-3" cx="470" cy="180" r="0.8" fill="#88ccff" opacity="0.3"/>
+  <circle class="sg-sparkle-5" cx="30" cy="250" r="0.7" fill="#aaddff" opacity="0.25"/>
+
+  <!-- ============================================ -->
+  <!-- LAYER 7: Vignette overlay                    -->
+  <!-- ============================================ -->
+  <rect width="512" height="512" fill="url(#sg-vignette)" opacity="0.45"/>
+
+</svg>
