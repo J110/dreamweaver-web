@@ -9,7 +9,6 @@
 import { useEffect, useState } from 'react';
 import StarField from '@/components/StarField';
 import ContentCard from '@/components/ContentCard';
-import RadioLiveCard from '@/components/RadioLiveCard';
 import { isLoggedIn, getUser } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
 import { trendingApi } from '@/utils/api';
@@ -239,7 +238,6 @@ export default function HomeApp() {
           <div className={styles.loadingMsg}>{t('loading')}</div>
         ) : (
           <div className={styles.sections}>
-            <RadioLiveCard />
             {storyItems.length > 0 && (
               <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>

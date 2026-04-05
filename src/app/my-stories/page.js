@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import StarField from '@/components/StarField';
 import ContentCard from '@/components/ContentCard';
+import RadioLiveCard from '@/components/RadioLiveCard';
 import { isLoggedIn, getUser } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
 import { interactionApi } from '@/utils/api';
@@ -98,6 +99,8 @@ export default function MyStoriesPage() {
           <h1 className={styles.title}>{t('myStoriesTitle')}</h1>
           <p className={styles.subtitle}>{t('myStoriesSubtitle')}</p>
         </div>
+
+        <RadioLiveCard />
 
         {/* Tabs */}
         <div className={styles.tabs}>
