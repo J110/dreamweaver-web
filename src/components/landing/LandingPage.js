@@ -9,6 +9,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { dvAnalytics } from '@/utils/analytics';
+import RadioLiveLink from '@/components/RadioLiveLink';
 import styles from './landing.module.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.dreamvalley.app';
@@ -702,6 +703,10 @@ export default function LandingPage() {
               <h4>Get the App</h4>
               <a href="https://apps.apple.com/sg/app/dream-valley-stories/id6759262548" target="_blank" rel="noopener noreferrer" onClick={() => dvAnalytics.track('app_download_click', { platform: 'ios', location: 'footer' })}>iOS App Store</a>
               <a href="https://play.google.com/store/apps/details?id=com.vervetogether.dreamvalley" target="_blank" rel="noopener noreferrer" onClick={() => dvAnalytics.track('app_download_click', { platform: 'android', location: 'footer' })}>Google Play</a>
+            </div>
+            <div className={styles.footerCol}>
+              <h4>Listen</h4>
+              <RadioLiveLink variant="footer" label="Dream Valley Radio" />
             </div>
             <div className={styles.footerCol}>
               <h4>Legal</h4>

@@ -1,0 +1,72 @@
+.inlineLink,
+.footerLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--color-text-light);
+  font-weight: 600;
+  transition: opacity 0.2s ease;
+}
+
+.inlineLink:hover,
+.footerLink:hover {
+  opacity: 0.85;
+}
+
+.liveBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px 3px 7px;
+  background: #E53935;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  color: #fff;
+}
+
+.pulseDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.9);
+  animation: radioPulse 1.6s infinite;
+}
+
+.liveText {
+  font-family: inherit;
+}
+
+.label {
+  font-size: 14px;
+}
+
+.footerLink .label {
+  font-size: 13px;
+  color: inherit;
+}
+
+@keyframes radioPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.9);
+    transform: scale(0.9);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(229, 57, 53, 0);
+    transform: scale(1);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(229, 57, 53, 0);
+    transform: scale(0.9);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulseDot {
+    animation: none;
+  }
+}

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getUser, logout as logoutUser, isLoggedIn } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
+import RadioLiveLink from './RadioLiveLink';
 import styles from './Header.module.css';
 
 export default function Header() {
@@ -46,6 +47,7 @@ export default function Header() {
           <Link href="/my-stories" className={styles.navLink}>
             My Stories
           </Link>
+          <RadioLiveLink label="Radio" />
         </nav>
 
         <div className={styles.actions}>
