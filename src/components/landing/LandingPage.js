@@ -10,6 +10,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { dvAnalytics } from '@/utils/analytics';
 import RadioLiveLink from '@/components/RadioLiveLink';
+import RadioLiveCard from '@/components/RadioLiveCard';
 import styles from './landing.module.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.dreamvalley.app';
@@ -407,6 +408,9 @@ export default function LandingPage() {
         <div className={styles.sectionInner}>
           <h2 className={styles.sectionTitle}>Listen now — no signup needed</h2>
           <p className={styles.sectionSubtitle}>A story and a lullaby. Just press play.</p>
+          <div className={styles.radioCardWrap}>
+            <RadioLiveCard />
+          </div>
           <div className={styles.previewGrid}>
             {previews.map((preview, idx) => (
               <div key={idx} className={styles.previewCard}>

@@ -452,6 +452,11 @@
   text-align: center;
 }
 
+.radioCardWrap {
+  max-width: 700px;
+  margin: 0 auto 28px;
+}
+
 .previewGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
