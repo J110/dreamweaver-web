@@ -236,6 +236,7 @@ export default function LandingPage() {
             <Link href="/how-it-works" className={styles.navLink}>How It Works</Link>
             <Link href="/about" className={styles.navLink}>About</Link>
             <Link href="/blog" className={styles.navLink}>Blog</Link>
+            <RadioLiveLink label="Radio" />
             <Link href="/onboarding" className={styles.navCta}>Get Started</Link>
           </div>
         </div>
