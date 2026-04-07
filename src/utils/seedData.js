@@ -3250,6 +3250,7 @@ export const SEED_STORIES = {
       title: "Hoot and the Mist Song",
       description: "Join Hoot the owl and Pip the mouse as they follow a mysterious chime through the misty forest at dusk, discovering a hidden song inside a hollow tree.",
       cover: "/covers/gen-5cb2c4b14302.webp",
+      character: {"name": "Hoot", "identity": "A wise owl who explores the forest", "special": "Guides the listener through the forest at dusk", "personality_tags": ["Wise", "Gentle"]},
       addedAt: "2026-04-06",
       target_age: 7,
       duration: 12,
@@ -3259,6 +3260,7 @@ export const SEED_STORIES = {
       categories: ["Bedtime", "Forest", "Mystery", "Friendship"],
       theme: "bedtime",
       mood: "curious",
+      story_type: "nature",
       musicParams: {},
       audio_variants: [
         { voice: "mixed", url: "/audio/pre-gen/5cb2c4b1_mixed.mp3", duration_seconds: 749.13 },
