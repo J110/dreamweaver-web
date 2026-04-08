@@ -174,6 +174,44 @@
   color: var(--color-text-muted);
 }
 
+.cardActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.shareBtn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(107, 76, 230, 0.25);
+  background: rgba(107, 76, 230, 0.1);
+  color: #9B7EF0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.shareBtn:hover {
+  background: rgba(107, 76, 230, 0.25);
+  border-color: rgba(107, 76, 230, 0.5);
+}
+
+.shareBtn:active {
+  transform: scale(0.9);
+}
+
+.copiedText {
+  font-size: 8px;
+  font-weight: 700;
+  color: #4ECDC4;
+  white-space: nowrap;
+}
+
 .playBtn {
   width: 30px;
   height: 30px;

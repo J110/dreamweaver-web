@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import StarField from '@/components/StarField';
 import { funnyShortsApi, sillySongsApi, poemsApi } from '@/utils/api';
 import { useI18n } from '@/utils/i18n';
+import { dvAnalytics } from '@/utils/analytics';
 import styles from './page.module.css';
 
 const CHARACTER_EMOJIS = {
@@ -31,6 +32,50 @@ function isAddedToday(createdAt) {
   if (!createdAt) return false;
   const today = new Date().toISOString().slice(0, 10);
   return createdAt.slice(0, 10) === today;
+}
+
+function ShareBtn({ type, id, title }) {
+  const [copied, setCopied] = useState(false);
+  const url = `https://dreamvalley.app/before-bed/${type}/${id}`;
+
+  const handleShare = async (e) => {
+    e.stopPropagation();
+    dvAnalytics.track('share', { contentId: id, contentType: type, shareMethod: 'before-bed' });
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, url });
+        return;
+      } catch { /* user cancelled or not supported — fall through to clipboard */ }
+    }
+
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {}
+  };
+
+  return (
+    <button
+      className={styles.shareBtn}
+      onClick={handleShare}
+      title="Share"
+      aria-label={`Share ${title}`}
+    >
+      {copied ? (
+        <span className={styles.copiedText}>Copied!</span>
+      ) : (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="18" cy="5" r="3" />
+          <circle cx="6" cy="12" r="3" />
+          <circle cx="18" cy="19" r="3" />
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+        </svg>
+      )}
+    </button>
+  );
 }
 
 function BeforeBedContent() {
@@ -345,15 +390,18 @@ function BeforeBedContent() {
                         <span className={styles.cardDuration}>
                           {formatDuration(short.duration_seconds)}
                         </span>
-                        <button
-                          className={styles.playBtn}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handlePlayShort(short);
-                          }}
-                        >
-                          {playingId === short.id ? '⏸' : '▶'}
-                        </button>
+                        <div className={styles.cardActions}>
+                          <ShareBtn type="funny-shorts" id={short.id} title={short.title} />
+                          <button
+                            className={styles.playBtn}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handlePlayShort(short);
+                            }}
+                          >
+                            {playingId === short.id ? '⏸' : '▶'}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -392,15 +440,18 @@ function BeforeBedContent() {
                         <span className={styles.cardDuration}>
                           {formatDuration(song.duration_seconds)}
                         </span>
-                        <button
-                          className={styles.playBtn}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handlePlaySong(song);
-                          }}
-                        >
-                          {playingId === song.id ? '⏸' : '▶'}
-                        </button>
+                        <div className={styles.cardActions}>
+                          <ShareBtn type="silly-songs" id={song.id} title={song.title} />
+                          <button
+                            className={styles.playBtn}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handlePlaySong(song);
+                            }}
+                          >
+                            {playingId === song.id ? '⏸' : '▶'}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -450,15 +501,18 @@ function BeforeBedContent() {
                         <span className={styles.cardDuration}>
                           {formatDuration(poem.duration_seconds)}
                         </span>
-                        <button
-                          className={styles.playBtn}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handlePlayPoem(poem);
-                          }}
-                        >
-                          {playingId === poem.id ? '⏸' : '▶'}
-                        </button>
+                        <div className={styles.cardActions}>
+                          <ShareBtn type="poems" id={poem.id} title={poem.title} />
+                          <button
+                            className={styles.playBtn}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handlePlayPoem(poem);
+                            }}
+                          >
+                            {playingId === poem.id ? '⏸' : '▶'}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
