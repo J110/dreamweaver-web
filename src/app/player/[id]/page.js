@@ -15,6 +15,7 @@ import { stripEmotionMarkers } from '@/utils/textUtils';
 import { recordListen, markCompleted } from '@/utils/listeningHistory';
 import { dvAnalytics } from '@/utils/analytics';
 import BreathingPacer from '@/components/BreathingPacer';
+import useCoverVisualSystem from '@/hooks/useCoverVisualSystem';
 import {
   updateMediaSessionMetadata,
   registerMediaSessionHandlers,
@@ -68,35 +69,29 @@ export default function PlayerPage() {
   const musicStartedRef = useRef(false);
   const lastHistoryRecordRef = useRef(0); // throttle history writes
 
-  // Progressive cover dimming — 3-phase model for sleep induction:
-  // Phase 1 (0-33%): Capture — full brightness, draws attention
-  // Phase 2 (33-66%): Descent — gradual warm dimming, transition to sleepiness
-  // Phase 3 (66-100%): Sleep — near-dark, minimal stimulation
-  // Values interpolate continuously within each phase (no sudden jumps).
-  // Dimming persists when paused or ended — never flashes bright at a sleepy child.
+  // Cover Visual System — progressive darkening for sleep content.
+  // Uses 4 pre-generated image variants (bright → golden → twilight → near-dark)
+  // with smooth crossfade + breathing deceleration. Falls back to CSS filter
+  // dimming when variants aren't available. Disabled for Before Bed content.
+  const {
+    variantOpacities,
+    breatheSpeed,
+    progressAngle,
+    isEnabled: coverSystemEnabled,
+    hasVariants: coverHasVariants,
+    filterFallbackStyle,
+  } = useCoverVisualSystem(audioRef, content, progress, isPlaying);
+
+  // Cover dim style: use filter fallback for SVG covers or when no variants available
   const coverDimStyle = useMemo(() => {
-    if (!content?.cover?.endsWith('.svg')) return {};
-    // Only skip dimming before playback has started (progress still at 0 and not playing)
-    if (!isPlaying && progress === 0) return {};
-    const p = Math.max(0, Math.min(100, progress));
-    let brightness, saturate, sepia;
-    if (p <= 33) {
-      brightness = 1.0; saturate = 1.0; sepia = 0.0;
-    } else if (p <= 66) {
-      const t = (p - 33) / 33;
-      brightness = 1.0 - t * 0.15;   // 1.0 → 0.85
-      saturate   = 1.0 - t * 0.2;    // 1.0 → 0.8
-      sepia      = t * 0.1;           // 0.0 → 0.1
-    } else {
-      const t = (p - 66) / 34;
-      brightness = 0.85 - t * 0.35;  // 0.85 → 0.5
-      saturate   = 0.8  - t * 0.3;   // 0.8  → 0.5
-      sepia      = 0.1  + t * 0.1;   // 0.1  → 0.2
+    // If the visual system is enabled and has variants, the crossfade handles dimming
+    if (coverHasVariants) return {};
+    // For SVG covers without variants, use CSS filter fallback
+    if (coverSystemEnabled && content?.cover?.endsWith('.svg')) {
+      return filterFallbackStyle;
     }
-    return {
-      filter: `brightness(${brightness.toFixed(3)}) saturate(${saturate.toFixed(3)}) sepia(${sepia.toFixed(3)})`,
-    };
-  }, [progress, isPlaying, content?.cover]);
+    return {};
+  }, [coverHasVariants, coverSystemEnabled, content?.cover, filterFallbackStyle]);
 
   // Initialize music engine
   useEffect(() => {
@@ -1092,9 +1087,32 @@ export default function PlayerPage() {
           ← {t('playerBack')}
         </button>
 
-        <div className={`${styles.albumArt} ${content.cover ? styles.artWithImage : getTypeColor(content.type)}`}>
+        <div
+          className={`${styles.albumArt} ${content.cover ? styles.artWithImage : getTypeColor(content.type)} ${coverSystemEnabled && isPlaying ? styles.albumArtBreathe : ''}`}
+          style={coverSystemEnabled ? {
+            '--breathe-speed': `${breatheSpeed.toFixed(1)}s`,
+            '--progress-angle': `${progressAngle.toFixed(1)}deg`,
+          } : undefined}
+        >
           {content.cover ? (
-            content.cover.endsWith('.svg') ? (
+            coverHasVariants ? (
+              /* 4-variant stack: smooth crossfade between progressive darkening levels */
+              <>
+                {content.cover_variants.map((variant, i) => (
+                  <img
+                    key={i}
+                    src={variant}
+                    alt={i === 0 ? (content.title || 'Cover art') : ''}
+                    className={styles.coverImage}
+                    style={{
+                      zIndex: i + 1,
+                      opacity: variantOpacities[i],
+                      transition: 'opacity 10s ease-in-out',
+                    }}
+                  />
+                ))}
+              </>
+            ) : content.cover.endsWith('.svg') ? (
               <object
                 data={content.cover}
                 type="image/svg+xml"
@@ -1107,10 +1125,15 @@ export default function PlayerPage() {
                 src={content.cover}
                 alt={content.title || 'Cover art'}
                 className={styles.coverImage}
+                style={coverDimStyle}
               />
             )
           ) : (
             <span className={styles.albumIcon}>{getTypeIcon(content.type)}</span>
+          )}
+          {/* Progress arc — thin ring around cover edge, visible during sleep content */}
+          {coverSystemEnabled && isPlaying && (
+            <div className={styles.progressArc} />
           )}
           {isPlaying && (
             <BreathingPacer analyserNode={narrationAnalyser} amplitudeEnvelope={amplitudeEnvelope} audioRef={audioRef} />
