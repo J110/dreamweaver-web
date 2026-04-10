@@ -3711,11 +3711,11 @@ export const SEED_STORIES = {
       type: "song",
       title: "Lulu and the Moonhush",
       description: "A whispering lullaby that mirrors the gentle descent of evening, where each verse settles lower like moonlight fading into dusk. The soft, descending sounds guide little ones into sleep by reflecting the world’s quiet rhythm.",
-      cover: "/covers/permission-0-1-7170.svg",
-      addedAt: "2026-04-04",
+      cover: "/covers/permission-0-1-5b9d.svg",
+      addedAt: "2026-04-10",
       mood: "curious",
       text: "[verse]\nMmm ooh laa luu\nShaa naa noo noo\nTss pff haa haa\nMmm ooh laa luu\n\n[verse]\nHmm eeh daa daa\nLuu sha sha shh\nOoh naa naa naa\nHmm eeh daa daa\n\n[verse]\nAah mmm shh shh\nPff luu luu luu\nMmm ooh laa laa\nAah mmm shh shh\n\n---",
-      character: {"name": "Lulu", "identity": "A small, silver-furred dreamweaver who hums the night into stillness.", "special": "Her voice carries the quiet of the moon, wrapping the world in soft echoes.", "personality_tags": ["Gentle", "Sleepy"]},
+      character: {"name": "Lulu", "identity": "A small, silver-furred dreamweaver who hums the night into stillness.", "special": "Whispers the moon’s quiet to the world below, so every creature can hear the hush.", "personality_tags": ["Gentle", "Sleepy"]},
       target_age: 0,
       duration: 1,
       like_count: 0,
@@ -3725,7 +3725,7 @@ export const SEED_STORIES = {
       theme: "dreamy",
       musicParams: {},
       audio_variants: [
-        { voice: "female_1", url: "/audio/pre-gen/permission-0-1-7170_female_1.mp3", duration_seconds: 69 },
+        { voice: "female_1", url: "/audio/pre-gen/permission-0-1-5b9d_female_1.mp3", duration_seconds: 46 },
       ],
     },
     {
