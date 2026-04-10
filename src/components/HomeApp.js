@@ -78,10 +78,15 @@ export default function HomeApp() {
       }
       const hasRealCover = (c) => c && !c.includes('default.svg');
       const enriched = apiItems.map((item) => {
-        const seed = seedById[item.id] || seedByTitle[item.title];
+        // Only id-based seed lookup. Title fallback is unsafe because the
+        // pipeline mutates existing seed entries by title (keeping the OLD id),
+        // which would otherwise overwrite cover/audio/addedAt with stale fields.
+        const seed = seedById[item.id];
+        // The API is the source of truth for addedAt — prefer created_at so
+        // newly published items always sort by their actual publish date.
         const base = {
           ...item,
-          addedAt: item.addedAt || item.created_at,
+          addedAt: item.created_at || item.addedAt,
         };
         if (!seed) return base;
         return {
@@ -90,7 +95,6 @@ export default function HomeApp() {
           audio_variants: item.audio_variants || seed.audio_variants,
           musicParams: item.musicParams || seed.musicParams,
           musicProfile: item.musicProfile || seed.musicProfile,
-          addedAt: item.addedAt || seed.addedAt || item.created_at,
           duration: item.duration || seed.duration,
           story_type: item.story_type || seed.story_type,
         };

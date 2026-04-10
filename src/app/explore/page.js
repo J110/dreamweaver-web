@@ -66,17 +66,18 @@ function ExploreContent() {
           // Enrich API items with seed-only fields (cover, audio_variants, musicParams)
           const seedItems = getStories(lang);
           const seedById = {};
-          const seedByTitle = {};
           for (const s of seedItems) {
             seedById[s.id] = s;
-            seedByTitle[s.title] = s;
           }
           const hasRealCover = (c) => c && !c.includes('default.svg');
           const enriched = items.map((item) => {
-            const seed = seedById[item.id] || seedByTitle[item.title];
+            // Id-only seed lookup. Title fallback is unsafe — the pipeline
+            // mutates seed entries by title (preserving the OLD id), which
+            // would otherwise pull stale cover/audio/addedAt onto fresh items.
+            const seed = seedById[item.id];
             const base = {
               ...item,
-              addedAt: item.addedAt || item.created_at,
+              addedAt: item.created_at || item.addedAt,
             };
             if (!seed) return base;
             return {
@@ -85,7 +86,6 @@ function ExploreContent() {
               audio_variants: item.audio_variants || seed.audio_variants,
               musicParams: item.musicParams || seed.musicParams,
               musicProfile: item.musicProfile || seed.musicProfile,
-              addedAt: item.addedAt || seed.addedAt || item.created_at,
               duration: item.duration || seed.duration,
             };
           });
