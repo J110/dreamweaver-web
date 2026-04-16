@@ -3,7 +3,6 @@ import Link from 'next/link';
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.dreamvalley.app';
 
 const TYPE_CONFIG = {
-  'funny-shorts': { label: 'Funny Short', emoji: '😂', apiPath: 'funny-shorts', coverDir: 'funny-shorts' },
   'silly-songs': { label: 'Silly Song', emoji: '🎵', apiPath: 'silly-songs', coverDir: 'silly-songs' },
   'poems': { label: 'Musical Poem', emoji: '✨', apiPath: 'poems', coverDir: 'poems' },
 };

@@ -15,7 +15,7 @@ import { updateMediaSessionMetadata } from '@/utils/mediaSessionManager';
  * - Screen locked: Discrete Media Session artwork updates at phase transitions
  *
  * Only active for sleep content (story, long_story, lullaby).
- * Before Bed content (funny_short, silly_song, poem) stays bright and static.
+ * Before Bed content (silly_song, poem) stays bright and static.
  */
 
 const SLEEP_CONTENT_TYPES = new Set(['story', 'long_story', 'lullaby']);
@@ -51,8 +51,12 @@ export default function useCoverVisualSystem(audioRef, content, progress, isPlay
 
   const contentType = content?.type || '';
   const isEnabled = SLEEP_CONTENT_TYPES.has(contentType);
+  const cover = content?.cover || '';
   const variants = content?.cover_variants || [];
-  const hasVariants = isEnabled && variants.length === 4;
+  // Don't use WebP variants when the main cover is SVG — they come from a
+  // different source image (episode script WebP vs pipeline SVG).
+  // SVG covers use the CSS filter fallback for progressive darkening instead.
+  const hasVariants = isEnabled && variants.length === 4 && !cover.endsWith('.svg');
 
   // Reset when content changes
   useEffect(() => {

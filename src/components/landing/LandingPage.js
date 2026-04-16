@@ -605,7 +605,7 @@ export default function LandingPage() {
             <Link href="/before-bed" className={styles.exploreCard}>
               <div className={styles.exploreIcon}>🌛</div>
               <h3>Before Bed</h3>
-              <p>Funny shorts, silly songs, and musical poems. A wind-down ritual before the bedtime story.</p>
+              <p>Silly songs and musical poems. A wind-down ritual before the bedtime story.</p>
             </Link>
           </div>
           <h3 className={styles.exploreSubtitle}>Tuned to your child&apos;s mood</h3>

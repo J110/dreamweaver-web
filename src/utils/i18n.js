@@ -46,7 +46,7 @@ const translations = {
     themeFairyTale: 'Fairy Tales',
     // Before Bed
     beforeBedTitle: 'Before Bed',
-    beforeBedEmpty: 'No funny shorts yet — check back soon!',
+    beforeBedEmpty: 'No before-bed content yet — check back soon!',
     // My Stories
     myStoriesTitle: 'My Stories',
     myStoriesSubtitle: 'Your favorite stories, all in one place',

@@ -124,7 +124,7 @@ export default function AppShell({ children }) {
   const isSEOPage = pathname.startsWith('/stories/')
     || pathname.startsWith('/category/') || pathname.startsWith('/ages/')
     || pathname.startsWith('/blog/') || pathname === '/blog'
-    || /^\/before-bed\/(funny-shorts|silly-songs|poems)\//.test(pathname);
+    || /^\/before-bed\/(silly-songs|poems)\//.test(pathname);
   const hasLandingParam = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('view') === 'landing';
   const isLandingPage = pathname === '/' && (!isLoggedIn() || hasLandingParam);
   const showNav = !NO_NAV_ROUTES.includes(pathname) && !pathname.startsWith('/player/')

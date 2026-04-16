@@ -2,22 +2,10 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react';
 import StarField from '@/components/StarField';
-import { funnyShortsApi, sillySongsApi, poemsApi } from '@/utils/api';
+import { sillySongsApi, poemsApi } from '@/utils/api';
 import { useI18n } from '@/utils/i18n';
 import { dvAnalytics } from '@/utils/analytics';
 import styles from './page.module.css';
-
-const CHARACTER_EMOJIS = {
-  high_pitch_cartoon: '🐭',
-  comedic_villain: '🐊',
-  young_sweet: '😏',
-  mysterious_witch: '🧙‍♀️',
-  musical_original: '🎵',
-};
-
-function getVoiceEmojis(voices) {
-  return (voices || []).map((v) => CHARACTER_EMOJIS[v] || '🎭').join('');
-}
 
 function formatDuration(seconds) {
   if (!seconds) return '';
@@ -80,12 +68,11 @@ function ShareBtn({ type, id, title }) {
 
 function BeforeBedContent() {
   const { t } = useI18n();
-  const [shorts, setShorts] = useState([]);
   const [songs, setSongs] = useState([]);
   const [poems, setPoems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [playingId, setPlayingId] = useState(null);
-  const [playingType, setPlayingType] = useState(null); // 'short', 'song', or 'poem'
+  const [playingType, setPlayingType] = useState(null); // 'song' or 'poem'
   const [progress, setProgress] = useState(0);
   const [ageGroup, setAgeGroup] = useState(null);
   const audioRef = useRef(null);
@@ -107,17 +94,14 @@ function BeforeBedContent() {
   const loadContent = useCallback(async (group) => {
     setLoading(true);
     try {
-      const [shortsResult, songsResult, poemsResult] = await Promise.all([
-        funnyShortsApi.list(group).catch(() => []),
+      const [songsResult, poemsResult] = await Promise.all([
         sillySongsApi.list(group).catch(() => []),
         poemsApi.list(group).catch(() => []),
       ]);
-      setShorts(shortsResult);
       setSongs(songsResult);
       setPoems(poemsResult);
     } catch (err) {
       console.error('Failed to load before bed content:', err);
-      setShorts([]);
       setSongs([]);
       setPoems([]);
     } finally {
@@ -143,59 +127,6 @@ function BeforeBedContent() {
     setAgeGroup(group);
     loadContent(group);
   };
-
-  const handlePlayShort = useCallback((short) => {
-    if (!short.audio_file) return;
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-
-    if (playingId === short.id && audioRef.current) {
-      if (audioRef.current.paused) {
-        audioRef.current.play();
-      } else {
-        audioRef.current.pause();
-      }
-      return;
-    }
-
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
-
-    const audio = new Audio(`${API_URL}/audio/funny-shorts/${short.audio_file}`);
-    audioRef.current = audio;
-    setPlayingId(short.id);
-    setPlayingType('short');
-    setProgress(0);
-
-    const isReplay = sessionPlayed.current.has(short.id);
-    if (isReplay) {
-      funnyShortsApi.replay(short.id).catch(() => {});
-    } else {
-      funnyShortsApi.play(short.id).catch(() => {});
-      sessionPlayed.current.add(short.id);
-    }
-
-    audio.addEventListener('timeupdate', () => {
-      if (audio.duration) {
-        setProgress((audio.currentTime / audio.duration) * 100);
-      }
-    });
-    audio.addEventListener('ended', () => {
-      setPlayingId(null);
-      setPlayingType(null);
-      setProgress(0);
-    });
-    audio.addEventListener('error', () => {
-      setPlayingId(null);
-      setPlayingType(null);
-      setProgress(0);
-    });
-    audio.play().catch(() => {
-      setPlayingId(null);
-      setPlayingType(null);
-    });
-  }, [playingId]);
 
   const handlePlaySong = useCallback((song) => {
     if (!song.audio_file) return;
@@ -322,16 +253,15 @@ function BeforeBedContent() {
     };
   }, []);
 
-  const playingShort = shorts.find((s) => s.id === playingId);
   const playingSong = songs.find((s) => s.id === playingId);
   const playingPoem = poems.find((p) => p.id === playingId);
-  const playingItem = playingShort || playingSong || playingPoem;
+  const playingItem = playingSong || playingPoem;
 
   return (
     <div className={styles.app}>
       <div className={styles.header}>
         <h1 className={styles.title}>{t('beforeBedTitle')}</h1>
-        <p className={styles.subtitle}>Funny shorts & silly songs before sleep</p>
+        <p className={styles.subtitle}>Silly songs & musical poems before sleep</p>
         <div className={styles.agePills}>
           {AGE_GROUPS.map((group) => (
             <button
@@ -349,67 +279,6 @@ function BeforeBedContent() {
         <div className={styles.loadingMsg}>{t('loading')}</div>
       ) : (
         <>
-          {/* Funny Shorts Section */}
-          {shorts.length > 0 && (
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>😂 Funny Shorts</h2>
-              <div className={styles.horizontalScroll}>
-                {shorts.map((short) => (
-                  <div key={short.id} className={styles.cardWrapper}>
-                    <div
-                      className={`${styles.card} ${playingId === short.id ? styles.cardPlaying : ''}`}
-                      onClick={() => handlePlayShort(short)}
-                    >
-                      {isAddedToday(short.created_at) && (
-                        <span className={styles.newBadge}>NEW</span>
-                      )}
-                      {short.cover_file ? (
-                        <div className={styles.cardCover}>
-                          {short.cover_file.endsWith('.svg') ? (
-                            <object
-                              data={`/covers/funny-shorts/${short.cover_file}`}
-                              type="image/svg+xml"
-                              className={styles.cardCoverImg}
-                              aria-label={short.title}
-                            >
-                              <div className={styles.cardEmojis}>{getVoiceEmojis(short.voices)}</div>
-                            </object>
-                          ) : (
-                            <img
-                              src={`/covers/funny-shorts/${short.cover_file}`}
-                              className={styles.cardCoverImg}
-                              alt={short.title}
-                            />
-                          )}
-                        </div>
-                      ) : (
-                        <div className={styles.cardEmojis}>{getVoiceEmojis(short.voices)}</div>
-                      )}
-                      <div className={styles.cardTitle}>{short.title}</div>
-                      <div className={styles.cardMeta}>
-                        <span className={styles.cardDuration}>
-                          {formatDuration(short.duration_seconds)}
-                        </span>
-                        <div className={styles.cardActions}>
-                          <ShareBtn type="funny-shorts" id={short.id} title={short.title} />
-                          <button
-                            className={styles.playBtn}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handlePlayShort(short);
-                            }}
-                          >
-                            {playingId === short.id ? '⏸' : '▶'}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
           {/* Silly Songs Section */}
           {songs.length > 0 && (
             <section className={styles.section}>
@@ -521,7 +390,7 @@ function BeforeBedContent() {
             </section>
           )}
 
-          {shorts.length === 0 && songs.length === 0 && poems.length === 0 && (
+          {songs.length === 0 && poems.length === 0 && (
             <div className={styles.emptyMsg}>
               <div className={styles.emptyIcon}>🌙</div>
               <p>{t('beforeBedEmpty')}</p>
@@ -535,7 +404,7 @@ function BeforeBedContent() {
         <div className={styles.miniPlayer}>
           <div className={styles.miniPlayerInner}>
             <span className={styles.miniPlayerEmoji}>
-              {playingType === 'poem' ? '✨' : playingType === 'song' ? '🎵' : getVoiceEmojis(playingItem.voices)}
+              {playingType === 'poem' ? '✨' : '🎵'}
             </span>
             <span className={styles.miniPlayerTitle}>{playingItem.title}</span>
             <button className={styles.miniPlayerBtn} onClick={handleStop}>

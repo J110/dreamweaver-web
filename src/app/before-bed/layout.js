@@ -1,14 +1,14 @@
 export const metadata = {
-  title: 'Before Bed — Funny Shorts for Kids | Dream Valley',
+  title: 'Before Bed — Silly Songs & Musical Poems for Kids | Dream Valley',
   description:
-    'Short, funny comedy audio pieces for kids to enjoy before bedtime. 60-90 second stories with hilarious character voices.',
+    'Silly songs and musical poems for kids to enjoy before bedtime. A gentle wind-down ritual before the bedtime story.',
   alternates: {
     canonical: 'https://dreamvalley.app/before-bed',
   },
   openGraph: {
-    title: 'Before Bed — Funny Shorts | Dream Valley',
+    title: 'Before Bed — Silly Songs & Musical Poems | Dream Valley',
     description:
-      'Short, funny comedy audio pieces for kids before bedtime — featuring Mouse, Croc, Sweet, Witch & Musical.',
+      'Silly songs and musical poems for kids before bedtime — a gentle wind-down ritual before the bedtime story.',
     url: 'https://dreamvalley.app/before-bed',
   },
 };

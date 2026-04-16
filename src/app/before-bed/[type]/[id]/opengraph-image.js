@@ -8,7 +8,6 @@ export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
 const TYPE_CONFIG = {
-  'funny-shorts': { label: 'FUNNY SHORT', emoji: '😂', apiPath: 'funny-shorts', accent: '#FF6B9D' },
   'silly-songs': { label: 'SILLY SONG', emoji: '🎵', apiPath: 'silly-songs', accent: '#FFD93D' },
   'poems': { label: 'MUSICAL POEM', emoji: '✨', apiPath: 'poems', accent: '#4ECDC4' },
 };

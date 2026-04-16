@@ -244,34 +244,6 @@ export const contentApi = {
   },
 };
 
-// ─── Funny Shorts API ──────────────────────────────────────
-// Backend: /api/v1/funny-shorts
-
-export const funnyShortsApi = {
-  list: async (ageGroup = '6-8') => {
-    const params = new URLSearchParams({ age_group: ageGroup });
-    const res = await fetchApi(`/api/v1/funny-shorts?${params.toString()}`, {
-      method: 'GET',
-    });
-    return res.data?.items || [];
-  },
-
-  getById: async (id) => {
-    const res = await fetchApi(`/api/v1/funny-shorts/${id}`, {
-      method: 'GET',
-    });
-    return res.data || {};
-  },
-
-  play: async (id) => {
-    return fetchApi(`/api/v1/funny-shorts/${id}/play`, { method: 'POST' }).catch(() => {});
-  },
-
-  replay: async (id) => {
-    return fetchApi(`/api/v1/funny-shorts/${id}/replay`, { method: 'POST' }).catch(() => {});
-  },
-};
-
 // ─── Silly Songs API ──────────────────────────────────────────
 // Backend: /api/v1/silly-songs
 
