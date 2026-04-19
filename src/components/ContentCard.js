@@ -8,12 +8,12 @@ import { useI18n } from '@/utils/i18n';
 import styles from './ContentCard.module.css';
 
 const MOOD_CONFIG = {
-  calm:    { emoji: '\uD83D\uDE0C', label: { en: 'Calm',    hi: 'शांत' } },
-  curious: { emoji: '\uD83D\uDD0D', label: { en: 'Curious', hi: 'जिज्ञासु' } },
-  wired:   { emoji: '\u26A1',       label: { en: 'Wired',   hi: 'ऊर्जावान' } },
-  sad:     { emoji: '\uD83D\uDCA7', label: { en: 'Sad',     hi: 'उदास' } },
-  anxious: { emoji: '\uD83C\uDF00', label: { en: 'Anxious', hi: 'चिंतित' } },
-  angry:   { emoji: '\uD83D\uDD25', label: { en: 'Angry',   hi: 'गुस्सा' } },
+  calm:    { emoji: '\uD83D\uDE0C', label: { en: 'Calm',    hi: 'Shaant' } },
+  curious: { emoji: '\uD83D\uDD0D', label: { en: 'Curious', hi: 'Jigyaasu' } },
+  wired:   { emoji: '\u26A1',       label: { en: 'Wired',   hi: 'Urjavaan' } },
+  sad:     { emoji: '\uD83D\uDCA7', label: { en: 'Sad',     hi: 'Udaas' } },
+  anxious: { emoji: '\uD83C\uDF00', label: { en: 'Anxious', hi: 'Chintit' } },
+  angry:   { emoji: '\uD83D\uDD25', label: { en: 'Angry',   hi: 'Gussa' } },
 };
 
 const LANGUAGE_LEVEL_LABELS = {

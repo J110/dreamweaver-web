@@ -4,11 +4,11 @@
  */
 
 export const VOICES = {
-  female_1: { label: 'Calm',    labelHi: 'शांत',   icon: '🌙' },
-  female_2: { label: 'Soft',    labelHi: 'कोमल',   icon: '🌿' },
-  female_3: { label: 'Melodic', labelHi: 'मधुर',   icon: '🎵' },
-  female_4: { label: 'Musical', labelHi: 'संगीतमय', icon: '🎶' },
-  male_2:   { label: 'Gentle',  labelHi: 'सौम्य',  icon: '🌊' },
+  female_1: { label: 'Calm',    labelHi: 'Shaant',     icon: '🌙' },
+  female_2: { label: 'Soft',    labelHi: 'Komal',      icon: '🌿' },
+  female_3: { label: 'Melodic', labelHi: 'Madhur',     icon: '🎵' },
+  female_4: { label: 'Musical', labelHi: 'Sangeetmay', icon: '🎶' },
+  male_2:   { label: 'Gentle',  labelHi: 'Saumya',     icon: '🌊' },
   asmr:     { label: 'ASMR',    labelHi: 'ASMR',   icon: '🎧' },
 };
 

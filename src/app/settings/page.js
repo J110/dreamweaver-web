@@ -76,7 +76,7 @@ export default function SettingsPage() {
 
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>
-            {lang === 'hi' ? 'अपनी आवाज़ चुनें' : 'Choose Your Narrator'}
+            {lang === 'hi' ? 'Apni aawaaz chunein' : 'Choose Your Narrator'}
           </h2>
           <div className={styles.voiceGrid}>
             {getSelectableVoices().map(([id, meta]) => (

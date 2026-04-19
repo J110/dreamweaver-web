@@ -1009,11 +1009,11 @@ export default function PlayerPage() {
     // Song voices map to instrument styles, independent of narrator VOICES config.
     const isSong = content.type === 'song';
     const SONG_VOICE_LABELS = {
-      female_1: { label: 'Harp', labelHi: 'वीणा', icon: '🎵' },
-      female_2: { label: 'Guitar', labelHi: 'गिटार', icon: '🎸' },
-      female_3: { label: 'Piano', labelHi: 'पियानो', icon: '🎹' },
-      male_1:   { label: 'Cello', labelHi: 'चेलो', icon: '🎻' },
-      male_2:   { label: 'Flute', labelHi: 'बांसुरी', icon: '🪈' },
+      female_1: { label: 'Harp', labelHi: 'Veena', icon: '🎵' },
+      female_2: { label: 'Guitar', labelHi: 'Guitar', icon: '🎸' },
+      female_3: { label: 'Piano', labelHi: 'Piano', icon: '🎹' },
+      male_1:   { label: 'Cello', labelHi: 'Cello', icon: '🎻' },
+      male_2:   { label: 'Flute', labelHi: 'Baansuri', icon: '🪈' },
     };
     if (isSong) {
       for (const variant of allVariants) {
@@ -1251,7 +1251,7 @@ export default function PlayerPage() {
               >
                 <span className={styles.voiceSwitchIcon}>{opt.icon}</span>
                 <span className={styles.voiceSwitchLabel}>
-                  {lang === 'hi' ? `${opt.switchLabel} पर सुनें` : `Switch to ${opt.switchLabel}`}
+                  {lang === 'hi' ? `${opt.switchLabel} par sunein` : `Switch to ${opt.switchLabel}`}
                 </span>
               </button>
             ))}

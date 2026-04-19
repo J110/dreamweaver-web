@@ -106,13 +106,13 @@ export default function ProfilePage() {
           <div className={styles.voiceSettingsCard}>
             <div className={styles.voiceSettingsHeader} style={{ cursor: 'default' }}>
               <div className={styles.settingLabel}>
-                🌐 {lang === 'hi' ? 'कहानी की भाषा' : 'Content Language'}
+                🌐 {lang === 'hi' ? 'Kahaani ki bhaasha' : 'Content Language'}
               </div>
             </div>
             <div className={styles.voiceSettingsBody}>
               <p className={styles.voiceDesc}>
                 {lang === 'hi'
-                  ? 'हिंदी में कहानियाँ, लोरियाँ और कविताएँ — जैसे माँ-बाप बच्चों को सुनाते हैं।'
+                  ? 'Hindi mein kahaaniyaan, loriyaan aur kavitaayein — jaise maa-baap bachchon ko sunaate hain.'
                   : 'Hindi stories, lullabies & poems in conversational Hindi — the way Indian parents talk to their children at bedtime.'}
               </p>
               <div style={{ display: 'flex', gap: '12px', marginTop: '12px' }}>
@@ -130,7 +130,7 @@ export default function ProfilePage() {
                   className={`${styles.voiceCard} ${lang === 'hi' ? styles.voiceCardActive : ''}`}
                   style={{ flex: 1 }}
                 >
-                  <span className={styles.voiceName}>हिन्दी</span>
+                  <span className={styles.voiceName}>Hindi</span>
                 </button>
               </div>
             </div>
@@ -156,7 +156,7 @@ export default function ProfilePage() {
 
                 <div className={styles.voiceSection}>
                   <h3 className={styles.voiceSectionTitle}>
-                    {lang === 'hi' ? 'अपनी आवाज़ चुनें' : 'Choose Your Narrator'}
+                    {lang === 'hi' ? 'Apni aawaaz chunein' : 'Choose Your Narrator'}
                   </h3>
                   <div className={styles.voiceGrid}>
                     {getSelectableVoices().map(([id, meta]) => (

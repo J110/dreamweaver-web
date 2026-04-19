@@ -168,11 +168,11 @@ export default function LullabiesPage() {
 
       {loading ? (
         <div className={styles.empty}>
-          <p>{lang === 'hi' ? 'लोरियाँ लोड हो रही हैं...' : 'Loading lullabies...'}</p>
+          <p>{lang === 'hi' ? 'Loriyaan load ho rahi hain...' : 'Loading lullabies...'}</p>
         </div>
       ) : lullabies.length === 0 ? (
         <div className={styles.empty}>
-          <p>{lang === 'hi' ? '🎭 जल्द ही हिंदी में आ रहा है!' : 'No lullabies match these filters'}</p>
+          <p>{lang === 'hi' ? '🎭 Jald hi Hindi mein aa raha hai!' : 'No lullabies match these filters'}</p>
         </div>
       ) : (
         <div className={styles.grid}>
