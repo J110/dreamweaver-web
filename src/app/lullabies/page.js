@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { lullabiesApi } from '@/utils/api';
+import { useI18n } from '@/utils/i18n';
 import styles from './lullabies.module.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -25,6 +26,7 @@ const MOODS = [
 ];
 
 export default function LullabiesPage() {
+  const { lang } = useI18n();
   const [lullabies, setLullabies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [playing, setPlaying] = useState(null);
@@ -33,10 +35,10 @@ export default function LullabiesPage() {
   const [activeMood, setActiveMood] = useState(null);
   const audioRef = useRef(null);
 
-  const loadLullabies = useCallback(async (age, mood) => {
+  const loadLullabies = useCallback(async (age, mood, currentLang) => {
     setLoading(true);
     try {
-      const items = await lullabiesApi.list(age, mood);
+      const items = await lullabiesApi.list(age, mood, currentLang);
       setLullabies(items);
     } catch (err) {
       console.error('Failed to load lullabies:', err);
@@ -45,6 +47,7 @@ export default function LullabiesPage() {
         const params = new URLSearchParams();
         if (age) params.append('age_group', age);
         if (mood) params.append('mood', mood);
+        if (currentLang) params.append('lang', currentLang);
         const query = params.toString() ? `?${params.toString()}` : '';
         const res = await fetch(`${API_URL}/api/v1/lullabies${query}`);
         const data = await res.json();
@@ -57,8 +60,8 @@ export default function LullabiesPage() {
   }, []);
 
   useEffect(() => {
-    loadLullabies(activeAge, activeMood);
-  }, [activeAge, activeMood, loadLullabies]);
+    loadLullabies(activeAge, activeMood, lang);
+  }, [activeAge, activeMood, lang, loadLullabies]);
 
   const handleAgeChange = (ageId) => {
     if (ageId === activeAge) return;
@@ -165,11 +168,11 @@ export default function LullabiesPage() {
 
       {loading ? (
         <div className={styles.empty}>
-          <p>Loading lullabies...</p>
+          <p>{lang === 'hi' ? 'लोरियाँ लोड हो रही हैं...' : 'Loading lullabies...'}</p>
         </div>
       ) : lullabies.length === 0 ? (
         <div className={styles.empty}>
-          <p>No lullabies match these filters</p>
+          <p>{lang === 'hi' ? '🎭 जल्द ही हिंदी में आ रहा है!' : 'No lullabies match these filters'}</p>
         </div>
       ) : (
         <div className={styles.grid}>

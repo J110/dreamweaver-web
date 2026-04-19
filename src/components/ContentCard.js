@@ -4,15 +4,16 @@ import Link from 'next/link';
 import { getAmbientMusic } from '@/utils/ambientMusic';
 import { isListened } from '@/utils/listeningHistory';
 import { dvAnalytics } from '@/utils/analytics';
+import { useI18n } from '@/utils/i18n';
 import styles from './ContentCard.module.css';
 
 const MOOD_CONFIG = {
-  calm: { emoji: '\uD83D\uDE0C', label: 'Calm' },
-  curious: { emoji: '\uD83D\uDD0D', label: 'Curious' },
-  wired: { emoji: '\u26A1', label: 'Wired' },
-  sad: { emoji: '\uD83D\uDCA7', label: 'Sad' },
-  anxious: { emoji: '\uD83C\uDF00', label: 'Anxious' },
-  angry: { emoji: '\uD83D\uDD25', label: 'Angry' },
+  calm:    { emoji: '\uD83D\uDE0C', label: { en: 'Calm',    hi: 'शांत' } },
+  curious: { emoji: '\uD83D\uDD0D', label: { en: 'Curious', hi: 'जिज्ञासु' } },
+  wired:   { emoji: '\u26A1',       label: { en: 'Wired',   hi: 'ऊर्जावान' } },
+  sad:     { emoji: '\uD83D\uDCA7', label: { en: 'Sad',     hi: 'उदास' } },
+  anxious: { emoji: '\uD83C\uDF00', label: { en: 'Anxious', hi: 'चिंतित' } },
+  angry:   { emoji: '\uD83D\uDD25', label: { en: 'Angry',   hi: 'गुस्सा' } },
 };
 
 const LANGUAGE_LEVEL_LABELS = {
@@ -31,6 +32,7 @@ const STORY_TYPE_LABELS = {
 };
 
 export default function ContentCard({ content, onClick }) {
+  const { lang } = useI18n();
   // Pre-unlock AudioContext on card click (before navigation to player page).
   // This is called inside the user's click gesture, so AudioContext.resume()
   // will succeed. The player page can then start music immediately.
@@ -160,7 +162,7 @@ export default function ContentCard({ content, onClick }) {
             {durationLabel && <><span className={styles.clockIcon}>&#128336;</span> {durationLabel}</>}
           </span>
           {content.mood && MOOD_CONFIG[content.mood] && (
-            <span className={`${styles.moodBadge} ${styles[`mood_${content.mood}`]}`}>{MOOD_CONFIG[content.mood].emoji} {MOOD_CONFIG[content.mood].label}</span>
+            <span className={`${styles.moodBadge} ${styles[`mood_${content.mood}`]}`}>{MOOD_CONFIG[content.mood].emoji} {MOOD_CONFIG[content.mood].label[lang] || MOOD_CONFIG[content.mood].label.en}</span>
           )}
         </div>
       </div>

@@ -12,7 +12,7 @@ import styles from './page.module.css';
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { t, lang } = useI18n();
+  const { t, lang, setLang } = useI18n();
   const { voicePrefs, setVoicePrefs } = useVoicePreferences();
   const [user, setUser] = useState(null);
 
@@ -102,6 +102,40 @@ export default function ProfilePage() {
         </div>
 
         <div className={styles.settings}>
+          {/* Content Language — Hindi is opt-in */}
+          <div className={styles.voiceSettingsCard}>
+            <div className={styles.voiceSettingsHeader} style={{ cursor: 'default' }}>
+              <div className={styles.settingLabel}>
+                🌐 {lang === 'hi' ? 'कहानी की भाषा' : 'Content Language'}
+              </div>
+            </div>
+            <div className={styles.voiceSettingsBody}>
+              <p className={styles.voiceDesc}>
+                {lang === 'hi'
+                  ? 'हिंदी में कहानियाँ, लोरियाँ और कविताएँ — जैसे माँ-बाप बच्चों को सुनाते हैं।'
+                  : 'Hindi stories, lullabies & poems in conversational Hindi — the way Indian parents talk to their children at bedtime.'}
+              </p>
+              <div style={{ display: 'flex', gap: '12px', marginTop: '12px' }}>
+                <button
+                  type="button"
+                  onClick={() => setLang('en')}
+                  className={`${styles.voiceCard} ${lang === 'en' ? styles.voiceCardActive : ''}`}
+                  style={{ flex: 1 }}
+                >
+                  <span className={styles.voiceName}>English</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLang('hi')}
+                  className={`${styles.voiceCard} ${lang === 'hi' ? styles.voiceCardActive : ''}`}
+                  style={{ flex: 1 }}
+                >
+                  <span className={styles.voiceName}>हिन्दी</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
           {/* Voice Settings — inline collapsible */}
           <div className={styles.voiceSettingsCard}>
             <button

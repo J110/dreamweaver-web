@@ -67,7 +67,7 @@ function ShareBtn({ type, id, title }) {
 }
 
 function BeforeBedContent() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [songs, setSongs] = useState([]);
   const [poems, setPoems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -91,12 +91,12 @@ function BeforeBedContent() {
     }
   };
 
-  const loadContent = useCallback(async (group) => {
+  const loadContent = useCallback(async (group, currentLang) => {
     setLoading(true);
     try {
       const [songsResult, poemsResult] = await Promise.all([
-        sillySongsApi.list(group).catch(() => []),
-        poemsApi.list(group).catch(() => []),
+        sillySongsApi.list(group, currentLang).catch(() => []),
+        poemsApi.list(group, currentLang).catch(() => []),
       ]);
       setSongs(songsResult);
       setPoems(poemsResult);
@@ -112,8 +112,8 @@ function BeforeBedContent() {
   useEffect(() => {
     const defaultGroup = getDefaultAgeGroup();
     setAgeGroup(defaultGroup);
-    loadContent(defaultGroup);
-  }, [loadContent]);
+    loadContent(defaultGroup, lang);
+  }, [loadContent, lang]);
 
   const handleAgeChange = (group) => {
     if (group === ageGroup) return;
@@ -125,7 +125,7 @@ function BeforeBedContent() {
     setPlayingType(null);
     setProgress(0);
     setAgeGroup(group);
-    loadContent(group);
+    loadContent(group, lang);
   };
 
   const handlePlaySong = useCallback((song) => {

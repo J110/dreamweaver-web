@@ -248,8 +248,9 @@ export const contentApi = {
 // Backend: /api/v1/silly-songs
 
 export const sillySongsApi = {
-  list: async (ageGroup = '6-8') => {
+  list: async (ageGroup = '6-8', lang = null) => {
     const params = new URLSearchParams({ age_group: ageGroup });
+    if (lang) params.append('lang', lang);
     const res = await fetchApi(`/api/v1/silly-songs?${params.toString()}`, {
       method: 'GET',
     });
@@ -276,8 +277,9 @@ export const sillySongsApi = {
 // Backend: /api/v1/poems
 
 export const poemsApi = {
-  list: async (ageGroup = '6-8') => {
+  list: async (ageGroup = '6-8', lang = null) => {
     const params = new URLSearchParams({ age_group: ageGroup });
+    if (lang) params.append('lang', lang);
     const res = await fetchApi(`/api/v1/poems?${params.toString()}`, {
       method: 'GET',
     });
@@ -304,10 +306,11 @@ export const poemsApi = {
 // Backend: /api/v1/lullabies
 
 export const lullabiesApi = {
-  list: async (ageGroup = null, mood = null) => {
+  list: async (ageGroup = null, mood = null, lang = null) => {
     const params = new URLSearchParams();
     if (ageGroup) params.append('age_group', ageGroup);
     if (mood) params.append('mood', mood);
+    if (lang) params.append('lang', lang);
     const query = params.toString() ? `?${params.toString()}` : '';
     const res = await fetchApi(`/api/v1/lullabies${query}`, {
       method: 'GET',

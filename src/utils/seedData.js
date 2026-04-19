@@ -4991,7 +4991,10 @@ export const SEED_STORIES = {
     },],
 };
 
-/** Helper to get stories for current language */
+/** Helper to get stories for current language. Returns [] for languages
+ * with no seed data (Hindi is served API-only — no seed fallback mixing). */
 export function getStories(lang = 'en') {
-  return SEED_STORIES[lang] || SEED_STORIES.en;
+  if (lang && SEED_STORIES[lang]) return SEED_STORIES[lang];
+  if (lang === 'en') return SEED_STORIES.en;
+  return [];
 }

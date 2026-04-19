@@ -256,18 +256,13 @@ export function I18nProvider({ children }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // Force English — Hindi content temporarily disabled for curation
     const saved = localStorage.getItem(LANG_KEY);
-    if (saved === 'hi') {
-      localStorage.setItem(LANG_KEY, 'en');
-    }
-    setLangState('en');
+    setLangState(saved === 'hi' ? 'hi' : 'en');
     setReady(true);
   }, []);
 
   const setLang = (newLang) => {
-    // Force English — Hindi content temporarily disabled
-    const safeLang = 'en';
+    const safeLang = newLang === 'hi' ? 'hi' : 'en';
     setLangState(safeLang);
     localStorage.setItem(LANG_KEY, safeLang);
   };
