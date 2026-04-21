@@ -1,0 +1,526 @@
+<!-- axes: {"world_setting":"enchanted_forest","palette":"moonstone","composition":"winding_path","character":"human_child","light":"ambient","texture":"soft_pastel","time":"deep_night"} -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <image id="bg" width="512" height="512" href="data:image/webp;base64,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"/>
+    <filter id="blur-canopy"><feGaussianBlur stdDeviation="12"/></filter>
+    <filter id="char-blur-canopy"><feGaussianBlur stdDeviation="20"/></filter>
+    <mask id="mask-canopy">
+      <path d="M0,40 L163,50 Q167,148.5 138,275 L0,281 Z M361,58 L512,41 L512,290 Q343,157.6 356,79 Z" fill="white" filter="url(#blur-canopy)"/>
+      <ellipse cx="230" cy="307" rx="61" ry="92" fill="black" filter="url(#char-blur-canopy)"/>
+    </mask>
+    <filter id="blur-sky_main"><feGaussianBlur stdDeviation="15"/></filter>
+    <filter id="char-blur-sky_main"><feGaussianBlur stdDeviation="20"/></filter>
+    <mask id="mask-sky_main">
+      <path d="M0,0 L512,0 L512,183 Q379.0,158 258.0,182 Q131.0,163 0,166 Z" fill="white" filter="url(#blur-sky_main)"/>
+      <ellipse cx="230" cy="307" rx="61" ry="92" fill="black" filter="url(#char-blur-sky_main)"/>
+    </mask>
+    <filter id="blur-ground_veg"><feGaussianBlur stdDeviation="10"/></filter>
+    <filter id="char-blur-ground_veg"><feGaussianBlur stdDeviation="20"/></filter>
+    <mask id="mask-ground_veg">
+      <path d="M0,408 Q187.2,409 327.8,416 Q327.8,416 512,430 L512,512 L0,512 Z" fill="white" filter="url(#blur-ground_veg)"/>
+      <ellipse cx="230" cy="307" rx="61" ry="92" fill="black" filter="url(#char-blur-ground_veg)"/>
+    </mask>
+    <filter id="blur-fog_floor"><feGaussianBlur stdDeviation="25"/></filter>
+    <filter id="char-blur-fog_floor"><feGaussianBlur stdDeviation="20"/></filter>
+    <mask id="mask-fog_floor">
+      <path d="M0,310 Q135.0,288 247.0,316 Q393.0,300 512,301 L512,431 L0,414 Z" fill="white" filter="url(#blur-fog_floor)"/>
+      <ellipse cx="230" cy="307" rx="61" ry="92" fill="black" filter="url(#char-blur-fog_floor)"/>
+    </mask>
+    <filter id="veg-sway-canopy" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.006 0.011" numOctaves="2" result="wind-noise" seed="345">
+        <animate attributeName="baseFrequency" values="0.006 0.011; 0.007 0.010; 0.005 0.012; 0.007 0.011; 0.006 0.011" dur="13s" begin="0s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="wind-noise" scale="8" xChannelSelector="R" yChannelSelector="B">
+        <animate attributeName="scale" values="7;9;6;9;7;10;7" dur="19s" begin="0s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+      </feDisplacementMap>
+    </filter>
+    <filter id="cloud-drift-sky_main" x="-10%" y="-5%" width="120%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.01 0.016" numOctaves="2" result="cloud-noise" seed="907">
+        <animate attributeName="baseFrequency" values="0.01 0.016; 0.012 0.014; 0.008 0.018; 0.011 0.015; 0.01 0.016" dur="38s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="cloud-noise" scale="7" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="5;9;5;8;5" dur="50s" repeatCount="indefinite"/>
+      </feDisplacementMap>
+    </filter>
+    <filter id="veg-sway-ground_veg" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.009 0.017" numOctaves="2" result="wind-noise" seed="607">
+        <animate attributeName="baseFrequency" values="0.009 0.017; 0.011 0.015; 0.007 0.019; 0.010 0.016; 0.009 0.017" dur="13s" begin="1.3s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="wind-noise" scale="4" xChannelSelector="R" yChannelSelector="B">
+        <animate attributeName="scale" values="3;5;2;5;3;6;3" dur="17s" begin="1.3s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+      </feDisplacementMap>
+    </filter>
+    <filter id="fog-drift-fog_floor" x="-15%" y="-5%" width="130%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.005 0.008" numOctaves="2" result="fog-noise" seed="858">
+        <animate attributeName="baseFrequency" values="0.005 0.008; 0.006 0.007; 0.004 0.009; 0.005 0.008; 0.005 0.008" dur="19s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="fog-noise" scale="7" xChannelSelector="R" yChannelSelector="G">
+        <animate attributeName="scale" values="6;8;5;8;6" dur="32s" repeatCount="indefinite"/>
+      </feDisplacementMap>
+    </filter>
+  </defs>
+
+  <!-- Layer 1: Static background -->
+  <use href="#bg"/>
+
+  <!-- Layer 2: Cinemagraph filtered regions (4 filters, 8 octaves) -->
+  <g mask="url(#mask-canopy)">
+    <use href="#bg" filter="url(#veg-sway-canopy)"/>
+  </g>
+  <g mask="url(#mask-sky_main)">
+    <use href="#bg" filter="url(#cloud-drift-sky_main)"/>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 10,0; 0,0; -5,0; 0,0" dur="44s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+  </g>
+  <g mask="url(#mask-ground_veg)">
+    <use href="#bg" filter="url(#veg-sway-ground_veg)"/>
+  </g>
+  <g mask="url(#mask-fog_floor)">
+    <use href="#bg" filter="url(#fog-drift-fog_floor)"/>
+      <animateTransform attributeName="transform" type="translate" values="0,0; 12,1; 0,0; -6,-1; 0,0" dur="31s" repeatCount="indefinite" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+  </g>
+
+  <!-- Layer 3: Full SMIL overlay (12-20 elements, 3 depth layers) -->
+
+  <defs>
+    <radialGradient id="vignetteGrad">
+      <stop offset="40%" stop-color="transparent"/>
+      <stop offset="100%" stop-color="#050810" stop-opacity="0.75"/>
+    </radialGradient>
+    <filter id="softBlur">
+      <feGaussianBlur stdDeviation="2"/>
+    </filter>
+  </defs>
+<!-- F3: Breathing Pacer (Forest) -->
+<g id="breath-pacer">
+  <radialGradient id="breathG958">
+    <stop offset="0%" stop-color="#FFA000" stop-opacity="0.70"/>
+    <stop offset="30%" stop-color="#FFA000" stop-opacity="0.35"/>
+    <stop offset="70%" stop-color="#FFA000" stop-opacity="0.10"/>
+    <stop offset="100%" stop-color="#FFA000" stop-opacity="0"/>
+  </radialGradient>
+  <circle cx="50%" cy="70%" r="50" fill="url(#breathG958)">
+    <animate attributeName="r" values="44;55;44" dur="5s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0.50;0.75;0.50" dur="5s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+</g>
+<!-- A3: Moon Glow -->
+<g id="moon-glow">
+  <radialGradient id="moonH511">
+    <stop offset="0%" stop-color="#FFECD2" stop-opacity="0.35"/>
+    <stop offset="40%" stop-color="#FFA000" stop-opacity="0.15"/>
+    <stop offset="100%" stop-color="#FFA000" stop-opacity="0"/>
+  </radialGradient>
+  <circle cx="82%" cy="21%" r="43" fill="url(#moonH511)">
+    <animate attributeName="r" values="38;53;38" dur="11s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0.30;0.60;0.30" dur="11s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="82%" cy="21%" r="19" fill="#FFECD2" opacity="0.20">
+    <animate attributeName="opacity" values="0.15;0.25;0.15" dur="11s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+</g>
+<!-- B1: Drifting Fog -->
+<g id="fog-214">
+  <defs>  <radialGradient id="fog-g214-0"><stop offset="0%" stop-color="#F0E4D6" stop-opacity="0.5"/><stop offset="40%" stop-color="#F0E4D6" stop-opacity="0.25"/><stop offset="100%" stop-color="#F0E4D6" stop-opacity="0"/></radialGradient>  <radialGradient id="fog-g214-1"><stop offset="0%" stop-color="#F0E4D6" stop-opacity="0.5"/><stop offset="40%" stop-color="#F0E4D6" stop-opacity="0.25"/><stop offset="100%" stop-color="#F0E4D6" stop-opacity="0"/></radialGradient>  <radialGradient id="fog-g214-2"><stop offset="0%" stop-color="#E8D8C4" stop-opacity="0.5"/><stop offset="40%" stop-color="#E8D8C4" stop-opacity="0.25"/><stop offset="100%" stop-color="#E8D8C4" stop-opacity="0"/></radialGradient></defs>
+  <ellipse cx="64%" cy="76%" rx="213" ry="26" fill="url(#fog-g214-0)" opacity="0.06">
+    <animateTransform attributeName="transform" type="translate"
+      values="0,0; 94,3; 188,0; 94,-3; 0,0"
+      dur="29s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0.06;0.09;0.07;0.11;0.06"
+      dur="31s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="52%" cy="58%" rx="188" ry="26" fill="url(#fog-g214-1)" opacity="0.08">
+    <animateTransform attributeName="transform" type="translate"
+      values="0,0; -98,3; -196,0; -98,-3; 0,0"
+      dur="41s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0.08;0.11;0.09;0.13;0.08"
+      dur="41s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="22%" cy="55%" rx="251" ry="44" fill="url(#fog-g214-2)" opacity="0.11">
+    <animateTransform attributeName="transform" type="translate"
+      values="0,0; 94,3; 188,0; 94,-3; 0,0"
+      dur="37s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0.11;0.14;0.12;0.15;0.11"
+      dur="31s" repeatCount="indefinite"/>
+  </ellipse>
+</g>
+<!-- A1: Twinkling Stars -->
+<g id="stars">
+  <circle cx="60%" cy="29%" r="2.5" fill="#FFF5E0">
+    <animate attributeName="opacity" values="0;0;0.60;0.42;0"
+      dur="4.9s" begin="4.9s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="79%" cy="35%" r="2.8" fill="#FFF0DB">
+    <animate attributeName="opacity" values="0;0;0.54;0.38;0"
+      dur="7.6s" begin="3.0s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="34%" cy="12%" r="2.4" fill="#FFEFD5">
+    <animate attributeName="opacity" values="0;0;0.56;0.39;0"
+      dur="7.2s" begin="2.3s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="21%" cy="14%" r="1.6" fill="#FFF5E0">
+    <animate attributeName="opacity" values="0;0;0.38;0.27;0"
+      dur="6.8s" begin="6.3s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="26%" cy="16%" r="2.4" fill="#FFE4B5">
+    <animate attributeName="opacity" values="0;0;0.66;0.46;0"
+      dur="7.0s" begin="8.2s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="85%" cy="39%" r="2.8" fill="#FFF0DB">
+    <animate attributeName="opacity" values="0;0;0.58;0.41;0"
+      dur="6.2s" begin="1.2s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="95%" cy="35%" r="1.6" fill="#FFE4B5">
+    <animate attributeName="opacity" values="0;0;0.40;0.28;0"
+      dur="6.8s" begin="5.6s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="85%" cy="6%" r="1.0" fill="#FFE4B5">
+    <animate attributeName="opacity" values="0;0;0.68;0.48;0"
+      dur="6.8s" begin="0.3s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="78%" cy="14%" r="2.6" fill="#FFF0DB">
+    <animate attributeName="opacity" values="0;0;0.62;0.43;0"
+      dur="7.1s" begin="1.7s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+</g>
+<!-- F2: Shadow Play -->
+<g id="window-shadows" opacity="0.10">
+  <path d="M164,109 Q201,95 212,126 Q191,102 205,116"
+    fill="none" stroke="#2A1F14" stroke-width="15" stroke-linecap="round" opacity="0.1">
+    <animateTransform attributeName="transform" type="translate"
+      values="0,0; 4,1; -1,1; 4,-1; 0,0"
+      dur="16.5s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </path>
+  <ellipse cx="351" cy="125" rx="39" ry="28" fill="#2A1F14" opacity="0.07">
+    <animateTransform attributeName="transform" type="translate"
+      values="0,0; 4,3; -3,1; 3,0; 0,0"
+      dur="11.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.06;0.09;0.04;0.07;0.06"
+      dur="29s" repeatCount="indefinite"/>
+  </ellipse>
+  <path d="M122,89 Q144,79 175,109 Q136,80 162,98"
+    fill="none" stroke="#2A1F14" stroke-width="15" stroke-linecap="round" opacity="0.09">
+    <animateTransform attributeName="transform" type="translate"
+      values="0,0; 8,2; -1,2; 5,-1; 0,0"
+      dur="15.0s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </path>
+</g>
+<!-- D1: Fireflies -->
+<g id="fireflies">
+  <circle cx="0" cy="0" r="2.7" fill="#FFA000" opacity="0">
+    <animateMotion dur="23s" repeatCount="indefinite" begin="7.9s"
+      path="M124,380 C127,385 105,380 126,393 S144,365 115,370"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0;0.05;0.68;0.65;0.1;0;0;0"
+      dur="5.8s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="0" cy="0" r="9.9" fill="#FFA000" opacity="0">
+    <animateMotion dur="23s" repeatCount="indefinite" begin="7.9s"
+      path="M124,380 C127,385 105,380 126,393 S144,365 115,370"/>
+    <animate attributeName="opacity" values="0;0.02;0.17;0.15;0.03;0;0;0"
+      dur="5.8s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="0" cy="0" r="2.6" fill="#FFA000" opacity="0">
+    <animateMotion dur="29s" repeatCount="indefinite" begin="5.1s"
+      path="M152,273 C171,272 148,262 139,273 S156,279 159,287"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0;0.05;0.47;0.45;0.1;0;0;0"
+      dur="4.8s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="0" cy="0" r="8.6" fill="#FFA000" opacity="0">
+    <animateMotion dur="29s" repeatCount="indefinite" begin="5.1s"
+      path="M152,273 C171,272 148,262 139,273 S156,279 159,287"/>
+    <animate attributeName="opacity" values="0;0.02;0.18;0.16;0.03;0;0;0"
+      dur="4.8s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="0" cy="0" r="2.2" fill="#FFA000" opacity="0">
+    <animateMotion dur="29s" repeatCount="indefinite" begin="2.6s"
+      path="M151,309 C160,316 152,315 133,301 S145,308 162,298"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0;0.05;0.51;0.48;0.1;0;0;0"
+      dur="6.2s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="0" cy="0" r="11.1" fill="#FFA000" opacity="0">
+    <animateMotion dur="29s" repeatCount="indefinite" begin="2.6s"
+      path="M151,309 C160,316 152,315 133,301 S145,308 162,298"/>
+    <animate attributeName="opacity" values="0;0.02;0.17;0.15;0.03;0;0;0"
+      dur="6.2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="0" cy="0" r="2.5" fill="#FFA000" opacity="0">
+    <animateMotion dur="23s" repeatCount="indefinite" begin="6.7s"
+      path="M286,314 C267,328 293,304 284,323 S292,307 292,328"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0;0.05;0.57;0.54;0.1;0;0;0"
+      dur="6.2s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="0" cy="0" r="11.5" fill="#FFA000" opacity="0">
+    <animateMotion dur="23s" repeatCount="indefinite" begin="6.7s"
+      path="M286,314 C267,328 293,304 284,323 S292,307 292,328"/>
+    <animate attributeName="opacity" values="0;0.02;0.16;0.14;0.03;0;0;0"
+      dur="6.2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="0" cy="0" r="2.6" fill="#FFA000" opacity="0">
+    <animateMotion dur="17s" repeatCount="indefinite" begin="1.7s"
+      path="M419,201 C406,208 403,213 413,207 S432,203 423,209"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0;0.05;0.58;0.55;0.1;0;0;0"
+      dur="4.9s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </circle>
+  <circle cx="0" cy="0" r="7.0" fill="#FFA000" opacity="0">
+    <animateMotion dur="17s" repeatCount="indefinite" begin="1.7s"
+      path="M419,201 C406,208 403,213 413,207 S432,203 423,209"/>
+    <animate attributeName="opacity" values="0;0.02;0.20;0.18;0.03;0;0;0"
+      dur="4.9s" repeatCount="indefinite"/>
+  </circle>
+</g>
+<!-- C2: Falling Leaves -->
+<g id="falling-leaves">
+  <ellipse cx="0" cy="0" rx="7" ry="4" fill="#B8845A" opacity="0.45">
+    <animateMotion dur="14.8s" repeatCount="indefinite" begin="2.0s"
+      path="M306,-20 C284,53 274,130 330,205 S288,265 324,345"/>
+    <animateTransform attributeName="transform" type="rotate"
+      values="22;5;-26;-35;14;-46;15" dur="14.8s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0.45;0.50;0.45;0.40;0"
+      dur="14.8s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="0" cy="0" rx="5" ry="3" fill="#C8A060" opacity="0.44">
+    <animateMotion dur="19.4s" repeatCount="indefinite" begin="6.4s"
+      path="M238,-20 C207,62 224,150 217,221 S214,289 261,354"/>
+    <animateTransform attributeName="transform" type="rotate"
+      values="51;-16;40;51;50;-34;44" dur="19.4s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0.44;0.49;0.44;0.39;0"
+      dur="19.4s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="0" cy="0" rx="5" ry="3" fill="#C4956A" opacity="0.32">
+    <animateMotion dur="14.1s" repeatCount="indefinite" begin="0.0s"
+      path="M339,-20 C311,62 357,128 372,189 S356,267 372,331"/>
+    <animateTransform attributeName="transform" type="rotate"
+      values="-32;-3;56;4;-15;11;46" dur="14.1s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0.32;0.37;0.32;0.27;0"
+      dur="14.1s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="0" cy="0" rx="7" ry="4" fill="#C4956A" opacity="0.28">
+    <animateMotion dur="18.0s" repeatCount="indefinite" begin="5.4s"
+      path="M102,-20 C117,68 109,155 72,231 S117,309 113,385"/>
+    <animateTransform attributeName="transform" type="rotate"
+      values="-18;14;57;37;-7;-3;47" dur="18.0s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0.28;0.33;0.28;0.23;0"
+      dur="18.0s" repeatCount="indefinite"/>
+  </ellipse>
+</g>
+<!-- C3: Closing Flowers -->
+<g id="flower-0" transform="translate(68%, 91%)">
+    <ellipse cx="9" cy="-5" rx="10" ry="5" fill="#C8A080" opacity="0.15"
+      transform="rotate(-30,9,-5)">
+      <animateTransform attributeName="transform" type="rotate"
+        values="-30,9,-5; -18,9,-5; -5,9,-5"
+        dur="482s" repeatCount="1" fill="freeze"
+        calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+    </ellipse>
+    <ellipse cx="9" cy="-4" rx="10" ry="5" fill="#C8A080" opacity="0.15"
+      transform="rotate(90,9,-4)">
+      <animateTransform attributeName="transform" type="rotate"
+        values="90,9,-4; 102,9,-4; 115,9,-4"
+        dur="482s" repeatCount="1" fill="freeze"
+        calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+    </ellipse>
+    <ellipse cx="-7" cy="-3" rx="10" ry="5" fill="#C8A080" opacity="0.15"
+      transform="rotate(210,-7,-3)">
+      <animateTransform attributeName="transform" type="rotate"
+        values="210,-7,-3; 222,-7,-3; 235,-7,-3"
+        dur="482s" repeatCount="1" fill="freeze"
+        calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+    </ellipse>
+  <circle cx="0" cy="0" r="4" fill="#FFD89C" opacity="0.3">
+    <animate attributeName="opacity" values="0.2;0.35;0.2" dur="7s" repeatCount="indefinite"/>
+    <animate attributeName="r" values="3.5;4.5;3.5" dur="7s" repeatCount="indefinite"/>
+  </circle>
+</g>
+<!-- C1: Swaying Branches -->
+<g id="branch-right" transform-origin="0% 30%">
+  <path d="M512,138 Q487,108 501,78" stroke="#4A3828" stroke-width="2" fill="none" opacity="0.18"/>
+  <ellipse cx="490" cy="95" rx="12" ry="6" fill="#4A3828" opacity="0.13"
+    transform="rotate(-30,490,95)"/>
+  <animateTransform attributeName="transform" type="rotate"
+    values="0,512,138; 4,512,138; 0,512,138; -3,512,138; 0,512,138"
+    dur="9.6s" repeatCount="indefinite"
+    calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+</g>
+<g id="branch-left" transform-origin="0% 30%">
+  <path d="M0,143 Q12,113 17,83 Q27,63 25,43" stroke="#4A3828" stroke-width="2" fill="none" opacity="0.33"/>
+  <ellipse cx="21" cy="49" rx="12" ry="6" fill="#4A3828" opacity="0.23"
+    transform="rotate(-27,21,49)"/>
+  <animateTransform attributeName="transform" type="rotate"
+    values="0,0,143; 3,0,143; 0,0,143; -2,0,143; 0,0,143"
+    dur="7.4s" repeatCount="indefinite"
+    calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+</g>
+<!-- B1: Drifting Fog -->
+<g id="fog-635">
+  <defs>  <radialGradient id="fog-g635-0"><stop offset="0%" stop-color="#EDE0D0" stop-opacity="0.5"/><stop offset="40%" stop-color="#EDE0D0" stop-opacity="0.25"/><stop offset="100%" stop-color="#EDE0D0" stop-opacity="0"/></radialGradient>  <radialGradient id="fog-g635-1"><stop offset="0%" stop-color="#F5E6D3" stop-opacity="0.5"/><stop offset="40%" stop-color="#F5E6D3" stop-opacity="0.25"/><stop offset="100%" stop-color="#F5E6D3" stop-opacity="0"/></radialGradient></defs>
+  <ellipse cx="46%" cy="75%" rx="278" ry="26" fill="url(#fog-g635-0)" opacity="0.09">
+    <animateTransform attributeName="transform" type="translate"
+      values="0,0; 95,3; 190,0; 95,-3; 0,0"
+      dur="29s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0.09;0.12;0.10;0.14;0.09"
+      dur="43s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="34%" cy="59%" rx="242" ry="26" fill="url(#fog-g635-1)" opacity="0.08">
+    <animateTransform attributeName="transform" type="translate"
+      values="0,0; -100,3; -200,0; -100,-3; 0,0"
+      dur="43s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0.08;0.11;0.09;0.13;0.08"
+      dur="41s" repeatCount="indefinite"/>
+  </ellipse>
+</g>
+<!-- B4: Dust Motes -->
+<g id="dust-motes-556">
+  <circle cx="0" cy="0" r="1.4" fill="#FFD54F" opacity="0">
+    <animateMotion dur="11s" repeatCount="indefinite" begin="4.3s"
+      path="M285,262 C272,272 272,251 276,274 S296,257 298,270"/>
+    <animate attributeName="opacity" values="0;0.55;0.28;0.55;0.22;0"
+      dur="11s" repeatCount="indefinite" begin="4.3s"/>
+  </circle>
+  <circle cx="0" cy="0" r="1.8" fill="#FFD54F" opacity="0">
+    <animateMotion dur="13s" repeatCount="indefinite" begin="0.5s"
+      path="M268,140 C269,147 283,131 279,147 S263,137 274,135"/>
+    <animate attributeName="opacity" values="0;0.37;0.18;0.37;0.15;0"
+      dur="13s" repeatCount="indefinite" begin="0.5s"/>
+  </circle>
+  <circle cx="0" cy="0" r="2.0" fill="#FFD54F" opacity="0">
+    <animateMotion dur="17s" repeatCount="indefinite" begin="5.6s"
+      path="M279,134 C288,135 273,130 287,129 S294,123 264,136"/>
+    <animate attributeName="opacity" values="0;0.52;0.26;0.52;0.21;0"
+      dur="17s" repeatCount="indefinite" begin="5.6s"/>
+  </circle>
+  <circle cx="0" cy="0" r="1.9" fill="#FFD54F" opacity="0">
+    <animateMotion dur="17s" repeatCount="indefinite" begin="6.0s"
+      path="M309,229 C300,217 307,224 294,222 S306,217 294,239"/>
+    <animate attributeName="opacity" values="0;0.43;0.21;0.43;0.17;0"
+      dur="17s" repeatCount="indefinite" begin="6.0s"/>
+  </circle>
+  <circle cx="0" cy="0" r="1.6" fill="#FFD54F" opacity="0">
+    <animateMotion dur="19s" repeatCount="indefinite" begin="3.1s"
+      path="M320,247 C333,256 331,257 306,249 S318,255 323,246"/>
+    <animate attributeName="opacity" values="0;0.53;0.27;0.53;0.21;0"
+      dur="19s" repeatCount="indefinite" begin="3.1s"/>
+  </circle>
+  <circle cx="0" cy="0" r="1.7" fill="#FFD54F" opacity="0">
+    <animateMotion dur="19s" repeatCount="indefinite" begin="4.7s"
+      path="M302,303 C305,311 292,308 307,299 S307,292 309,307"/>
+    <animate attributeName="opacity" values="0;0.46;0.23;0.46;0.18;0"
+      dur="19s" repeatCount="indefinite" begin="4.7s"/>
+  </circle>
+  <circle cx="0" cy="0" r="1.6" fill="#FFD54F" opacity="0">
+    <animateMotion dur="11s" repeatCount="indefinite" begin="3.9s"
+      path="M242,252 C230,243 250,257 232,264 S242,254 228,240"/>
+    <animate attributeName="opacity" values="0;0.48;0.24;0.48;0.19;0"
+      dur="11s" repeatCount="indefinite" begin="3.9s"/>
+  </circle>
+</g>
+<!-- D2: Sleeping Butterfly -->
+<g id="butterfly-0" transform="translate(79%, 69%)">
+  <ellipse cx="-5" cy="0" rx="7" ry="4" fill="#C8A080" opacity="0.36"
+    transform="rotate(-12,-5,0)">
+    <animateTransform attributeName="transform" type="rotate"
+      values="-12,-5,0; -25,-5,0; -12,-5,0"
+      dur="11s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </ellipse>
+  <ellipse cx="5" cy="0" rx="7" ry="4" fill="#C8A080" opacity="0.36"
+    transform="rotate(12,5,0)">
+    <animateTransform attributeName="transform" type="rotate"
+      values="12,5,0; 25,5,0; 12,5,0"
+      dur="11s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </ellipse>
+  <ellipse cx="0" cy="0" rx="1.5" ry="4" fill="#8B7355" opacity="0.39"/>
+</g>
+<g id="butterfly-1" transform="translate(47%, 66%)">
+  <ellipse cx="-5" cy="0" rx="6" ry="3" fill="#C8A080" opacity="0.28"
+    transform="rotate(-14,-5,0)">
+    <animateTransform attributeName="transform" type="rotate"
+      values="-14,-5,0; -24,-5,0; -14,-5,0"
+      dur="13s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </ellipse>
+  <ellipse cx="5" cy="0" rx="6" ry="3" fill="#C8A080" opacity="0.28"
+    transform="rotate(14,5,0)">
+    <animateTransform attributeName="transform" type="rotate"
+      values="14,5,0; 24,5,0; 14,5,0"
+      dur="13s" repeatCount="indefinite"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+  </ellipse>
+  <ellipse cx="0" cy="0" rx="1.5" ry="4" fill="#8B7355" opacity="0.31"/>
+</g>
+<!-- D3: Sleeping Owl -->
+<g id="sleeping-owl" transform="translate(11%, 33%)" opacity="0.39">
+  <ellipse cx="0" cy="0" rx="10" ry="13" fill="#3D2B1F"/>
+  <polygon points="-7,-11 -5,-18 -2,-11" fill="#3D2B1F"/>
+  <polygon points="7,-11 5,-18 2,-11" fill="#3D2B1F"/>
+  <ellipse cx="-4" cy="-2" rx="2.5" ry="2.5" fill="#FFD080" opacity="0.4">
+    <animate attributeName="ry" values="2.5;2.5;2.5;1.5;0.3"
+      dur="30s" begin="43s" repeatCount="1" fill="freeze"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0.4;0.4;0.4;0.2;0.05"
+      dur="30s" begin="43s" repeatCount="1" fill="freeze"/>
+  </ellipse>
+  <ellipse cx="4" cy="-2" rx="2.5" ry="2.5" fill="#FFD080" opacity="0.4">
+    <animate attributeName="ry" values="2.5;2.5;2.5;1.8;0.3"
+      dur="30s" begin="44.5s" repeatCount="1" fill="freeze"
+      calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+    <animate attributeName="opacity" values="0.4;0.4;0.35;0.2;0.05"
+      dur="30s" begin="44.5s" repeatCount="1" fill="freeze"/>
+  </ellipse>
+</g>
+<!-- A2: Shooting Star -->
+<g id="shooting-star" opacity="0">
+  <line x1="0" y1="0" x2="-20" y2="-8" stroke="#FFCA78" stroke-width="1.5"
+    stroke-linecap="round" opacity="0.5"/>
+  <circle cx="0" cy="0" r="2" fill="#FFF5E0" opacity="0.6"/>
+  <circle cx="0" cy="0" r="5" fill="#FFCA78" opacity="0.15"/>
+  <animateMotion dur="6.8s" begin="77s" repeatCount="indefinite"
+    path="M23,-20 Q157,25 338,51"
+    calcMode="spline" keySplines="0.2 0 0.8 1"/>
+  <animate attributeName="opacity" values="0;0;0.76;0.76;0;0;0;0;0;0;0;0;0"
+    dur="77s" begin="0s" repeatCount="indefinite"
+    calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+</g>
+<!-- Vignette: bottom_heavy -->
+<linearGradient id="vigLG454" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0%" stop-color="#050810" stop-opacity="0"/>
+  <stop offset="50%" stop-color="#050810" stop-opacity="0.15"/>
+  <stop offset="100%" stop-color="#050810" stop-opacity="0.70"/>
+</linearGradient>
+<rect width="512" height="512" fill="url(#vigLG454)" opacity="0.79">
+  <animate attributeName="opacity" values="0.79;0.8400000000000001;0.79" dur="8s" repeatCount="indefinite"
+    calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+</rect>
+
+
+</svg>
