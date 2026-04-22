@@ -14,7 +14,6 @@ import { VOICES, getVoiceId, getVoiceLabel } from '@/utils/voiceConfig';
 import { stripEmotionMarkers } from '@/utils/textUtils';
 import { recordListen, markCompleted } from '@/utils/listeningHistory';
 import { dvAnalytics } from '@/utils/analytics';
-import BreathingPacer from '@/components/BreathingPacer';
 import useCoverVisualSystem from '@/hooks/useCoverVisualSystem';
 import {
   updateMediaSessionMetadata,
@@ -60,12 +59,6 @@ export default function PlayerPage() {
   const musicRef = useRef(null);
   const musicPhaseRef = useRef(1); // Current sleep music phase (1=Capture, 2=Descent, 3=Sleep)
   const tracked1MinRef = useRef(false); // Track 1-min milestone once per play
-  // Web Audio analyser for breathing pacer (persists across pause/resume)
-  const [narrationAnalyser, setNarrationAnalyser] = useState(null);
-  const [amplitudeEnvelope, setAmplitudeEnvelope] = useState(null);
-  const narrationCtxRef = useRef(null);
-  const narrationSourceRef = useRef(null);
-  const narrationConnectedAudioRef = useRef(null);
   const musicStartedRef = useRef(false);
   const lastHistoryRecordRef = useRef(0); // throttle history writes
 
@@ -476,77 +469,6 @@ export default function PlayerPage() {
           voice: selectedVoice,
           ageGroup: content?.age_group || content?.target_age,
         });
-        // Connect Web Audio analyser for breathing pacer (once per audio element).
-        // Strategy:
-        // 1. captureStream() — audio plays via element (survives iOS background),
-        //    analyser taps stream. Best option. Chrome/Edge/Firefox support this.
-        // 2. Safari/iOS fallback — do NOT use createMediaElementSource (it routes audio
-        //    through AudioContext which iOS suspends in background, muting sound).
-        //    Instead, skip AudioContext entirely. Audio plays natively; breathing pacer
-        //    uses a CSS-only fallback animation (no AnalyserNode data).
-        if (narrationConnectedAudioRef.current !== audio) {
-          try {
-            if (typeof audio.captureStream === 'function') {
-              // Path A: captureStream available (Chrome, Edge, Firefox)
-              if (!narrationCtxRef.current) {
-                narrationCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
-              }
-              const ctx = narrationCtxRef.current;
-              if (ctx.state === 'suspended') await ctx.resume().catch(() => {});
-              const analyser = ctx.createAnalyser();
-              analyser.fftSize = 256;
-              analyser.smoothingTimeConstant = 0.8;
-              const stream = audio.captureStream();
-              const source = ctx.createMediaStreamSource(stream);
-              source.connect(analyser);
-              // Do NOT connect to ctx.destination — audio already plays via the element
-              narrationSourceRef.current = source;
-              narrationConnectedAudioRef.current = audio;
-              setNarrationAnalyser(analyser);
-            } else {
-              // Path B: Safari/iOS — skip live AudioContext (it mutes audio in background).
-              // Instead, pre-compute amplitude envelope from the decoded audio buffer.
-              // BreathingPacer uses this with audio.currentTime for speech-synced animation.
-              console.info('[Audio] Safari detected: computing amplitude envelope for breathing pacer');
-              narrationConnectedAudioRef.current = audio;
-              setNarrationAnalyser(null);
-              // Compute envelope async — doesn't block playback
-              const envUrl = audio.src;
-              (async () => {
-                try {
-                  const resp = await fetch(envUrl);
-                  if (!resp.ok) return;
-                  const arrayBuf = await resp.arrayBuffer();
-                  const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                  const audioBuf = await ctx.decodeAudioData(arrayBuf);
-                  // Close context immediately — we only needed it for decoding
-                  ctx.close().catch(() => {});
-                  // Compute RMS at 20Hz (every 50ms)
-                  const ENVELOPE_RATE = 20;
-                  const channelData = audioBuf.getChannelData(0);
-                  const samplesPerWindow = Math.floor(audioBuf.sampleRate / ENVELOPE_RATE);
-                  const envelopeLength = Math.ceil(channelData.length / samplesPerWindow);
-                  const envelope = new Float32Array(envelopeLength);
-                  for (let i = 0; i < envelopeLength; i++) {
-                    let sumSq = 0;
-                    const start = i * samplesPerWindow;
-                    const end = Math.min(start + samplesPerWindow, channelData.length);
-                    for (let j = start; j < end; j++) {
-                      sumSq += channelData[j] * channelData[j];
-                    }
-                    envelope[i] = Math.sqrt(sumSq / (end - start));
-                  }
-                  setAmplitudeEnvelope({ data: envelope, sampleRate: ENVELOPE_RATE });
-                  console.info('[Audio] Amplitude envelope ready:', envelopeLength, 'samples');
-                } catch (e) {
-                  console.warn('[Audio] Envelope computation failed, using CSS fallback:', e.message);
-                }
-              })();
-            }
-          } catch (err) {
-            console.warn('Breathing pacer: Web Audio setup failed', err.message);
-          }
-        }
       } catch (e) {
         console.error('Playback failed:', e);
         setAudioLoading(false);
@@ -687,14 +609,6 @@ export default function PlayerPage() {
       audioRef.current = null;
       setTimeout(() => { audioDisposingRef.current = false; }, 50);
     }
-    // Reset analyser so it reconnects to the new audio element
-    narrationConnectedAudioRef.current = null;
-    if (narrationSourceRef.current) {
-      try { narrationSourceRef.current.disconnect(); } catch {}
-      narrationSourceRef.current = null;
-    }
-    setNarrationAnalyser(null);
-    setAmplitudeEnvelope(null);
     setIsPlaying(false);
     setProgress(0);
     setCurrentTime(0);
@@ -1135,10 +1049,7 @@ export default function PlayerPage() {
           {coverSystemEnabled && isPlaying && (
             <div className={styles.progressArc} />
           )}
-          {isPlaying && (
-            <BreathingPacer analyserNode={narrationAnalyser} amplitudeEnvelope={amplitudeEnvelope} audioRef={audioRef} />
-          )}
-        </div>
+</div>
 
         <div className={styles.badgeRow}>
           <div className={styles.badge}>
