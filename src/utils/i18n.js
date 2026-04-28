@@ -235,7 +235,7 @@ const translations = {
     // Profile
     profileTitle: 'Profile',
     profileLogout: 'Bahar jaayein',
-    profileLanguage: 'Bhasha',
+    profileLanguage: 'Hindi Level',
     // Voice Onboarding
     voicePreviewTitle: 'Apna Kathakaar Chunein',
     voicePreviewSubtitle: 'Sunne ke liye tap karein, apni pasand chunein',

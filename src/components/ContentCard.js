@@ -9,10 +9,10 @@ import styles from './ContentCard.module.css';
 
 const MOOD_CONFIG = {
   calm:    { emoji: '\uD83D\uDE0C', label: { en: 'Calm',    hi: 'Shaant' } },
-  curious: { emoji: '\uD83D\uDD0D', label: { en: 'Curious', hi: 'Jigyaasu' } },
-  wired:   { emoji: '\u26A1',       label: { en: 'Wired',   hi: 'Urjavaan' } },
+  curious: { emoji: '\uD83D\uDD0D', label: { en: 'Curious', hi: 'Curious' } },
+  wired:   { emoji: '\u26A1',       label: { en: 'Wired',   hi: 'Hyper' } },
   sad:     { emoji: '\uD83D\uDCA7', label: { en: 'Sad',     hi: 'Udaas' } },
-  anxious: { emoji: '\uD83C\uDF00', label: { en: 'Anxious', hi: 'Chintit' } },
+  anxious: { emoji: '\uD83C\uDF00', label: { en: 'Anxious', hi: 'Pareshaan' } },
   angry:   { emoji: '\uD83D\uDD25', label: { en: 'Angry',   hi: 'Gussa' } },
 };
 

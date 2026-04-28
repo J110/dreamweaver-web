@@ -26,18 +26,18 @@ const AGE_GROUPS = [
 
 const MOODS = [
   { id: 'all', emoji: '\u2728', label: { en: 'All', hi: 'Sabhi' } },
-  { id: 'calm', emoji: '\uD83D\uDE0C', label: { en: 'Calm', hi: 'Shant' } },
-  { id: 'curious', emoji: '\uD83E\uDD14', label: { en: 'Curious', hi: 'Jigyasu' } },
+  { id: 'calm', emoji: '\uD83D\uDE0C', label: { en: 'Calm', hi: 'Shaant' } },
+  { id: 'curious', emoji: '\uD83E\uDD14', label: { en: 'Curious', hi: 'Curious' } },
   { id: 'sad', emoji: '\uD83E\uDD79', label: { en: 'Sad', hi: 'Udaas' } },
-  { id: 'anxious', emoji: '\uD83D\uDE1F', label: { en: 'Anxious', hi: 'Chintit' } },
-  { id: 'wired', emoji: '\u26A1', label: { en: 'Wired', hi: 'Chanchal' } },
+  { id: 'anxious', emoji: '\uD83D\uDE1F', label: { en: 'Anxious', hi: 'Pareshaan' } },
+  { id: 'wired', emoji: '\u26A1', label: { en: 'Wired', hi: 'Hyper' } },
   { id: 'angry', emoji: '\uD83D\uDE24', label: { en: 'Angry', hi: 'Gussa' } },
 ];
 
 const LANGUAGE_LEVELS = [
-  { id: 'basic', label: { en: 'Keep Simple', hi: 'Saral' } },
-  { id: 'intermediate', label: { en: 'Medium', hi: 'Madhyam' } },
-  { id: 'advanced', label: { en: 'Challenge', hi: 'Chunauti' } },
+  { id: 'basic', label: { en: 'Keep Simple', hi: 'Aasan' } },
+  { id: 'intermediate', label: { en: 'Medium', hi: 'Beech ka' } },
+  { id: 'advanced', label: { en: 'Challenge', hi: 'Mushkil' } },
 ];
 
 export default function HomeApp() {
@@ -201,7 +201,7 @@ export default function HomeApp() {
           </div>
         </div>
         <div className={styles.filterGroup}>
-          <span className={styles.filterLabel}>{lang === 'hi' ? 'Bhasha' : 'Language'}</span>
+          <span className={styles.filterLabel}>{lang === 'hi' ? 'Hindi Level' : 'Language'}</span>
           <div className={styles.themeFilter}>
             <button
               onClick={() => setActiveLanguageLevel('all')}
