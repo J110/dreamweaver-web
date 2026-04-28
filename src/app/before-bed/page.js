@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react';
 import StarField from '@/components/StarField';
-import { sillySongsApi, poemsApi } from '@/utils/api';
+import { sillySongsApi, poemsApi, funnyShortsApi } from '@/utils/api';
 import { useI18n } from '@/utils/i18n';
 import { dvAnalytics } from '@/utils/analytics';
 import styles from './page.module.css';
@@ -70,6 +70,7 @@ function BeforeBedContent() {
   const { t, lang } = useI18n();
   const [songs, setSongs] = useState([]);
   const [poems, setPoems] = useState([]);
+  const [funnyShorts, setFunnyShorts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [playingId, setPlayingId] = useState(null);
   const [playingType, setPlayingType] = useState(null); // 'song' or 'poem'
@@ -94,16 +95,19 @@ function BeforeBedContent() {
   const loadContent = useCallback(async (group, currentLang) => {
     setLoading(true);
     try {
-      const [songsResult, poemsResult] = await Promise.all([
+      const [songsResult, poemsResult, funnyResult] = await Promise.all([
         sillySongsApi.list(group, currentLang).catch(() => []),
         poemsApi.list(group, currentLang).catch(() => []),
+        funnyShortsApi.list(group, currentLang).catch(() => []),
       ]);
       setSongs(songsResult);
       setPoems(poemsResult);
+      setFunnyShorts(funnyResult);
     } catch (err) {
       console.error('Failed to load before bed content:', err);
       setSongs([]);
       setPoems([]);
+      setFunnyShorts([]);
     } finally {
       setLoading(false);
     }
@@ -234,6 +238,66 @@ function BeforeBedContent() {
     });
   }, [playingId]);
 
+  const handlePlayFunnyShort = useCallback((short) => {
+    if (!short.audio_url && !short.audio_file) return;
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+    if (playingId === short.id && audioRef.current) {
+      if (audioRef.current.paused) {
+        audioRef.current.play();
+      } else {
+        audioRef.current.pause();
+      }
+      return;
+    }
+
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+
+    // Funny shorts use absolute audio_url; fall back to lang-specific dir if only audio_file is set
+    const lang = short.lang || 'en';
+    const audioDir = lang === 'hi' ? 'funny-shorts-hi' : 'funny-shorts';
+    const src = short.audio_url
+      ? (short.audio_url.startsWith('http') ? short.audio_url : `${API_URL}${short.audio_url}`)
+      : `${API_URL}/audio/${audioDir}/${short.audio_file}`;
+
+    const audio = new Audio(src);
+    audioRef.current = audio;
+    setPlayingId(short.id);
+    setPlayingType('funny_short');
+    setProgress(0);
+
+    const isReplay = sessionPlayed.current.has(short.id);
+    if (isReplay) {
+      funnyShortsApi.replay(short.id).catch(() => {});
+    } else {
+      funnyShortsApi.play(short.id).catch(() => {});
+      sessionPlayed.current.add(short.id);
+    }
+
+    audio.addEventListener('timeupdate', () => {
+      if (audio.duration) {
+        setProgress((audio.currentTime / audio.duration) * 100);
+      }
+    });
+    audio.addEventListener('ended', () => {
+      setPlayingId(null);
+      setPlayingType(null);
+      setProgress(0);
+    });
+    audio.addEventListener('error', () => {
+      setPlayingId(null);
+      setPlayingType(null);
+      setProgress(0);
+    });
+    audio.play().catch(() => {
+      setPlayingId(null);
+      setPlayingType(null);
+    });
+  }, [playingId]);
+
   const handleStop = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.pause();
@@ -255,7 +319,8 @@ function BeforeBedContent() {
 
   const playingSong = songs.find((s) => s.id === playingId);
   const playingPoem = poems.find((p) => p.id === playingId);
-  const playingItem = playingSong || playingPoem;
+  const playingFunny = funnyShorts.find((f) => f.id === playingId);
+  const playingItem = playingSong || playingPoem || playingFunny;
 
   return (
     <div className={styles.app}>
@@ -390,7 +455,62 @@ function BeforeBedContent() {
             </section>
           )}
 
-          {songs.length === 0 && poems.length === 0 && (
+          {/* Funny Shorts Section */}
+          {funnyShorts.length > 0 && (
+            <section className={styles.section}>
+              <h2 className={styles.sectionTitle}>😄 Funny Shorts</h2>
+              <div className={styles.horizontalScroll}>
+                {funnyShorts.map((short) => {
+                  const lang = short.lang || 'en';
+                  const coverDir = lang === 'hi' ? 'funny-shorts-hi' : 'funny-shorts';
+                  const coverFile = short.cover_file || (short.cover ? short.cover.split('/').pop() : null);
+                  return (
+                    <div key={short.id} className={styles.cardWrapper}>
+                      <div
+                        className={`${styles.card} ${playingId === short.id ? styles.cardPlaying : ''}`}
+                        onClick={() => handlePlayFunnyShort(short)}
+                      >
+                        {isAddedToday(short.created_at) && (
+                          <span className={styles.newBadge}>NEW</span>
+                        )}
+                        {coverFile ? (
+                          <div className={styles.cardCover}>
+                            <img
+                              src={`/covers/${coverDir}/${coverFile}`}
+                              className={styles.cardCoverImg}
+                              alt={short.title}
+                            />
+                          </div>
+                        ) : (
+                          <div className={styles.cardEmojis}>😄</div>
+                        )}
+                        <div className={styles.cardTitle}>{short.title}</div>
+                        <div className={styles.cardMeta}>
+                          <span className={styles.cardDuration}>
+                            {formatDuration(short.duration_seconds)}
+                          </span>
+                          <div className={styles.cardActions}>
+                            <ShareBtn type="funny-shorts" id={short.id} title={short.title} />
+                            <button
+                              className={styles.playBtn}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handlePlayFunnyShort(short);
+                              }}
+                            >
+                              {playingId === short.id ? '⏸' : '▶'}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          )}
+
+          {songs.length === 0 && poems.length === 0 && funnyShorts.length === 0 && (
             <div className={styles.emptyMsg}>
               <div className={styles.emptyIcon}>🌙</div>
               <p>{t('beforeBedEmpty')}</p>
@@ -404,7 +524,7 @@ function BeforeBedContent() {
         <div className={styles.miniPlayer}>
           <div className={styles.miniPlayerInner}>
             <span className={styles.miniPlayerEmoji}>
-              {playingType === 'poem' ? '✨' : '🎵'}
+              {playingType === 'poem' ? '✨' : playingType === 'funny_short' ? '😄' : '🎵'}
             </span>
             <span className={styles.miniPlayerTitle}>{playingItem.title}</span>
             <button className={styles.miniPlayerBtn} onClick={handleStop}>
