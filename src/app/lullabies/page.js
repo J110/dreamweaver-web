@@ -74,7 +74,19 @@ export default function LullabiesPage() {
   };
 
   const handlePlay = useCallback((lullaby) => {
-    if (!lullaby.audio_file) return;
+    // Resolve playable audio URL — prefer audio_url (newer items), fall back
+    // to audio_file (legacy items). Handles both lang variants since some
+    // audio paths are backend-served (try absolute prepend) and some are
+    // frontend-aliased (use the path as-is).
+    let src = null;
+    if (lullaby.audio_url) {
+      src = lullaby.audio_url.startsWith('http')
+        ? lullaby.audio_url
+        : `${API_URL}${lullaby.audio_url}`;
+    } else if (lullaby.audio_file) {
+      src = `/audio/lullabies/${lullaby.audio_file}`;
+    }
+    if (!src) return;
 
     // Toggle pause/play
     if (playing === lullaby.id && audioRef.current) {
@@ -92,7 +104,7 @@ export default function LullabiesPage() {
       audioRef.current = null;
     }
 
-    const audio = new Audio(`/audio/lullabies/${lullaby.audio_file}`);
+    const audio = new Audio(src);
     audioRef.current = audio;
     setPlaying(lullaby.id);
     setProgress(0);
