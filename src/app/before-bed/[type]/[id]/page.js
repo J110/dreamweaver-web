@@ -5,6 +5,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.dreamvalley.app'
 const TYPE_CONFIG = {
   'silly-songs': { label: 'Silly Song', emoji: '🎵', apiPath: 'silly-songs', coverDir: 'silly-songs' },
   'poems': { label: 'Musical Poem', emoji: '✨', apiPath: 'poems', coverDir: 'poems' },
+  'funny-shorts': { label: 'Funny Short', emoji: '😄', apiPath: 'funny-shorts', coverDir: 'funny-shorts' },
 };
 
 async function fetchItem(type, id) {
@@ -104,8 +105,10 @@ export default async function BeforeBedSharePage({ params }) {
     );
   }
 
-  const coverPath = item.cover_file ? `/covers/${config.coverDir}/${item.cover_file}` : null;
-  const isSvg = item.cover_file?.endsWith('.svg');
+  // Prefer item.cover (full path, set by orchestrators that know the lang-specific
+  // dir like funny-shorts-hi). Fall back to coverDir + cover_file for legacy items.
+  const coverPath = item.cover || (item.cover_file ? `/covers/${config.coverDir}/${item.cover_file}` : null);
+  const isSvg = (coverPath || '').endsWith('.svg');
   const ageLabel = item.age_group ? `Ages ${item.age_group}` : '';
   const duration = formatDuration(item.duration_seconds);
 

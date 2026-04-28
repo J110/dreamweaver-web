@@ -10,6 +10,7 @@ export const contentType = 'image/png';
 const TYPE_CONFIG = {
   'silly-songs': { label: 'SILLY SONG', emoji: '🎵', apiPath: 'silly-songs', accent: '#FFD93D' },
   'poems': { label: 'MUSICAL POEM', emoji: '✨', apiPath: 'poems', accent: '#4ECDC4' },
+  'funny-shorts': { label: 'FUNNY SHORT', emoji: '😄', apiPath: 'funny-shorts', accent: '#FF6B9D' },
 };
 
 const STARS = [
