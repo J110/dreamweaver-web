@@ -12,6 +12,7 @@ import { useVoicePreferences } from '@/utils/voicePreferences';
 import { isLoggedIn } from '@/utils/auth';
 import { VOICES, getVoiceId, getVoiceLabel } from '@/utils/voiceConfig';
 import { stripEmotionMarkers } from '@/utils/textUtils';
+import { getDisplayCategory, getDisplayCategoryUpper } from '@/utils/contentTypes';
 import { recordListen, markCompleted } from '@/utils/listeningHistory';
 import { dvAnalytics } from '@/utils/analytics';
 import useCoverVisualSystem from '@/hooks/useCoverVisualSystem';
@@ -552,7 +553,7 @@ export default function PlayerPage() {
   // Media Session: Update metadata when story loads (title, cover art on lock screen)
   useEffect(() => {
     if (!content) return;
-    const typeLabel = content.type === 'song' ? 'Lullaby' : 'Bedtime Story';
+    const typeLabel = getDisplayCategory(content);
     updateMediaSessionMetadata({
       title: content.title,
       artist: 'Dream Valley',
@@ -1053,7 +1054,7 @@ export default function PlayerPage() {
 
         <div className={styles.badgeRow}>
           <div className={styles.badge}>
-            {(content.story_type && {'folk_tale':'FOLK TALE','mythological':'MYTHOLOGICAL','fable':'FABLE','nature':'NATURE STORY','slice_of_life':'SLICE OF LIFE','dream':'DREAM'}[content.story_type]) || (content.type?.toLowerCase() === 'long_story' ? 'LONG STORY' : content.type?.toLowerCase() === 'story' ? 'STORY' : content.type?.toLowerCase() === 'song' ? 'LULLABY' : content.type?.toUpperCase() || 'STORY')}
+            {(content.story_type && {'folk_tale':'FOLK TALE','mythological':'MYTHOLOGICAL','fable':'FABLE','nature':'NATURE STORY','slice_of_life':'SLICE OF LIFE','dream':'DREAM'}[content.story_type]) || getDisplayCategoryUpper(content)}
           </div>
           {content.language_level && (
             <div className={styles.languageBadge}>
@@ -1136,7 +1137,7 @@ export default function PlayerPage() {
 
             <div className={styles.aboutDetails}>
               <span>
-                {content.story_type && {'folk_tale':'Folk Tale','mythological':'Mythological','fable':'Fable','nature':'Nature Story','slice_of_life':'Slice of Life','dream':'Dream'}[content.story_type] || (content.type === 'long_story' ? 'Long Story' : content.type === 'song' ? 'Lullaby' : 'Story')}
+                {content.story_type && {'folk_tale':'Folk Tale','mythological':'Mythological','fable':'Fable','nature':'Nature Story','slice_of_life':'Slice of Life','dream':'Dream'}[content.story_type] || getDisplayCategory(content)}
                 {' · ~'}{content.duration || (content.duration_seconds ? Math.max(1, Math.round(content.duration_seconds / 60)) : '?')}{' min'}
               </span>
               <span>

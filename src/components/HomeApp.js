@@ -13,6 +13,14 @@ import { isLoggedIn, getUser } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
 import { trendingApi } from '@/utils/api';
 import { getStories } from '@/utils/seedData';
+import {
+  isStory,
+  isLongStory,
+  isLullaby,
+  isFunnyShort,
+  isSillySong,
+  getSectionLabel,
+} from '@/utils/contentTypes';
 import { sortByDiscovery } from '@/utils/listeningHistory';
 import styles from '@/app/page.module.css';
 
@@ -149,9 +157,14 @@ export default function HomeApp() {
     return true;
   });
 
-  const storyItems = sortByDiscovery(filteredStories.filter((s) => s.type === 'story'));
-  const longStoryItems = sortByDiscovery(filteredStories.filter((s) => s.type === 'long_story'));
-  const songItems = sortByDiscovery(filteredStories.filter((s) => s.type === 'song'));
+  // Use centralized predicates from utils/contentTypes — never check
+  // s.type === 'song' directly here, since songs include lullabies AND
+  // funny shorts AND silly songs distinguished only by subtype.
+  const storyItems = sortByDiscovery(filteredStories.filter(isStory));
+  const longStoryItems = sortByDiscovery(filteredStories.filter(isLongStory));
+  const lullabyItems = sortByDiscovery(filteredStories.filter(isLullaby));
+  const funnyShortItems = sortByDiscovery(filteredStories.filter(isFunnyShort));
+  const sillySongItems = sortByDiscovery(filteredStories.filter(isSillySong));
 
   const appName = lang === 'hi' ? 'Sapno ki Duniya' : 'Dream Valley';
   const logoSrc = lang === 'hi' ? '/logo-hi.png' : '/logo-new.png';
@@ -272,13 +285,43 @@ export default function HomeApp() {
               </section>
             )}
 
-            {songItems.length > 0 && (
+            {lullabyItems.length > 0 && (
               <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>
-                  {lang === 'hi' ? '🎵 Loriyaan' : '🎵 Lullabies'}
+                  {getSectionLabel('lullaby', lang)}
                 </h2>
                 <div className={styles.horizontalScroll}>
-                  {songItems.map((item) => (
+                  {lullabyItems.map((item) => (
+                    <div key={item.id} className={styles.cardWrapper}>
+                      <ContentCard content={item} />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {funnyShortItems.length > 0 && (
+              <section className={styles.section}>
+                <h2 className={styles.sectionTitle}>
+                  {getSectionLabel('funny_short', lang)}
+                </h2>
+                <div className={styles.horizontalScroll}>
+                  {funnyShortItems.map((item) => (
+                    <div key={item.id} className={styles.cardWrapper}>
+                      <ContentCard content={item} />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {sillySongItems.length > 0 && (
+              <section className={styles.section}>
+                <h2 className={styles.sectionTitle}>
+                  {getSectionLabel('silly_song', lang)}
+                </h2>
+                <div className={styles.horizontalScroll}>
+                  {sillySongItems.map((item) => (
                     <div key={item.id} className={styles.cardWrapper}>
                       <ContentCard content={item} />
                     </div>

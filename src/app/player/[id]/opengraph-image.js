@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { SEED_STORIES } from '@/utils/seedData';
+import { getDisplayCategoryUpper } from '@/utils/contentTypes';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.dreamvalley.app';
 
@@ -58,7 +59,7 @@ export default async function Image({ params }) {
   }
 
   const title = story?.title || 'A Magical Bedtime Story';
-  const storyType = story?.type === 'song' ? 'LULLABY' : story?.type === 'long_story' ? 'LONG STORY' : 'STORY';
+  const storyType = getDisplayCategoryUpper(story);
 
   return new ImageResponse(
     (
