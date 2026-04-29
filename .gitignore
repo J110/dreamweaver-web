@@ -46,6 +46,9 @@ Thumbs.db
 # Audio files — served by nginx from disk, not needed in git
 public/audio/pre-gen/
 
+# Cover files — served by nginx from /opt/cover-store/ on prod, not needed in git
+public/covers/
+
 # Original large logo SVGs (2.6MB+ each, replaced with optimized PNGs)
 public/logo-new-original.svg
 public/logo-hi-original.svg
