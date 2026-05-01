@@ -161,11 +161,6 @@ export default async function StoryPage({ params }) {
             <span className={styles.typeBadge}>{typeLabel}</span>
             <span className={styles.ageBadge}>{ageLabel} yrs</span>
             {duration && <span className={styles.durationBadge}>{duration} min</span>}
-            {story.language_level && (
-              <span className={styles.languageBadge}>
-                {story.language_level === 'basic' ? '📗 Keep Simple' : story.language_level === 'intermediate' ? '📘 Medium' : '📙 Challenge'}
-              </span>
-            )}
           </div>
 
           <h1 className={styles.title}>{story.title}</h1>

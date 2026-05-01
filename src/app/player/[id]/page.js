@@ -1056,11 +1056,6 @@ export default function PlayerPage() {
           <div className={styles.badge}>
             {(content.story_type && {'folk_tale':'FOLK TALE','mythological':'MYTHOLOGICAL','fable':'FABLE','nature':'NATURE STORY','slice_of_life':'SLICE OF LIFE','dream':'DREAM'}[content.story_type]) || getDisplayCategoryUpper(content)}
           </div>
-          {content.language_level && (
-            <div className={styles.languageBadge}>
-              {content.language_level === 'basic' ? '📗 Keep Simple' : content.language_level === 'intermediate' ? '📘 Medium' : '📙 Challenge'}
-            </div>
-          )}
         </div>
         <h1 className={styles.title}>{content.title}</h1>
 

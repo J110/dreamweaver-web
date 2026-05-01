@@ -139,21 +139,6 @@
   margin-bottom: var(--spacing-sm);
 }
 
-/* Language level badge — subtle text in card footer */
-.languageLevelBadge {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  line-height: 1.3;
-  white-space: nowrap;
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.45);
-}
-
 /* Mood badge — small pill in card footer */
 .moodBadge {
   display: inline-flex;
