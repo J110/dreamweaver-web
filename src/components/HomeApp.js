@@ -35,12 +35,6 @@ const MOODS = [
   { id: 'angry', emoji: '\uD83D\uDE24', label: { en: 'Angry', hi: 'Gussa' } },
 ];
 
-const LANGUAGE_LEVELS = [
-  { id: 'basic', label: { en: 'Keep Simple', hi: 'Aasan' } },
-  { id: 'intermediate', label: { en: 'Medium', hi: 'Beech ka' } },
-  { id: 'advanced', label: { en: 'Challenge', hi: 'Mushkil' } },
-];
-
 export default function HomeApp() {
   const { t, lang } = useI18n();
   const [user, setUser] = useState(null);
@@ -48,12 +42,16 @@ export default function HomeApp() {
   const [loading, setLoading] = useState(true);
   const [activeAge, setActiveAge] = useState('all');
   const [activeMood, setActiveMood] = useState('all');
-  const [activeLanguageLevel, setActiveLanguageLevel] = useState(() => {
+
+  // One-time cleanup: the Hindi-Level / Language filter was removed.
+  // Drop the orphaned preference key from previous sessions so it
+  // doesn't linger in users' localStorage.
+  useEffect(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('dv_language_filter') || 'all';
+      localStorage.removeItem('dv_language_filter');
     }
-    return 'all';
-  });
+  }, []);
+
   useEffect(() => {
     if (isLoggedIn()) {
       setUser(getUser());
@@ -114,17 +112,6 @@ export default function HomeApp() {
     }
   };
 
-  const handleLanguageLevelChange = (levelId) => {
-    setActiveLanguageLevel(levelId);
-    if (typeof window !== 'undefined') {
-      if (levelId === 'all') {
-        localStorage.removeItem('dv_language_filter');
-      } else {
-        localStorage.setItem('dv_language_filter', levelId);
-      }
-    }
-  };
-
   // Match ContentCard's age resolution: prefer age_group, fall back to target_age
   const getAgeGroup = (s) => {
     if (s.age_group) return s.age_group;
@@ -143,9 +130,6 @@ export default function HomeApp() {
     }
     if (activeMood !== 'all') {
       if (s.mood !== activeMood) return false;
-    }
-    if (activeLanguageLevel !== 'all') {
-      if (s.language_level !== activeLanguageLevel) return false;
     }
     return true;
   });
@@ -203,27 +187,6 @@ export default function HomeApp() {
               >
                 <span>{g.emoji}</span>
                 <span>{g.label[lang] || g.label.en}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className={styles.filterGroup}>
-          <span className={styles.filterLabel}>{lang === 'hi' ? 'Hindi Level' : 'Language'}</span>
-          <div className={styles.themeFilter}>
-            <button
-              onClick={() => setActiveLanguageLevel('all')}
-              className={`${styles.themePill} ${activeLanguageLevel === 'all' ? styles.themePillActive : ''}`}
-            >
-              <span>✨</span>
-              <span>{lang === 'hi' ? 'Sabhi' : 'All'}</span>
-            </button>
-            {LANGUAGE_LEVELS.map((l) => (
-              <button
-                key={l.id}
-                onClick={() => setActiveLanguageLevel(l.id)}
-                className={`${styles.themePill} ${activeLanguageLevel === l.id ? styles.themePillActive : ''}`}
-              >
-                <span>{l.label[lang] || l.label.en}</span>
               </button>
             ))}
           </div>
