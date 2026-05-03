@@ -26,8 +26,6 @@ const translations = {
     navProfile: 'Profile',
     // Home
     homeGreeting: 'Good evening',
-    homeBannerTitle: 'New stories every day!',
-    homeBannerText: 'Discover magical bedtime tales crafted just for your little ones',
     homeAllThemes: 'All',
     homeTrending: 'Popular Stories',
     homeStories: 'Short Stories',
@@ -147,8 +145,6 @@ const translations = {
     navProfile: 'Profile',
     // Home
     homeGreeting: 'Shubh sandhya',
-    homeBannerTitle: 'Har din nayi kahaniyan!',
-    homeBannerText: 'Aapke chote bacchon ke liye khaas taur par banayi gayi jaadui kahaniyan',
     homeAllThemes: 'Sabhi',
     homeTrending: 'Lokpriya Kahaniyan',
     homeStories: 'Kahaniyan',

@@ -44,42 +44,6 @@
   font-weight: 500;
 }
 
-/* Announcement Banner */
-.banner {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  padding: 14px 16px;
-  background: linear-gradient(135deg, rgba(107, 76, 230, 0.2), rgba(255, 107, 157, 0.15));
-  border: 1px solid rgba(107, 76, 230, 0.25);
-  border-radius: 16px;
-  margin: 8px 0 16px;
-}
-
-.bannerIcon {
-  font-size: 28px;
-  flex-shrink: 0;
-}
-
-.bannerContent {
-  flex: 1;
-  min-width: 0;
-}
-
-.bannerTitle {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--color-text-light);
-  margin: 0 0 2px 0;
-}
-
-.bannerText {
-  font-size: 12px;
-  color: var(--color-text-muted);
-  margin: 0;
-  line-height: 1.4;
-}
-
 /* Filter Groups */
 .filterGroup {
   margin-bottom: 4px;

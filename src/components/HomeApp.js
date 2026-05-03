@@ -166,15 +166,6 @@ export default function HomeApp() {
           )}
         </div>
 
-        {/* Announcement Banner */}
-        <div className={styles.banner}>
-          <div className={styles.bannerIcon}>🎉</div>
-          <div className={styles.bannerContent}>
-            <h3 className={styles.bannerTitle}>{t('homeBannerTitle')}</h3>
-            <p className={styles.bannerText}>{t('homeBannerText')}</p>
-          </div>
-        </div>
-
         {/* Filter Pills */}
         <div className={styles.filterGroup}>
           <span className={styles.filterLabel}>{lang === 'hi' ? 'Umra' : 'Age'}</span>
