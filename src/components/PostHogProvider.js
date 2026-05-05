@@ -26,9 +26,19 @@ export default function PostHogProvider({ children }) {
       const raw = localStorage.getItem('dreamweaver_user');
       if (raw) {
         const user = JSON.parse(raw);
-        if (user?.username) {
-          posthog.identify(user.username, {
-            $set: { username: user.username },
+        const username = user?.username;
+        const familyId = user?.family_id;
+        if (familyId) {
+          posthog.identify(familyId, {
+            $set: { username },
+            $set_once: { first_seen_at: new Date().toISOString() },
+          });
+        } else if (username) {
+          // Pre-1.2 cached user record without family_id — keep commit 1.1
+          // behavior. The next login response will include family_id and
+          // setUser() will alias + re-identify.
+          posthog.identify(username, {
+            $set: { username },
             $set_once: { first_seen_at: new Date().toISOString() },
           });
         }

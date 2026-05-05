@@ -15,6 +15,7 @@ import { stripEmotionMarkers } from '@/utils/textUtils';
 import { getDisplayCategory, getDisplayCategoryUpper } from '@/utils/contentTypes';
 import { recordListen, markCompleted } from '@/utils/listeningHistory';
 import { dvAnalytics } from '@/utils/analytics';
+import posthog from 'posthog-js';
 import useCoverVisualSystem from '@/hooks/useCoverVisualSystem';
 import {
   updateMediaSessionMetadata,
@@ -429,6 +430,15 @@ export default function PlayerPage() {
           durationMs: Math.round((audio.duration || 0) * 1000),
           voice: selectedVoice,
         });
+        try {
+          posthog.capture('play_complete', {
+            content_id: params?.id,
+            content_type: content?.type,
+            age_group: content?.age_group || content?.target_age,
+            duration_played_ms: Math.round((audio.duration || 0) * 1000),
+            completed: true,
+          });
+        } catch { /* analytics never breaks playback */ }
         // Post-story: ensure Phase 3 music, then fade to silence after 30s
         if (musicRef.current && musicRef.current.isPlaying) {
           musicRef.current.transitionToPhase(3);
@@ -470,6 +480,13 @@ export default function PlayerPage() {
           voice: selectedVoice,
           ageGroup: content?.age_group || content?.target_age,
         });
+        try {
+          posthog.capture('play_start', {
+            content_id: params?.id,
+            content_type: content?.type,
+            age_group: content?.age_group || content?.target_age,
+          });
+        } catch { /* analytics never breaks playback */ }
       } catch (e) {
         console.error('Playback failed:', e);
         setAudioLoading(false);

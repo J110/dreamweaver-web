@@ -17,9 +17,9 @@ Tracked items not blocking the current commit but owed back to the codebase / do
   `.env*` file on prod should hold these. Highest precedence in Next.js env
   resolution and gitignored by default.
 
-- **Note for commit 1.2 backend event emitter:** PostHog server-side key
-  (`POSTHOG_PROJECT_API_KEY`, no `NEXT_PUBLIC_` prefix) IS a secret. Goes in
-  `/opt/dreamweaver-backend/.env`, not `.env.production.local`. Different
-  file, different security model. The `NEXT_PUBLIC_POSTHOG_KEY` shipped in
-  commit 1.1 is intentionally public — inlined into the client JS bundle,
-  served to every browser.
+- **Backend PostHog ingestion** uses the **same project API key** as the
+  client (`phc_` prefix). Lives in `/opt/dreamweaver-backend/.env` as
+  `POSTHOG_PROJECT_API_KEY` (no `NEXT_PUBLIC_` prefix since it's
+  backend-only). Project keys are public-by-design — server-side placement
+  is for env hygiene, not secret protection. Earlier note describing it as
+  a secret was incorrect.
