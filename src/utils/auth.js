@@ -1,3 +1,18 @@
+const callPosthog = (fn) => {
+  if (typeof window === 'undefined') return;
+  import('posthog-js')
+    .then(({ default: posthog }) => {
+      try {
+        fn(posthog);
+      } catch {
+        /* ignore */
+      }
+    })
+    .catch(() => {
+      /* ignore */
+    });
+};
+
 export const getToken = () => {
   if (typeof window === 'undefined') return null;
   return localStorage.getItem('dreamweaver_token');
@@ -22,6 +37,14 @@ export const getUser = () => {
 export const setUser = (user) => {
   if (typeof window === 'undefined') return;
   localStorage.setItem('dreamweaver_user', JSON.stringify(user));
+  if (user?.username) {
+    callPosthog((posthog) => {
+      posthog.identify(user.username, {
+        $set: { username: user.username },
+        $set_once: { first_seen_at: new Date().toISOString() },
+      });
+    });
+  }
 };
 
 export const removeUser = () => {
@@ -36,4 +59,5 @@ export const isLoggedIn = () => {
 export const logout = () => {
   removeToken();
   removeUser();
+  callPosthog((posthog) => posthog.reset());
 };

@@ -1,6 +1,12 @@
+import { Suspense } from 'react';
+import Script from 'next/script';
 import { Quicksand } from 'next/font/google';
 import './globals.css';
 import AppShell from '@/components/AppShell';
+import PostHogProvider from '@/components/PostHogProvider';
+import PostHogPageview from '@/components/PostHogPageview';
+
+const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID;
 
 const quicksand = Quicksand({
   subsets: ['latin'],
@@ -118,9 +124,31 @@ export default function RootLayout({ children }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        {GA4_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                window.gtag = gtag;
+                gtag('js', new Date());
+                gtag('config', '${GA4_ID}', { send_page_view: false });
+              `}
+            </Script>
+          </>
+        )}
       </head>
       <body className={quicksand.className}>
-        <AppShell>{children}</AppShell>
+        <PostHogProvider>
+          <Suspense fallback={null}>
+            <PostHogPageview />
+          </Suspense>
+          <AppShell>{children}</AppShell>
+        </PostHogProvider>
       </body>
     </html>
   );

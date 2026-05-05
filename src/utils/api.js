@@ -1,3 +1,5 @@
+import { logout as authLogout } from './auth';
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 const getAuthToken = () => {
@@ -140,11 +142,10 @@ export const authApi = {
   },
 
   logout: async () => {
-    // Client-side only logout (no backend endpoint)
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('dreamweaver_token');
-      localStorage.removeItem('dreamweaver_user');
-    }
+    // Client-side only logout (no backend endpoint).
+    // Delegates to auth.logout() so identity teardown (posthog.reset, etc.)
+    // runs through a single choke point.
+    authLogout();
     return { success: true };
   },
 
