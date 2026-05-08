@@ -492,12 +492,34 @@ export const subscriptionApi = {
     return res.data || {};
   },
 
+  // Deprecated as of Phase 0 step 1.4b. Backend now returns 410 Gone.
+  // Use billingApi.startCheckout(plan) instead. Kept here only because
+  // no callers exist today; will be removed when this file is touched
+  // by 1.4d /pricing UI work.
   upgrade: async (tierId) => {
     const res = await fetchApi('/api/v1/subscriptions/upgrade', {
       method: 'POST',
       body: JSON.stringify({ tier_id: tierId }),
     });
     return res.data || {};
+  },
+};
+
+// ─── Billing API ────────────────────────────────────────────
+// Backend: /api/v1/billing — Stripe Checkout (Phase 0 step 1.4b)
+
+export const billingApi = {
+  /**
+   * Start a Stripe Checkout session.
+   * @param {('monthly'|'annual')} plan
+   * @returns {Promise<{checkout_url: string}>}
+   */
+  startCheckout: async (plan) => {
+    const res = await fetchApi('/api/v1/billing/checkout/start', {
+      method: 'POST',
+      body: JSON.stringify({ plan }),
+    });
+    return res.data || res || {};
   },
 };
 
