@@ -4,25 +4,33 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import StarField from '@/components/StarField';
 import { useI18n } from '@/utils/i18n';
-import { setToken, setUser, signin } from '@/utils/auth';
+import { getUser, isLoggedIn, setToken, setUser } from '@/utils/auth';
 import { authApi } from '@/utils/api';
 import styles from './page.module.css';
 
 const POLL_INTERVAL_MS = 2000;
-const POLL_TIMEOUT_MS = 15 * 60 * 1000; // matches code expiry per spec
+const POLL_TIMEOUT_MS = 15 * 60 * 1000;
 
-export default function LoginPage() {
+export default function ClaimPage() {
   const router = useRouter();
   const { lang } = useI18n();
-
-  const [mode, setMode] = useState('login_existing'); // 'signup_new' | 'login_existing'
-  const [stage, setStage] = useState('enter_email'); // enter_email | check_email | expired | error
+  const [stage, setStage] = useState('enter_email');
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [username, setUsername] = useState('');
 
   const intervalRef = useRef(null);
   const timeoutRef = useRef(null);
+
+  useEffect(() => {
+    if (!isLoggedIn()) {
+      router.replace('/login');
+      return;
+    }
+    const u = getUser();
+    setUsername(u?.username || '');
+  }, [router]);
 
   const stopPolling = () => {
     if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
@@ -46,36 +54,32 @@ export default function LoginPage() {
             const ph = (await import('posthog-js')).default;
             ph.capture('auth_verified', { context: data.context });
           } catch { /* ignore */ }
-          sessionStorage.removeItem('dv_login_session_id');
+          sessionStorage.removeItem('dv_claim_session_id');
           stopPolling();
           router.replace('/');
           return;
         }
         if (data?.status === 'expired') {
-          sessionStorage.removeItem('dv_login_session_id');
+          sessionStorage.removeItem('dv_claim_session_id');
           stopPolling();
           setStage('expired');
-          try {
-            const ph = (await import('posthog-js')).default;
-            ph.capture('auth_link_expired', {});
-          } catch { /* ignore */ }
         }
       } catch {
-        // Network error — keep polling. Total wait capped by timeout below.
+        /* network blip — keep polling */
       }
     };
     tick();
     intervalRef.current = setInterval(tick, POLL_INTERVAL_MS);
     timeoutRef.current = setTimeout(() => {
-      sessionStorage.removeItem('dv_login_session_id');
+      sessionStorage.removeItem('dv_claim_session_id');
       stopPolling();
       setStage((s) => (s === 'check_email' ? 'expired' : s));
     }, POLL_TIMEOUT_MS);
   }
 
-  // Resume polling if a previous request_link result is still in sessionStorage.
+  // Resume in-flight claim across navigations.
   useEffect(() => {
-    const saved = (typeof window !== 'undefined') && sessionStorage.getItem('dv_login_session_id');
+    const saved = (typeof window !== 'undefined') && sessionStorage.getItem('dv_claim_session_id');
     if (saved) {
       setStage('check_email');
       startPolling(saved);
@@ -94,9 +98,15 @@ export default function LoginPage() {
     setError(null);
     setSubmitting(true);
     try {
-      const res = await signin(trimmed, mode, lang);
+      const res = await authApi.claimExisting(trimmed, lang);
+      try {
+        const ph = (await import('posthog-js')).default;
+        const { emailHash } = await import('@/utils/auth');
+        const hash = await emailHash(trimmed);
+        ph.capture('auth_request_link', { email_hash: hash, lang, context: 'claim_existing' });
+      } catch { /* ignore */ }
       if (res?.initiator_session_id) {
-        sessionStorage.setItem('dv_login_session_id', res.initiator_session_id);
+        sessionStorage.setItem('dv_claim_session_id', res.initiator_session_id);
         setStage('check_email');
         startPolling(res.initiator_session_id);
       } else {
@@ -114,7 +124,7 @@ export default function LoginPage() {
   }
 
   function resetToEntry() {
-    sessionStorage.removeItem('dv_login_session_id');
+    sessionStorage.removeItem('dv_claim_session_id');
     stopPolling();
     setStage('enter_email');
     setError(null);
@@ -126,16 +136,16 @@ export default function LoginPage() {
     return (
       <>
         <StarField />
-        <div className={styles.pageWrapper}>
-          <div className={styles.container}>
+        <div className={styles.page}>
+          <div className={styles.card}>
             <div className={styles.spinner} aria-hidden />
             <h1 className={styles.title}>
               {lang === 'hi' ? 'Apna inbox check karein' : 'Check your inbox'}
             </h1>
-            <p className={styles.subtitle}>
+            <p className={styles.body}>
               {lang === 'hi'
-                ? <>Humne <strong>{email}</strong> par ek login link bheja hai. Email kholkar link click karein. Yahin wait karein — yeh page apne aap update ho jaayega.</>
-                : <>We sent a login link to <strong>{email}</strong>. Open the email and tap the link. Stay on this page — it&apos;ll update automatically once you&apos;re logged in.</>}
+                ? <>Humne <strong>{email}</strong> par link bheja hai. Email kholkar tap karein. Yahin wait karein — page apne aap update ho jaayega.</>
+                : <>We sent a verification link to <strong>{email}</strong>. Open the email and tap the link. Stay here — this page will update automatically.</>}
             </p>
             <p className={styles.fineprint}>
               {lang === 'hi' ? 'Link 15 minute tak chalega.' : 'The link works for 15 minutes.'}
@@ -153,18 +163,16 @@ export default function LoginPage() {
     return (
       <>
         <StarField />
-        <div className={styles.pageWrapper}>
-          <div className={styles.container}>
+        <div className={styles.page}>
+          <div className={styles.card}>
             <div className={styles.warningMark} aria-hidden>⏳</div>
             <h1 className={styles.title}>
               {lang === 'hi' ? 'Link expire ho gaya' : 'Link expired'}
             </h1>
-            <p className={styles.subtitle}>
-              {lang === 'hi'
-                ? 'Yeh login link 15 minute se zyada purana ho gaya. Naya bhejte hain.'
-                : 'That login link is over 15 minutes old. Let’s send a new one.'}
+            <p className={styles.body}>
+              {lang === 'hi' ? 'Naya link bhejte hain.' : 'Let’s send a new one.'}
             </p>
-            <button onClick={resetToEntry} className={styles.submitBtn}>
+            <button onClick={resetToEntry} className={styles.primaryBtn}>
               {lang === 'hi' ? 'Naya link bhejein' : 'Send a new link'}
             </button>
           </div>
@@ -176,38 +184,16 @@ export default function LoginPage() {
   return (
     <>
       <StarField />
-      <div className={styles.pageWrapper}>
-        <div className={styles.container}>
-          <div className={styles.iconLarge}>🌙</div>
-          <h1 className={styles.title}>Dream Valley</h1>
-          <p className={styles.subtitle}>
+      <div className={styles.page}>
+        <div className={styles.card}>
+          <h1 className={styles.title}>
+            {lang === 'hi' ? 'Aapka account secure ho raha hai' : 'Securing your account'}
+          </h1>
+          <p className={styles.body}>
             {lang === 'hi'
-              ? 'Apna email daalein. Hum ek login link bhejenge. Koi password yaad rakhne ki zarurat nahi.'
-              : 'Enter your email. We’ll send you a login link. No passwords to remember.'}
+              ? <>Hum login ko email-based magic links par migrate kar rahe hain — passwords ki zarurat nahi. Apna email daalein, hum verify link bhejenge. <strong>Aapka username{username ? ` (${username})` : ''} aur kahaniyaan jaisi thi waisi hi rahengi.</strong></>
+              : <>We’re upgrading login to email-based magic links — no more passwords. Enter your email and we’ll send a verification link. <strong>Your username{username ? ` (${username})` : ''}, kid profiles, and stories stay exactly the same.</strong></>}
           </p>
-
-          <div className={styles.modeToggle} role="tablist">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={mode === 'login_existing'}
-              className={`${styles.modeBtn} ${mode === 'login_existing' ? styles.modeBtnActive : ''}`}
-              onClick={() => setMode('login_existing')}
-              disabled={submitting}
-            >
-              {lang === 'hi' ? 'Log in' : 'Log in'}
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={mode === 'signup_new'}
-              className={`${styles.modeBtn} ${mode === 'signup_new' ? styles.modeBtnActive : ''}`}
-              onClick={() => setMode('signup_new')}
-              disabled={submitting}
-            >
-              {lang === 'hi' ? 'Naya account' : "I'm new"}
-            </button>
-          </div>
 
           <form onSubmit={handleSubmit} className={styles.form}>
             {error && <div className={styles.errorMessage}>{error}</div>}
@@ -226,18 +212,18 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={submitting || !email.trim()}
-              className={styles.submitBtn}
+              className={styles.primaryBtn}
             >
               {submitting
                 ? (lang === 'hi' ? 'Bhej rahe hain...' : 'Sending...')
-                : (lang === 'hi' ? 'Login link bhejein' : 'Send login link')}
+                : (lang === 'hi' ? 'Verify link bhejein' : 'Send verify link')}
             </button>
           </form>
 
           <p className={styles.fineprint}>
             {lang === 'hi'
-              ? 'Aapka email sirf account aur transactional emails (receipt, security) ke liye use hota hai. Marketing nahi.'
-              : 'Your email is used only for your account and transactional emails (receipts, security). No marketing.'}
+              ? 'Email sirf account aur transactional emails ke liye. Marketing nahi.'
+              : 'Email is used for your account and transactional emails only. No marketing.'}
           </p>
         </div>
       </div>

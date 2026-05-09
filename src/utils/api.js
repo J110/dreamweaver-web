@@ -54,6 +54,19 @@ const fetchApi = async (endpoint, options = {}) => {
       headers,
     });
 
+    if (response.status === 401 && token) {
+      // Token invalid / expired / revoked. Clear local state and bounce.
+      // Phase 0 step 1.5 makes this load-bearing: post-migration, every
+      // legacy bearer token returns 401, and the user must land on /login
+      // (NOT /auth/claim) per spec gate semantic.
+      try { authLogout(); } catch { /* ignore */ }
+      if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')
+          && !window.location.pathname.startsWith('/auth/')) {
+        window.location.href = '/login';
+      }
+      throw new Error('Session expired');
+    }
+
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
       throw new Error(error.detail || error.message || `API error: ${response.status}`);
@@ -98,47 +111,71 @@ fetchApi.invalidate = (endpoint) => {
 };
 
 // ─── Auth API ───────────────────────────────────────────────
-// Backend: /api/v1/auth/signup, /api/v1/auth/login
-// Response shape: { success, data: { uid, username, child_age, token }, message }
+// Phase 0 step 1.5: magic-link auth.
+// Backend endpoints: /api/v1/auth/request_link, /verify_link, /poll,
+// /logout, /claim_existing. Old /auth/signup and /auth/login return
+// 410 Gone — their wrappers below are removed.
 
 export const authApi = {
-  signup: async (username, password, childAge) => {
-    const res = await fetchApi('/api/v1/auth/signup', {
+  /**
+   * Request a magic-link email.
+   * @param {string} email
+   * @param {('en'|'hi')} lang
+   * @param {('signup_new'|'login_existing')} context
+   * @returns {Promise<{initiator_session_id: string, status: string}>}
+   */
+  requestLink: async (email, lang, context) => {
+    return await fetchApi('/api/v1/auth/request_link', {
       method: 'POST',
-      body: JSON.stringify({
-        username,
-        password,
-        child_age: childAge,
-      }),
+      body: JSON.stringify({ email, lang, context }),
     });
-    // Transform to shape pages expect: { token, user }
-    return {
-      token: res.data?.token,
-      user: {
-        uid: res.data?.uid,
-        username: res.data?.username,
-        child_age: res.data?.child_age,
-      },
-    };
   },
 
-  login: async (username, password) => {
-    const res = await fetchApi('/api/v1/auth/login', {
+  /**
+   * Consume a magic-link code (clicker device — does NOT receive token).
+   * @param {string} code
+   * @returns {Promise<{status: string, context: string}>}
+   */
+  verifyLink: async (code) => {
+    return await fetchApi('/api/v1/auth/verify_link', {
       method: 'POST',
-      body: JSON.stringify({
-        username,
-        password,
-      }),
+      body: JSON.stringify({ code }),
     });
-    // Transform to shape pages expect: { token, user }
-    return {
-      token: res.data?.token,
-      user: {
-        uid: res.data?.uid,
-        username: res.data?.username,
-        child_age: res.data?.child_age,
-      },
-    };
+  },
+
+  /**
+   * Initiator polls for token claim. Bypasses fetchApi cache.
+   * @param {string} sessionId
+   * @returns {Promise<{status: string, token?: string, uid?: string, username?: string, family_id?: string, email_verified?: boolean, context?: string}>}
+   */
+  pollSession: async (sessionId) => {
+    const url = `${API_URL}/api/v1/auth/poll?session_id=${encodeURIComponent(sessionId)}`;
+    const r = await fetch(url, { cache: 'no-store' });
+    if (!r.ok) return { status: 'expired' };
+    return await r.json();
+  },
+
+  /**
+   * Revoke the current bearer token server-side.
+   * Caller still needs to clear localStorage — see auth.js logout().
+   */
+  serverLogout: async () => {
+    try {
+      await fetchApi('/api/v1/auth/logout', { method: 'POST' });
+    } catch {
+      /* best-effort; client-side clear happens regardless */
+    }
+  },
+
+  /**
+   * Auth-required. Send claim_existing magic-link to attach this email
+   * to the current user's record (used during the migration window).
+   */
+  claimExisting: async (email, lang) => {
+    return await fetchApi('/api/v1/auth/claim_existing', {
+      method: 'POST',
+      body: JSON.stringify({ email, lang }),
+    });
   },
 
   logout: async () => {

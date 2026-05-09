@@ -13,6 +13,60 @@ const callPosthog = (fn) => {
     });
 };
 
+/**
+ * SHA-256 of lowercased email, first 16 hex chars.
+ * Used as a non-leaky distinct_id for PostHog auth events fired before
+ * the user is verified (no Person profile created since the project is
+ * configured with person_profiles=identified_only).
+ */
+export async function emailHash(email) {
+  if (typeof window === 'undefined' || !window.crypto?.subtle) return '';
+  try {
+    const buf = new TextEncoder().encode(String(email || '').toLowerCase());
+    const digest = await window.crypto.subtle.digest('SHA-256', buf);
+    return Array.from(new Uint8Array(digest))
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('')
+      .slice(0, 16);
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * Phase 0 step 1.5: magic-link signin entry point.
+ *
+ * @param {string} email
+ * @param {('signup_new'|'login_existing')} context
+ * @param {('en'|'hi')} lang
+ * @returns {Promise<{initiator_session_id: string, status: string}>}
+ *
+ * Caller should stash the returned initiator_session_id in sessionStorage
+ * (NOT localStorage — must clear on tab close) and start polling
+ * /auth/poll until status='ready'.
+ *
+ * No offline fallback — if the backend is unreachable, this throws and
+ * the caller surfaces the error to the user. We do NOT mint fake local
+ * sessions any more (Phase 2 deleted that path; it was a real-world
+ * source of "logged in" users who never actually existed on the backend).
+ */
+export async function signin(email, context = 'login_existing', lang = 'en') {
+  // Lazy import to avoid SSR pulling api.js eagerly.
+  const { authApi } = await import('./api');
+  const res = await authApi.requestLink(email, lang, context);
+  callPosthog(async (posthog) => {
+    const hash = await emailHash(email);
+    try {
+      posthog.capture('auth_request_link', {
+        email_hash: hash,
+        lang,
+        context,
+      });
+    } catch { /* ignore */ }
+  });
+  return res;
+}
+
 export const getToken = () => {
   if (typeof window === 'undefined') return null;
   return localStorage.getItem('dreamweaver_token');
@@ -82,7 +136,16 @@ export const logout = () => {
   if (u?.username) {
     localStorage.removeItem(`dv_alias_done:${u.username}`);
   }
+  // Server-side revoke (best-effort, fire-and-forget). The api.js wrapper
+  // catches errors so a failed revoke never blocks client-side logout.
+  // Lazy-imported to avoid an api.js eager-load on every auth.js touch.
+  import('./api')
+    .then(({ authApi }) => authApi.serverLogout())
+    .catch(() => { /* ignore */ });
   removeToken();
   removeUser();
-  callPosthog((posthog) => posthog.reset());
+  callPosthog((posthog) => {
+    try { posthog.capture('auth_logout', {}); } catch { /* ignore */ }
+    posthog.reset();
+  });
 };

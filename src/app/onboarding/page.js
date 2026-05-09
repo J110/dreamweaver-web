@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import StarField from '@/components/StarField';
 import { useI18n } from '@/utils/i18n';
-import { setToken, setUser } from '@/utils/auth';
 import { dvAnalytics } from '@/utils/analytics';
 import styles from './page.module.css';
 
@@ -14,8 +13,6 @@ const AGE_OPTIONS = [
   { value: '6-8', label: '6-8 yrs', emoji: '📚' },
   { value: '9-12', label: '9-12 yrs', emoji: '🌟' },
 ];
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -41,61 +38,15 @@ export default function OnboardingPage() {
     const numericAge = ageMap[childAge] || 5;
 
     try {
-      let res;
-
-      // Try signup first
-      try {
-        res = await fetch(`${API_URL}/api/v1/auth/signup`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            username: username.trim(),
-            password: 'dreamvalley_default',
-            child_age: numericAge,
-          }),
-        });
-      } catch { /* network error */ }
-
-      if (res && res.ok) {
-        const data = await res.json();
-        if (data.data?.token) {
-          setToken(data.data.token);
-          setUser({ uid: data.data.uid, username: data.data.username, child_age: data.data.child_age });
-          setLang('en');
-          dvAnalytics.track('onboarding_complete', { childAge: childAge, username: username.trim() });
-          router.push('/');
-          return;
-        }
-      }
-
-      // If signup fails (user exists), try login
-      try {
-        res = await fetch(`${API_URL}/api/v1/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: username.trim(), password: 'dreamvalley_default' }),
-        });
-      } catch { /* network error */ }
-
-      if (res && res.ok) {
-        const data = await res.json();
-        if (data.data?.token) {
-          setToken(data.data.token);
-          setUser({ uid: data.data.uid, username: data.data.username, child_age: data.data.child_age });
-          setLang('en');
-          dvAnalytics.track('onboarding_complete', { childAge: childAge, username: username.trim() });
-          router.push('/');
-          return;
-        }
-      }
-
-      // Offline mode — create local user so app still works
-      const localUser = { uid: `local_${Date.now()}`, username: username.trim(), child_age: numericAge };
-      setToken(`local_token_${Date.now()}`);
-      setUser(localUser);
+      // Phase 0 step 1.5 — onboarding no longer mints an account. We stash
+      // the user-chosen display name as a local hint, save age preference
+      // (already saved above), and redirect to /login. The magic-link flow
+      // owns auth from here. Hardcoded 'dreamvalley_default' password path
+      // and the offline fake-user fallback both deleted with this commit.
+      try { localStorage.setItem('dreamvalley_pending_username', username.trim()); } catch {}
       setLang('en');
-      dvAnalytics.track('onboarding_complete', { childAge: childAge, username: username.trim(), offline: true });
-      router.push('/');
+      dvAnalytics.track('onboarding_complete', { childAge: childAge, username: username.trim() });
+      router.push('/login');
     } catch (err) {
       setError(t('loginError'));
     } finally {

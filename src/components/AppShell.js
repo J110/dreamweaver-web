@@ -10,8 +10,8 @@ import BottomNav from './BottomNav';
 import InstallPrompt from './InstallPrompt';
 import { dvAnalytics } from '@/utils/analytics';
 
-const NO_NAV_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies', '/pricing', '/upgrade/success', '/upgrade/cancelled'];
-const PUBLIC_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies', '/pricing', '/upgrade/success', '/upgrade/cancelled'];
+const NO_NAV_ROUTES = ['/onboarding', '/login', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies', '/pricing', '/upgrade/success', '/upgrade/cancelled', '/auth/verify', '/auth/claim'];
+const PUBLIC_ROUTES = ['/onboarding', '/login', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies', '/pricing', '/upgrade/success', '/upgrade/cancelled', '/auth/verify', '/auth/claim'];
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 function isPublicRoute(pathname) {
@@ -93,6 +93,23 @@ export default function AppShell({ children }) {
     if (!isPublic && !isLoggedIn()) {
       router.replace('/login');
       return;
+    }
+
+    // Phase 0 step 1.5 — email_verified gate. Tolerant of legacy users:
+    //   email_verified === false      → redirect to /auth/claim
+    //   email_verified === undefined  → fall through (legacy pre-migration token)
+    //   email_verified === true       → fall through (claimed)
+    // The undefined branch is what makes the rolling deploy safe: legacy
+    // users with valid old tokens enter the app normally; the migration
+    // script's revocation later turns those tokens into 401s, which the
+    // backend-level handler converts to logout → /login (NOT /auth/claim).
+    if (!isPublic && isLoggedIn()) {
+      let cachedUser = null;
+      try { cachedUser = JSON.parse(localStorage.getItem('dreamweaver_user') || 'null'); } catch {}
+      if (cachedUser && cachedUser.email_verified === false) {
+        router.replace('/auth/claim');
+        return;
+      }
     }
 
     // Validate token against backend once per session.

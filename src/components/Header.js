@@ -76,11 +76,8 @@ export default function Header() {
             </div>
           ) : (
             <div className={styles.authButtons}>
-              <Link href="/login" className="btn btn-secondary btn-sm">
-                Login
-              </Link>
-              <Link href="/signup" className="btn btn-primary btn-sm">
-                Sign Up
+              <Link href="/login" className="btn btn-primary btn-sm">
+                Log in
               </Link>
             </div>
           )}
