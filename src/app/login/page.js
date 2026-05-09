@@ -62,6 +62,12 @@ export default function LoginPage() {
             username: data.username,
             family_id: data.family_id,
             email_verified: !!data.email_verified,
+            // Onboarding gate fields — without these the cached user
+            // object has undefined and AppShell's gate falls through,
+            // letting fresh signups skip /onboarding.
+            onboarding_complete: data.onboarding_complete,
+            child_age: data.child_age,
+            preferred_lang: data.preferred_lang,
           });
           try {
             const ph = (await import('posthog-js')).default;
