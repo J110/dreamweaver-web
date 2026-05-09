@@ -578,6 +578,18 @@ export const billingApi = {
     });
     return res.data || res || {};
   },
+
+  /**
+   * Start a $2 / 10-credit top-up Stripe Checkout session (Premium only).
+   * Phase 0 step 1.4e.
+   * @returns {Promise<{checkout_url: string}>}
+   */
+  startTopupCheckout: async () => {
+    const res = await fetchApi('/api/v1/billing/topup/start', {
+      method: 'POST',
+    });
+    return res.data || res || {};
+  },
 };
 
 // ─── User API ───────────────────────────────────────────────

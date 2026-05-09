@@ -57,6 +57,25 @@ export default function SettingsPage() {
     }
   }
 
+  const [topupLoading, setTopupLoading] = useState(false);
+  const [topupError, setTopupError] = useState(null);
+  async function startTopup() {
+    setTopupError(null);
+    setTopupLoading(true);
+    try {
+      const { checkout_url } = await billingApi.startTopupCheckout();
+      if (checkout_url) {
+        window.location.href = checkout_url;
+        return;
+      }
+      setTopupError(lang === 'hi' ? 'Top-up start nahi ho paya.' : "Couldn't start top-up.");
+    } catch {
+      setTopupError(lang === 'hi' ? 'Kuch galat hua.' : 'Something went wrong.');
+    } finally {
+      setTopupLoading(false);
+    }
+  }
+
   const [selectedVoice, setSelectedVoice] = useState(voicePrefs?.preferredVoice || 'female_1');
   const [saved, setSaved] = useState(false);
 
@@ -199,12 +218,38 @@ export default function SettingsPage() {
                 ? (lang === 'hi' ? 'Phir activate karein' : 'Reactivate')
                 : (lang === 'hi' ? 'Manage subscription' : 'Manage subscription');
 
+              const credits = subState?.credits_remaining ?? 0;
+              const topupCredits = subState?.topup_credits_remaining ?? 0;
+              const periodEnd = formatSubDate(subState?.credits_period_end, lang);
+              const frozen = !!subState?.credits_frozen;
+
               return (
                 <>
                   <p className={styles.subStatusLine}>{labels[status] || labels.active}</p>
                   {description[status] && (
                     <p className={styles.subDescLine}>{description[status]}</p>
                   )}
+                  <div className={styles.creditsBlock}>
+                    <p className={styles.creditsLine}>
+                      {lang === 'hi'
+                        ? <>Credits is mahine: <strong>{credits}</strong>{topupCredits > 0 && <> + {topupCredits} top-up</>}</>
+                        : <>Credits this month: <strong>{credits}</strong>{topupCredits > 0 && <> + {topupCredits} top-up</>}</>}
+                    </p>
+                    {periodEnd && !frozen && (
+                      <p className={styles.creditsMeta}>
+                        {lang === 'hi'
+                          ? `${periodEnd} ko 30 par reset hoga.`
+                          : `Resets to 30 on ${periodEnd}.`}
+                      </p>
+                    )}
+                    {frozen && (
+                      <p className={styles.subErrorLine}>
+                        {lang === 'hi'
+                          ? '⚠ Credits frozen — payment fail hone par. Card update karke unfreeze karein.'
+                          : '⚠ Credits frozen — payment failed. Update your card to unfreeze.'}
+                      </p>
+                    )}
+                  </div>
                   <button
                     className={styles.subPrimaryBtn}
                     onClick={openPortal}
@@ -214,8 +259,22 @@ export default function SettingsPage() {
                       ? (lang === 'hi' ? 'Khul raha hai...' : 'Opening...')
                       : cta}
                   </button>
+                  {status !== 'canceled' && status !== 'past_due' && (
+                    <button
+                      className={styles.subSecondaryBtn}
+                      onClick={startTopup}
+                      disabled={topupLoading}
+                    >
+                      {topupLoading
+                        ? (lang === 'hi' ? 'Le ja raha hai...' : 'Taking you to checkout...')
+                        : (lang === 'hi' ? 'Top up — $2 / 10 credits' : 'Top up — $2 for 10 credits')}
+                    </button>
+                  )}
                   {portalError && (
                     <p className={styles.subErrorLine}>{portalError}</p>
+                  )}
+                  {topupError && (
+                    <p className={styles.subErrorLine}>{topupError}</p>
                   )}
                 </>
               );
