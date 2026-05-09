@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import StarField from '@/components/StarField';
 import { useI18n } from '@/utils/i18n';
 import { setToken, setUser, signin } from '@/utils/auth';
@@ -13,16 +13,25 @@ const POLL_TIMEOUT_MS = 15 * 60 * 1000; // matches code expiry per spec
 
 export default function LoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { lang } = useI18n();
-  const [showSessionBanner, setShowSessionBanner] = useState(
-    searchParams?.get('reason') === 'session_expired'
-  );
+  // Read ?reason=session_expired lazily via window.location instead of
+  // useSearchParams — the latter forces a Suspense boundary in Next.js
+  // App Router and blows up the prerender. Initial state stays false to
+  // keep SSR output stable; the useEffect below flips it on the client.
+  const [showSessionBanner, setShowSessionBanner] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const reason = new URLSearchParams(window.location.search).get('reason');
+      if (reason === 'session_expired') setShowSessionBanner(true);
+    } catch { /* ignore */ }
+  }, []);
 
   useEffect(() => {
     if (!showSessionBanner) return;
-    // Banner self-clears after 5s. CSS handles the 0.5s fade in the last
-    // 0.5s of the window via animation-delay; we then unmount it.
+    // Banner self-clears after 5s. CSS handles the 0.5s fade-out in the
+    // last 0.5s of the window via animation-delay; we then unmount it.
     const t = setTimeout(() => setShowSessionBanner(false), 5000);
     return () => clearTimeout(t);
   }, [showSessionBanner]);
