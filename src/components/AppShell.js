@@ -63,6 +63,34 @@ export default function AppShell({ children }) {
     const isPublic = isPublicRoute(pathname);
     const isHome = pathname === '/';
 
+    // Phase 0 step 1.5e — auth-flow gates fire UNIVERSALLY (including on
+    // home), guarded only by pathname-exclusion against their own redirect
+    // target so they don't infinite-loop. Hoisted above the isHome early
+    // return because home was previously bypassing these gates entirely
+    // (fresh signups landed on / instead of being routed to /onboarding).
+    //
+    // Tolerant of legacy users via strict-equality `=== false`:
+    //   undefined falls through (legacy pre-backfill records)
+    //   false redirects (post-fix new-signup state)
+    //   true falls through (completed)
+    //
+    // The downstream `!isPublic && isLoggedIn()` block stays as defense
+    // in depth — different shape (route-level access control) but
+    // overlapping intent. Removing it would expose other PUBLIC_ROUTES
+    // edge cases.
+    if (isLoggedIn()) {
+      let cachedUser = null;
+      try { cachedUser = JSON.parse(localStorage.getItem('dreamweaver_user') || 'null'); } catch {}
+      if (cachedUser && cachedUser.email_verified === false && pathname !== '/auth/claim') {
+        router.replace('/auth/claim');
+        return;
+      }
+      if (cachedUser && cachedUser.onboarding_complete === false && pathname !== '/onboarding') {
+        router.replace('/onboarding');
+        return;
+      }
+    }
+
     // Home page handles its own routing (landing vs app grid) — don't redirect
     if (isHome) {
       setChecked(true);
