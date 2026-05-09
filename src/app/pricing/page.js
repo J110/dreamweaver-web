@@ -143,7 +143,7 @@ export default function PricingPage() {
 
         <header className={styles.header}>
           <h1 className={styles.title}>
-            {lang === 'hi' ? 'Premium' : 'Premium'}
+            {lang === 'hi' ? 'Apna plan chuniye' : 'Choose your plan'}
           </h1>
           <p className={styles.tagline}>
             {lang === 'hi'
@@ -239,12 +239,19 @@ export default function PricingPage() {
                     </button>
                   </>
                 ) : (
-                  <button
-                    className={styles.primaryBtn}
-                    onClick={() => router.push('/signup')}
-                  >
-                    {lang === 'hi' ? 'Sign up to start' : 'Sign up to start'}
-                  </button>
+                  <>
+                    <button
+                      className={styles.primaryBtn}
+                      onClick={() => router.push('/')}
+                    >
+                      {lang === 'hi' ? 'Shuru karein' : 'Get started'}
+                    </button>
+                    <span className={styles.tierFooterMuted}>
+                      {lang === 'hi'
+                        ? 'Pehle log in karein'
+                        : 'First, log in to upgrade'}
+                    </span>
+                  </>
                 )}
               </div>
             </div>
