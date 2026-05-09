@@ -21,7 +21,7 @@ export default function PrivacyPolicyPage() {
             <h1 className={styles.title}>Privacy Policy</h1>
             <p className={styles.appName}>Dream Valley - Magical Bedtime Stories</p>
             <p className={styles.effectiveDate}>
-              Effective Date: February 15, 2026 &middot; Last Updated: February 15, 2026
+              Effective Date: February 15, 2026 &middot; Last Updated: May 15, 2026
             </p>
           </header>
 
@@ -44,17 +44,28 @@ export default function PrivacyPolicyPage() {
             <div className={styles.sectionContent}>
               <p>
                 We collect only the minimum information necessary to provide a safe, personalized
-                bedtime story experience. We do <span className={styles.bold}>not</span> collect
-                real email addresses, precise location data, photographs, or payment information.
+                bedtime story experience. We collect a parent or guardian&apos;s email address to
+                authenticate your account (no passwords) and to send transactional messages such as
+                login links and billing receipts. We do <span className={styles.bold}>not</span>
+                collect precise location data, photographs from children, biometric data, or
+                payment card details (subscription billing is handled directly by Stripe — see
+                Section 5).
               </p>
 
               <p className={styles.bold}>Information you provide directly:</p>
               <ul className={styles.list}>
                 <li>
-                  <span className={styles.bold}>Username</span> &mdash; A chosen display name used to
-                  identify your account. This is not a real email address. Your account uses a
-                  generated identifier in the format username@dreamweaver.app, which serves only as
-                  an internal login credential.
+                  <span className={styles.bold}>Parent&apos;s email address</span> &mdash; Used for
+                  account authentication via magic-link login (no passwords stored), account
+                  recovery, and transactional emails (login links, billing receipts if you
+                  subscribe to Premium, important account or security notices). This is the
+                  parent&apos;s or guardian&apos;s email, never the child&apos;s. We do not send
+                  marketing emails. Email is encrypted at rest.
+                </li>
+                <li>
+                  <span className={styles.bold}>Username</span> &mdash; A chosen display name used
+                  to identify your account inside the app. Decoupled from authentication; you can
+                  keep your username even when your email changes.
                 </li>
                 <li>
                   <span className={styles.bold}>Child&apos;s Age Group</span> &mdash; The age group
@@ -89,10 +100,12 @@ export default function PrivacyPolicyPage() {
 
               <div className={styles.highlightImportant}>
                 <p>
-                  <span className={styles.bold}>What we do NOT collect:</span> Real email addresses,
-                  real names, physical addresses, phone numbers, precise geolocation, photos or
-                  videos, contacts or address book data, payment or financial information, social
-                  media account information, or any biometric data.
+                  <span className={styles.bold}>What we do NOT collect:</span> Email addresses or
+                  any other personal information from children directly (the email on file is the
+                  parent&apos;s), real names, physical addresses, phone numbers, precise
+                  geolocation, photos or videos, contacts or address book data, payment card
+                  details (Stripe handles those directly), social media account information, or
+                  any biometric data.
                 </p>
               </div>
             </div>
@@ -164,12 +177,10 @@ export default function PrivacyPolicyPage() {
                   username and age group to use the app.
                 </li>
                 <li>
-                  We do not collect real email addresses, real names, or any other personally
-                  identifiable information from children.
-                </li>
-                <li>
-                  The username@dreamweaver.app format is an internal-only credential and does not
-                  correspond to an actual email inbox.
+                  We do not collect email addresses, real names, or any other personally
+                  identifiable information from children directly. The email address on the
+                  account belongs to the parent or guardian and is used only for account
+                  authentication and transactional communications &mdash; never for marketing.
                 </li>
                 <li>
                   We do not enable children to make their personal information publicly available.
@@ -280,6 +291,26 @@ export default function PrivacyPolicyPage() {
                   text-to-speech technology to convert generated stories into audio. Only the story
                   text and voice selection parameters are sent to these services. No user-identifying
                   information is transmitted.
+                </li>
+                <li>
+                  <span className={styles.bold}>Resend</span> &mdash; Used to deliver transactional
+                  emails: magic-link login codes, billing receipts (if you subscribe), and
+                  account-security notices. Resend receives the parent&apos;s email address and
+                  the message content, nothing else. Resend&apos;s data processing agreement is
+                  available at resend.com/legal/dpa.
+                </li>
+                <li>
+                  <span className={styles.bold}>Stripe</span> &mdash; Used only if you choose to
+                  subscribe to Dream Valley Premium. Stripe receives the parent&apos;s email
+                  address and payment information; Dream Valley never sees or stores payment card
+                  details directly. See stripe.com/privacy for Stripe&apos;s privacy notice.
+                </li>
+                <li>
+                  <span className={styles.bold}>PostHog</span> &mdash; Used for product analytics
+                  (funnels, retention, activation). PostHog sees a SHA-256 hash of the email
+                  address rather than the email itself, plus an internal account identifier.
+                  Children are not identified to PostHog. We do not share data with advertising
+                  networks.
                 </li>
               </ul>
 
