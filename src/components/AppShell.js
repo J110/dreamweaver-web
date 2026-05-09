@@ -135,7 +135,9 @@ export default function AppShell({ children }) {
           if (res.status === 401) {
             console.warn('[AppShell] Token invalid — redirecting to login');
             logout();
-            router.replace('/login');
+            // Surface the reason on /login via banner so users understand
+            // why they were bounced (vs silent logout-on-navigation UX).
+            router.replace('/login?reason=session_expired');
           }
         })
         .catch(() => {

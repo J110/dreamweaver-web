@@ -28,7 +28,6 @@ export default function OnboardingPage() {
   const router = useRouter();
   const { setLang, t, lang } = useI18n();
 
-  const [authed, setAuthed] = useState(false);
   const [selectedAge, setSelectedAge] = useState(null);
   const [username, setUsername] = useState('');
   const [selectedLang, setSelectedLang] = useState(lang || 'en');
@@ -36,27 +35,22 @@ export default function OnboardingPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const isAuth = isLoggedIn();
-    setAuthed(isAuth);
-
-    if (isAuth) {
-      // Post-auth mode: pre-fill from existing user record (re-edit support).
-      const u = getUser();
-      if (u?.username) setUsername(u.username);
-      const r = rangeForNumericAge(u?.child_age);
-      if (r) setSelectedAge(r);
-      if (u?.preferred_lang) setSelectedLang(u.preferred_lang);
-    } else {
-      // Pre-auth mode: re-hydrate from old onboarding stash if present.
-      try {
-        const pending = localStorage.getItem('dreamvalley_pending_username');
-        if (pending) setUsername(pending);
-        const stashedAge = localStorage.getItem('dreamvalley_child_age');
-        if (stashedAge && AGE_OPTIONS.some((o) => o.value === stashedAge)) {
-          setSelectedAge(stashedAge);
-        }
-      } catch { /* ignore */ }
+    // Post-auth-only page. Logged-out visitors don't see the form —
+    // they need to authenticate first via magic-link, after which
+    // AppShell routes them back here when onboarding_complete=false.
+    // The legacy pre-auth stash (dreamvalley_pending_username,
+    // dreamvalley_child_age) was never read by magic-link signup and
+    // misled users into typing data that wasn't applied.
+    if (!isLoggedIn()) {
+      router.replace('/login');
+      return;
     }
+    // Pre-fill from existing user record so re-edits show current values.
+    const u = getUser();
+    if (u?.username) setUsername(u.username);
+    const r = rangeForNumericAge(u?.child_age);
+    if (r) setSelectedAge(r);
+    if (u?.preferred_lang) setSelectedLang(u.preferred_lang);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -75,56 +69,44 @@ export default function OnboardingPage() {
     try {
       try { localStorage.setItem('dreamvalley_child_age', childAge); } catch {}
 
-      if (authed) {
-        // Post-auth mode: persist to backend.
-        try {
-          const res = await userApi.completeOnboarding({
-            username: trimmed,
-            child_age: numericAge,
-            lang: selectedLang,
-          });
-          // Update cached user with the new fields so AppShell stops gating us.
-          const u = getUser() || {};
-          setUser({
-            ...u,
-            username: res.username || trimmed,
-            child_age: res.child_age ?? numericAge,
-            preferred_lang: res.preferred_lang || selectedLang,
-            onboarding_complete: true,
-          });
-          setLang(selectedLang);
-          dvAnalytics.track('onboarding_complete', {
-            childAge,
-            username: trimmed,
-            lang: selectedLang,
-          });
-          router.replace('/');
-        } catch (err) {
-          const msg = String(err?.message || err || '');
-          if (msg.includes('username_taken') || msg.includes('409')) {
-            setError(
-              lang === 'hi'
-                ? 'Yeh username pehle se le liya gaya hai. Kuch aur try karein.'
-                : 'That username is taken. Try another.'
-            );
-          } else {
-            setError(
-              lang === 'hi'
-                ? 'Kuch galat hua. Phir try karein.'
-                : 'Something went wrong. Try again.'
-            );
-          }
-        }
-      } else {
-        // Pre-auth mode: stash + redirect to /login (legacy behavior).
-        try { localStorage.setItem('dreamvalley_pending_username', trimmed); } catch {}
+      // Post-auth-only flow. Persist to backend.
+      try {
+        const res = await userApi.completeOnboarding({
+          username: trimmed,
+          child_age: numericAge,
+          lang: selectedLang,
+        });
+        // Update cached user with the new fields so AppShell stops gating us.
+        const u = getUser() || {};
+        setUser({
+          ...u,
+          username: res.username || trimmed,
+          child_age: res.child_age ?? numericAge,
+          preferred_lang: res.preferred_lang || selectedLang,
+          onboarding_complete: true,
+        });
         setLang(selectedLang);
         dvAnalytics.track('onboarding_complete', {
           childAge,
           username: trimmed,
           lang: selectedLang,
         });
-        router.push('/login');
+        router.replace('/');
+      } catch (err) {
+        const msg = String(err?.message || err || '');
+        if (msg.includes('username_taken') || msg.includes('409')) {
+          setError(
+            lang === 'hi'
+              ? 'Yeh username pehle se le liya gaya hai. Kuch aur try karein.'
+              : 'That username is taken. Try another.'
+          );
+        } else {
+          setError(
+            lang === 'hi'
+              ? 'Kuch galat hua. Phir try karein.'
+              : 'Something went wrong. Try again.'
+          );
+        }
       }
     } finally {
       setLoading(false);
@@ -214,7 +196,7 @@ export default function OnboardingPage() {
                 onClick={() => setSelectedLang('hi')}
                 disabled={loading}
               >
-                Hindi (Roman)
+                Hindi
               </button>
             </div>
           </div>

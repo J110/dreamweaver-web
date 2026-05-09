@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import StarField from '@/components/StarField';
 import { useI18n } from '@/utils/i18n';
 import { setToken, setUser, signin } from '@/utils/auth';
@@ -13,7 +13,19 @@ const POLL_TIMEOUT_MS = 15 * 60 * 1000; // matches code expiry per spec
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { lang } = useI18n();
+  const [showSessionBanner, setShowSessionBanner] = useState(
+    searchParams?.get('reason') === 'session_expired'
+  );
+
+  useEffect(() => {
+    if (!showSessionBanner) return;
+    // Banner self-clears after 5s. CSS handles the 0.5s fade in the last
+    // 0.5s of the window via animation-delay; we then unmount it.
+    const t = setTimeout(() => setShowSessionBanner(false), 5000);
+    return () => clearTimeout(t);
+  }, [showSessionBanner]);
 
   const [mode, setMode] = useState('login_existing'); // 'signup_new' | 'login_existing'
   const [stage, setStage] = useState('enter_email'); // enter_email | check_email | expired | error
@@ -178,6 +190,13 @@ export default function LoginPage() {
       <StarField />
       <div className={styles.pageWrapper}>
         <div className={styles.container}>
+          {showSessionBanner && (
+            <div className={styles.sessionExpiredBanner} role="status">
+              {lang === 'hi'
+                ? 'Session expire ho gaya. Dobara log in karein.'
+                : 'Your session expired — please log in again.'}
+            </div>
+          )}
           <div className={styles.iconLarge}>🌙</div>
           <h1 className={styles.title}>Dream Valley</h1>
           <p className={styles.subtitle}>

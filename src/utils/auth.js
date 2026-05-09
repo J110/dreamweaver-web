@@ -144,6 +144,16 @@ export const logout = () => {
     .catch(() => { /* ignore */ });
   removeToken();
   removeUser();
+  // Clear magic-link polling state so a post-logout /login or /auth/claim
+  // mount doesn't auto-resume on stale initiator_session_id values.
+  // Without this, sessionStorage survives the logout and the next /login
+  // mount jumps directly into 'check_email' stage polling a dead session.
+  if (typeof window !== 'undefined') {
+    try {
+      sessionStorage.removeItem('dv_login_session_id');
+      sessionStorage.removeItem('dv_claim_session_id');
+    } catch { /* ignore */ }
+  }
   callPosthog((posthog) => {
     try { posthog.capture('auth_logout', {}); } catch { /* ignore */ }
     posthog.reset();
