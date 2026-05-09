@@ -1,0 +1,93 @@
+.page {
+  position: relative;
+  z-index: 1;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.card {
+  max-width: 520px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 36px 28px;
+  color: #fff;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 16px;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.97rem;
+  margin: 0 0 14px;
+}
+
+.bulletList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px;
+}
+.bulletList li {
+  position: relative;
+  padding: 8px 0 8px 26px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.bulletList li:last-child {
+  border-bottom: none;
+}
+.bulletList li::before {
+  content: '✦';
+  position: absolute;
+  left: 4px;
+  top: 8px;
+  color: #baa1ff;
+  font-size: 0.85rem;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+  text-align: center;
+}
+
+.primaryBtn {
+  display: inline-block;
+  background: linear-gradient(135deg, #7c5cff, #b58bff);
+  color: #fff;
+  text-decoration: none;
+  padding: 13px 18px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 6px 18px rgba(124, 92, 255, 0.35);
+  transition: transform 0.1s ease, box-shadow 0.15s ease;
+}
+.primaryBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(124, 92, 255, 0.45);
+}
+
+.secondaryLink {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-size: 0.92rem;
+  padding: 6px 0;
+}
+.secondaryLink:hover {
+  color: #fff;
+}

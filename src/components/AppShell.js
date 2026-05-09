@@ -10,8 +10,8 @@ import BottomNav from './BottomNav';
 import InstallPrompt from './InstallPrompt';
 import { dvAnalytics } from '@/utils/analytics';
 
-const NO_NAV_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies'];
-const PUBLIC_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies'];
+const NO_NAV_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies', '/pricing', '/upgrade/success', '/upgrade/cancelled'];
+const PUBLIC_ROUTES = ['/onboarding', '/login', '/signup', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies', '/pricing', '/upgrade/success', '/upgrade/cancelled'];
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 function isPublicRoute(pathname) {

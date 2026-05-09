@@ -1,0 +1,223 @@
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 20px 80px;
+  color: #fff;
+}
+
+.backLink {
+  display: inline-block;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+  transition: color 0.15s ease;
+}
+.backLink:hover {
+  color: #fff;
+}
+
+.header {
+  text-align: center;
+  margin: 12px auto 36px;
+}
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 12px;
+  letter-spacing: -0.01em;
+}
+.tagline {
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.tierGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+@media (min-width: 768px) {
+  .tierGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.tierCard {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+}
+.tierCardFeatured {
+  background: linear-gradient(160deg, rgba(124, 92, 255, 0.18), rgba(255, 255, 255, 0.06));
+  border-color: rgba(186, 159, 255, 0.45);
+  box-shadow: 0 12px 40px rgba(124, 92, 255, 0.15);
+}
+
+.tierName {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 16px;
+}
+
+.tierPrice {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+.priceAmount {
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.priceUnit {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+}
+.trialBadge {
+  margin-left: 8px;
+  background: linear-gradient(135deg, #f4c95a, #d99c2b);
+  color: #2a1c00;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.bulletList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  flex: 1;
+}
+.bulletList li {
+  position: relative;
+  padding: 8px 0 8px 26px;
+  font-size: 0.97rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.bulletList li:last-child {
+  border-bottom: none;
+}
+.bulletList li::before {
+  content: '✦';
+  position: absolute;
+  left: 4px;
+  top: 8px;
+  color: #baa1ff;
+  font-size: 0.85rem;
+}
+
+.tierFooter {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.tierFooterMuted {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.primaryBtn {
+  width: 100%;
+  background: linear-gradient(135deg, #7c5cff, #b58bff);
+  color: #fff;
+  border: none;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.15s ease;
+  box-shadow: 0 6px 18px rgba(124, 92, 255, 0.35);
+}
+.primaryBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(124, 92, 255, 0.45);
+}
+.primaryBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.secondaryLink {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 4px 0;
+}
+.secondaryLink:hover {
+  color: #fff;
+}
+.secondaryLink:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.statusCard {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(186, 159, 255, 0.4);
+  border-radius: 18px;
+  padding: 32px;
+  text-align: center;
+  max-width: 480px;
+  margin: 0 auto 24px;
+}
+.statusBadge {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.statusMeta {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.95rem;
+  margin: 0 0 22px;
+}
+
+.errorBox {
+  background: rgba(255, 80, 80, 0.12);
+  border: 1px solid rgba(255, 80, 80, 0.35);
+  color: #ffd5d5;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-top: 12px;
+  font-size: 0.92rem;
+  text-align: center;
+}
+
+.trustFooter {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.88rem;
+  margin: 24px 0 0;
+}

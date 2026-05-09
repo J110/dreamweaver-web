@@ -123,3 +123,52 @@
   box-shadow: 0 6px 24px rgba(107, 76, 230, 0.5);
 }
 
+.subscriptionSection {
+  margin-top: 28px;
+}
+
+.subStatusLine {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 4px 0 6px;
+  color: #fff;
+}
+
+.subDescLine {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.93rem;
+  line-height: 1.5;
+  margin: 0 0 16px;
+}
+
+.subPrimaryBtn {
+  display: inline-block;
+  background: linear-gradient(135deg, #7c5cff, #b58bff);
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 0.97rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(124, 92, 255, 0.35);
+  transition: transform 0.1s ease, box-shadow 0.15s ease;
+}
+.subPrimaryBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(124, 92, 255, 0.45);
+}
+.subPrimaryBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.subErrorLine {
+  margin: 10px 0 0;
+  color: #ffd5d5;
+  font-size: 0.9rem;
+}
+

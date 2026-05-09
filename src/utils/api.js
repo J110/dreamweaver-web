@@ -492,6 +492,15 @@ export const subscriptionApi = {
     return res.data || {};
   },
 
+  // Returns { current_tier: {id, name, ...}, since, next_billing_date }.
+  // Used by /upgrade/success (polling) and /settings subscription section.
+  getCurrent: async () => {
+    const res = await fetchApi('/api/v1/subscriptions/current', {
+      method: 'GET',
+    });
+    return res.data || {};
+  },
+
   // Deprecated as of Phase 0 step 1.4b. Backend now returns 410 Gone.
   // Use billingApi.startCheckout(plan) instead. Kept here only because
   // no callers exist today; will be removed when this file is touched
@@ -518,6 +527,17 @@ export const billingApi = {
     const res = await fetchApi('/api/v1/billing/checkout/start', {
       method: 'POST',
       body: JSON.stringify({ plan }),
+    });
+    return res.data || res || {};
+  },
+
+  /**
+   * Start a Stripe Customer Portal session (subscription management).
+   * @returns {Promise<{portal_url: string}>}
+   */
+  startPortal: async () => {
+    const res = await fetchApi('/api/v1/billing/portal/start', {
+      method: 'POST',
     });
     return res.data || res || {};
   },
