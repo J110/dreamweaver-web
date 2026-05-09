@@ -1,72 +1,158 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import StarField from '@/components/StarField';
 import { useI18n } from '@/utils/i18n';
+import { getUser, isLoggedIn, setUser } from '@/utils/auth';
+import { userApi } from '@/utils/api';
 import { dvAnalytics } from '@/utils/analytics';
 import styles from './page.module.css';
 
 const AGE_OPTIONS = [
-  { value: '0-1', label: '0-1 yrs', emoji: '👶' },
-  { value: '2-5', label: '2-5 yrs', emoji: '🧒' },
-  { value: '6-8', label: '6-8 yrs', emoji: '📚' },
-  { value: '9-12', label: '9-12 yrs', emoji: '🌟' },
+  { value: '0-1', label: '0-1 yrs', emoji: '👶', numeric: 1 },
+  { value: '2-5', label: '2-5 yrs', emoji: '🧒', numeric: 4 },
+  { value: '6-8', label: '6-8 yrs', emoji: '📚', numeric: 7 },
+  { value: '9-12', label: '9-12 yrs', emoji: '🌟', numeric: 10 },
 ];
+
+function rangeForNumericAge(n) {
+  if (typeof n !== 'number') return null;
+  if (n <= 1) return '0-1';
+  if (n <= 5) return '2-5';
+  if (n <= 8) return '6-8';
+  return '9-12';
+}
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const { setLang, t } = useI18n();
+  const { setLang, t, lang } = useI18n();
+
+  const [authed, setAuthed] = useState(false);
   const [selectedAge, setSelectedAge] = useState(null);
   const [username, setUsername] = useState('');
+  const [selectedLang, setSelectedLang] = useState(lang || 'en');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleGetStarted = async (e) => {
+  useEffect(() => {
+    const isAuth = isLoggedIn();
+    setAuthed(isAuth);
+
+    if (isAuth) {
+      // Post-auth mode: pre-fill from existing user record (re-edit support).
+      const u = getUser();
+      if (u?.username) setUsername(u.username);
+      const r = rangeForNumericAge(u?.child_age);
+      if (r) setSelectedAge(r);
+      if (u?.preferred_lang) setSelectedLang(u.preferred_lang);
+    } else {
+      // Pre-auth mode: re-hydrate from old onboarding stash if present.
+      try {
+        const pending = localStorage.getItem('dreamvalley_pending_username');
+        if (pending) setUsername(pending);
+        const stashedAge = localStorage.getItem('dreamvalley_child_age');
+        if (stashedAge && AGE_OPTIONS.some((o) => o.value === stashedAge)) {
+          setSelectedAge(stashedAge);
+        }
+      } catch { /* ignore */ }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function handleSubmit(e) {
     e.preventDefault();
-    if (!username.trim()) return;
+    const trimmed = username.trim();
+    if (!trimmed) return;
 
     setError(null);
     setLoading(true);
 
-    // Save age preference
     const childAge = selectedAge || '2-5';
-    try { localStorage.setItem('dreamvalley_child_age', childAge); } catch {}
-
-    // Parse numeric age for API (use midpoint of range)
-    const ageMap = { '0-1': 1, '2-5': 4, '6-8': 7, '9-12': 10 };
-    const numericAge = ageMap[childAge] || 5;
+    const opt = AGE_OPTIONS.find((o) => o.value === childAge);
+    const numericAge = opt ? opt.numeric : 5;
 
     try {
-      // Phase 0 step 1.5 — onboarding no longer mints an account. We stash
-      // the user-chosen display name as a local hint, save age preference
-      // (already saved above), and redirect to /login. The magic-link flow
-      // owns auth from here. Hardcoded 'dreamvalley_default' password path
-      // and the offline fake-user fallback both deleted with this commit.
-      try { localStorage.setItem('dreamvalley_pending_username', username.trim()); } catch {}
-      setLang('en');
-      dvAnalytics.track('onboarding_complete', { childAge: childAge, username: username.trim() });
-      router.push('/login');
-    } catch (err) {
-      setError(t('loginError'));
+      try { localStorage.setItem('dreamvalley_child_age', childAge); } catch {}
+
+      if (authed) {
+        // Post-auth mode: persist to backend.
+        try {
+          const res = await userApi.completeOnboarding({
+            username: trimmed,
+            child_age: numericAge,
+            lang: selectedLang,
+          });
+          // Update cached user with the new fields so AppShell stops gating us.
+          const u = getUser() || {};
+          setUser({
+            ...u,
+            username: res.username || trimmed,
+            child_age: res.child_age ?? numericAge,
+            preferred_lang: res.preferred_lang || selectedLang,
+            onboarding_complete: true,
+          });
+          setLang(selectedLang);
+          dvAnalytics.track('onboarding_complete', {
+            childAge,
+            username: trimmed,
+            lang: selectedLang,
+          });
+          router.replace('/');
+        } catch (err) {
+          const msg = String(err?.message || err || '');
+          if (msg.includes('username_taken') || msg.includes('409')) {
+            setError(
+              lang === 'hi'
+                ? 'Yeh username pehle se le liya gaya hai. Kuch aur try karein.'
+                : 'That username is taken. Try another.'
+            );
+          } else {
+            setError(
+              lang === 'hi'
+                ? 'Kuch galat hua. Phir try karein.'
+                : 'Something went wrong. Try again.'
+            );
+          }
+        }
+      } else {
+        // Pre-auth mode: stash + redirect to /login (legacy behavior).
+        try { localStorage.setItem('dreamvalley_pending_username', trimmed); } catch {}
+        setLang(selectedLang);
+        dvAnalytics.track('onboarding_complete', {
+          childAge,
+          username: trimmed,
+          lang: selectedLang,
+        });
+        router.push('/login');
+      }
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   return (
     <>
       <StarField />
       <div className={styles.wrapper}>
-        <form className={styles.slide} onSubmit={handleGetStarted}>
+        <form className={styles.slide} onSubmit={handleSubmit}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo-new.png" alt="Dream Valley" className={styles.logoImageSmall} />
           <p className={styles.subtitle}>
-            Where magical bedtime stories come alive
+            {selectedLang === 'hi'
+              ? 'Magical bedtime stories — aapke kid ke liye'
+              : 'Where magical bedtime stories come alive'}
           </p>
 
           <div className={styles.ageSection}>
-            <p className={styles.ageLabel}>How old is your little one? <span className={styles.optional}>(optional)</span></p>
+            <p className={styles.ageLabel}>
+              {selectedLang === 'hi'
+                ? 'Aapka kid kitne saal ka hai?'
+                : 'How old is your little one?'}
+              <span className={styles.optional}>
+                {selectedLang === 'hi' ? ' (optional)' : ' (optional)'}
+              </span>
+            </p>
             <div className={styles.ageGrid}>
               {AGE_OPTIONS.map((opt) => (
                 <button
@@ -83,19 +169,54 @@ export default function OnboardingPage() {
           </div>
 
           <div className={styles.usernameSection}>
-            <p className={styles.ageLabel}>{t('loginTitle')}</p>
-            <p className={styles.usernameHint}>{t('loginSubtitle')}</p>
+            <p className={styles.ageLabel}>
+              {selectedLang === 'hi' ? 'Display name kya rakhein?' : 'What should we call you?'}
+            </p>
+            <p className={styles.usernameHint}>
+              {selectedLang === 'hi'
+                ? 'Yeh sirf display ke liye — login email-based hai.'
+                : 'Just for display — login is email-based.'}
+            </p>
             {error && <div className={styles.errorMessage}>{error}</div>}
             <input
               type="text"
-              placeholder={t('loginPlaceholder')}
+              placeholder={selectedLang === 'hi' ? 'jaise: Aarav' : 'e.g. Alice'}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className={styles.usernameInput}
               autoFocus
               disabled={loading}
-              maxLength={20}
+              maxLength={24}
+              pattern="[A-Za-z0-9_ ]+"
             />
+          </div>
+
+          <div className={styles.langSection}>
+            <p className={styles.ageLabel}>
+              {selectedLang === 'hi' ? 'App ki language' : 'App language'}
+            </p>
+            <div className={styles.langToggle} role="tablist">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={selectedLang === 'en'}
+                className={`${styles.langBtn} ${selectedLang === 'en' ? styles.langBtnActive : ''}`}
+                onClick={() => setSelectedLang('en')}
+                disabled={loading}
+              >
+                English
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={selectedLang === 'hi'}
+                className={`${styles.langBtn} ${selectedLang === 'hi' ? styles.langBtnActive : ''}`}
+                onClick={() => setSelectedLang('hi')}
+                disabled={loading}
+              >
+                Hindi (Roman)
+              </button>
+            </div>
           </div>
 
           <button
@@ -103,7 +224,9 @@ export default function OnboardingPage() {
             disabled={loading || !username.trim()}
             className={styles.startBtn}
           >
-            {loading ? `✨ ${t('loginLoading')}` : t('getStarted')}
+            {loading
+              ? `✨ ${selectedLang === 'hi' ? 'Save ho raha hai...' : 'Saving...'}`
+              : (selectedLang === 'hi' ? 'Shuru karein' : 'Get started')}
           </button>
         </form>
       </div>

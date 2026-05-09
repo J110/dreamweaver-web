@@ -103,11 +103,21 @@ export default function AppShell({ children }) {
     // users with valid old tokens enter the app normally; the migration
     // script's revocation later turns those tokens into 401s, which the
     // backend-level handler converts to logout → /login (NOT /auth/claim).
+    //
+    // Phase 0 onboarding gate (separate workstream, layered after the
+    // email_verified gate). Tolerant of legacy users:
+    //   onboarding_complete === false      → redirect to /onboarding
+    //   onboarding_complete === undefined  → fall through (pre-backfill)
+    //   onboarding_complete === true       → fall through (legacy + new completed)
     if (!isPublic && isLoggedIn()) {
       let cachedUser = null;
       try { cachedUser = JSON.parse(localStorage.getItem('dreamweaver_user') || 'null'); } catch {}
       if (cachedUser && cachedUser.email_verified === false) {
         router.replace('/auth/claim');
+        return;
+      }
+      if (cachedUser && cachedUser.onboarding_complete === false) {
+        router.replace('/onboarding');
         return;
       }
     }

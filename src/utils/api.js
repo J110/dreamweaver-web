@@ -617,6 +617,23 @@ export const userApi = {
     });
     return res.data || {};
   },
+
+  /**
+   * Complete onboarding for a magic-link signup_new user. Sets
+   * username, child_age, preferred_lang on the user record and
+   * flips onboarding_complete=true. Idempotent for the same user.
+   * Throws on 409 (username collision with a different user).
+   *
+   * @param {{username: string, child_age: number, lang: ('en'|'hi')}} body
+   * @returns {Promise<{username, child_age, preferred_lang, onboarding_complete}>}
+   */
+  completeOnboarding: async ({ username, child_age, lang }) => {
+    const res = await fetchApi('/api/v1/users/me/complete-onboarding', {
+      method: 'POST',
+      body: JSON.stringify({ username, child_age, lang }),
+    });
+    return res.data || res || {};
+  },
 };
 
 export default fetchApi;
