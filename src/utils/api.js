@@ -69,7 +69,18 @@ const fetchApi = async (endpoint, options = {}) => {
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
-      throw new Error(error.detail || error.message || `API error: ${response.status}`);
+      // Preserve structured FastAPI detail bodies (e.g. complete_onboarding's
+      // 409 returns {detail: {code: 'username_taken', username: ...}}).
+      // new Error(<object>) coerces to '[object Object]' and destroys the
+      // payload — JSON.stringify keeps the substring intact for callers
+      // that match on err.message.
+      const detail = error.detail;
+      const detailStr = typeof detail === 'string'
+        ? detail
+        : detail
+          ? JSON.stringify(detail)
+          : (error.message || `API error: ${response.status}`);
+      throw new Error(detailStr);
     }
 
     const data = await response.json();
