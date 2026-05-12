@@ -80,12 +80,12 @@ export default function ClaimPage() {
     }, POLL_TIMEOUT_MS);
   }
 
-  // Resume in-flight claim across navigations.
+  // Clear any stale dv_claim_session_id on mount. Auto-resuming polling
+  // on a 15-min-stale id raced the user's new submit and showed
+  // 'Link expired' before any interaction. Same fix as /login.
   useEffect(() => {
-    const saved = (typeof window !== 'undefined') && sessionStorage.getItem('dv_claim_session_id');
-    if (saved) {
-      setStage('check_email');
-      startPolling(saved);
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('dv_claim_session_id');
     }
     return stopPolling;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -100,6 +100,7 @@ export default function ClaimPage() {
     }
     setError(null);
     setSubmitting(true);
+    sessionStorage.removeItem('dv_claim_session_id');
     try {
       const res = await authApi.claimExisting(trimmed, lang);
       try {

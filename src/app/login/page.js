@@ -100,12 +100,14 @@ export default function LoginPage() {
     }, POLL_TIMEOUT_MS);
   }
 
-  // Resume polling if a previous request_link result is still in sessionStorage.
+  // Clear any stale dv_login_session_id from a prior abandoned signin in
+  // this tab. AppShell 401 redirects to /login?reason=session_expired and
+  // other in-app navigations preserve sessionStorage, so a stale id can
+  // arrive here without context. Auto-resuming polling on it raced the
+  // user's new submit and showed 'Link expired' before any interaction.
   useEffect(() => {
-    const saved = (typeof window !== 'undefined') && sessionStorage.getItem('dv_login_session_id');
-    if (saved) {
-      setStage('check_email');
-      startPolling(saved);
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('dv_login_session_id');
     }
     return stopPolling;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -120,6 +122,7 @@ export default function LoginPage() {
     }
     setError(null);
     setSubmitting(true);
+    sessionStorage.removeItem('dv_login_session_id');
     try {
       const res = await signin(trimmed, mode, lang);
       if (res?.initiator_session_id) {
