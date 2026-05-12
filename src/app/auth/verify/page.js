@@ -2,16 +2,18 @@
 
 import { Suspense, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import StarField from '@/components/StarField';
 import { useI18n } from '@/utils/i18n';
+import { setToken, setUser } from '@/utils/auth';
 import { authApi } from '@/utils/api';
 import styles from './page.module.css';
 
 function VerifyInner() {
   const params = useSearchParams();
+  const router = useRouter();
   const { lang } = useI18n();
-  const [state, setState] = useState('verifying'); // verifying | claimed | already_used | expired | invalid
+  const [state, setState] = useState('verifying'); // verifying | logging_in | claimed | already_used | expired | invalid
   const [context, setContext] = useState(null);
   const ranRef = useRef(false);
 
@@ -28,18 +30,44 @@ function VerifyInner() {
         const res = await authApi.verifyLink(code);
         const status = res?.status || 'invalid';
         setContext(res?.context || null);
-        setState(status);
         if (status === 'claimed') {
           try {
             const ph = (await import('posthog-js')).default;
             ph.capture('auth_link_clicked', { context: res?.context || null });
           } catch { /* ignore */ }
+          if (res?.token) {
+            setState('logging_in');
+            setToken(res.token);
+            setUser({
+              uid: res.uid,
+              username: res.username,
+              family_id: res.family_id,
+              email_verified: !!res.email_verified,
+              onboarding_complete: res.onboarding_complete,
+              child_age: res.child_age,
+              preferred_lang: res.preferred_lang,
+            });
+            router.replace('/');
+            return;
+          }
         }
+        setState(status);
       } catch {
         setState('invalid');
       }
     })();
-  }, [params]);
+  }, [params, router]);
+
+  if (state === 'logging_in') {
+    return (
+      <div className={styles.card}>
+        <div className={styles.spinner} aria-hidden />
+        <h1 className={styles.title}>
+          {lang === 'hi' ? 'Log in kar rahe hain...' : 'Logging you in...'}
+        </h1>
+      </div>
+    );
+  }
 
   if (state === 'verifying') {
     return (
@@ -64,9 +92,6 @@ function VerifyInner() {
             ? 'Aap apne pehle wale tab par wapas jaa sakte hain — wo apne aap update ho jaayega. Is tab ko close kar dein.'
             : 'Return to your other tab — it’ll update automatically. You can close this one.'}
         </p>
-        <Link href="/" className={styles.secondaryLink}>
-          {lang === 'hi' ? 'Ya yahin se home par jaayein' : 'Or just go home from here'}
-        </Link>
       </div>
     );
   }
