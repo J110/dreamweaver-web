@@ -13,9 +13,11 @@ function VerifyInner() {
   const params = useSearchParams();
   const router = useRouter();
   const { lang } = useI18n();
-  const [state, setState] = useState('verifying'); // verifying | logging_in | claimed | already_used | expired | invalid
+  const [state, setState] = useState('verifying'); // verifying | logged_in | claimed | already_used | expired | invalid
   const [context, setContext] = useState(null);
+  const [username, setUsername] = useState('');
   const ranRef = useRef(false);
+  const redirectTimerRef = useRef(null);
 
   useEffect(() => {
     if (ranRef.current) return;
@@ -36,7 +38,6 @@ function VerifyInner() {
             ph.capture('auth_link_clicked', { context: res?.context || null });
           } catch { /* ignore */ }
           if (res?.token) {
-            setState('logging_in');
             setToken(res.token);
             setUser({
               uid: res.uid,
@@ -47,7 +48,11 @@ function VerifyInner() {
               child_age: res.child_age,
               preferred_lang: res.preferred_lang,
             });
-            router.replace('/');
+            setUsername(res.username || '');
+            setState('logged_in');
+            redirectTimerRef.current = setTimeout(() => {
+              router.replace('/');
+            }, 1800);
             return;
           }
         }
@@ -56,15 +61,23 @@ function VerifyInner() {
         setState('invalid');
       }
     })();
+    return () => {
+      if (redirectTimerRef.current) clearTimeout(redirectTimerRef.current);
+    };
   }, [params, router]);
 
-  if (state === 'logging_in') {
+  if (state === 'logged_in') {
     return (
       <div className={styles.card}>
-        <div className={styles.spinner} aria-hidden />
+        <div className={styles.checkmark} aria-hidden>✓</div>
         <h1 className={styles.title}>
-          {lang === 'hi' ? 'Log in kar rahe hain...' : 'Logging you in...'}
+          {lang === 'hi'
+            ? (username ? `Wapas swagat hai, ${username}!` : 'Log in ho gaye!')
+            : (username ? `Welcome back, ${username}!` : 'Logged in!')}
         </h1>
+        <p className={styles.body}>
+          {lang === 'hi' ? 'Dream Valley le chal rahe hain...' : 'Taking you to Dream Valley...'}
+        </p>
       </div>
     );
   }
