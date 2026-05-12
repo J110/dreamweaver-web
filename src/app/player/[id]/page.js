@@ -280,6 +280,18 @@ export default function PlayerPage() {
       };
     }
 
+    // Long stories must NEVER fall through to the edge-tts substring(0, 5000)
+    // path: a 1500+ word story truncates to ~half its text, the TTS plays
+    // only the first half, then ends — perceived as "audio ran out at
+    // midpoint" with the player surfacing a generic "Could not load audio"
+    // error. If a long story has no matching pre-gen variant for the
+    // selected voice, return null so the caller surfaces a clean error
+    // instead of playing a partial.
+    const isLongStory = content.type === 'long_story' || content.length === 'LONG';
+    if (isLongStory) {
+      return null;
+    }
+
     const text = (content.text || '').substring(0, 5000);
     const baseId = selectedVoice?.replace(/_hi$/, '') || '';
     const voiceMeta = VOICES[baseId];
