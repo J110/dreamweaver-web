@@ -14,11 +14,12 @@ const POLL_TIMEOUT_MS = 15 * 60 * 1000;
 export default function ClaimPage() {
   const router = useRouter();
   const { lang } = useI18n();
-  const [stage, setStage] = useState('enter_email');
+  const [stage, setStage] = useState('enter_email'); // enter_email | check_email | expired | rate_limited
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [username, setUsername] = useState('');
+  const [retryAfter, setRetryAfter] = useState(0);
 
   const intervalRef = useRef(null);
   const timeoutRef = useRef(null);
@@ -109,7 +110,10 @@ export default function ClaimPage() {
         const hash = await emailHash(trimmed);
         ph.capture('auth_request_link', { email_hash: hash, lang, context: 'claim_existing' });
       } catch { /* ignore */ }
-      if (res?.initiator_session_id) {
+      if (res?.status === 'rate_limited') {
+        setRetryAfter(res.retry_after_seconds || 0);
+        setStage('rate_limited');
+      } else if (res?.initiator_session_id) {
         sessionStorage.setItem('dv_claim_session_id', res.initiator_session_id);
         setStage('check_email');
         startPolling(res.initiator_session_id);
@@ -178,6 +182,33 @@ export default function ClaimPage() {
             </p>
             <button onClick={resetToEntry} className={styles.primaryBtn}>
               {lang === 'hi' ? 'Naya link bhejein' : 'Send a new link'}
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (stage === 'rate_limited') {
+    const timeStr = retryAfter >= 60
+      ? `${Math.ceil(retryAfter / 60)} ${lang === 'hi' ? 'minute' : 'minutes'}`
+      : `${Math.max(retryAfter, 1)} ${lang === 'hi' ? 'seconds' : 'seconds'}`;
+    return (
+      <>
+        <StarField />
+        <div className={styles.page}>
+          <div className={styles.card}>
+            <div className={styles.warningMark} aria-hidden>⏳</div>
+            <h1 className={styles.title}>
+              {lang === 'hi' ? 'Bahut zyada requests' : 'Too many requests'}
+            </h1>
+            <p className={styles.body}>
+              {lang === 'hi'
+                ? `Bahut zyada login link requests ho gayi hain. ${timeStr} ruk kar dobara try karein.`
+                : `Too many login link requests. Please wait ${timeStr} before trying again.`}
+            </p>
+            <button onClick={resetToEntry} className={styles.primaryBtn}>
+              {lang === 'hi' ? 'Doosra email use karein' : 'Use a different email'}
             </button>
           </div>
         </div>

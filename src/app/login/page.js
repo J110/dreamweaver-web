@@ -37,10 +37,11 @@ export default function LoginPage() {
   }, [showSessionBanner]);
 
   const [mode, setMode] = useState('login_existing'); // 'signup_new' | 'login_existing'
-  const [stage, setStage] = useState('enter_email'); // enter_email | check_email | expired | error
+  const [stage, setStage] = useState('enter_email'); // enter_email | check_email | expired | rate_limited | error
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [retryAfter, setRetryAfter] = useState(0);
 
   const intervalRef = useRef(null);
   const timeoutRef = useRef(null);
@@ -125,7 +126,10 @@ export default function LoginPage() {
     sessionStorage.removeItem('dv_login_session_id');
     try {
       const res = await signin(trimmed, mode, lang);
-      if (res?.initiator_session_id) {
+      if (res?.status === 'rate_limited') {
+        setRetryAfter(res.retry_after_seconds || 0);
+        setStage('rate_limited');
+      } else if (res?.initiator_session_id) {
         sessionStorage.setItem('dv_login_session_id', res.initiator_session_id);
         setStage('check_email');
         startPolling(res.initiator_session_id);
@@ -196,6 +200,33 @@ export default function LoginPage() {
             </p>
             <button onClick={resetToEntry} className={styles.submitBtn}>
               {lang === 'hi' ? 'Naya link bhejein' : 'Send a new link'}
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (stage === 'rate_limited') {
+    const timeStr = retryAfter >= 60
+      ? `${Math.ceil(retryAfter / 60)} ${lang === 'hi' ? 'minute' : 'minutes'}`
+      : `${Math.max(retryAfter, 1)} ${lang === 'hi' ? 'seconds' : 'seconds'}`;
+    return (
+      <>
+        <StarField />
+        <div className={styles.pageWrapper}>
+          <div className={styles.container}>
+            <div className={styles.warningMark} aria-hidden>⏳</div>
+            <h1 className={styles.title}>
+              {lang === 'hi' ? 'Bahut zyada requests' : 'Too many requests'}
+            </h1>
+            <p className={styles.subtitle}>
+              {lang === 'hi'
+                ? `Bahut zyada login link requests ho gayi hain. ${timeStr} ruk kar dobara try karein.`
+                : `Too many login link requests. Please wait ${timeStr} before trying again.`}
+            </p>
+            <button onClick={resetToEntry} className={styles.submitBtn}>
+              {lang === 'hi' ? 'Doosra email use karein' : 'Use a different email'}
             </button>
           </div>
         </div>
