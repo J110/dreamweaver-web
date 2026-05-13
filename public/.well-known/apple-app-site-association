@@ -1,0 +1,14 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["63M8Q266G9.com.vervetogether.dreamvalley"],
+        "components": [
+          { "/": "/auth/verify", "comment": "Magic link verification" },
+          { "/": "/auth/claim",  "comment": "Account claim flow" },
+          { "/": "/player/*",    "comment": "Direct content links" }
+        ]
+      }
+    ]
+  }
+}
