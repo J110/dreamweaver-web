@@ -181,15 +181,18 @@ caused data loss; all caused brief HTTP 502 windows on prod.
 - **iOS lock-screen artwork fallback (Issue 2).** MediaSession
   artwork IS being set — `mediaSessionManager.js` rasterizes SVG/PNG
   covers to PNG data URLs at 512/256/128 before assigning to
-  `MediaMetadata.artwork`. Two probable causes for the favicon
-  fallback:
-  1. Mobile Safari `<canvas>` taint dropping artwork silently
-     (cross-origin / SVG-via-`<object>` issue) when rasterizing.
-  2. WKWebView wrapper not surfacing MediaSession to iOS Now Playing
-     — needs a native `MPNowPlayingInfoCenter` bridge.
-
-  Owner to clarify whether the symptom appears in mobile Safari or in
-  the installed Flutter wrapper. Each has a different fix shape.
+  `MediaMetadata.artwork`. **Owner confirmed (2026-05-13) that the
+  symptom appears in the installed Flutter wrapper, not in mobile
+  Safari**, so the canvas-taint hypothesis is ruled out. The cause
+  is the known WKWebView limitation: MediaSession metadata does not
+  propagate to iOS Now Playing / lock screen from inside a
+  `WKWebView`. Fix requires a native bridge in
+  `dreamweaver/ios/Runner/` that listens for metadata updates from
+  the WebView (e.g. via a `WKScriptMessageHandler` on a JS bridge
+  the page already calls — see `window.DreamValleyMedia` posting
+  pattern in `src/utils/mediaSessionManager.js`) and forwards them
+  to `MPNowPlayingInfoCenter` plus a `MPRemoteCommandCenter` for
+  play/pause/seek. Multi-session native work.
 
 - **Universal Links / App Links missing (Issue 4).** Magic links
   currently open in the system browser instead of the installed app.
