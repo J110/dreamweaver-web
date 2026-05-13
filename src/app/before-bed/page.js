@@ -5,6 +5,11 @@ import StarField from '@/components/StarField';
 import { sillySongsApi, poemsApi, funnyShortsApi } from '@/utils/api';
 import { useI18n } from '@/utils/i18n';
 import { dvAnalytics } from '@/utils/analytics';
+import {
+  updateMediaSessionMetadata,
+  updatePlaybackState,
+  clearMediaSession,
+} from '@/utils/mediaSessionManager';
 import styles from './page.module.css';
 
 function formatDuration(seconds) {
@@ -139,8 +144,10 @@ function BeforeBedContent() {
     if (playingId === song.id && audioRef.current) {
       if (audioRef.current.paused) {
         audioRef.current.play();
+        updatePlaybackState('playing');
       } else {
         audioRef.current.pause();
+        updatePlaybackState('paused');
       }
       return;
     }
@@ -155,6 +162,13 @@ function BeforeBedContent() {
     setPlayingId(song.id);
     setPlayingType('song');
     setProgress(0);
+
+    updateMediaSessionMetadata({
+      title: song.title || 'Silly Song',
+      artist: 'Dream Valley',
+      album: 'Silly Song',
+      coverUrl: song.cover || null,
+    });
 
     const isReplay = sessionPlayed.current.has(song.id);
     if (isReplay) {
@@ -173,13 +187,17 @@ function BeforeBedContent() {
       setPlayingId(null);
       setPlayingType(null);
       setProgress(0);
+      updatePlaybackState('paused');
     });
     audio.addEventListener('error', () => {
       setPlayingId(null);
       setPlayingType(null);
       setProgress(0);
+      updatePlaybackState('paused');
     });
-    audio.play().catch(() => {
+    audio.play().then(() => {
+      updatePlaybackState('playing');
+    }).catch(() => {
       setPlayingId(null);
       setPlayingType(null);
     });
@@ -192,8 +210,10 @@ function BeforeBedContent() {
     if (playingId === poem.id && audioRef.current) {
       if (audioRef.current.paused) {
         audioRef.current.play();
+        updatePlaybackState('playing');
       } else {
         audioRef.current.pause();
+        updatePlaybackState('paused');
       }
       return;
     }
@@ -208,6 +228,13 @@ function BeforeBedContent() {
     setPlayingId(poem.id);
     setPlayingType('poem');
     setProgress(0);
+
+    updateMediaSessionMetadata({
+      title: poem.title || 'Poem',
+      artist: 'Dream Valley',
+      album: 'Poem',
+      coverUrl: poem.cover || null,
+    });
 
     const isReplay = sessionPlayed.current.has(poem.id);
     if (isReplay) {
@@ -226,13 +253,17 @@ function BeforeBedContent() {
       setPlayingId(null);
       setPlayingType(null);
       setProgress(0);
+      updatePlaybackState('paused');
     });
     audio.addEventListener('error', () => {
       setPlayingId(null);
       setPlayingType(null);
       setProgress(0);
+      updatePlaybackState('paused');
     });
-    audio.play().catch(() => {
+    audio.play().then(() => {
+      updatePlaybackState('playing');
+    }).catch(() => {
       setPlayingId(null);
       setPlayingType(null);
     });
@@ -245,8 +276,10 @@ function BeforeBedContent() {
     if (playingId === short.id && audioRef.current) {
       if (audioRef.current.paused) {
         audioRef.current.play();
+        updatePlaybackState('playing');
       } else {
         audioRef.current.pause();
+        updatePlaybackState('paused');
       }
       return;
     }
@@ -269,6 +302,13 @@ function BeforeBedContent() {
     setPlayingType('funny_short');
     setProgress(0);
 
+    updateMediaSessionMetadata({
+      title: short.title || 'Funny Short',
+      artist: 'Dream Valley',
+      album: 'Funny Short',
+      coverUrl: short.cover || null,
+    });
+
     const isReplay = sessionPlayed.current.has(short.id);
     if (isReplay) {
       funnyShortsApi.replay(short.id).catch(() => {});
@@ -286,13 +326,17 @@ function BeforeBedContent() {
       setPlayingId(null);
       setPlayingType(null);
       setProgress(0);
+      updatePlaybackState('paused');
     });
     audio.addEventListener('error', () => {
       setPlayingId(null);
       setPlayingType(null);
       setProgress(0);
+      updatePlaybackState('paused');
     });
-    audio.play().catch(() => {
+    audio.play().then(() => {
+      updatePlaybackState('playing');
+    }).catch(() => {
       setPlayingId(null);
       setPlayingType(null);
     });
@@ -306,6 +350,7 @@ function BeforeBedContent() {
     setPlayingId(null);
     setPlayingType(null);
     setProgress(0);
+    clearMediaSession();
   }, []);
 
   useEffect(() => {
@@ -314,6 +359,7 @@ function BeforeBedContent() {
         audioRef.current.pause();
         audioRef.current = null;
       }
+      clearMediaSession();
     };
   }, []);
 

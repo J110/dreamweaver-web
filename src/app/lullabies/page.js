@@ -3,6 +3,11 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { lullabiesApi } from '@/utils/api';
 import { useI18n } from '@/utils/i18n';
+import {
+  updateMediaSessionMetadata,
+  updatePlaybackState,
+  clearMediaSession,
+} from '@/utils/mediaSessionManager';
 import styles from './lullabies.module.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -92,8 +97,10 @@ export default function LullabiesPage() {
     if (playing === lullaby.id && audioRef.current) {
       if (audioRef.current.paused) {
         audioRef.current.play();
+        updatePlaybackState('playing');
       } else {
         audioRef.current.pause();
+        updatePlaybackState('paused');
       }
       return;
     }
@@ -109,6 +116,15 @@ export default function LullabiesPage() {
     setPlaying(lullaby.id);
     setProgress(0);
 
+    // Wire MediaSession so Android foreground service shows the lock-screen
+    // notification (otherwise this page plays audio invisibly to the OS).
+    updateMediaSessionMetadata({
+      title: lullaby.title || 'Lullaby',
+      artist: 'Dream Valley',
+      album: 'Lullaby',
+      coverUrl: lullaby.cover || null,
+    });
+
     audio.addEventListener('timeupdate', () => {
       if (audio.duration) {
         setProgress((audio.currentTime / audio.duration) * 100);
@@ -118,9 +134,12 @@ export default function LullabiesPage() {
     audio.addEventListener('ended', () => {
       setPlaying(null);
       setProgress(0);
+      updatePlaybackState('paused');
     });
 
-    audio.play().catch((err) => {
+    audio.play().then(() => {
+      updatePlaybackState('playing');
+    }).catch((err) => {
       console.error('Play failed:', err);
       setPlaying(null);
     });
@@ -133,6 +152,7 @@ export default function LullabiesPage() {
         audioRef.current.pause();
         audioRef.current = null;
       }
+      clearMediaSession();
     };
   }, []);
 
