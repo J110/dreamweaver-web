@@ -28,6 +28,7 @@ export default function OnboardingPage() {
   const router = useRouter();
   const { setLang, t, lang } = useI18n();
 
+  const [authed, setAuthed] = useState(false);
   const [selectedAge, setSelectedAge] = useState(null);
   const [username, setUsername] = useState('');
   const [selectedLang, setSelectedLang] = useState(lang || 'en');
@@ -35,16 +36,13 @@ export default function OnboardingPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Post-auth-only page. Logged-out visitors don't see the form —
-    // they need to authenticate first via magic-link, after which
-    // AppShell routes them back here when onboarding_complete=false.
-    // The legacy pre-auth stash (dreamvalley_pending_username,
-    // dreamvalley_child_age) was never read by magic-link signup and
-    // misled users into typing data that wasn't applied.
-    if (!isLoggedIn()) {
-      router.replace('/login');
-      return;
-    }
+    // Anonymous visitors land here from AppShell's language gate. They see
+    // only the language picker (no username/age) and on submit the language
+    // is stored in localStorage. Logged-in users see the full form
+    // (username + age + language) per the post-auth onboarding flow.
+    const a = isLoggedIn();
+    setAuthed(a);
+    if (!a) return;
     // Pre-fill from existing user record so re-edits show current values.
     const u = getUser();
     if (u?.username) setUsername(u.username);
@@ -56,6 +54,17 @@ export default function OnboardingPage() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+
+    // Anon mode: language-only submit. Persist via setLang (writes
+    // LANG_KEY in localStorage so hasCompletedOnboarding() becomes true
+    // and AppShell's anon-lang gate stops firing) and bounce to home.
+    if (!authed) {
+      setLang(selectedLang);
+      dvAnalytics.track('anon_language_picked', { lang: selectedLang });
+      router.replace('/');
+      return;
+    }
+
     const trimmed = username.trim();
     if (!trimmed) return;
 
@@ -126,52 +135,56 @@ export default function OnboardingPage() {
               : 'Where magical bedtime stories come alive'}
           </p>
 
-          <div className={styles.ageSection}>
-            <p className={styles.ageLabel}>
-              {selectedLang === 'hi'
-                ? 'Aapka kid kitne saal ka hai?'
-                : 'How old is your little one?'}
-              <span className={styles.optional}>
-                {selectedLang === 'hi' ? ' (optional)' : ' (optional)'}
-              </span>
-            </p>
-            <div className={styles.ageGrid}>
-              {AGE_OPTIONS.map((opt) => (
-                <button
-                  type="button"
-                  key={opt.value}
-                  className={`${styles.ageCard} ${selectedAge === opt.value ? styles.ageCardSelected : ''}`}
-                  onClick={() => setSelectedAge(opt.value)}
-                >
-                  <span className={styles.ageEmoji}>{opt.emoji}</span>
-                  <span className={styles.ageText}>{opt.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+          {authed && (
+            <>
+              <div className={styles.ageSection}>
+                <p className={styles.ageLabel}>
+                  {selectedLang === 'hi'
+                    ? 'Aapka kid kitne saal ka hai?'
+                    : 'How old is your little one?'}
+                  <span className={styles.optional}>
+                    {selectedLang === 'hi' ? ' (optional)' : ' (optional)'}
+                  </span>
+                </p>
+                <div className={styles.ageGrid}>
+                  {AGE_OPTIONS.map((opt) => (
+                    <button
+                      type="button"
+                      key={opt.value}
+                      className={`${styles.ageCard} ${selectedAge === opt.value ? styles.ageCardSelected : ''}`}
+                      onClick={() => setSelectedAge(opt.value)}
+                    >
+                      <span className={styles.ageEmoji}>{opt.emoji}</span>
+                      <span className={styles.ageText}>{opt.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-          <div className={styles.usernameSection}>
-            <p className={styles.ageLabel}>
-              {selectedLang === 'hi' ? 'Display name kya rakhein?' : 'What should we call you?'}
-            </p>
-            <p className={styles.usernameHint}>
-              {selectedLang === 'hi'
-                ? 'Yeh sirf display ke liye — login email-based hai.'
-                : 'Just for display — login is email-based.'}
-            </p>
-            {error && <div className={styles.errorMessage}>{error}</div>}
-            <input
-              type="text"
-              placeholder={selectedLang === 'hi' ? 'jaise: Aarav' : 'e.g. Alice'}
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className={styles.usernameInput}
-              autoFocus
-              disabled={loading}
-              maxLength={24}
-              pattern="[A-Za-z0-9_ ]+"
-            />
-          </div>
+              <div className={styles.usernameSection}>
+                <p className={styles.ageLabel}>
+                  {selectedLang === 'hi' ? 'Display name kya rakhein?' : 'What should we call you?'}
+                </p>
+                <p className={styles.usernameHint}>
+                  {selectedLang === 'hi'
+                    ? 'Yeh sirf display ke liye — login email-based hai.'
+                    : 'Just for display — login is email-based.'}
+                </p>
+                {error && <div className={styles.errorMessage}>{error}</div>}
+                <input
+                  type="text"
+                  placeholder={selectedLang === 'hi' ? 'jaise: Aarav' : 'e.g. Alice'}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className={styles.usernameInput}
+                  autoFocus
+                  disabled={loading}
+                  maxLength={24}
+                  pattern="[A-Za-z0-9_ ]+"
+                />
+              </div>
+            </>
+          )}
 
           <div className={styles.langSection}>
             <p className={styles.ageLabel}>
@@ -203,7 +216,7 @@ export default function OnboardingPage() {
 
           <button
             type="submit"
-            disabled={loading || !username.trim()}
+            disabled={loading || (authed && !username.trim())}
             className={styles.startBtn}
           >
             {loading

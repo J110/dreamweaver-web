@@ -35,8 +35,10 @@ function isNativeApp() {
 }
 
 export default function Home() {
-  // Default to 'landing' so SSR renders the landing page (SEO-critical)
-  const [view, setView] = useState('landing');
+  // Default to 'app' — marketing landing lives at /welcome now. Anonymous
+  // visitors are routed to /onboarding by AppShell before this renders if
+  // they haven't picked a language yet.
+  const [view, setView] = useState('app');
 
   useEffect(() => {
     // Override: ?view=landing forces the landing page for anyone

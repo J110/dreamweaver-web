@@ -8,7 +8,6 @@ import { isLoggedIn, getToken, logout } from '@/utils/auth';
 import useVersionCheck from '@/hooks/useVersionCheck';
 import BottomNav from './BottomNav';
 import InstallPrompt from './InstallPrompt';
-import AnonLanguagePicker from './AnonLanguagePicker';
 import { dvAnalytics } from '@/utils/analytics';
 
 const NO_NAV_ROUTES = ['/onboarding', '/login', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies', '/pricing', '/upgrade/success', '/upgrade/cancelled', '/auth/verify', '/auth/claim', '/welcome'];
@@ -92,6 +91,20 @@ export default function AppShell({ children }) {
       }
     }
 
+    // Anonymous-language gate. Anon users must pick a language before
+    // browsing so content renders in their chosen language, not a default.
+    // /onboarding handles the lang-only form for them; /welcome (marketing)
+    // and auth routes are exempt so they remain reachable pre-pick.
+    const langGateBypass =
+      pathname === '/onboarding'
+      || pathname === '/welcome'
+      || pathname === '/login'
+      || pathname.startsWith('/auth/');
+    if (!isLoggedIn() && !hasCompletedOnboarding() && !langGateBypass) {
+      router.replace('/onboarding');
+      return;
+    }
+
     // Home page handles its own routing (landing vs app grid) — don't redirect
     if (isHome) {
       setChecked(true);
@@ -113,8 +126,8 @@ export default function AppShell({ children }) {
     }
 
     // Onboarding gate applies only to logged-in users. Anonymous users
-    // pick a language via <AnonLanguagePicker /> overlay instead of being
-    // bounced to /onboarding (which itself requires login).
+    // are routed to /onboarding by the anon-language gate below (which
+    // shows a lang-only form for them), not by this gate.
     if (isLoggedIn() && !hasCompletedOnboarding() && !isPublic) {
       router.replace('/onboarding');
       return;
@@ -180,7 +193,7 @@ export default function AppShell({ children }) {
     || pathname.startsWith('/blog/') || pathname === '/blog'
     || /^\/before-bed\/(silly-songs|poems)\//.test(pathname);
   const hasLandingParam = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('view') === 'landing';
-  const isLandingPage = pathname === '/' && (!isLoggedIn() || hasLandingParam);
+  const isLandingPage = pathname === '/' && hasLandingParam;
   const showNav = !NO_NAV_ROUTES.includes(pathname) && !pathname.startsWith('/player/')
     && !isSEOPage && !isLandingPage && checked;
 
@@ -191,7 +204,6 @@ export default function AppShell({ children }) {
           {children}
         </div>
         {showNav && <BottomNav />}
-        <AnonLanguagePicker />
         <InstallPrompt />
       </VoicePreferencesProvider>
     </I18nProvider>
