@@ -292,5 +292,18 @@ export function getLang() {
 
 export function hasCompletedOnboarding() {
   if (typeof window === 'undefined') return false;
-  return !!localStorage.getItem(LANG_KEY);
+  // Logged-in users: defer to the cached backend user. Treat
+  // onboarding_complete !== false as complete (true or undefined,
+  // the latter covering legacy pre-backfill records). Without this
+  // branch, the 53 existing users — who never wrote the anon
+  // localStorage keys — would be force-routed to /onboarding.
+  let cached = null;
+  try { cached = JSON.parse(localStorage.getItem('dreamweaver_user') || 'null'); } catch {}
+  if (cached) {
+    return cached.onboarding_complete !== false;
+  }
+  // Anon: require the full localStorage profile (lang + username + age).
+  return !!localStorage.getItem(LANG_KEY)
+    && !!localStorage.getItem('dreamvalley_anon_username')
+    && !!localStorage.getItem('dreamvalley_child_age');
 }

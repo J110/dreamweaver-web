@@ -35,8 +35,16 @@ export default function MyStoriesPage() {
   const [prefContentType, setPrefContentType] = useState('story');
 
   useEffect(() => {
-    if (!isLoggedIn()) { router.push('/login?reason=signin_required&return=%2Fmy-stories'); return; }
-    setUser(getUser());
+    if (isLoggedIn()) {
+      setUser(getUser());
+    } else {
+      try {
+        const username = localStorage.getItem('dreamvalley_anon_username') || '';
+        setUser({ username, anon: true });
+      } catch {
+        setUser({ username: '', anon: true });
+      }
+    }
 
     if (typeof window !== 'undefined') {
       const savedPrefs = localStorage.getItem('dreamvalley_preferences');

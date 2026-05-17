@@ -36,35 +36,33 @@ export default function OnboardingPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Anonymous visitors land here from AppShell's language gate. They see
-    // only the language picker (no username/age) and on submit the language
-    // is stored in localStorage. Logged-in users see the full form
-    // (username + age + language) per the post-auth onboarding flow.
+    // Same full form (username + age + language) for everyone. Anon users
+    // persist to localStorage; logged-in users persist to their user
+    // record AND mirror to localStorage so hasCompletedOnboarding() works
+    // uniformly across both.
     const a = isLoggedIn();
     setAuthed(a);
-    if (!a) return;
-    // Pre-fill from existing user record so re-edits show current values.
-    const u = getUser();
-    if (u?.username) setUsername(u.username);
-    const r = rangeForNumericAge(u?.child_age);
-    if (r) setSelectedAge(r);
-    if (u?.preferred_lang) setSelectedLang(u.preferred_lang);
+    if (a) {
+      // Pre-fill from existing user record so re-edits show current values.
+      const u = getUser();
+      if (u?.username) setUsername(u.username);
+      const r = rangeForNumericAge(u?.child_age);
+      if (r) setSelectedAge(r);
+      if (u?.preferred_lang) setSelectedLang(u.preferred_lang);
+    } else {
+      // Pre-fill from localStorage so re-edits show current values.
+      try {
+        const u = localStorage.getItem('dreamvalley_anon_username');
+        if (u) setUsername(u);
+        const ageRange = localStorage.getItem('dreamvalley_child_age');
+        if (ageRange) setSelectedAge(ageRange);
+      } catch { /* ignore */ }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
-
-    // Anon mode: language-only submit. Persist via setLang (writes
-    // LANG_KEY in localStorage so hasCompletedOnboarding() becomes true
-    // and AppShell's anon-lang gate stops firing) and bounce to home.
-    if (!authed) {
-      setLang(selectedLang);
-      dvAnalytics.track('anon_language_picked', { lang: selectedLang });
-      router.replace('/');
-      return;
-    }
-
     const trimmed = username.trim();
     if (!trimmed) return;
 
@@ -75,8 +73,33 @@ export default function OnboardingPage() {
     const opt = AGE_OPTIONS.find((o) => o.value === childAge);
     const numericAge = opt ? opt.numeric : 5;
 
+    // Anon profile: persist the full profile to localStorage so
+    // hasCompletedOnboarding() returns true and downstream surfaces
+    // (/profile, /my-stories) can render the user's name/age.
+    if (!authed) {
+      try {
+        localStorage.setItem('dreamvalley_anon_username', trimmed);
+        localStorage.setItem('dreamvalley_child_age', childAge);
+      } catch { /* ignore */ }
+      setLang(selectedLang);
+      dvAnalytics.track('onboarding_complete', {
+        childAge,
+        username: trimmed,
+        lang: selectedLang,
+        anon: true,
+      });
+      setLoading(false);
+      router.replace('/');
+      return;
+    }
+
     try {
-      try { localStorage.setItem('dreamvalley_child_age', childAge); } catch {}
+      try {
+        localStorage.setItem('dreamvalley_child_age', childAge);
+        // Mirror username to localStorage so hasCompletedOnboarding()
+        // returns true uniformly for both anon and logged-in users.
+        localStorage.setItem('dreamvalley_anon_username', trimmed);
+      } catch {}
 
       // Post-auth-only flow. Persist to backend.
       try {
@@ -135,9 +158,7 @@ export default function OnboardingPage() {
               : 'Where magical bedtime stories come alive'}
           </p>
 
-          {authed && (
-            <>
-              <div className={styles.ageSection}>
+          <div className={styles.ageSection}>
                 <p className={styles.ageLabel}>
                   {selectedLang === 'hi'
                     ? 'Aapka kid kitne saal ka hai?'
@@ -183,8 +204,6 @@ export default function OnboardingPage() {
                   pattern="[A-Za-z0-9_ ]+"
                 />
               </div>
-            </>
-          )}
 
           <div className={styles.langSection}>
             <p className={styles.ageLabel}>
@@ -216,7 +235,7 @@ export default function OnboardingPage() {
 
           <button
             type="submit"
-            disabled={loading || (authed && !username.trim())}
+            disabled={loading || !username.trim()}
             className={styles.startBtn}
           >
             {loading

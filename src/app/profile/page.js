@@ -33,11 +33,20 @@ export default function ProfilePage() {
   }, [voicePrefs]);
 
   useEffect(() => {
-    if (!isLoggedIn()) {
-      router.push('/login?reason=signin_required&return=%2Fprofile');
+    if (isLoggedIn()) {
+      setUser(getUser());
       return;
     }
-    setUser(getUser());
+    // Anon profile: synthesize the user object from localStorage so the
+    // same UI renders identically for both populations.
+    try {
+      const username = localStorage.getItem('dreamvalley_anon_username') || '';
+      const ageRange = localStorage.getItem('dreamvalley_child_age') || '';
+      const ageNum = { '0-1': 1, '2-5': 4, '6-8': 7, '9-12': 10 }[ageRange] || null;
+      setUser({ username, child_age: ageNum, anon: true });
+    } catch {
+      setUser({ username: '', anon: true });
+    }
   }, [router]);
 
   const stopAudio = useCallback(() => {

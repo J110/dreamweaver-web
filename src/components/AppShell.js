@@ -91,16 +91,13 @@ export default function AppShell({ children }) {
       }
     }
 
-    // Anonymous-language gate. Anon users must pick a language before
-    // browsing so content renders in their chosen language, not a default.
-    // /onboarding handles the lang-only form for them; /welcome (marketing)
-    // and auth routes are exempt so they remain reachable pre-pick.
-    const langGateBypass =
-      pathname === '/onboarding'
-      || pathname === '/welcome'
-      || pathname === '/login'
-      || pathname.startsWith('/auth/');
-    if (!isLoggedIn() && !hasCompletedOnboarding() && !langGateBypass) {
+    // Onboarding gate applies to every user (anon and logged-in) and
+    // fires UNIVERSALLY including on /. Anon profiles live in
+    // localStorage; logged-in users mirror them on submit so
+    // hasCompletedOnboarding() works uniformly. Hoisted above the
+    // isHome branch so fresh anon visitors don't land on HomeApp
+    // without a profile.
+    if (!hasCompletedOnboarding() && !isPublic) {
       router.replace('/onboarding');
       return;
     }
@@ -122,14 +119,6 @@ export default function AppShell({ children }) {
           })
           .catch(() => {});
       }
-      return;
-    }
-
-    // Onboarding gate applies only to logged-in users. Anonymous users
-    // are routed to /onboarding by the anon-language gate below (which
-    // shows a lang-only form for them), not by this gate.
-    if (isLoggedIn() && !hasCompletedOnboarding() && !isPublic) {
-      router.replace('/onboarding');
       return;
     }
 
