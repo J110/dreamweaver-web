@@ -8,10 +8,11 @@ import { isLoggedIn, getToken, logout } from '@/utils/auth';
 import useVersionCheck from '@/hooks/useVersionCheck';
 import BottomNav from './BottomNav';
 import InstallPrompt from './InstallPrompt';
+import AnonLanguagePicker from './AnonLanguagePicker';
 import { dvAnalytics } from '@/utils/analytics';
 
-const NO_NAV_ROUTES = ['/onboarding', '/login', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies', '/pricing', '/upgrade/success', '/upgrade/cancelled', '/auth/verify', '/auth/claim'];
-const PUBLIC_ROUTES = ['/onboarding', '/login', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies', '/pricing', '/upgrade/success', '/upgrade/cancelled', '/auth/verify', '/auth/claim'];
+const NO_NAV_ROUTES = ['/onboarding', '/login', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies', '/pricing', '/upgrade/success', '/upgrade/cancelled', '/auth/verify', '/auth/claim', '/welcome'];
+const PUBLIC_ROUTES = ['/onboarding', '/login', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies', '/pricing', '/upgrade/success', '/upgrade/cancelled', '/auth/verify', '/auth/claim', '/welcome'];
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 function isPublicRoute(pathname) {
@@ -111,15 +112,11 @@ export default function AppShell({ children }) {
       return;
     }
 
-    // Check onboarding completion — skip for public/static pages and shared story links
-    if (!hasCompletedOnboarding() && !isPublic) {
+    // Onboarding gate applies only to logged-in users. Anonymous users
+    // pick a language via <AnonLanguagePicker /> overlay instead of being
+    // bounced to /onboarding (which itself requires login).
+    if (isLoggedIn() && !hasCompletedOnboarding() && !isPublic) {
       router.replace('/onboarding');
-      return;
-    }
-
-    // Check login for protected routes — shared story links are accessible without login
-    if (!isPublic && !isLoggedIn()) {
-      router.replace('/login');
       return;
     }
 
@@ -194,6 +191,7 @@ export default function AppShell({ children }) {
           {children}
         </div>
         {showNav && <BottomNav />}
+        <AnonLanguagePicker />
         <InstallPrompt />
       </VoicePreferencesProvider>
     </I18nProvider>

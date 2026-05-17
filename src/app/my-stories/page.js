@@ -35,7 +35,7 @@ export default function MyStoriesPage() {
   const [prefContentType, setPrefContentType] = useState('story');
 
   useEffect(() => {
-    if (!isLoggedIn()) { router.push('/login'); return; }
+    if (!isLoggedIn()) { router.push('/login?reason=signin_required&return=%2Fmy-stories'); return; }
     setUser(getUser());
 
     if (typeof window !== 'undefined') {

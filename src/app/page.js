@@ -45,21 +45,10 @@ export default function Home() {
       setView('landing');
       return;
     }
-
-    // Native app users always see the app grid
-    if (isNativeApp()) {
-      setView('app');
-      return;
-    }
-
-    // Logged-in users who completed onboarding see the app grid
-    if (isLoggedIn() && hasCompletedOnboarding()) {
-      setView('app');
-      return;
-    }
-
-    // Everyone else sees the landing page
-    setView('landing');
+    // Default: anyone visiting / sees the content grid. Marketing landing
+    // lives at /welcome for ad campaigns. AnonLanguagePicker handles the
+    // first-visit language gate for anonymous users.
+    setView('app');
   }, []);
 
   if (view === 'app') {

@@ -791,6 +791,11 @@ export default function PlayerPage() {
 
   const handleSave = async () => {
     if (!content) return;
+    if (!isLoggedIn()) {
+      const ret = encodeURIComponent(`/player/${params?.id || ''}`);
+      router.push(`/login?reason=signin_required&return=${ret}`);
+      return;
+    }
     const wasSaved = isSaved;
     // Optimistic UI update
     setIsSaved(!wasSaved);
@@ -891,7 +896,7 @@ export default function PlayerPage() {
   };
 
   const handleBack = () => {
-    if (!hasCompletedOnboarding() || !isLoggedIn()) {
+    if (isLoggedIn() && !hasCompletedOnboarding()) {
       router.push('/onboarding');
     } else {
       router.back();

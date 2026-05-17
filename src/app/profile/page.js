@@ -34,7 +34,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!isLoggedIn()) {
-      router.push('/login');
+      router.push('/login?reason=signin_required&return=%2Fprofile');
       return;
     }
     setUser(getUser());

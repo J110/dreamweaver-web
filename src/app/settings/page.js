@@ -32,13 +32,16 @@ export default function SettingsPage() {
   const [portalError, setPortalError] = useState(null);
 
   useEffect(() => {
-    if (!isLoggedIn()) return;
+    if (!isLoggedIn()) {
+      router.push('/login?reason=signin_required&return=%2Fsettings');
+      return;
+    }
     let cancelled = false;
     subscriptionApi.getCurrent()
       .then((data) => { if (!cancelled) setSubState(data); })
       .catch(() => {});
     return () => { cancelled = true; };
-  }, []);
+  }, [router]);
 
   async function openPortal() {
     setPortalError(null);

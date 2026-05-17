@@ -19,12 +19,14 @@ export default function LoginPage() {
   // App Router and blows up the prerender. Initial state stays false to
   // keep SSR output stable; the useEffect below flips it on the client.
   const [showSessionBanner, setShowSessionBanner] = useState(false);
+  const [showSigninRequiredBanner, setShowSigninRequiredBanner] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     try {
       const reason = new URLSearchParams(window.location.search).get('reason');
       if (reason === 'session_expired') setShowSessionBanner(true);
+      if (reason === 'signin_required') setShowSigninRequiredBanner(true);
     } catch { /* ignore */ }
   }, []);
 
@@ -244,6 +246,13 @@ export default function LoginPage() {
               {lang === 'hi'
                 ? 'Session expire ho gaya. Dobara log in karein.'
                 : 'Your session expired — please log in again.'}
+            </div>
+          )}
+          {showSigninRequiredBanner && !showSessionBanner && (
+            <div className={styles.sessionExpiredBanner} role="status">
+              {lang === 'hi'
+                ? 'Is feature ke liye sign in karein.'
+                : 'Sign in to access this feature.'}
             </div>
           )}
           <div className={styles.iconLarge}>🌙</div>
