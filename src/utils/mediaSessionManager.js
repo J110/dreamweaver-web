@@ -173,7 +173,7 @@ export async function updateMediaSessionMetadata({ title, artist, album, coverUr
  * @param {Function} [handlers.onSeekBackward]
  * @param {Function} [handlers.onSeekForward]
  */
-export function registerMediaSessionHandlers({ onPlay, onPause, onSeekBackward, onSeekForward }) {
+export function registerMediaSessionHandlers({ onPlay, onPause, onSeekBackward, onSeekForward, onNextTrack, onPreviousTrack }) {
   // Register native bridge handler for lock screen button taps
   if (isInNativeApp()) {
     window.__onNativeMediaAction = (action, value) => {
@@ -182,6 +182,8 @@ export function registerMediaSessionHandlers({ onPlay, onPause, onSeekBackward, 
         case 'pause': onPause?.(); break;
         case 'seekbackward': onSeekBackward?.(); break;
         case 'seekforward': onSeekForward?.(); break;
+        case 'next': onNextTrack?.(); break;
+        case 'previous': onPreviousTrack?.(); break;
         case 'seekto':
           // Seek to a specific position (in seconds)
           if (value != null && window.__dvAudioElement) {
@@ -208,9 +210,9 @@ export function registerMediaSessionHandlers({ onPlay, onPause, onSeekBackward, 
   if (onSeekBackward) trySet('seekbackward', onSeekBackward);
   if (onSeekForward) trySet('seekforward', onSeekForward);
 
-  // Disable next/previous track (not applicable for stories)
-  trySet('previoustrack', null);
-  trySet('nexttrack', null);
+  // Next/previous: only register when a playlist is active
+  trySet('previoustrack', onPreviousTrack || null);
+  trySet('nexttrack', onNextTrack || null);
 }
 
 /**

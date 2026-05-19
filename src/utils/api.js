@@ -647,4 +647,13 @@ export const userApi = {
   },
 };
 
+export const playlistApi = {
+  getToday: async ({ age, lang, tz } = {}) => {
+    const params = new URLSearchParams({ age, lang });
+    if (tz) params.set('tz', tz);
+    const res = await fetchApi(`/api/v1/playlist/today?${params.toString()}`);
+    return res.data || { items: [], missing_slots: [], all_fresh: false };
+  },
+};
+
 export default fetchApi;

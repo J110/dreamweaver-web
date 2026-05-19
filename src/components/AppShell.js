@@ -8,6 +8,7 @@ import { isLoggedIn, getToken, logout } from '@/utils/auth';
 import useVersionCheck from '@/hooks/useVersionCheck';
 import BottomNav from './BottomNav';
 import InstallPrompt from './InstallPrompt';
+import BedtimePopup from './BedtimePopup';
 import { dvAnalytics } from '@/utils/analytics';
 
 const NO_NAV_ROUTES = ['/onboarding', '/login', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies', '/pricing', '/upgrade/success', '/upgrade/cancelled', '/auth/verify', '/auth/claim', '/welcome'];
@@ -194,6 +195,7 @@ export default function AppShell({ children }) {
         </div>
         {showNav && <BottomNav />}
         <InstallPrompt />
+        {checked && !pathname.startsWith('/player/') && !pathname.startsWith('/playlist') && !NO_NAV_ROUTES.includes(pathname) && <BedtimePopup />}
       </VoicePreferencesProvider>
     </I18nProvider>
   );
