@@ -470,7 +470,7 @@ export default function AnalyticsDashboard() {
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState('dashboard');
   const [clips, setClips] = useState(null);
-  const [clipsFilters, setClipsFilters] = useState({ mood: '', voice: '', posted: '', sort: 'newest' });
+  const [clipsFilters, setClipsFilters] = useState({ mood: '', voice: '', posted: '', lang: '', sort: 'newest' });
   const [copiedCaption, setCopiedCaption] = useState(null);
   const [diversity, setDiversity] = useState(null);
   const [diversityView, setDiversityView] = useState('current');
@@ -547,6 +547,7 @@ export default function AnalyticsDashboard() {
       if (clipsFilters.mood) params.mood = clipsFilters.mood;
       if (clipsFilters.voice) params.voice = clipsFilters.voice;
       if (clipsFilters.posted) params.posted = clipsFilters.posted;
+      if (clipsFilters.lang) params.lang = clipsFilters.lang;
       if (clipsFilters.sort) params.sort = clipsFilters.sort;
       const data = await fetchClipsApi('/', params);
       setClips(data);
@@ -1081,6 +1082,16 @@ export default function AnalyticsDashboard() {
               <option value="">All status</option>
               <option value="posted">Posted</option>
               <option value="unposted">Not posted</option>
+            </select>
+
+            <select
+              value={clipsFilters.lang}
+              onChange={e => setClipsFilters(f => ({ ...f, lang: e.target.value }))}
+              className={styles.clipSelect}
+            >
+              <option value="">All languages</option>
+              <option value="en">English</option>
+              <option value="hi">Hindi</option>
             </select>
 
             <select
