@@ -67,11 +67,13 @@ export default function PlaylistPage() {
   const { lang } = useI18n();
   const router = useRouter();
   const audioRef = useRef(null);
+  const isAdvancingRef = useRef(false);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [index, setIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [needsResume, setNeedsResume] = useState(false);
 
   const items = data?.items || [];
   const current = items[index] || null;
@@ -104,12 +106,14 @@ export default function PlaylistPage() {
     const audio = audioRef.current;
     if (!audio) return;
     audio.src = url;
+    setNeedsResume(false);
     audio.play().then(() => {
       setIsPlaying(true);
       updatePlaybackState('playing');
     }).catch((err) => {
       console.warn('[Playlist] play failed', err);
       setIsPlaying(false);
+      setNeedsResume(true);
     });
     updateMediaSessionMetadata({
       title: next.title || SLOT_LABEL[next.slot]?.[lang] || 'Bedtime',
@@ -156,9 +160,26 @@ export default function PlaylistPage() {
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    const onEnded = () => advance();
-    const onPlay = () => { setIsPlaying(true); updatePlaybackState('playing'); };
-    const onPause = () => { setIsPlaying(false); updatePlaybackState('paused'); };
+    const onEnded = () => {
+      isAdvancingRef.current = true;
+      advance();
+    };
+    const onPlay = () => {
+      isAdvancingRef.current = false;
+      setIsPlaying(true);
+      updatePlaybackState('playing');
+    };
+    const onPause = () => {
+      if (isAdvancingRef.current) {
+        // Spurious pause from natural track-end; we're already advancing.
+        // Don't signal PAUSED to native — keeps MediaSession in PLAYING
+        // through the transition and avoids audio-focus re-acquisition
+        // churn that was intermittently blocking auto-advance on Android.
+        return;
+      }
+      setIsPlaying(false);
+      updatePlaybackState('paused');
+    };
     audio.addEventListener('ended', onEnded);
     audio.addEventListener('play', onPlay);
     audio.addEventListener('pause', onPause);
@@ -212,6 +233,22 @@ export default function PlaylistPage() {
 
   const cover = resolveCoverUrl(current);
 
+  const freshCount = items.filter((it) => !it.is_fallback).length;
+  const freshnessLabel = lang === 'hi'
+    ? `Aaj ke ${items.length} mein se ${freshCount} naye picks hain — baaki is hafte ki library se.`
+    : `${freshCount} of today's ${items.length} picks are new — others are from this week's library.`;
+
+  const resumeAudio = () => {
+    setNeedsResume(false);
+    const audio = audioRef.current;
+    if (!audio || !audio.src) return;
+    audio.play().catch((err) => {
+      console.warn('[Playlist] resume failed', err);
+      setNeedsResume(true);
+    });
+  };
+  const resumePrimary = lang === 'hi' ? 'Bajaane ke liye tap karein' : 'Tap to play';
+
   return (
     <div style={pageStyle}>
       <div style={headerStyle}>
@@ -221,6 +258,10 @@ export default function PlaylistPage() {
         </div>
         <div style={{ width: 32 }} />
       </div>
+
+      {freshCount < items.length && (
+        <div style={freshnessBannerStyle}>{freshnessLabel}</div>
+      )}
 
       <div style={coverWrapStyle}>
         {cover ? (
@@ -278,6 +319,17 @@ export default function PlaylistPage() {
             : `Some slots couldn't be filled: ${data.missing_slots.join(', ')}`}
         </div>
       )}
+
+      {needsResume && (
+        <div style={resumeOverlayStyle} onClick={resumeAudio}>
+          <button style={resumeBtnStyle} onClick={(e) => { e.stopPropagation(); resumeAudio(); }}>
+            <div style={resumePrimaryStyle}>{'▶ '}{resumePrimary}</div>
+            {current?.title && (
+              <div style={resumeTitleStyle}>{current.title}</div>
+            )}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -327,3 +379,22 @@ const queueItemStyle = {
 };
 const miniBadgeStyle = { color: '#fbbf24', fontSize: 16 };
 const noteStyle = { marginTop: 16, fontSize: 12, opacity: 0.6, textAlign: 'center', maxWidth: 480 };
+const freshnessBannerStyle = {
+  marginTop: 12, width: '100%', maxWidth: 480, padding: '10px 14px',
+  borderRadius: 12, background: 'rgba(245,158,11,0.12)', color: '#fde68a',
+  fontSize: 13, textAlign: 'center', lineHeight: 1.4,
+};
+const resumeOverlayStyle = {
+  position: 'fixed', inset: 0, background: 'rgba(8,6,30,0.85)',
+  backdropFilter: 'blur(4px)', zIndex: 1000,
+  display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24,
+  cursor: 'pointer',
+};
+const resumeBtnStyle = {
+  width: '100%', maxWidth: 360, padding: '28px 24px', borderRadius: 20,
+  border: 'none', cursor: 'pointer', color: '#fff',
+  background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+  boxShadow: '0 16px 48px rgba(0,0,0,0.5)',
+};
+const resumePrimaryStyle = { fontSize: 22, fontWeight: 700, lineHeight: 1.2 };
+const resumeTitleStyle = { fontSize: 14, opacity: 0.9, marginTop: 8 };
