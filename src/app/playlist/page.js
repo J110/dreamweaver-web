@@ -74,6 +74,7 @@ export default function PlaylistPage() {
   const [index, setIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [needsResume, setNeedsResume] = useState(false);
+  const [skipMessage, setSkipMessage] = useState(null);
 
   const items = data?.items || [];
   const current = items[index] || null;
@@ -113,7 +114,9 @@ export default function PlaylistPage() {
     }).catch((err) => {
       console.warn('[Playlist] play failed', err);
       setIsPlaying(false);
-      setNeedsResume(true);
+      if (err?.name === 'NotAllowedError' || err?.name === 'AbortError') {
+        setNeedsResume(true);
+      }
     });
     updateMediaSessionMetadata({
       title: next.title || SLOT_LABEL[next.slot]?.[lang] || 'Bedtime',
@@ -180,15 +183,27 @@ export default function PlaylistPage() {
       setIsPlaying(false);
       updatePlaybackState('paused');
     };
+    const onError = () => {
+      console.warn('[Playlist] audio resource error', audio.error);
+      setNeedsResume(false);
+      setIsPlaying(false);
+      const msg = lang === 'hi' ? 'Audio uplabdh nahin — agla item' : 'Audio unavailable — skipping';
+      setSkipMessage(msg);
+      window.setTimeout(() => setSkipMessage(null), 2500);
+      isAdvancingRef.current = true;
+      advance();
+    };
     audio.addEventListener('ended', onEnded);
     audio.addEventListener('play', onPlay);
     audio.addEventListener('pause', onPause);
+    audio.addEventListener('error', onError);
     return () => {
       audio.removeEventListener('ended', onEnded);
       audio.removeEventListener('play', onPlay);
       audio.removeEventListener('pause', onPause);
+      audio.removeEventListener('error', onError);
     };
-  }, [advance]);
+  }, [advance, lang]);
 
   // Auto-play / load when index changes
   useEffect(() => {
@@ -233,10 +248,9 @@ export default function PlaylistPage() {
 
   const cover = resolveCoverUrl(current);
 
-  const freshCount = items.filter((it) => !it.is_fallback).length;
-  const freshnessLabel = lang === 'hi'
-    ? `Aaj ke ${items.length} mein se ${freshCount} naye picks hain — baaki is hafte ki library se.`
-    : `${freshCount} of today's ${items.length} picks are new — others are from this week's library.`;
+  const safetyLabel = lang === 'hi'
+    ? 'Yeh playlist aapke bachche ko sone mein madad karega. Kripya aap aur aapka bachcha aaramdaayak sthithi mein ho, aur phone ek samtal jagah par surakshit rakha gaya ho.'
+    : 'This playlist is designed to help your child fall asleep. Please ensure you and your child are in a resting position, and your phone is placed securely on a flat surface within easy reach.';
 
   const resumeAudio = () => {
     setNeedsResume(false);
@@ -259,8 +273,9 @@ export default function PlaylistPage() {
         <div style={{ width: 32 }} />
       </div>
 
-      {freshCount < items.length && (
-        <div style={freshnessBannerStyle}>{freshnessLabel}</div>
+      <div style={safetyBannerStyle}>{safetyLabel}</div>
+      {skipMessage && (
+        <div style={skipMessageStyle}>{skipMessage}</div>
       )}
 
       <div style={coverWrapStyle}>
@@ -379,10 +394,15 @@ const queueItemStyle = {
 };
 const miniBadgeStyle = { color: '#fbbf24', fontSize: 16 };
 const noteStyle = { marginTop: 16, fontSize: 12, opacity: 0.6, textAlign: 'center', maxWidth: 480 };
-const freshnessBannerStyle = {
+const safetyBannerStyle = {
   marginTop: 12, width: '100%', maxWidth: 480, padding: '10px 14px',
-  borderRadius: 12, background: 'rgba(245,158,11,0.12)', color: '#fde68a',
-  fontSize: 13, textAlign: 'center', lineHeight: 1.4,
+  borderRadius: 12, background: 'rgba(99,102,241,0.14)', color: '#c7d2fe',
+  fontSize: 12, textAlign: 'center', lineHeight: 1.45,
+};
+const skipMessageStyle = {
+  marginTop: 8, width: '100%', maxWidth: 480, padding: '8px 12px',
+  borderRadius: 10, background: 'rgba(239,68,68,0.16)', color: '#fecaca',
+  fontSize: 12, textAlign: 'center',
 };
 const resumeOverlayStyle = {
   position: 'fixed', inset: 0, background: 'rgba(8,6,30,0.85)',
