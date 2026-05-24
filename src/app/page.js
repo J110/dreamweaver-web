@@ -34,23 +34,33 @@ function isNativeApp() {
   return false;
 }
 
+function getInitialView() {
+  if (typeof window === 'undefined') return 'landing';
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('view') === 'landing') return 'landing';
+    if (params.get('source') === 'app') return 'app';
+    try { if (localStorage.getItem('dreamvalley_native_app') === '1') return 'app'; } catch {}
+    return hasCompletedOnboarding() ? 'app' : 'landing';
+  } catch {
+    return 'landing';
+  }
+}
+
 export default function Home() {
-  // Default to 'app' — marketing landing lives at /welcome now. Anonymous
-  // visitors are routed to /onboarding by AppShell before this renders if
-  // they haven't picked a language yet.
-  const [view, setView] = useState('app');
+  const [view, setView] = useState(getInitialView);
 
   useEffect(() => {
-    // Override: ?view=landing forces the landing page for anyone
     const params = new URLSearchParams(window.location.search);
     if (params.get('view') === 'landing') {
       setView('landing');
       return;
     }
-    // Default: anyone visiting / sees the content grid. Marketing landing
-    // lives at /welcome for ad campaigns. AnonLanguagePicker handles the
-    // first-visit language gate for anonymous users.
-    setView('app');
+    if (isNativeApp()) {
+      setView('app');
+      return;
+    }
+    setView(hasCompletedOnboarding() ? 'app' : 'landing');
   }, []);
 
   if (view === 'app') {

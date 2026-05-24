@@ -19,7 +19,7 @@ function resolveAudioUrl(item) {
   const url = item.audio_url;
   if (!url) return null;
   if (url.startsWith('http')) return url;
-  return `${API_URL}${url}`;
+  return url;
 }
 
 function resolveCoverUrl(item) {

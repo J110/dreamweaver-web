@@ -98,7 +98,7 @@ export default function AppShell({ children }) {
     // hasCompletedOnboarding() works uniformly. Hoisted above the
     // isHome branch so fresh anon visitors don't land on HomeApp
     // without a profile.
-    if (!hasCompletedOnboarding() && !isPublic) {
+    if (!hasCompletedOnboarding() && !isPublic && !isHome) {
       router.replace('/onboarding');
       return;
     }
