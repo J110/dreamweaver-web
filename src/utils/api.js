@@ -179,6 +179,25 @@ export const authApi = {
   },
 
   /**
+   * Username-only login. Mints a session token for an existing user.
+   * Returns 404 if the username isn't found — caller should fall back
+   * to anon onboarding (new-user flow) on that error.
+   * @param {string} username
+   * @param {{child_age?: number, lang?: 'en'|'hi'}} opts
+   * @returns {Promise<{token: string, user: object}>}
+   */
+  loginByUsername: async (username, opts = {}) => {
+    return await fetchApi('/api/v1/auth/login_username', {
+      method: 'POST',
+      body: JSON.stringify({
+        username,
+        ...(opts.child_age != null ? { child_age: opts.child_age } : {}),
+        ...(opts.lang ? { lang: opts.lang } : {}),
+      }),
+    });
+  },
+
+  /**
    * Auth-required. Send claim_existing magic-link to attach this email
    * to the current user's record (used during the migration window).
    */

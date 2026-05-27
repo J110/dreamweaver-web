@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import StarField from '@/components/StarField';
 import { useI18n } from '@/utils/i18n';
-import { getUser, isLoggedIn, setUser } from '@/utils/auth';
-import { userApi } from '@/utils/api';
+import { getUser, isLoggedIn, setToken, setUser } from '@/utils/auth';
+import { authApi, userApi } from '@/utils/api';
 import { dvAnalytics } from '@/utils/analytics';
 import styles from './page.module.css';
 
@@ -73,10 +73,39 @@ export default function OnboardingPage() {
     const opt = AGE_OPTIONS.find((o) => o.value === childAge);
     const numericAge = opt ? opt.numeric : 5;
 
-    // Anon profile: persist the full profile to localStorage so
-    // hasCompletedOnboarding() returns true and downstream surfaces
-    // (/profile, /my-stories) can render the user's name/age.
+    // Anon submit: first try username-only login against an existing
+    // account. If the username resolves to an existing user, mint a
+    // session token (the form doubles as the sign-in entry point since
+    // magic-link UI was scrapped). On 404, fall through to the anon
+    // localStorage path for new-user creation.
     if (!authed) {
+      try {
+        const res = await authApi.loginByUsername(trimmed, {
+          child_age: numericAge,
+          lang: selectedLang,
+        });
+        if (res && res.token) {
+          setToken(res.token);
+          setUser({ ...(res.user || {}), onboarding_complete: true });
+          try {
+            localStorage.setItem('dreamvalley_anon_username', trimmed);
+            localStorage.setItem('dreamvalley_child_age', childAge);
+          } catch {}
+          setLang(selectedLang);
+          dvAnalytics.track('onboarding_complete', {
+            childAge,
+            username: trimmed,
+            lang: selectedLang,
+            logged_in: true,
+          });
+          setLoading(false);
+          router.replace('/');
+          return;
+        }
+      } catch (err) {
+        // 404 user_not_found OR network error → fall through to anon path
+      }
+
       try {
         localStorage.setItem('dreamvalley_anon_username', trimmed);
         localStorage.setItem('dreamvalley_child_age', childAge);
