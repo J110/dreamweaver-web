@@ -55,6 +55,14 @@ const fetchApi = async (endpoint, options = {}) => {
     });
 
     if (response.status === 401 && token) {
+      // silent401 (heart save/like/unsave): a contained action's 401 must NOT
+      // nuke the session or bounce to the magic-link /login. Signal it to the
+      // caller, which reverts + shows a soft prompt. Token left untouched.
+      if (options.silent401) {
+        const err = new Error('unauthorized');
+        err.status = 401;
+        throw err;
+      }
       // Token invalid / expired / revoked. Clear local state and bounce.
       // Phase 0 step 1.5 makes this load-bearing: post-migration, every
       // legacy bearer token returns 401, and the user must land on /login
@@ -456,9 +464,13 @@ export const trendingApi = {
 // Backend: /api/v1/interactions/content/{id}/like, /api/v1/interactions/content/{id}/save
 
 export const interactionApi = {
+  // Heart actions use silent401: a 401 here must NOT log the user out or
+  // bounce to the magic-link /login. The caller (HeartButton) reverts and
+  // shows a soft "sign in to save" prompt instead.
   likeContent: async (id) => {
     const res = await fetchApi(`/api/v1/interactions/content/${id}/like`, {
       method: 'POST',
+      silent401: true,
     });
     return res.data || {};
   },
@@ -466,6 +478,7 @@ export const interactionApi = {
   unlikeContent: async (id) => {
     const res = await fetchApi(`/api/v1/interactions/content/${id}/like`, {
       method: 'DELETE',
+      silent401: true,
     });
     return res.data || {};
   },
@@ -473,6 +486,7 @@ export const interactionApi = {
   saveContent: async (id) => {
     const res = await fetchApi(`/api/v1/interactions/content/${id}/save`, {
       method: 'POST',
+      silent401: true,
     });
     return res.data || {};
   },
@@ -480,6 +494,7 @@ export const interactionApi = {
   unsaveContent: async (id) => {
     const res = await fetchApi(`/api/v1/interactions/content/${id}/save`, {
       method: 'DELETE',
+      silent401: true,
     });
     return res.data || {};
   },

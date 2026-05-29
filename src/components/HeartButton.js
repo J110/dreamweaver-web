@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { isLoggedIn } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
 import { interactionApi } from '@/utils/api';
@@ -21,7 +20,6 @@ export default function HeartButton({
   onAuthRequired,
 }) {
   const { t } = useI18n();
-  const router = useRouter();
   // filled = heart shows as active. mode tracks WHY it's filled so untapping
   // calls the right teardown (a cap-fallback like must be unliked, not unsaved).
   const [filled, setFilled] = useState(initialSaved);
@@ -46,10 +44,8 @@ export default function HeartButton({
 
     if (!isLoggedIn()) {
       if (onAuthRequired) return onAuthRequired();
-      const ret = encodeURIComponent(
-        typeof window !== 'undefined' ? window.location.pathname : '/'
-      );
-      router.push(`/login?reason=signin_required&return=${ret}`);
+      // Soft inline prompt — never bounce to the magic-link /login wall.
+      flashToast(t('heartSignInToSave'));
       return;
     }
 
@@ -89,6 +85,8 @@ export default function HeartButton({
       } catch (err) {
         setFilled(false);
         setMode(prevMode);
+        // 401 from silent401: token preserved, no logout, no /login bounce.
+        if (err?.status === 401) flashToast(t('heartSignInToSave'));
       } finally {
         setBusy(false);
       }
@@ -107,6 +105,7 @@ export default function HeartButton({
       } catch (err) {
         setFilled(true);
         setMode(prevMode);
+        if (err?.status === 401) flashToast(t('heartSignInToSave'));
       } finally {
         setBusy(false);
       }
