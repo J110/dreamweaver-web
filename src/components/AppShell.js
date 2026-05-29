@@ -182,8 +182,19 @@ export default function AppShell({ children }) {
     || pathname.startsWith('/category/') || pathname.startsWith('/ages/')
     || pathname.startsWith('/blog/') || pathname === '/blog'
     || /^\/before-bed\/(silly-songs|poems)\//.test(pathname);
-  const hasLandingParam = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('view') === 'landing';
-  const isLandingPage = pathname === '/' && hasLandingParam;
+  // Home renders the marketing landing (→ no app bottom-nav) unless the
+  // visitor is an app user. Mirrors app/page.js getInitialView(): app view
+  // when ?source=app, the persisted native flag, or completed onboarding;
+  // ?view=landing always forces landing. These client-only checks are safe —
+  // the `checked` gate keeps nav from rendering until after hydration, so a
+  // fresh marketing visitor never sees a flash of bottom-nav.
+  const _sp = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+  const _forceLanding = _sp?.get('view') === 'landing';
+  const _sourceApp = _sp?.get('source') === 'app';
+  let _nativeFlag = false;
+  try { _nativeFlag = typeof window !== 'undefined' && localStorage.getItem('dreamvalley_native_app') === '1'; } catch {}
+  const isLandingPage = pathname === '/'
+    && (_forceLanding || (!_sourceApp && !_nativeFlag && !hasCompletedOnboarding()));
   const showNav = !NO_NAV_ROUTES.includes(pathname) && !pathname.startsWith('/player/')
     && !isSEOPage && !isLandingPage && checked;
 
