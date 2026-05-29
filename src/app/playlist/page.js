@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { playlistApi } from '@/utils/api';
 import { useI18n } from '@/utils/i18n';
 import { getUser } from '@/utils/auth';
+import HeartButton from '@/components/HeartButton';
 import {
   updateMediaSessionMetadata,
   registerMediaSessionHandlers,
@@ -323,6 +324,7 @@ export default function PlaylistPage() {
               {it.title || SLOT_LABEL[it.slot]?.[lang] || it.slot}
             </span>
             {it.is_fallback && <span style={miniBadgeStyle}>•</span>}
+            {it.content_id && <HeartButton contentId={it.content_id} variant="compact" />}
           </div>
         ))}
       </div>

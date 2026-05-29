@@ -28,6 +28,8 @@ export default function MyStoriesPage() {
   const [activeTab, setActiveTab] = useState('favorites');
   const [favorites, setFavorites] = useState([]);
   const [saved, setSaved] = useState([]);
+  const [saveCap, setSaveCap] = useState(null);
+  const [isPremiumUser, setIsPremiumUser] = useState(true);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState('all');
   const [prefThemes, setPrefThemes] = useState([]);
@@ -67,6 +69,9 @@ export default function MyStoriesPage() {
       const items = savesData.items || [];
       setFavorites(items);
       setSaved(items);
+      // save_cap is null when the paywall is off → no invitation shown.
+      setSaveCap(typeof savesData.save_cap === 'number' ? savesData.save_cap : null);
+      setIsPremiumUser(savesData.effective_premium !== false);
     } catch (err) {
       console.error('Error loading content:', err);
     } finally {
@@ -133,6 +138,26 @@ export default function MyStoriesPage() {
                 >{type.label}</button>
               ))}
             </div>
+
+            {saveCap != null && !isPremiumUser && (
+              <div
+                onClick={() => router.push('/pricing')}
+                style={{
+                  margin: '0 0 16px', padding: '12px 16px', cursor: 'pointer',
+                  borderRadius: 14, border: '1px solid rgba(107,76,230,0.35)',
+                  background: 'rgba(107,76,230,0.12)', color: 'var(--color-text-light, #fff)',
+                  fontFamily: "'Quicksand', sans-serif", fontSize: 14, fontWeight: 600,
+                  display: 'flex', alignItems: 'center', gap: 8,
+                }}
+              >
+                <span aria-hidden>✨</span>
+                <span>
+                  {lang === 'hi'
+                    ? `${saved.length} / ${saveCap} saved — Premium mein 20 favorites milte hain.`
+                    : `${saved.length} of ${saveCap} saved — Premium unlocks 20.`}
+                </span>
+              </div>
+            )}
 
             {loading ? (
               <div className={styles.loadingMessage}>{t('loading')}</div>

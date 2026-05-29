@@ -4,7 +4,8 @@ import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import StarField from '@/components/StarField';
-import { contentApi, interactionApi, feedbackApi } from '@/utils/api';
+import HeartButton from '@/components/HeartButton';
+import { contentApi, feedbackApi } from '@/utils/api';
 import { getStories } from '@/utils/seedData';
 import { getAmbientMusic } from '@/utils/ambientMusic';
 import { useI18n, hasCompletedOnboarding } from '@/utils/i18n';
@@ -789,46 +790,6 @@ export default function PlayerPage() {
     };
   }, [showAboutPanel]);
 
-  const handleSave = async () => {
-    if (!content) return;
-    if (!isLoggedIn()) {
-      const ret = encodeURIComponent(`/player/${params?.id || ''}`);
-      router.push(`/login?reason=signin_required&return=${ret}`);
-      return;
-    }
-    const wasSaved = isSaved;
-    // Optimistic UI update
-    setIsSaved(!wasSaved);
-    setContent({
-      ...content,
-      save_count: wasSaved
-        ? Math.max(0, (content.save_count || 1) - 1)
-        : (content.save_count || 0) + 1,
-    });
-    setSaveToast(wasSaved ? t('playerRemovedFromSaved') : t('playerSavedToProfile'));
-    setTimeout(() => setSaveToast(null), 2500);
-    if (!wasSaved) {
-      dvAnalytics.track('like', { contentId: content.id, contentType: content.type });
-    }
-    try {
-      if (wasSaved) {
-        await interactionApi.unsaveContent(content.id);
-      } else {
-        await interactionApi.saveContent(content.id);
-      }
-    } catch (err) {
-      // Revert on failure
-      console.error('Error updating save:', err);
-      setIsSaved(wasSaved);
-      setContent({
-        ...content,
-        save_count: wasSaved
-          ? (content.save_count || 0)
-          : Math.max(0, (content.save_count || 1) - 1),
-      });
-    }
-  };
-
   const handleReportOpen = () => {
     setReportIssueType('');
     setReportDescription('');
@@ -1231,12 +1192,14 @@ export default function PlayerPage() {
         </div>
 
         <div className={styles.actions}>
-          <button
-            onClick={handleSave}
-            className={`${styles.actionButton} ${isSaved ? styles.actionButtonActive : ''}`}
-          >
-            ❤️ {content.save_count || 0}
-          </button>
+          <HeartButton
+            contentId={content.id}
+            initialSaved={isSaved}
+            initialCount={content.save_count || 0}
+            variant="full"
+            className={styles.actionButton}
+            activeClassName={styles.actionButtonActive}
+          />
           <button onClick={handleReportOpen} className={styles.actionButton}>
             ⚠️ {t('playerReport')}
           </button>
