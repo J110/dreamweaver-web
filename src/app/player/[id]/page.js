@@ -503,7 +503,12 @@ export default function PlayerPage() {
       } catch (e) {
         console.error('Playback failed:', e);
         setAudioLoading(false);
-        setAudioError(lang === 'hi' ? 'Audio nahi chal paya' : 'Could not play audio');
+        // Autoplay policy blocks gesture-less play() after ?autoplay=1
+        // navigation — expected. Stay paused ("Tap play to listen") instead
+        // of showing a scary error. Only surface genuine playback failures.
+        if (e?.name !== 'NotAllowedError') {
+          setAudioError(lang === 'hi' ? 'Audio nahi chal paya' : 'Could not play audio');
+        }
         setIsPlaying(false);
         updatePlaybackState('paused');
       }
