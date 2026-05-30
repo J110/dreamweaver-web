@@ -1,4 +1,4 @@
-import { logout as authLogout } from './auth';
+import { logout as authLogout, setToken as setStoredToken, getStoredFamilyId } from './auth';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -55,18 +55,40 @@ const fetchApi = async (endpoint, options = {}) => {
     });
 
     if (response.status === 401 && token) {
-      // silent401 (heart save/like/unsave): a contained action's 401 must NOT
-      // nuke the session or bounce to the magic-link /login. Signal it to the
-      // caller, which reverts + shows a soft prompt. Token left untouched.
-      if (options.silent401) {
-        const err = new Error('unauthorized');
-        err.status = 401;
-        throw err;
+      // Heart actions: never logout/redirect (shipped silent401 fix).
+      if (options.silent401) { const e = new Error('unauthorized'); e.status = 401; throw e; }
+      // The renew call itself must not recurse into renewal.
+      if (options.silentRenew) { const e = new Error('renew_unauthorized'); e.status = 401; throw e; }
+
+      // Try ONE dedup'd renewal before doing anything drastic.
+      const familyId = getStoredFamilyId();
+      if (familyId) {
+        try {
+          if (!fetchApi._renewPromise) {
+            fetchApi._renewPromise = (async () => {
+              const r = await authApi.renew(getAuthToken(), familyId); // throws on 410
+              if (r && r.token) { setStoredToken(r.token); return r.token; }
+              throw new Error('renew_no_token');
+            })().finally(() => { setTimeout(() => { fetchApi._renewPromise = null; }, 0); });
+          }
+          await fetchApi._renewPromise;
+          // Retry the original request ONCE with the fresh token (loop guard).
+          if (!options._retried) {
+            return fetchApi(endpoint, { ...options, _retried: true });
+          }
+        } catch (renewErr) {
+          // ONLY an explicit 410 dormant verdict falls through to re-auth.
+          // Transient (5xx / network) or renew_no_token must NOT bounce the
+          // user — fail this request, keep the session, retry on the next call.
+          if (renewErr?.status !== 410 && renewErr?.message !== 'dormant_reauth_required') {
+            throw renewErr;
+          }
+          // 410 dormant → fall through to authLogout + /login below.
+        }
       }
-      // Token invalid / expired / revoked. Clear local state and bounce.
-      // Phase 0 step 1.5 makes this load-bearing: post-migration, every
-      // legacy bearer token returns 401, and the user must land on /login
-      // (NOT /auth/claim) per spec gate semantic.
+
+      // Unrenewable / dormant: clear and route to /login (becomes a silent
+      // router in a later task — NOT a magic-link wall after that lands).
       try { authLogout(); } catch { /* ignore */ }
       if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')
           && !window.location.pathname.startsWith('/auth/')) {
@@ -88,7 +110,11 @@ const fetchApi = async (endpoint, options = {}) => {
         : detail
           ? JSON.stringify(detail)
           : (error.message || `API error: ${response.status}`);
-      throw new Error(detailStr);
+      // Attach the HTTP status so callers (e.g. the 401-renewal interceptor)
+      // can distinguish a 410 dormant verdict from a transient 5xx.
+      const err = new Error(detailStr);
+      err.status = response.status;
+      throw err;
     }
 
     const data = await response.json();
@@ -214,6 +240,24 @@ export const authApi = {
       method: 'POST',
       body: JSON.stringify({ email, lang }),
     });
+  },
+
+  deviceAccount: async (username, opts = {}) => {
+    const res = await fetchApi('/api/v1/auth/device_account', {
+      method: 'POST',
+      body: JSON.stringify({ username, child_age: opts.child_age ?? null, lang: opts.lang || 'en' }),
+    });
+    return res; // { token, user }
+  },
+
+  renew: async (token, familyId) => {
+    // silentRenew so a failing renew never recurses into the 401 interceptor.
+    const res = await fetchApi('/api/v1/auth/renew', {
+      method: 'POST',
+      silentRenew: true,
+      body: JSON.stringify({ token, family_id: familyId }),
+    });
+    return res; // { token }
   },
 
   logout: async () => {

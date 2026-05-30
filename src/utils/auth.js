@@ -126,6 +126,12 @@ export const removeUser = () => {
   localStorage.removeItem('dreamweaver_user');
 };
 
+export const getStoredFamilyId = () => {
+  if (typeof window === 'undefined') return null;
+  try { return (JSON.parse(localStorage.getItem('dreamweaver_user') || 'null') || {}).family_id || null; }
+  catch { return null; }
+};
+
 export const isLoggedIn = () => {
   return !!getToken();
 };
