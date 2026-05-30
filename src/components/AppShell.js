@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { I18nProvider, hasCompletedOnboarding } from '@/utils/i18n';
 import { VoicePreferencesProvider } from '@/utils/voicePreferences';
-import { isLoggedIn, getToken, logout, setToken, setUser } from '@/utils/auth';
+import { isLoggedIn, setToken, setUser } from '@/utils/auth';
 import useVersionCheck from '@/hooks/useVersionCheck';
 import BottomNav from './BottomNav';
 import InstallPrompt from './InstallPrompt';
@@ -13,7 +13,6 @@ import { dvAnalytics } from '@/utils/analytics';
 
 const NO_NAV_ROUTES = ['/onboarding', '/login', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies', '/pricing', '/upgrade/success', '/upgrade/cancelled', '/auth/verify', '/auth/claim', '/welcome'];
 const PUBLIC_ROUTES = ['/onboarding', '/login', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies', '/pricing', '/upgrade/success', '/upgrade/cancelled', '/auth/verify', '/auth/claim', '/welcome'];
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 function isPublicRoute(pathname) {
   // Static public routes + shared story links + SEO pages
@@ -43,9 +42,26 @@ export default function AppShell({ children }) {
     anonMintTried.current = true;
     if (typeof window === 'undefined') return;
     if (isLoggedIn()) return; // already holds a token
+    // Don't mint on identity-handling routes — onboarding/auth/login own it.
+    const path = window.location.pathname;
+    if (path.startsWith('/onboarding') || path.startsWith('/auth/') || path.startsWith('/login')) return;
+    // Re-mint ONLY users viewing the app, never brand-new marketing visitors.
+    // Mirror the app-vs-landing decision (app/page.js): completed onboarding,
+    // the installed-app flag, or an explicit app entry. hasCompletedOnboarding()
+    // alone is insufficient — a native user whose cached profile was wiped by
+    // logout() falls to the anon branch (needs lang+username+age) and would
+    // strand; the native flag survives logout, so it catches that case.
+    let nativeApp = false;
+    try { nativeApp = localStorage.getItem('dreamvalley_native_app') === '1'; } catch {}
+    const sourceApp = new URLSearchParams(window.location.search).get('source') === 'app';
+    if (!hasCompletedOnboarding() && !nativeApp && !sourceApp) return;
+    // Username is cosmetic: chosen anon name → cached user → friendly fallback.
     let username = '';
     try { username = localStorage.getItem('dreamvalley_anon_username') || ''; } catch {}
-    if (!username) return; // not an onboarded anon user
+    if (!username) {
+      try { username = (JSON.parse(localStorage.getItem('dreamweaver_user') || 'null') || {}).username || ''; } catch {}
+    }
+    if (!username) username = 'friend';
     let age = null;
     try { age = parseInt(localStorage.getItem('dreamvalley_child_age') || '', 10) || null; } catch {}
     import('@/utils/api').then(({ authApi }) =>
@@ -132,16 +148,11 @@ export default function AppShell({ children }) {
       // Still validate token if logged in
       if (isLoggedIn() && !tokenValidated.current) {
         tokenValidated.current = true;
-        const token = getToken();
-        fetch(`${API_URL}/api/v1/users/me`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-          .then((res) => {
-            if (res.status === 401) {
-              logout();
-            }
-          })
-          .catch(() => {});
+        // Validate through fetchApi so a lapsed-but-renewable token RENEWS
+        // (365d sliding) instead of being logged out. Only a 410-dormant
+        // verdict logs out + redirects (handled inside fetchApi); transient
+        // 401s / network errors keep the session. _retried caps retries at 1.
+        import('@/utils/api').then(({ authApi }) => authApi.getCurrentUser().catch(() => {}));
       }
       return;
     }
@@ -173,27 +184,13 @@ export default function AppShell({ children }) {
       }
     }
 
-    // Validate token against backend once per session.
-    // If the token is stale (e.g. after a Docker restart that wiped tokens),
-    // clear it and redirect to login so the user gets a fresh valid token.
+    // Validate token against backend once per session — through fetchApi so a
+    // lapsed-but-renewable token RENEWS (365d sliding) instead of being logged
+    // out. Only a 410-dormant verdict clears the session + redirects to /login
+    // (handled inside fetchApi); transient 401s / network errors keep it.
     if (!isPublic && isLoggedIn() && !tokenValidated.current) {
       tokenValidated.current = true;
-      const token = getToken();
-      fetch(`${API_URL}/api/v1/users/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then((res) => {
-          if (res.status === 401) {
-            console.warn('[AppShell] Token invalid — redirecting to login');
-            logout();
-            // Surface the reason on /login via banner so users understand
-            // why they were bounced (vs silent logout-on-navigation UX).
-            router.replace('/login?reason=session_expired');
-          }
-        })
-        .catch(() => {
-          // Network error — don't logout, just proceed offline
-        });
+      import('@/utils/api').then(({ authApi }) => authApi.getCurrentUser().catch(() => {}));
     }
 
     setChecked(true);
