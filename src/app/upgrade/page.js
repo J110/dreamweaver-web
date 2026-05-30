@@ -70,8 +70,9 @@ function UpgradeInner() {
         <div className={styles.eyebrow}>Dream Valley Premium</div>
 
         <h1 className={styles.headline}>
-          Every story,{' '}
-          <span className={styles.headlineAccent}>every night</span>
+          Get the{' '}
+          <span className={styles.headlineAccent}>sweetest sleep</span>{' '}
+          every night
         </h1>
 
         <p className={styles.subheadline}>
