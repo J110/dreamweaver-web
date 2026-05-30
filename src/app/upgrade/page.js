@@ -2,20 +2,12 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Fraunces } from 'next/font/google';
 import { subscriptionApi, billingApi } from '@/utils/api';
 import { isNativeApp } from '@/utils/platformDetect';
 import { captureIntentFromQuery } from '@/utils/upgradeIntent';
 import StarField from '@/components/StarField';
 import UpgradeShowcase from '@/components/UpgradeShowcase';
 import styles from './page.module.css';
-
-const fraunces = Fraunces({
-  subsets: ['latin'],
-  weight: ['400', '700', '900'],
-  style: ['normal', 'italic'],
-  display: 'swap',
-});
 
 const BENEFITS = [
   { icon: '✦', text: 'Full story library — every story, poem & lullaby' },
@@ -77,7 +69,7 @@ function UpgradeInner() {
       <div className={styles.card}>
         <div className={styles.eyebrow}>Dream Valley Premium</div>
 
-        <h1 className={`${styles.headline} ${fraunces.className}`}>
+        <h1 className={styles.headline}>
           Every story,{' '}
           <span className={styles.headlineAccent}>every night</span>
         </h1>
