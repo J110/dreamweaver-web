@@ -33,8 +33,11 @@ function UpgradeInner() {
       .then((data) => {
         if (cancelled) return;
         const premium = data?.tiers?.find?.((t) => t.id === 'premium') ?? data?.premium ?? null;
-        if (premium && premium.price != null && premium.trial_days_monthly != null) {
-          setPriceInfo({ price: premium.price, trialDays: premium.trial_days_monthly });
+        // Disclosure is mandatory whenever the CTA shows: require only the live
+        // price; fall back trial length to the product constant (7) so a missing
+        // trial_days field never suppresses the price line below the CTA.
+        if (premium && premium.price != null) {
+          setPriceInfo({ price: premium.price, trialDays: premium.trial_days_monthly ?? 7 });
         }
       })
       .catch(() => {})
