@@ -76,9 +76,7 @@ export default function Header() {
             </div>
           ) : (
             <div className={styles.authButtons}>
-              <Link href="/login" className="btn btn-primary btn-sm">
-                Log in
-              </Link>
+              {/* No "Log in" entry — device accounts are auto-held. "Restore subscription" lands in a later step. */}
             </div>
           )}
         </div>
