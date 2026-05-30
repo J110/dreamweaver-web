@@ -1,7 +1,12 @@
 const INTENT_KEY = 'dv_upgrade_intent';
 
 function _isSafeRelativePath(value) {
-  return typeof value === 'string' && value.startsWith('/');
+  // Single leading slash only. Reject '//evil.com' and '/\evil.com' —
+  // browsers/Next router treat those as protocol-relative external URLs (open redirect).
+  return typeof value === 'string'
+    && value.startsWith('/')
+    && !value.startsWith('//')
+    && !value.startsWith('/\\');
 }
 
 export const setUpgradeIntent = (path) => {
