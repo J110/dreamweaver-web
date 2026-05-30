@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { I18nProvider, hasCompletedOnboarding } from '@/utils/i18n';
 import { VoicePreferencesProvider } from '@/utils/voicePreferences';
-import { isLoggedIn, getToken, logout } from '@/utils/auth';
+import { isLoggedIn, getToken, logout, setToken, setUser } from '@/utils/auth';
 import useVersionCheck from '@/hooks/useVersionCheck';
 import BottomNav from './BottomNav';
 import InstallPrompt from './InstallPrompt';
@@ -36,6 +36,29 @@ export default function AppShell({ children }) {
   // Auto-reload on app open/foreground when a new deployment is detected.
   // Only checks on startup and visibility change — never mid-session.
   useVersionCheck();
+
+  const anonMintTried = useRef(false);
+  useEffect(() => {
+    if (anonMintTried.current) return;
+    anonMintTried.current = true;
+    if (typeof window === 'undefined') return;
+    if (isLoggedIn()) return; // already holds a token
+    let username = '';
+    try { username = localStorage.getItem('dreamvalley_anon_username') || ''; } catch {}
+    if (!username) return; // not an onboarded anon user
+    let age = null;
+    try { age = parseInt(localStorage.getItem('dreamvalley_child_age') || '', 10) || null; } catch {}
+    import('@/utils/api').then(({ authApi }) =>
+      authApi.deviceAccount(username, { child_age: age })
+        .then((res) => {
+          if (res && res.token) {
+            setToken(res.token);
+            setUser({ ...(res.user || {}), onboarding_complete: true });
+          }
+        })
+        .catch(() => { /* offline — retry next load */ })
+    );
+  }, []);
 
   // Register service worker for PWA support (required for beforeinstallprompt on Chrome)
   useEffect(() => {
