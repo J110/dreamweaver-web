@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { playlistApi } from '@/utils/api';
+import { playlistApi, subscriptionApi } from '@/utils/api';
+import PremiumBanner from '@/components/PremiumBanner';
 import { useI18n } from '@/utils/i18n';
 import { getUser } from '@/utils/auth';
 import HeartButton from '@/components/HeartButton';
@@ -72,6 +73,7 @@ export default function PlaylistPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isGatedFree, setIsGatedFree] = useState(false);
   const [index, setIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [needsResume, setNeedsResume] = useState(false);
@@ -79,6 +81,12 @@ export default function PlaylistPage() {
 
   const items = data?.items || [];
   const current = items[index] || null;
+
+  useEffect(() => {
+    subscriptionApi.getCurrent().then((sub) => {
+      setIsGatedFree(sub?.effective_premium === false);
+    }).catch(() => {});
+  }, []);
 
   // Fetch playlist
   useEffect(() => {
@@ -275,6 +283,15 @@ export default function PlaylistPage() {
       </div>
 
       <div style={safetyBannerStyle}>{safetyLabel}</div>
+      {isGatedFree && (
+        <div style={{ width: '100%', maxWidth: 480 }}>
+          <PremiumBanner
+            message="Premium unlocks the full bedtime routine."
+            messageHi="Premium se poori bedtime routine khul jaati hai."
+            intentPath="/playlist"
+          />
+        </div>
+      )}
       {skipMessage && (
         <div style={skipMessageStyle}>{skipMessage}</div>
       )}

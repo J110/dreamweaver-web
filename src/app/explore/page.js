@@ -4,8 +4,9 @@ import { Suspense, useEffect, useState, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import StarField from '@/components/StarField';
 import ContentCard from '@/components/ContentCard';
-import { contentApi } from '@/utils/api';
+import { contentApi, subscriptionApi } from '@/utils/api';
 import { getStories } from '@/utils/seedData';
+import PremiumBanner from '@/components/PremiumBanner';
 import { sortByDiscovery } from '@/utils/listeningHistory';
 import { useI18n } from '@/utils/i18n';
 import styles from './page.module.css';
@@ -41,7 +42,14 @@ function ExploreContent() {
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [content, setContent] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isGatedFree, setIsGatedFree] = useState(false);
   const searchTimer = useRef(null);
+
+  useEffect(() => {
+    subscriptionApi.getCurrent().then((sub) => {
+      setIsGatedFree(sub?.effective_premium === false);
+    }).catch(() => {});
+  }, []);
 
   // Debounce search input — wait 400ms after user stops typing
   useEffect(() => {
@@ -113,6 +121,14 @@ function ExploreContent() {
       <div className={styles.header}>
         <h1 className={styles.title}>{t('exploreTitle')}</h1>
       </div>
+
+      {isGatedFree && (
+        <PremiumBanner
+          message="Showing the last 7 days. Unlock the full library."
+          messageHi="Pichhle 7 din dikha rahe hain. Poori library unlock karein."
+          intentPath="/explore"
+        />
+      )}
 
       <input
         type="text"
