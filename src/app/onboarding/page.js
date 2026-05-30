@@ -80,10 +80,7 @@ export default function OnboardingPage() {
     // localStorage path for new-user creation.
     if (!authed) {
       try {
-        const res = await authApi.loginByUsername(trimmed, {
-          child_age: numericAge,
-          lang: selectedLang,
-        });
+        const res = await authApi.deviceAccount(trimmed, { child_age: numericAge, lang: selectedLang });
         if (res && res.token) {
           setToken(res.token);
           setUser({ ...(res.user || {}), onboarding_complete: true });
@@ -92,31 +89,21 @@ export default function OnboardingPage() {
             localStorage.setItem('dreamvalley_child_age', childAge);
           } catch {}
           setLang(selectedLang);
-          dvAnalytics.track('onboarding_complete', {
-            childAge,
-            username: trimmed,
-            lang: selectedLang,
-            logged_in: true,
-          });
+          dvAnalytics.track('onboarding_complete', { childAge, username: trimmed, lang: selectedLang, logged_in: true });
           setLoading(false);
           router.replace('/');
           return;
         }
       } catch (err) {
-        // 404 user_not_found OR network error → fall through to anon path
+        // Network error only — keep the user moving with a local username so
+        // the app is usable offline; a device account mints on next load.
       }
-
       try {
         localStorage.setItem('dreamvalley_anon_username', trimmed);
         localStorage.setItem('dreamvalley_child_age', childAge);
-      } catch { /* ignore */ }
+      } catch {}
       setLang(selectedLang);
-      dvAnalytics.track('onboarding_complete', {
-        childAge,
-        username: trimmed,
-        lang: selectedLang,
-        anon: true,
-      });
+      dvAnalytics.track('onboarding_complete', { childAge, username: trimmed, lang: selectedLang, anon: true });
       setLoading(false);
       router.replace('/');
       return;
