@@ -62,8 +62,8 @@ export default function MyStoriesPage() {
     loadUserContent();
   }, [router]);
 
-  const loadUserContent = async () => {
-    setLoading(true);
+  const loadUserContent = async ({ silent = false } = {}) => {
+    if (!silent) setLoading(true);
     try {
       const savesData = await interactionApi.getUserSaves().catch(() => ({ items: [] }));
       const items = savesData.items || [];
@@ -75,9 +75,24 @@ export default function MyStoriesPage() {
     } catch (err) {
       console.error('Error loading content:', err);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   };
+
+  // Refresh saves when the user returns to the page (tab focus / back-nav) so
+  // favorites stay current after saving/unsaving elsewhere — silent, no spinner.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const refresh = () => {
+      if (document.visibilityState === 'visible') loadUserContent({ silent: true });
+    };
+    document.addEventListener('visibilitychange', refresh);
+    window.addEventListener('focus', refresh);
+    return () => {
+      document.removeEventListener('visibilitychange', refresh);
+      window.removeEventListener('focus', refresh);
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
