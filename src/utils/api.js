@@ -624,7 +624,17 @@ export const subscriptionApi = {
     const res = await fetchApi('/api/v1/subscriptions/current', {
       method: 'GET',
     });
-    return res.data || {};
+    const data = res.data || {};
+    // Cache effective_premium so a fail-closed playback fallback can read the
+    // last-known value when a live call is impossible (total API outage).
+    // Flag-off → is_premium is always true → this only ever caches 'true'
+    // flag-off, so the fallback's deny branch is unreachable flag-off.
+    try {
+      if (typeof data.effective_premium === 'boolean') {
+        localStorage.setItem('dv_effective_premium', String(data.effective_premium));
+      }
+    } catch { /* storage unavailable — fallback just won't have a cache */ }
+    return data;
   },
 
   // Deprecated as of Phase 0 step 1.4b. Backend now returns 410 Gone.

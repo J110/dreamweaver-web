@@ -5,7 +5,7 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import StarField from '@/components/StarField';
 import HeartButton from '@/components/HeartButton';
-import { contentApi, feedbackApi } from '@/utils/api';
+import { contentApi, feedbackApi, subscriptionApi } from '@/utils/api';
 import { getStories } from '@/utils/seedData';
 import { getAmbientMusic } from '@/utils/ambientMusic';
 import { useI18n, hasCompletedOnboarding } from '@/utils/i18n';
@@ -717,6 +717,41 @@ export default function PlayerPage() {
 
   useEffect(() => {
     const loadContent = async () => {
+      // Fail-closed seed fallback: when the API can't return a lock verdict
+      // (empty response or thrown error), serve bundled seed audio ONLY for a
+      // CONFIRMED-unlocked user (effective_premium === true — covers flag-off
+      // and premium). A free user OR an undeterminable status (e.g. the status
+      // call also fails) gets NO audio and renders locked. Never fail open.
+      const serveSeedFallback = async (seedMatch, notFoundKey) => {
+        if (!seedMatch) { setError(t(notFoundKey)); return; }
+        // Resolve effective_premium WITHOUT a hard dependency on the call that
+        // just failed: (1) a live getCurrent — succeeds whenever the backend is
+        // reachable (e.g. the empty-response branch) and refreshes the cache;
+        // else (2) the value a prior successful getCurrent persisted; else
+        // (3) null = no live call AND no cache = true cold-start + total outage.
+        let eff = null;
+        try {
+          eff = (await subscriptionApi.getCurrent())?.effective_premium;
+        } catch { /* live call failed — fall through to cache */ }
+        if (typeof eff !== 'boolean') {
+          try {
+            const cached = localStorage.getItem('dv_effective_premium');
+            if (cached === 'true') eff = true;
+            else if (cached === 'false') eff = false;
+          } catch { /* no cache */ }
+        }
+        // DENY only on a POSITIVE gated signal (eff === false) — produced ONLY
+        // flag-on for a gated free user. Flag-off is always true (or, with no
+        // signal at all, null), so flag-off can NEVER reach deny → byte-identical
+        // to the old unconditional fallback. null (cold-start + total outage)
+        // serves: protects flag-off; a flag-on-free user in that exact window is
+        // the narrow accepted residual (recorded with the nginx /audio/ one).
+        if (eff === false) {
+          setContent({ ...seedMatch, audio_variants: [], audio_url: null, audio_file: null, premium_locked: true });
+        } else {
+          setContent(seedMatch);
+        }
+      };
       try {
         const data = await contentApi.getContentById(params.id);
         if (data && data.title) {
@@ -726,7 +761,9 @@ export default function PlayerPage() {
             (s) => s.title === data.title || s.id === data.id
           );
           if (seedMatch) {
-            if (seedMatch.audio_variants && seedMatch.audio_variants.length > (data.audio_variants || []).length) {
+            // Respect the backend premium lock — never re-inject seed audio
+            // over a scrubbed (locked) response, or the lock is defeated.
+            if (!data.premium_locked && seedMatch.audio_variants && seedMatch.audio_variants.length > (data.audio_variants || []).length) {
               data.audio_variants = seedMatch.audio_variants;
             }
             // Always prefer seed music data — musicalBrief (new system, composed client-side)
@@ -754,21 +791,11 @@ export default function PlayerPage() {
           setContent(data);
           setIsSaved(data.is_saved || false);
         } else {
-          const seedMatch = getStories(lang).find((s) => s.id === params.id);
-          if (seedMatch) {
-            setContent(seedMatch);
-          } else {
-            setError(t('playerNotFound'));
-          }
+          await serveSeedFallback(getStories(lang).find((s) => s.id === params.id), 'playerNotFound');
         }
       } catch (err) {
         console.error('Error loading content:', err);
-        const seedMatch = getStories(lang).find((s) => s.id === params.id);
-        if (seedMatch) {
-          setContent(seedMatch);
-        } else {
-          setError(t('playerError'));
-        }
+        await serveSeedFallback(getStories(lang).find((s) => s.id === params.id), 'playerError');
       } finally {
         setLoading(false);
       }
@@ -985,6 +1012,26 @@ export default function PlayerPage() {
             {error || t('playerNotFound')}
             <Link href="/before-bed" className={styles.exploreBtn}>
               {t('playerExplore')}
+            </Link>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (content.premium_locked) {
+    return (
+      <>
+        <StarField />
+        <div className={styles.app}>
+          <div className={styles.errorMessage}>
+            <div style={{ fontSize: 40, marginBottom: 8 }} aria-hidden>🔒</div>
+            <div style={{ fontWeight: 700, marginBottom: 4 }}>{content.title || ''}</div>
+            <div style={{ opacity: 0.8, marginBottom: 16 }}>
+              {lang === 'hi' ? 'Yeh Premium content hai' : 'This is a Premium story'}
+            </div>
+            <Link href={`/upgrade?intent=${encodeURIComponent('/player/' + params.id)}`} className={styles.exploreBtn}>
+              {lang === 'hi' ? 'Premium se unlock karein' : 'Unlock with Premium'}
             </Link>
           </div>
         </div>
