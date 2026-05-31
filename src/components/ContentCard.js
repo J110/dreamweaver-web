@@ -108,20 +108,35 @@ export default function ContentCard({ content, onClick }) {
     return content.addedAt.slice(0, 10) === today;
   })();
 
+  // Covers serve from a SUBTYPE path built off cover_file; the store `cover`
+  // field is often null for silly_songs/poems even though the file exists and
+  // serves 200 (before-bed/playlist already derive this way). Resolve order:
+  // cover → cover_file by subtype → emoji. Root /covers/{file} 404s for
+  // silly_songs, so the dir is keyed off the subtype, mirroring before-bed.
+  const coverFromFile = (() => {
+    const f = content.cover_file;
+    if (!f) return null;
+    if (isSillySong(content)) return `/covers/silly-songs/${f}`;
+    if (isPoem(content)) return `/covers/poems/${f}`;
+    if (isFunnyShort(content)) return `/covers/${content.lang === 'hi' ? 'funny-shorts-hi' : 'funny-shorts'}/${f}`;
+    return null;
+  })();
+  const resolvedCover = content.cover || coverFromFile;
+
   const cardContent = (
     <>
-      <div className={`${styles.cardArt} ${content.cover ? styles.cardArtWithImage : getTypeColor(content.type)}`}>
-        {content.cover ? (
-          content.cover.endsWith('.svg') ? (
+      <div className={`${styles.cardArt} ${resolvedCover ? styles.cardArtWithImage : getTypeColor(content.type)}`}>
+        {resolvedCover ? (
+          resolvedCover.endsWith('.svg') ? (
             <object
-              data={content.cover}
+              data={resolvedCover}
               type="image/svg+xml"
               className={styles.coverImage}
               aria-label={content.title || 'Story cover'}
             />
           ) : (
             <img
-              src={content.cover}
+              src={resolvedCover}
               alt={content.title || 'Story cover'}
               className={styles.coverImage}
               loading="lazy"
