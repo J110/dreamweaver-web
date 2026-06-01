@@ -109,7 +109,7 @@ export default function HomeApp() {
       // for this user). Flag-off: no enriched item has premium_locked, so
       // seed extras stay unannotated (byte-identical to pre-paywall).
       const flagOn = enriched.some((s) => 'premium_locked' in s);
-      const cutoff = flagOn ? Date.now() - 7 * 24 * 60 * 60 * 1000 : 0;
+      const cutoff = flagOn ? Date.now() - 14 * 24 * 60 * 60 * 1000 : 0;
       const extras = seedItems
         .filter((s) => !apiIds.has(s.id) && !titleMap.has(s.title))
         .map((s) => {
