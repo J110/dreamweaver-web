@@ -286,6 +286,21 @@ export default function PlayerPage() {
       };
     }
 
+    // Single-file mode: poems, silly_songs, funny_shorts carry audio_file
+    // (direct file path) instead of audio_variants (voice-selectable list).
+    // Derive the serving URL by content type — mirrors before-bed's inline
+    // player. Only for UNLOCKED items (premium_locked checked at line 277).
+    if (content.audio_file && variants.length === 0) {
+      const af = content.audio_file;
+      let dir = null;
+      if (content.type === 'poem') dir = content.lang === 'hi' ? 'poems-hi' : 'poems';
+      else if (content.subtype === 'silly_song') dir = content.lang === 'hi' ? 'silly-songs-hi' : 'silly-songs';
+      else if (content.subtype === 'funny_short') dir = content.lang === 'hi' ? 'funny-shorts-hi' : 'funny-shorts';
+      if (dir) {
+        return { url: `/audio/${dir}/${af}`, isPregen: true, duration: content.duration_seconds };
+      }
+    }
+
     // Long stories must NEVER fall through to the edge-tts substring(0, 5000)
     // path: a 1500+ word story truncates to ~half its text, the TTS plays
     // only the first half, then ends — perceived as "audio ran out at
@@ -1300,7 +1315,7 @@ export default function PlayerPage() {
         </div>
 
         <div className={styles.storySection}>
-          <h2 className={styles.sectionTitle}>{t('playerStory')}</h2>
+          <h2 className={styles.sectionTitle}>{getDisplayCategory(content, lang)}</h2>
           <div className={styles.storyText}>
             {stripEmotionMarkers(content.text || content.content) || t('playerNoContent')}
           </div>
