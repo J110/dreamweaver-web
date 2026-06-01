@@ -216,7 +216,7 @@ export default function AppShell({ children }) {
   const isLandingPage = pathname === '/'
     && (_forceLanding || (!_sourceApp && !_nativeFlag && !hasCompletedOnboarding()));
   const showNav = !NO_NAV_ROUTES.includes(pathname) && !pathname.startsWith('/player/')
-    && !isSEOPage && !isLandingPage && checked;
+    && !pathname.startsWith('/nap-playlist') && !isSEOPage && !isLandingPage && checked;
 
   return (
     <I18nProvider>

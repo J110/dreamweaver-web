@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import StarField from '@/components/StarField';
 import ContentCard from '@/components/ContentCard';
 import BedtimeBanner from '@/components/BedtimeBanner';
+import NapBanner from '@/components/NapBanner';
 import { isLoggedIn, getUser } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
 import { trendingApi } from '@/utils/api';
@@ -168,6 +169,7 @@ export default function HomeApp() {
       <StarField />
       <div className={styles.app}>
         <BedtimeBanner />
+        <NapBanner />
         {/* App Header */}
         <div className={styles.appHeader}>
           <div className={styles.headerLeft}>

@@ -742,6 +742,12 @@ export const playlistApi = {
     const res = await fetchApi(`/api/v1/playlist/today?${params.toString()}`);
     return res.data || { items: [], missing_slots: [], all_fresh: false };
   },
+  getNap: async ({ lang, tz } = {}) => {
+    const params = new URLSearchParams({ lang });
+    if (tz) params.set('tz', tz);
+    const res = await fetchApi(`/api/v1/playlist/nap?${params.toString()}`);
+    return res.data || { items: [] };
+  },
 };
 
 export default fetchApi;
