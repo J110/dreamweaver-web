@@ -5,7 +5,7 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import StarField from '@/components/StarField';
 import HeartButton from '@/components/HeartButton';
-import { contentApi, feedbackApi, subscriptionApi } from '@/utils/api';
+import { contentApi, feedbackApi, subscriptionApi, billingApi } from '@/utils/api';
 import { getStories } from '@/utils/seedData';
 import { getAmbientMusic } from '@/utils/ambientMusic';
 import { useI18n, hasCompletedOnboarding } from '@/utils/i18n';
@@ -16,6 +16,9 @@ import { stripEmotionMarkers } from '@/utils/textUtils';
 import { getDisplayCategory, getDisplayCategoryUpper } from '@/utils/contentTypes';
 import { recordListen, markCompleted } from '@/utils/listeningHistory';
 import { dvAnalytics } from '@/utils/analytics';
+import { isNativeApp } from '@/utils/platformDetect';
+import UpgradeShowcase from '@/components/UpgradeShowcase';
+import { setUpgradeIntent } from '@/utils/upgradeIntent';
 import posthog from 'posthog-js';
 import useCoverVisualSystem from '@/hooks/useCoverVisualSystem';
 import {
@@ -1053,9 +1056,22 @@ export default function PlayerPage() {
             <div style={{ opacity: 0.7, marginBottom: 20, fontSize: 14 }}>
               {lang === 'hi' ? 'Yeh Premium content hai' : 'This is a Premium story'}
             </div>
-            <Link href={`/upgrade?intent=${encodeURIComponent('/player/' + params.id)}`} className={styles.exploreBtn}>
-              {lang === 'hi' ? 'Premium se unlock karein' : 'Unlock with Premium'}
-            </Link>
+          </div>
+          <div style={{ margin: '24px auto 0', maxWidth: 420, padding: '0 16px' }}>
+            <UpgradeShowcase />
+            <ul style={{ listStyle: 'none', padding: 0, margin: '20px 0', textAlign: 'left' }}>
+              {[
+                'Full story library — every story, poem & lullaby',
+                'Complete bedtime routine with playlists',
+                'Save up to 30 days of bedtime favorites',
+                '7-day free trial — no charge until day 8',
+              ].map((b, i) => (
+                <li key={i} style={{ padding: '6px 0', fontSize: 14, opacity: 0.85 }}>
+                  <span style={{ color: '#d4af5a', marginRight: 8 }}>✦</span>{b}
+                </li>
+              ))}
+            </ul>
+            <LockedCTA intentPath={`/player/${params.id}`} lang={lang} />
           </div>
         </div>
       </>
@@ -1395,5 +1411,61 @@ export default function PlayerPage() {
         </div>
       )}
     </>
+  );
+}
+
+function LockedCTA({ intentPath, lang }) {
+  const [priceInfo, setPriceInfo] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+  const native = isNativeApp();
+
+  useEffect(() => {
+    setUpgradeIntent(intentPath);
+    subscriptionApi.getCurrent()
+      .then((sub) => {
+        const tier = sub?.current_tier || {};
+        if (tier.price) setPriceInfo({ price: tier.price, trialDays: tier.trial_days_monthly ?? 7 });
+      })
+      .catch(() => {});
+  }, [intentPath]);
+
+  async function handleStart() {
+    setError(null);
+    setSubmitting(true);
+    try {
+      const { checkout_url } = await billingApi.startCheckout('monthly');
+      if (checkout_url) { window.location.href = checkout_url; return; }
+      setError('Could not start checkout. Try again.');
+    } catch { setError('Something went wrong. Try again.'); }
+    finally { setSubmitting(false); }
+  }
+
+  return (
+    <div style={{ textAlign: 'center', marginTop: 8 }}>
+      {native ? (
+        <p style={{ opacity: 0.7, fontSize: 14 }}>Subscribe at <strong>dreamvalley.app</strong></p>
+      ) : (
+        <>
+          <button
+            onClick={handleStart}
+            disabled={submitting}
+            style={{
+              background: 'linear-gradient(135deg, #ff6b9d, #ff9100)', color: '#fff', border: 'none',
+              borderRadius: 28, padding: '14px 36px', fontSize: 16, fontWeight: 700, cursor: 'pointer',
+              opacity: submitting ? 0.7 : 1, width: '100%', maxWidth: 320,
+            }}
+          >
+            {submitting ? 'Taking you to checkout...' : 'Start my free trial'}
+          </button>
+          {priceInfo && (
+            <p style={{ opacity: 0.5, fontSize: 12, marginTop: 10 }}>
+              Free for {priceInfo.trialDays} days, then ${priceInfo.price}/month. Cancel anytime.
+            </p>
+          )}
+        </>
+      )}
+      {error && <p style={{ color: '#ff6b6b', fontSize: 13, marginTop: 8 }}>{error}</p>}
+    </div>
   );
 }
