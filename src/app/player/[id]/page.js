@@ -1095,6 +1095,18 @@ export default function PlayerPage() {
 
   const voiceSwitchOptions = getVoiceSwitchOptions();
 
+  // Derive cover from cover_file when cover is null — same logic as ContentCard.
+  const resolvedCover = content.cover || (() => {
+    const f = content.cover_file;
+    if (!f) return null;
+    if (content.type === 'poem') return `/covers/${content.lang === 'hi' ? 'poems-hi' : 'poems'}/${f}`;
+    if (content.subtype === 'silly_song') return `/covers/${content.lang === 'hi' ? 'silly-songs-hi' : 'silly-songs'}/${f}`;
+    if (content.subtype === 'funny_short') return `/covers/${content.lang === 'hi' ? 'funny-shorts-hi' : 'funny-shorts'}/${f}`;
+    return null;
+  })();
+
+  const hasText = !!(content.text || content.content);
+
   return (
     <>
       <StarField />
@@ -1104,13 +1116,13 @@ export default function PlayerPage() {
         </button>
 
         <div
-          className={`${styles.albumArt} ${content.cover ? styles.artWithImage : getTypeColor(content.type)} ${coverSystemEnabled && isPlaying ? styles.albumArtBreathe : ''}`}
+          className={`${styles.albumArt} ${resolvedCover ? styles.artWithImage : getTypeColor(content.type)} ${coverSystemEnabled && isPlaying ? styles.albumArtBreathe : ''}`}
           style={coverSystemEnabled ? {
             '--breathe-speed': `${breatheSpeed.toFixed(1)}s`,
             '--progress-angle': `${progressAngle.toFixed(1)}deg`,
           } : undefined}
         >
-          {content.cover ? (
+          {resolvedCover ? (
             coverHasVariants ? (
               /* 4-variant stack: smooth crossfade between progressive darkening levels */
               <>
@@ -1128,9 +1140,9 @@ export default function PlayerPage() {
                   />
                 ))}
               </>
-            ) : content.cover.endsWith('.svg') ? (
+            ) : resolvedCover.endsWith('.svg') ? (
               <object
-                data={content.cover}
+                data={resolvedCover}
                 type="image/svg+xml"
                 className={styles.coverImage}
                 style={coverDimStyle}
@@ -1138,7 +1150,7 @@ export default function PlayerPage() {
               />
             ) : (
               <img
-                src={content.cover}
+                src={resolvedCover}
                 alt={content.title || 'Cover art'}
                 className={styles.coverImage}
                 style={coverDimStyle}
@@ -1314,10 +1326,10 @@ export default function PlayerPage() {
           </button>
         </div>
 
-        <div className={styles.storySection}>
+        {hasText && <div className={styles.storySection}>
           <h2 className={styles.sectionTitle}>{getDisplayCategory(content, lang)}</h2>
           <div className={styles.storyText}>
-            {stripEmotionMarkers(content.text || content.content) || t('playerNoContent')}
+            {stripEmotionMarkers(content.text || content.content)}
           </div>
 
           {content.poems && (
@@ -1347,7 +1359,7 @@ export default function PlayerPage() {
               <div className={styles.extraText}>{stripEmotionMarkers(content.qa)}</div>
             </div>
           )}
-        </div>
+        </div>}
       </div>
 
       {/* Save / Report toast notification */}
