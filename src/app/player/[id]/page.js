@@ -1020,14 +1020,34 @@ export default function PlayerPage() {
   }
 
   if (content.premium_locked) {
+    const lockedCover = content.cover || (content.cover_file && (
+      content.subtype === 'silly_song' ? `/covers/silly-songs/${content.cover_file}`
+        : content.subtype === 'funny_short' ? `/covers/${(content.lang || 'en') === 'hi' ? 'funny-shorts-hi' : 'funny-shorts'}/${content.cover_file}`
+        : content.type === 'poem' ? `/covers/poems/${content.cover_file}`
+        : null
+    ));
     return (
       <>
         <StarField />
         <div className={styles.app}>
-          <div className={styles.errorMessage}>
-            <div style={{ fontSize: 40, marginBottom: 8 }} aria-hidden>🔒</div>
-            <div style={{ fontWeight: 700, marginBottom: 4 }}>{content.title || ''}</div>
-            <div style={{ opacity: 0.8, marginBottom: 16 }}>
+          <button onClick={handleBack} className={styles.backButton}>
+            {'←'} {t('playerBack')}
+          </button>
+          {lockedCover && (
+            <div className={styles.albumArt} style={{ opacity: 0.55 }}>
+              <img src={lockedCover} alt={content.title || ''} className={styles.coverImage} />
+              <div style={{
+                position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: 'linear-gradient(180deg, transparent 20%, rgba(13,11,46,0.7) 100%)', borderRadius: 'inherit',
+              }}>
+                <span style={{ fontSize: 48 }} aria-hidden>🔒</span>
+              </div>
+            </div>
+          )}
+          {!lockedCover && <div style={{ fontSize: 48, textAlign: 'center', marginTop: 32 }} aria-hidden>🔒</div>}
+          <div style={{ textAlign: 'center', marginTop: 16 }}>
+            <div style={{ fontWeight: 700, fontSize: 20, marginBottom: 6 }}>{content.title || ''}</div>
+            <div style={{ opacity: 0.7, marginBottom: 20, fontSize: 14 }}>
               {lang === 'hi' ? 'Yeh Premium content hai' : 'This is a Premium story'}
             </div>
             <Link href={`/upgrade?intent=${encodeURIComponent('/player/' + params.id)}`} className={styles.exploreBtn}>

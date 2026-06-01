@@ -125,7 +125,7 @@ export default function ContentCard({ content, onClick }) {
 
   const cardContent = (
     <>
-      <div className={`${styles.cardArt} ${resolvedCover ? styles.cardArtWithImage : getTypeColor(content.type)}`}>
+      <div className={`${styles.cardArt} ${resolvedCover ? styles.cardArtWithImage : getTypeColor(content.type)} ${content.premium_locked ? styles.cardArtLocked : ''}`}>
         {resolvedCover ? (
           resolvedCover.endsWith('.svg') ? (
             <object
@@ -152,7 +152,9 @@ export default function ContentCard({ content, onClick }) {
               : '✨'}
           </div>
         )}
-        {listened ? (
+        {content.premium_locked ? (
+          <span className={styles.lockBadge}>Premium</span>
+        ) : listened ? (
           <span className={styles.listenedBadge}>✓</span>
         ) : isAddedToday ? (
           <span className={styles.newBadge}>NEW</span>

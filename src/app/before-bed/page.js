@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import StarField from '@/components/StarField';
 import { sillySongsApi, poemsApi, funnyShortsApi } from '@/utils/api';
 import { useI18n } from '@/utils/i18n';
+import { useRouter } from 'next/navigation';
 import { dvAnalytics } from '@/utils/analytics';
 import {
   updateMediaSessionMetadata,
@@ -137,7 +138,10 @@ function BeforeBedContent() {
     loadContent(group, lang);
   };
 
+  const router = useRouter();
+
   const handlePlaySong = useCallback((song) => {
+    if (song.premium_locked) { router.push(`/upgrade?intent=${encodeURIComponent('/before-bed')}`); return; }
     if (!song.audio_file) return;
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -204,6 +208,7 @@ function BeforeBedContent() {
   }, [playingId]);
 
   const handlePlayPoem = useCallback((poem) => {
+    if (poem.premium_locked) { router.push(`/upgrade?intent=${encodeURIComponent('/before-bed')}`); return; }
     if (!poem.audio_file) return;
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -270,6 +275,7 @@ function BeforeBedContent() {
   }, [playingId]);
 
   const handlePlayFunnyShort = useCallback((short) => {
+    if (short.premium_locked) { router.push(`/upgrade?intent=${encodeURIComponent('/before-bed')}`); return; }
     if (!short.audio_url && !short.audio_file) return;
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -398,10 +404,11 @@ function BeforeBedContent() {
                 {songs.map((song) => (
                   <div key={song.id} className={styles.cardWrapper}>
                     <div
-                      className={`${styles.card} ${playingId === song.id ? styles.cardPlaying : ''}`}
+                      className={`${styles.card} ${playingId === song.id ? styles.cardPlaying : ''} ${song.premium_locked ? styles.cardLocked : ''}`}
                       onClick={() => handlePlaySong(song)}
                     >
-                      {isAddedToday(song.created_at) && (
+                      {song.premium_locked && <span className={styles.lockBadge}>Premium</span>}
+                      {!song.premium_locked && isAddedToday(song.created_at) && (
                         <span className={styles.newBadge}>NEW</span>
                       )}
                       {song.cover_file ? (
@@ -448,10 +455,11 @@ function BeforeBedContent() {
                 {poems.map((poem) => (
                   <div key={poem.id} className={styles.cardWrapper}>
                     <div
-                      className={`${styles.card} ${playingId === poem.id ? styles.cardPlaying : ''}`}
+                      className={`${styles.card} ${playingId === poem.id ? styles.cardPlaying : ''} ${poem.premium_locked ? styles.cardLocked : ''}`}
                       onClick={() => handlePlayPoem(poem)}
                     >
-                      {isAddedToday(poem.created_at) && (
+                      {poem.premium_locked && <span className={styles.lockBadge}>Premium</span>}
+                      {!poem.premium_locked && isAddedToday(poem.created_at) && (
                         <span className={styles.newBadge}>NEW</span>
                       )}
                       {poem.cover_file ? (
@@ -513,10 +521,11 @@ function BeforeBedContent() {
                   return (
                     <div key={short.id} className={styles.cardWrapper}>
                       <div
-                        className={`${styles.card} ${playingId === short.id ? styles.cardPlaying : ''}`}
+                        className={`${styles.card} ${playingId === short.id ? styles.cardPlaying : ''} ${short.premium_locked ? styles.cardLocked : ''}`}
                         onClick={() => handlePlayFunnyShort(short)}
                       >
-                        {isAddedToday(short.created_at) && (
+                        {short.premium_locked && <span className={styles.lockBadge}>Premium</span>}
+                        {!short.premium_locked && isAddedToday(short.created_at) && (
                           <span className={styles.newBadge}>NEW</span>
                         )}
                         {coverFile ? (

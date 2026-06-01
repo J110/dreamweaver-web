@@ -130,6 +130,34 @@
   text-transform: uppercase;
 }
 
+.cardLocked {
+  opacity: 0.65;
+  position: relative;
+}
+.cardLocked::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, transparent 40%, rgba(13, 11, 46, 0.5) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+.lockBadge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: linear-gradient(135deg, #d4af5a, #b8860b);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  z-index: 3;
+  text-transform: uppercase;
+}
+
 /* When no cover, add padding back for emoji-only cards */
 .card > .cardEmojis {
   padding: 16px 16px 0;
