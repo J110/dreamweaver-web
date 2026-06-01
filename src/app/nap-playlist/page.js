@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { playlistApi } from '@/utils/api';
@@ -48,6 +50,27 @@ export default function NapPlaylistPage() {
       clearMediaSession();
     };
   }, []);
+
+  // Autoplay first track when items load (deferred to avoid SSG prerender issues)
+  const autoStarted = useRef(false);
+  useEffect(() => {
+    if (autoStarted.current || items.length === 0 || loading) return;
+    autoStarted.current = true;
+    const timer = setTimeout(() => {
+      const item = items[0];
+      if (!item) return;
+      const url = resolveAudioUrl(item);
+      if (!url) return;
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      setCurrentIndex(0);
+      updateMediaSessionMetadata({ title: item.title || 'Nap Playlist', artist: 'Dream Valley', album: 'Nap Playlist', coverUrl: resolveCoverUrl(item) });
+      audio.addEventListener('ended', () => { setIsPlaying(false); setProgress(0); updatePlaybackState('paused'); if (items.length > 1) playTrack(1); });
+      audio.addEventListener('error', () => { setIsPlaying(false); updatePlaybackState('paused'); });
+      audio.play().then(() => { setIsPlaying(true); updatePlaybackState('playing'); startProgress(); }).catch(() => {});
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [items, loading]);
 
   const currentItem = items[currentIndex] || null;
   const audioUrl = resolveAudioUrl(currentItem);
@@ -129,9 +152,12 @@ export default function NapPlaylistPage() {
     <>
       <StarField />
       <div style={pageStyle}>
-        <button onClick={() => router.back()} style={closeStyle}>{'x'}</button>
-        <div style={{ textAlign: 'center', opacity: 0.7, fontSize: 13, marginBottom: 4 }}>
-          {lang === 'hi' ? `Ab baj raha hai ${currentIndex + 1} / ${items.length}` : `Now playing ${currentIndex + 1} of ${items.length}`}
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
+          <button onClick={() => router.back()} style={closeStyle}>{'x'}</button>
+          <div style={{ flex: 1, textAlign: 'center', opacity: 0.7, fontSize: 13 }}>
+            {lang === 'hi' ? `Ab baj raha hai ${currentIndex + 1} / ${items.length}` : `Now playing ${currentIndex + 1} of ${items.length}`}
+          </div>
+          <div style={{ width: 36 }} />
         </div>
 
         <div style={safetyNote}>
@@ -173,7 +199,7 @@ export default function NapPlaylistPage() {
 }
 
 const pageStyle = { maxWidth: 480, margin: '0 auto', padding: '16px 16px 96px', minHeight: '100vh', color: '#fff', position: 'relative' };
-const closeStyle = { position: 'absolute', top: 12, left: 12, background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', borderRadius: '50%', width: 36, height: 36, fontSize: 18, cursor: 'pointer', zIndex: 2 };
+const closeStyle = { background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', borderRadius: '50%', width: 36, height: 36, fontSize: 18, cursor: 'pointer', flexShrink: 0 };
 const safetyNote = { background: 'rgba(96,165,250,0.12)', borderRadius: 12, padding: '10px 14px', fontSize: 12, opacity: 0.8, marginBottom: 16, lineHeight: 1.5, textAlign: 'center' };
 const artStyle = { width: '100%', aspectRatio: '1/1', maxWidth: 280, margin: '0 auto', borderRadius: 16, overflow: 'hidden' };
 const controlsStyle = { display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 24, margin: '20px 0' };
