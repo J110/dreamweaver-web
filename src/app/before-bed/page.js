@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react';
 import StarField from '@/components/StarField';
+import HeartButton from '@/components/HeartButton';
 import { sillySongsApi, poemsApi, funnyShortsApi } from '@/utils/api';
 import { useI18n } from '@/utils/i18n';
 import { useRouter } from 'next/navigation';
@@ -429,6 +430,7 @@ function BeforeBedContent() {
                         </span>
                         <div className={styles.cardActions}>
                           <ShareBtn type="silly-songs" id={song.id} title={song.title} />
+                          {!song.premium_locked && <HeartButton contentId={song.id} variant="compact" />}
                           <button
                             className={styles.playBtn}
                             onClick={(e) => {
@@ -491,6 +493,7 @@ function BeforeBedContent() {
                         </span>
                         <div className={styles.cardActions}>
                           <ShareBtn type="poems" id={poem.id} title={poem.title} />
+                          {!poem.premium_locked && <HeartButton contentId={poem.id} variant="compact" />}
                           <button
                             className={styles.playBtn}
                             onClick={(e) => {
@@ -546,6 +549,7 @@ function BeforeBedContent() {
                           </span>
                           <div className={styles.cardActions}>
                             <ShareBtn type="funny-shorts" id={short.id} title={short.title} />
+                            {!short.premium_locked && <HeartButton contentId={short.id} variant="compact" />}
                             <button
                               className={styles.playBtn}
                               onClick={(e) => {
