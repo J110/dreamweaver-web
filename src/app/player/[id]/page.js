@@ -175,6 +175,7 @@ export default function PlayerPage() {
   // the AudioContext is still suspended and no sound has been produced.
   useEffect(() => {
     if (musicStartAttemptedRef.current) return;
+    if (content?.premium_locked) return;
 
     // Capture the content ID at effect start. If it changes mid-flight
     // (user switched stories), we abort to avoid starting stale music.
@@ -270,6 +271,7 @@ export default function PlayerPage() {
   // Resolve audio source
   const getAudioSource = useCallback(() => {
     if (!content) return null;
+    if (content.premium_locked) return null;
     const variants = content.audio_variants || [];
 
     const match = variants.find(v => v.voice === selectedVoice);
@@ -538,6 +540,7 @@ export default function PlayerPage() {
     if (autoPlayTriggeredRef.current) return;
     if (searchParams.get('autoplay') !== '1') return;
     if (!content || !selectedVoice || loading) return;
+    if (content.premium_locked) return;
     // Don't auto-play if already playing (e.g., voice switch just triggered)
     if (isPlaying || audioRef.current?.src) return;
     autoPlayTriggeredRef.current = true;
