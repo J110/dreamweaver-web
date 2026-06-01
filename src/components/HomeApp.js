@@ -14,7 +14,7 @@ import { isLoggedIn, getUser } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
 import { trendingApi } from '@/utils/api';
 import { getStories } from '@/utils/seedData';
-import { isStory, isLongStory, isLullaby, getSectionLabel } from '@/utils/contentTypes';
+import { isStory, isLongStory, isLullaby, isFunnyShort, getSectionLabel } from '@/utils/contentTypes';
 import { sortByDiscovery } from '@/utils/listeningHistory';
 import styles from '@/app/page.module.css';
 
@@ -101,9 +101,24 @@ export default function HomeApp() {
       });
       const apiIds = new Set(apiItems.map((s) => s.id));
       const titleMap = new Set(apiItems.map((s) => s.title));
-      const extras = seedItems.filter(
-        (s) => !apiIds.has(s.id) && !titleMap.has(s.title)
-      );
+      // Seed-only items bypass the backend lock. Annotate them client-side
+      // so ContentCard can show the lock badge. Mirrors backlog.py logic:
+      // premium content types (long_story, funny_short) always locked;
+      // free types locked if older than 7 days. Only applies when the API
+      // returned premium_locked on at least one enriched item (= flag is on
+      // for this user). Flag-off: no enriched item has premium_locked, so
+      // seed extras stay unannotated (byte-identical to pre-paywall).
+      const flagOn = enriched.some((s) => 'premium_locked' in s);
+      const cutoff = flagOn ? Date.now() - 7 * 24 * 60 * 60 * 1000 : 0;
+      const extras = seedItems
+        .filter((s) => !apiIds.has(s.id) && !titleMap.has(s.title))
+        .map((s) => {
+          if (!flagOn) return s;
+          const isPremiumType = isLongStory(s) || isFunnyShort(s);
+          const createdMs = s.created_at ? new Date(s.created_at).getTime() : 0;
+          const locked = isPremiumType || createdMs < cutoff;
+          return { ...s, premium_locked: locked };
+        });
       const merged = [...enriched, ...extras];
       setStories(merged.length > 0 ? merged : seedItems);
     } catch (err) {
