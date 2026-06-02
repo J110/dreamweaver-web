@@ -219,14 +219,19 @@ html {
   border-radius: var(--radius-sm);
 }
 
-/* Dark diagnostic (?noblur=1 sets html[data-noblur]): neutralize all
-   backdrop-filter to isolate the WebKit/iOS repaint cost. No effect for
-   normal users (attribute is never set without the flag). */
-html[data-noblur] *,
-html[data-noblur] *::before,
-html[data-noblur] *::after {
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+/* Native WKWebView reduced-motion. Flutter re-composites the web layer every
+   frame the page animates, so continuous CSS animation tanks the in-app UI
+   thread (Safari draws WebKit directly and stays at 60fps). html[data-native]
+   is set ONLY inside the native app (isNativeApp / DreamValleyApp UA token) —
+   web / Android / mobile-Safari are untouched and keep full motion.
+   Reversible: drop the attribute or this rule. */
+html[data-native] *,
+html[data-native] *::before,
+html[data-native] *::after {
+  animation-duration: 0.001ms !important;
+  animation-delay: 0s !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
 }
 
 /* Utility Classes - Glow Effects */

@@ -8,8 +8,7 @@ import { isLoggedIn, setToken, setUser } from '@/utils/auth';
 import useVersionCheck from '@/hooks/useVersionCheck';
 import BottomNav from './BottomNav';
 import InstallPrompt from './InstallPrompt';
-import PerfOverlay from './PerfOverlay';
-import { getDebugFlags } from '@/utils/debugFlags';
+import { isNativeApp } from '@/utils/platformDetect';
 import BedtimePopup from './BedtimePopup';
 import { dvAnalytics } from '@/utils/analytics';
 
@@ -85,11 +84,14 @@ export default function AppShell({ children }) {
     }
   }, []);
 
-  // Dark diagnostic (?noblur=1): drop all backdrop-filter to isolate the iOS
-  // repaint cost. No-op without the flag.
+  // In the native WKWebView, Flutter re-composites the web layer every frame
+  // the page isn't static, so continuous CSS animation (StarField, etc.) taxes
+  // the in-app UI thread far more than Safari (which draws WebKit directly).
+  // Mark native → CSS freezes animations (globals.css html[data-native]).
+  // Web / Android / mobile-Safari are unaffected.
   useEffect(() => {
-    if (getDebugFlags().noblur) {
-      try { document.documentElement.setAttribute('data-noblur', ''); } catch { /* ignore */ }
+    if (isNativeApp()) {
+      try { document.documentElement.setAttribute('data-native', ''); } catch { /* ignore */ }
     }
   }, []);
 
@@ -236,7 +238,6 @@ export default function AppShell({ children }) {
         </div>
         {showNav && <BottomNav />}
         <InstallPrompt />
-        <PerfOverlay />
         {checked && !pathname.startsWith('/player/') && !pathname.startsWith('/playlist') && !NO_NAV_ROUTES.includes(pathname) && <BedtimePopup />}
       </VoicePreferencesProvider>
     </I18nProvider>
