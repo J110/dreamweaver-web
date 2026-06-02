@@ -15,8 +15,10 @@
  */
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { isLoggedIn } from '@/utils/auth';
 import { hasCompletedOnboarding } from '@/utils/i18n';
+import { isNativeApp as isNativeClient } from '@/utils/platformDetect';
 import LandingPage from '@/components/landing/LandingPage';
 import HomeApp from '@/components/HomeApp';
 
@@ -34,13 +36,19 @@ function isNativeApp() {
   return false;
 }
 
+// Native = the reliable WKWebView UA token (works on a fresh launch with no
+// ?source=app) OR the legacy source=app / persisted-flag path. Browser visitors
+// match NEITHER, so their routing is unchanged.
+function isNative() {
+  return isNativeClient() || isNativeApp();
+}
+
 function getInitialView() {
   if (typeof window === 'undefined') return 'landing';
   try {
     const params = new URLSearchParams(window.location.search);
     if (params.get('view') === 'landing') return 'landing';
-    if (params.get('source') === 'app') return 'app';
-    try { if (localStorage.getItem('dreamvalley_native_app') === '1') return 'app'; } catch {}
+    if (isNative()) return 'app';
     return hasCompletedOnboarding() ? 'app' : 'landing';
   } catch {
     return 'landing';
@@ -48,6 +56,7 @@ function getInitialView() {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [view, setView] = useState(getInitialView);
 
   useEffect(() => {
@@ -56,12 +65,20 @@ export default function Home() {
       setView('landing');
       return;
     }
-    if (isNativeApp()) {
-      setView('app');
+    if (isNative()) {
+      // Native clients never see the marketing page.
+      // - native + onboarded   → app home (unchanged for existing users)
+      // - native + NOT onboarded → onboarding (the fix; new App Store users)
+      if (hasCompletedOnboarding()) {
+        setView('app');
+      } else {
+        router.replace('/onboarding');
+      }
       return;
     }
+    // Non-native browser visitor — unchanged (onboarded → app, else marketing).
     setView(hasCompletedOnboarding() ? 'app' : 'landing');
-  }, []);
+  }, [router]);
 
   if (view === 'app') {
     return <HomeApp />;
