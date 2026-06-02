@@ -124,6 +124,11 @@ export default function ContentCard({ content, onClick }) {
   })();
   const resolvedCover = content.cover || coverFromFile;
   const isSvgCover = !!resolvedCover && resolvedCover.endsWith('.svg');
+  // Grid serves the static WebP poster (the extracted cover scene); falls back
+  // to the SVG if a poster is missing. Avoids <img>-SVG SMIL animating on iOS
+  // WebKit, which taxes the Flutter PlatformView present on old devices. The
+  // hover <object> still shows the animated SVG; the player keeps the SVG.
+  const posterSrc = isSvgCover ? resolvedCover.replace(/\.svg$/, '.webp') : resolvedCover;
 
   // Grid covers render as a static poster <img> (one element, no browsing
   // context) and upgrade to the live animated <object> only while hovered or
@@ -161,11 +166,12 @@ export default function ContentCard({ content, onClick }) {
             />
           ) : (
             <img
-              src={resolvedCover}
+              src={posterSrc}
               alt={content.title || 'Story cover'}
               className={styles.coverImage}
               loading="lazy"
               decoding="async"
+              onError={(e) => { const t = e.currentTarget; if (!t.dataset.fb) { t.dataset.fb = '1'; t.src = resolvedCover; } }}
             />
           )
         ) : (
