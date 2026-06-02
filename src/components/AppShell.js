@@ -8,6 +8,7 @@ import { isLoggedIn, setToken, setUser } from '@/utils/auth';
 import useVersionCheck from '@/hooks/useVersionCheck';
 import BottomNav from './BottomNav';
 import InstallPrompt from './InstallPrompt';
+import PerfBench from './PerfBench';
 import { isNativeApp } from '@/utils/platformDetect';
 import BedtimePopup from './BedtimePopup';
 import { dvAnalytics } from '@/utils/analytics';
@@ -238,6 +239,7 @@ export default function AppShell({ children }) {
         </div>
         {showNav && <BottomNav />}
         <InstallPrompt />
+        <PerfBench />
         {checked && !pathname.startsWith('/player/') && !pathname.startsWith('/playlist') && !NO_NAV_ROUTES.includes(pathname) && <BedtimePopup />}
       </VoicePreferencesProvider>
     </I18nProvider>
