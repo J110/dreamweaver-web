@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { playlistApi, subscriptionApi } from '@/utils/api';
+import { markBedtimeOpenedToday } from '@/utils/bedtimeMarker';
 import PremiumBanner from '@/components/PremiumBanner';
 import { useI18n } from '@/utils/i18n';
 import { getUser } from '@/utils/auth';
@@ -87,6 +88,10 @@ export default function PlaylistPage() {
       setIsGatedFree(sub?.effective_premium === false);
     }).catch(() => {});
   }, []);
+
+  // Opening the bedtime playlist marks today's bedtime engagement (per-device,
+  // local) so the daytime NapBanner steps aside for the rest of the day.
+  useEffect(() => { markBedtimeOpenedToday(); }, []);
 
   // Fetch playlist
   useEffect(() => {
