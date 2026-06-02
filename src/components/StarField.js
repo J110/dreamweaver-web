@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { getDebugFlags } from '@/utils/debugFlags';
 
 export default function StarField() {
   const [stars, setStars] = useState([]);
@@ -20,6 +21,8 @@ export default function StarField() {
 
     generateStars();
   }, []);
+
+  if (getDebugFlags().nostars) return null;
 
   return (
     <div className="star-field">

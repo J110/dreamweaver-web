@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { getDebugFlags } from '@/utils/debugFlags';
 import { getAmbientMusic } from '@/utils/ambientMusic';
 import { isListened } from '@/utils/listeningHistory';
 import { dvAnalytics } from '@/utils/analytics';
@@ -151,7 +152,7 @@ export default function ContentCard({ content, onClick }) {
   const cardContent = (
     <>
       <div className={`${styles.cardArt} ${resolvedCover ? styles.cardArtWithImage : getTypeColor(content.type)} ${content.premium_locked ? styles.cardArtLocked : ''}`}>
-        {resolvedCover ? (
+        {(resolvedCover && !getDebugFlags().nocovers) ? (
           isSvgCover && live ? (
             <object
               data={resolvedCover}
