@@ -215,16 +215,13 @@ export default function LullabiesPage() {
               onClick={() => handlePlay(lullaby)}
             >
               <div className={styles.coverWrap}>
-                <object
-                  data={`/covers/lullabies/${lullaby.cover_file}`}
-                  type="image/svg+xml"
+                <img
+                  src={`/covers/lullabies/${lullaby.cover_file}`}
                   className={styles.cover}
-                  aria-label={lullaby.title}
-                >
-                  <div className={styles.coverFallback}>
-                    <span>{lullaby.title?.[0] || '~'}</span>
-                  </div>
-                </object>
+                  alt={lullaby.title}
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
 
               <div className={styles.info}>

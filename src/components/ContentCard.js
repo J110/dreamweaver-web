@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { getAmbientMusic } from '@/utils/ambientMusic';
 import { isListened } from '@/utils/listeningHistory';
@@ -122,12 +123,36 @@ export default function ContentCard({ content, onClick }) {
     return null;
   })();
   const resolvedCover = content.cover || coverFromFile;
+  const isSvgCover = !!resolvedCover && resolvedCover.endsWith('.svg');
+
+  // Grid covers render as a static poster <img> (one element, no browsing
+  // context) and upgrade to the live animated <object> only while hovered or
+  // focused. The previous one-<object>-per-card grid mounted hundreds of
+  // isolated SVG documents whose teardown stalled navigation for seconds —
+  // do not revert to an always-live <object>. Mobile has no hover, so the
+  // grid stays fully static there (tap navigates).
+  const [live, setLive] = useState(false);
+  const cardRef = useRef(null);
+  const activate = () => { if (isSvgCover) setLive(true); };
+  const deactivate = () => setLive(false);
+  // Unmount the live <object> when the card scrolls out of view, so a fast
+  // hover-then-scroll never accumulates live documents (hard cap on live count).
+  useEffect(() => {
+    if (!live) return;
+    const el = cardRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(
+      (entries) => { if (entries.some((e) => !e.isIntersecting)) setLive(false); }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [live]);
 
   const cardContent = (
     <>
       <div className={`${styles.cardArt} ${resolvedCover ? styles.cardArtWithImage : getTypeColor(content.type)} ${content.premium_locked ? styles.cardArtLocked : ''}`}>
         {resolvedCover ? (
-          resolvedCover.endsWith('.svg') ? (
+          isSvgCover && live ? (
             <object
               data={resolvedCover}
               type="image/svg+xml"
@@ -140,6 +165,7 @@ export default function ContentCard({ content, onClick }) {
               alt={content.title || 'Story cover'}
               className={styles.coverImage}
               loading="lazy"
+              decoding="async"
             />
           )
         ) : (
@@ -190,11 +216,16 @@ export default function ContentCard({ content, onClick }) {
 
   return (
     <div
+      ref={cardRef}
       className={`${styles.card} card card-interactive`}
       onClick={(e) => {
         handleCardClick();
         if (onClick) onClick(e);
       }}
+      onMouseEnter={activate}
+      onMouseLeave={deactivate}
+      onFocus={activate}
+      onBlur={deactivate}
     >
       {onClick ? (
         cardContent

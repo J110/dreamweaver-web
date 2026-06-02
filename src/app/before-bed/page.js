@@ -466,22 +466,13 @@ function BeforeBedContent() {
                       )}
                       {poem.cover_file ? (
                         <div className={styles.cardCover}>
-                          {poem.cover_file.endsWith('.svg') ? (
-                            <object
-                              data={`/covers/poems/${poem.cover_file}`}
-                              type="image/svg+xml"
-                              className={styles.cardCoverImg}
-                              aria-label={poem.title}
-                            >
-                              <div className={styles.cardEmojis}>✨</div>
-                            </object>
-                          ) : (
-                            <img
-                              src={`/covers/poems/${poem.cover_file}`}
-                              className={styles.cardCoverImg}
-                              alt={poem.title}
-                            />
-                          )}
+                          <img
+                            src={`/covers/poems/${poem.cover_file}`}
+                            className={styles.cardCoverImg}
+                            alt={poem.title}
+                            loading="lazy"
+                            decoding="async"
+                          />
                         </div>
                       ) : (
                         <div className={styles.cardEmojis}>✨</div>
