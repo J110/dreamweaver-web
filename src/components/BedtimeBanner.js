@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useI18n } from '@/utils/i18n';
 
-const BEDTIME_HOUR = 20;
+export const BEDTIME_HOUR = 20;
 
 export default function BedtimeBanner() {
   const { lang } = useI18n();

@@ -1,17 +1,23 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useI18n } from '@/utils/i18n';
-import { wasBedtimeOpenedToday } from '@/utils/bedtimeMarker';
+import { BEDTIME_HOUR } from '@/components/BedtimeBanner';
 
 export default function NapBanner() {
   const { lang } = useI18n();
   const router = useRouter();
+  const [show, setShow] = useState(false);
 
-  // Nap is the daytime suggestion; once today's bedtime playlist has been
-  // opened it steps aside for the rest of the day (resets at local midnight).
-  // Synchronous read → decided before first paint (no flash, no layout jump).
-  if (wasBedtimeOpenedToday()) return null;
+  useEffect(() => {
+    const check = () => setShow(new Date().getHours() < BEDTIME_HOUR);
+    check();
+    const id = setInterval(check, 60_000);
+    return () => clearInterval(id);
+  }, []);
+
+  if (!show) return null;
 
   const title = lang === 'hi' ? 'Nap time? Ek calming playlist ready hai' : 'Nap time? A calming playlist is ready';
   const subtitle = lang === 'hi'
