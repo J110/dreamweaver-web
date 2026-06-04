@@ -1472,7 +1472,19 @@ function LockedCTA({ intentPath, lang }) {
   return (
     <div style={{ textAlign: 'center', marginTop: 8 }}>
       {native ? (
-        <p style={{ opacity: 0.7, fontSize: 14 }}>Subscribe at <strong>dreamvalley.app</strong></p>
+        <>
+          <p style={{ opacity: 0.7, fontSize: 14 }}>Subscribe at <strong>dreamvalley.app</strong></p>
+          <button
+            onClick={() => router.push('/restore')}
+            style={{
+              background: 'transparent', color: '#ff9100', border: '1px solid rgba(255,145,0,0.5)',
+              borderRadius: 24, padding: '10px 28px', fontSize: 14, fontWeight: 600, cursor: 'pointer',
+              marginTop: 12,
+            }}
+          >
+            Restore subscription
+          </button>
+        </>
       ) : (
         <>
           <button

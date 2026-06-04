@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { subscriptionApi, billingApi } from '@/utils/api';
 import { openCheckoutUrl } from '@/utils/checkoutPending';
 import { isNativeApp } from '@/utils/platformDetect';
@@ -19,11 +19,11 @@ const BENEFITS = [
 
 function UpgradeInner() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [priceInfo, setPriceInfo] = useState(null);
   const [priceLoaded, setPriceLoaded] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
-  const [restoreMsg, setRestoreMsg] = useState(null);
   const native = isNativeApp();
 
   useEffect(() => {
@@ -100,19 +100,14 @@ function UpgradeInner() {
           {native ? (
             <div className={styles.nativeWrap}>
               <p className={styles.nativeText}>
-                Subscribe at <strong>dreamvalley.app</strong>
+                Subscribe at <strong>dreamvalley.app</strong>, then restore below.
               </p>
               <button
                 className={styles.restoreBtn}
-                onClick={() =>
-                  setRestoreMsg('Restore coming soon — check back in a future update.')
-                }
+                onClick={() => router.push('/restore')}
               >
                 Restore subscription
               </button>
-              {restoreMsg && (
-                <p className={styles.restoreMsg}>{restoreMsg}</p>
-              )}
             </div>
           ) : (
             <>
