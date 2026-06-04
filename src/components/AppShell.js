@@ -12,8 +12,8 @@ import { isNativeApp } from '@/utils/platformDetect';
 import BedtimePopup from './BedtimePopup';
 import { dvAnalytics } from '@/utils/analytics';
 
-const NO_NAV_ROUTES = ['/onboarding', '/login', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies', '/pricing', '/upgrade', '/upgrade/success', '/upgrade/cancelled', '/auth/verify', '/auth/claim', '/welcome'];
-const PUBLIC_ROUTES = ['/onboarding', '/login', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies', '/pricing', '/upgrade', '/upgrade/success', '/upgrade/cancelled', '/auth/verify', '/auth/claim', '/welcome'];
+const NO_NAV_ROUTES = ['/onboarding', '/login', '/restore', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies', '/pricing', '/upgrade', '/upgrade/success', '/upgrade/cancelled', '/auth/verify', '/auth/claim', '/welcome'];
+const PUBLIC_ROUTES = ['/onboarding', '/login', '/restore', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies', '/pricing', '/upgrade', '/upgrade/success', '/upgrade/cancelled', '/auth/verify', '/auth/claim', '/welcome'];
 
 function isPublicRoute(pathname) {
   // Static public routes + shared story links + SEO pages
@@ -45,7 +45,7 @@ export default function AppShell({ children }) {
     if (isLoggedIn()) return; // already holds a token
     // Don't mint on identity-handling routes — onboarding/auth/login own it.
     const path = window.location.pathname;
-    if (path.startsWith('/onboarding') || path.startsWith('/auth/') || path.startsWith('/login')) return;
+    if (path.startsWith('/onboarding') || path.startsWith('/auth/') || path.startsWith('/login') || path.startsWith('/restore')) return;
     // Re-mint ONLY users viewing the app, never brand-new marketing visitors.
     // Mirror the app-vs-landing decision (app/page.js): completed onboarding,
     // the installed-app flag, or an explicit app entry. hasCompletedOnboarding()

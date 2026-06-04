@@ -275,6 +275,35 @@ export const authApi = {
     });
     return res.data || {};
   },
+
+  /**
+   * Restore (native email-CODE sign-in, #35). Send a 6-digit code to the
+   * subscriber's payment-receipt email. Uniform response (no enumeration).
+   * @param {string} email
+   * @returns {Promise<{status:'sent'|'rate_limited', retry_after_seconds?:number}>}
+   */
+  restoreSendCode: async (email) => {
+    return await fetchApi('/api/v1/auth/restore/send-code', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  },
+
+  /**
+   * Verify a restore code. On 'claimed', returns a family session token
+   * (same shape as device-anchored auth — 32-byte opaque, 365d sliding).
+   * 'no_subscription' is the wrong-EMAIL signal (controlled leak); wrong
+   * CODE for a real sub returns 'invalid_or_expired'.
+   * @param {string} email
+   * @param {string} code 6-digit
+   * @returns {Promise<{status:'claimed'|'invalid_or_expired'|'no_subscription'|'too_many_attempts', token?:string, uid?:string, family_id?:string}>}
+   */
+  restoreVerifyCode: async (email, code) => {
+    return await fetchApi('/api/v1/auth/restore/verify-code', {
+      method: 'POST',
+      body: JSON.stringify({ email, code }),
+    });
+  },
 };
 
 // ─── Content API ────────────────────────────────────────────
