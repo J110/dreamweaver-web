@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { I18nProvider, hasCompletedOnboarding } from '@/utils/i18n';
 import { VoicePreferencesProvider } from '@/utils/voicePreferences';
-import { isLoggedIn, setToken, setUser } from '@/utils/auth';
+import { isLoggedIn, setToken, setUser, tryAdoptNativeToken } from '@/utils/auth';
 import useVersionCheck from '@/hooks/useVersionCheck';
 import BottomNav from './BottomNav';
 import InstallPrompt from './InstallPrompt';
@@ -46,35 +46,57 @@ export default function AppShell({ children }) {
     // Don't mint on identity-handling routes — onboarding/auth/login own it.
     const path = window.location.pathname;
     if (path.startsWith('/onboarding') || path.startsWith('/auth/') || path.startsWith('/login') || path.startsWith('/restore')) return;
-    // Re-mint ONLY users viewing the app, never brand-new marketing visitors.
-    // Mirror the app-vs-landing decision (app/page.js): completed onboarding,
-    // the installed-app flag, or an explicit app entry. hasCompletedOnboarding()
-    // alone is insufficient — a native user whose cached profile was wiped by
-    // logout() falls to the anon branch (needs lang+username+age) and would
-    // strand; the native flag survives logout, so it catches that case.
-    let nativeApp = false;
-    try { nativeApp = localStorage.getItem('dreamvalley_native_app') === '1'; } catch {}
-    const sourceApp = new URLSearchParams(window.location.search).get('source') === 'app';
-    if (!hasCompletedOnboarding() && !nativeApp && !sourceApp) return;
-    // Username is cosmetic: chosen anon name → cached user → friendly fallback.
-    let username = '';
-    try { username = localStorage.getItem('dreamvalley_anon_username') || ''; } catch {}
-    if (!username) {
-      try { username = (JSON.parse(localStorage.getItem('dreamweaver_user') || 'null') || {}).username || ''; } catch {}
-    }
-    if (!username) username = 'friend';
-    let age = null;
-    try { age = parseInt(localStorage.getItem('dreamvalley_child_age') || '', 10) || null; } catch {}
-    import('@/utils/api').then(({ authApi }) =>
-      authApi.deviceAccount(username, { child_age: age })
-        .then((res) => {
-          if (res && res.token) {
-            setToken(res.token);
-            setUser({ ...(res.user || {}), onboarding_complete: true });
+
+    (async () => {
+      // Native cold-start: adopt a Keychain-stored token (the READ half of the
+      // native auth bridge) BEFORE minting. A returning native user whose
+      // localStorage was wiped but whose Keychain survived logs into their REAL
+      // family instead of a fresh anon account. readToken()→null (no stored
+      // token) falls through to the device-mint below (the new-user path).
+      let adopted = false;
+      try { adopted = await tryAdoptNativeToken(); } catch { adopted = false; }
+      if (adopted) {
+        // setToken/setUser write localStorage but don't re-render React, so
+        // components mounted during the async wait keep their anon fetches.
+        // Reload ONCE (guarded) so everything re-fetches with the token; post-
+        // reload isLoggedIn() is true → this effect returns early → no loop.
+        try {
+          if (!sessionStorage.getItem('dv_native_adopted')) {
+            sessionStorage.setItem('dv_native_adopted', '1');
+            window.location.reload();
           }
-        })
-        .catch(() => { /* offline — retry next load */ })
-    );
+        } catch { /* ignore */ }
+        return;
+      }
+
+      // Re-mint ONLY users viewing the app, never brand-new marketing visitors.
+      // Mirror the app-vs-landing decision (app/page.js): completed onboarding,
+      // the installed-app flag, or an explicit app entry. hasCompletedOnboarding()
+      // alone is insufficient — a native user whose cached profile was wiped by
+      // logout() falls to the anon branch (needs lang+username+age) and would
+      // strand; the native flag survives logout, so it catches that case.
+      let nativeApp = false;
+      try { nativeApp = localStorage.getItem('dreamvalley_native_app') === '1'; } catch {}
+      const sourceApp = new URLSearchParams(window.location.search).get('source') === 'app';
+      if (!hasCompletedOnboarding() && !nativeApp && !sourceApp) return;
+      // Username is cosmetic: chosen anon name → cached user → friendly fallback.
+      let username = '';
+      try { username = localStorage.getItem('dreamvalley_anon_username') || ''; } catch {}
+      if (!username) {
+        try { username = (JSON.parse(localStorage.getItem('dreamweaver_user') || 'null') || {}).username || ''; } catch {}
+      }
+      if (!username) username = 'friend';
+      let age = null;
+      try { age = parseInt(localStorage.getItem('dreamvalley_child_age') || '', 10) || null; } catch {}
+      try {
+        const { authApi } = await import('@/utils/api');
+        const res = await authApi.deviceAccount(username, { child_age: age });
+        if (res && res.token) {
+          setToken(res.token);
+          setUser({ ...(res.user || {}), onboarding_complete: true });
+        }
+      } catch { /* offline — retry next load */ }
+    })();
   }, []);
 
   // Register service worker for PWA support (required for beforeinstallprompt on Chrome)
