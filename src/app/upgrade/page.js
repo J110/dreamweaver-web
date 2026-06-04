@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { subscriptionApi, billingApi } from '@/utils/api';
+import { openCheckoutUrl } from '@/utils/checkoutPending';
 import { isNativeApp } from '@/utils/platformDetect';
 import { captureIntentFromQuery } from '@/utils/upgradeIntent';
 import StarField from '@/components/StarField';
@@ -53,7 +54,7 @@ function UpgradeInner() {
     try {
       const { checkout_url } = await billingApi.startCheckout('monthly');
       if (checkout_url) {
-        window.location.href = checkout_url;
+        openCheckoutUrl(checkout_url);
         return;
       }
       setError("Couldn't start checkout. Please try again in a moment.");

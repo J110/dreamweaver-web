@@ -6,6 +6,7 @@ import Link from 'next/link';
 import StarField from '@/components/StarField';
 import HeartButton from '@/components/HeartButton';
 import { contentApi, feedbackApi, subscriptionApi, billingApi } from '@/utils/api';
+import { openCheckoutUrl } from '@/utils/checkoutPending';
 import { getStories } from '@/utils/seedData';
 import { getAmbientMusic } from '@/utils/ambientMusic';
 import { useI18n, hasCompletedOnboarding } from '@/utils/i18n';
@@ -1462,7 +1463,7 @@ function LockedCTA({ intentPath, lang }) {
     setSubmitting(true);
     try {
       const { checkout_url } = await billingApi.startCheckout('monthly');
-      if (checkout_url) { window.location.href = checkout_url; return; }
+      if (checkout_url) { openCheckoutUrl(checkout_url); return; }
       setError('Could not start checkout. Try again.');
     } catch { setError('Something went wrong. Try again.'); }
     finally { setSubmitting(false); }

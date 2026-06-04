@@ -9,6 +9,7 @@ import { useVoicePreferences } from '@/utils/voicePreferences';
 import { getSelectableVoices, getSampleUrl, getVoiceLabel } from '@/utils/voiceConfig';
 import { isLoggedIn } from '@/utils/auth';
 import { subscriptionApi, billingApi } from '@/utils/api';
+import { openExternalUrl } from '@/utils/checkoutPending';
 import styles from './page.module.css';
 
 function formatSubDate(iso, lang) {
@@ -68,7 +69,7 @@ export default function SettingsPage() {
     try {
       const { checkout_url } = await billingApi.startTopupCheckout();
       if (checkout_url) {
-        window.location.href = checkout_url;
+        openExternalUrl(checkout_url);
         return;
       }
       setTopupError(lang === 'hi' ? 'Top-up start nahi ho paya.' : "Couldn't start top-up.");

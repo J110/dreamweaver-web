@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { I18nProvider, hasCompletedOnboarding } from '@/utils/i18n';
 import { VoicePreferencesProvider } from '@/utils/voicePreferences';
 import { isLoggedIn, setToken, setUser, tryAdoptNativeToken } from '@/utils/auth';
+import { isCheckoutPendingRecent, clearCheckoutPending } from '@/utils/checkoutPending';
 import useVersionCheck from '@/hooks/useVersionCheck';
 import BottomNav from './BottomNav';
 import InstallPrompt from './InstallPrompt';
@@ -98,6 +99,30 @@ export default function AppShell({ children }) {
       } catch { /* offline — retry next load */ }
     })();
   }, []);
+
+  // Native app-resume hook (#35 Q3). The Flutter lifecycle observer calls this
+  // on EVERY foreground — so it must be cheap + guarded. Sends the user to the
+  // authoritative /upgrade/success backoff poll ONLY when a recent checkout is
+  // pending AND they're not already premium. No pending flag → no-op early
+  // return (the 50x/day background/foreground case). Also invoked once on mount
+  // to cover a cold-launch return (e.g. universal link relaunch) where no
+  // resume transition fires.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const onResumed = () => {
+      try {
+        if (!isCheckoutPendingRecent()) return; // common case: cheap no-op
+        let premium = false;
+        try { premium = localStorage.getItem('dv_effective_premium') === 'true'; } catch { /* ignore */ }
+        if (premium) { clearCheckoutPending(); return; } // already reflected
+        if (window.location.pathname === '/upgrade/success') return; // already polling
+        router.push('/upgrade/success');
+      } catch { /* ignore */ }
+    };
+    window.__dvAppResumed = onResumed;
+    onResumed(); // cold-launch return safety net
+    return () => { try { if (window.__dvAppResumed === onResumed) delete window.__dvAppResumed; } catch { /* ignore */ } };
+  }, [router]);
 
   // Register service worker for PWA support (required for beforeinstallprompt on Chrome)
   useEffect(() => {

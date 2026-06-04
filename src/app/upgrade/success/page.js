@@ -9,6 +9,7 @@ import { isLoggedIn } from '@/utils/auth';
 import { subscriptionApi } from '@/utils/api';
 import fetchApi from '@/utils/api';
 import { returnToIntent } from '@/utils/upgradeIntent';
+import { clearCheckoutPending } from '@/utils/checkoutPending';
 import styles from './page.module.css';
 
 const POLL_INTERVAL_MS = 2000;
@@ -21,6 +22,14 @@ export default function UpgradeSuccessPage() {
   const [tierName, setTierName] = useState(null);
   const intervalRef = useRef(null);
   const attemptsRef = useRef(0);
+
+  // Clear the native checkout-pending flag once polling reaches any terminal
+  // state, so a later app resume doesn't re-trigger this page. #35 Q3.
+  useEffect(() => {
+    if (state === 'confirmed' || state === 'timeout' || state === 'error') {
+      clearCheckoutPending();
+    }
+  }, [state]);
 
   useEffect(() => {
     if (!isLoggedIn()) {

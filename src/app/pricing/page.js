@@ -7,6 +7,7 @@ import StarField from '@/components/StarField';
 import { useI18n } from '@/utils/i18n';
 import { isLoggedIn } from '@/utils/auth';
 import { subscriptionApi, billingApi } from '@/utils/api';
+import { openCheckoutUrl } from '@/utils/checkoutPending';
 import styles from './page.module.css';
 
 const FREE_BULLETS_EN = [
@@ -93,7 +94,7 @@ export default function PricingPage() {
     try {
       const { checkout_url } = await billingApi.startCheckout(plan);
       if (checkout_url) {
-        window.location.href = checkout_url;
+        openCheckoutUrl(checkout_url);
         return;
       }
       setError(
