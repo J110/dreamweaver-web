@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.dreamvalley.app';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 export const alt = 'Dream Valley — Before Bed';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
