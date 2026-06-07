@@ -1,10 +1,9 @@
 import { ImageResponse } from 'next/og';
-import { SEED_STORIES } from '@/utils/seedData';
 import { getDisplayCategoryUpper } from '@/utils/contentTypes';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.dreamvalley.app';
 
-export const runtime = 'nodejs';
+export const runtime = 'edge';
 export const alt = 'Dream Valley Story';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
@@ -43,12 +42,8 @@ export default async function Image({ params }) {
   // Convert logo to base64 data URI
   const logoBase64 = `data:image/png;base64,${Buffer.from(logoData).toString('base64')}`;
 
-  // Look up story in seed data
-  const allStories = [...(SEED_STORIES.en || []), ...(SEED_STORIES.hi || [])];
-  let story = allStories.find((s) => s.id === id);
-
-  // Fallback: fetch from backend API for stories added after last build
-  if (!story) {
+  let story = null;
+  {
     try {
       const res = await fetch(`${API_URL}/api/v1/content/${id}`);
       if (res.ok) {
