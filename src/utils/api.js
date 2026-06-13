@@ -29,7 +29,7 @@ const fetchApi = async (endpoint, options = {}) => {
   // Cache GET requests (use endpoint as key)
   if (method === 'GET') {
     const cached = getCached(endpoint);
-    if (cached) {
+    if (cached && cached.token === token) {
       // Return cached data immediately, revalidate in background
       if (Date.now() - cached.ts > 60_000) {
         // Stale (>1min): revalidate silently in the background
@@ -121,7 +121,7 @@ const fetchApi = async (endpoint, options = {}) => {
 
     // Cache successful GET responses
     if (method === 'GET') {
-      _cache.set(endpoint, { data, ts: Date.now() });
+      _cache.set(endpoint, { data, ts: Date.now(), token });
     }
 
     return data;
@@ -129,7 +129,7 @@ const fetchApi = async (endpoint, options = {}) => {
     // On network error for GET, return stale cache if available
     if (method === 'GET') {
       const stale = _cache.get(endpoint);
-      if (stale) return stale.data;
+      if (stale && stale.token === token) return stale.data;
     }
     console.error('API Error:', error);
     throw error;
@@ -145,7 +145,7 @@ fetchApi._revalidate = (endpoint, options = {}) => {
 
   fetch(url, { ...options, headers })
     .then((res) => res.ok ? res.json() : null)
-    .then((data) => { if (data) _cache.set(endpoint, { data, ts: Date.now() }); })
+    .then((data) => { if (data) _cache.set(endpoint, { data, ts: Date.now(), token }); })
     .catch(() => {});
 };
 
