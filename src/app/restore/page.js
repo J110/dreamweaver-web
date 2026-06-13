@@ -2,11 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import StarField from '@/components/StarField';
 import { useI18n } from '@/utils/i18n';
 import { setToken, setUser } from '@/utils/auth';
-import { authApi } from '@/utils/api';
+import { authApi, subscriptionApi } from '@/utils/api';
 import styles from './page.module.css';
 
 // Native bridge feature-detect (see dreamweaver/lib/native_auth_bridge.dart).
@@ -27,7 +26,6 @@ function ph(event, props) {
 }
 
 export default function RestorePage() {
-  const router = useRouter();
   const { lang } = useI18n();
   const hi = lang === 'hi';
 
@@ -161,9 +159,10 @@ export default function RestorePage() {
     else { setError(t('Still could not save on this device.', 'Ab bhi device par save nahi hua.')); }
   }
 
-  function goSuccess() {
+  async function goSuccess() {
     setStage('success');
-    redirectTimer.current = setTimeout(() => router.replace('/'), 1600);
+    try { await subscriptionApi.getCurrent(); } catch { /* best-effort entitlement refresh */ }
+    redirectTimer.current = setTimeout(() => { window.location.assign('/'); }, 1600);
   }
 
   return (

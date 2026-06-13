@@ -1443,6 +1443,7 @@ export default function PlayerPage() {
 }
 
 function LockedCTA({ intentPath, lang }) {
+  const router = useRouter();
   const [priceInfo, setPriceInfo] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);

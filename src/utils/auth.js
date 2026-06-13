@@ -155,6 +155,7 @@ export async function tryAdoptNativeToken() {
       child_age: u.child_age,
       preferred_lang: u.preferred_lang,
     });
+    try { const { subscriptionApi } = await import('./api'); await subscriptionApi.getCurrent(); } catch { /* best-effort entitlement refresh */ }
     callPosthog((posthog) => { try { posthog.capture('native_token_adopted', { result: 'ok' }); } catch { /* ignore */ } });
     return true;
   }
