@@ -77,7 +77,9 @@ export default function RestorePage() {
     // Always authenticate the current web session — this is what the app
     // reads (localStorage 'dreamweaver_token') for API calls, native or not.
     setToken(token);
-    setUser({ uid, family_id: familyId, email_verified: true, onboarding_complete: true });
+    let username;
+    try { const me = await authApi.getCurrentUser(); username = me?.username; } catch { /* best-effort username for the greeting */ }
+    setUser({ uid, username, family_id: familyId, email_verified: true, onboarding_complete: true });
 
     const native = nativeAuth();
     if (!native) {
