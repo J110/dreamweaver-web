@@ -128,6 +128,14 @@ function UpgradeInner() {
               {error && (
                 <p className={styles.errorMsg}>{error}</p>
               )}
+
+              <p className={styles.nativeText} style={{ marginTop: 18 }}>Already subscribed?</p>
+              <button
+                className={styles.restoreBtn}
+                onClick={() => router.push('/restore')}
+              >
+                Restore subscription
+              </button>
             </>
           )}
         </div>

@@ -238,6 +238,14 @@ export default function PricingPage() {
                         ? 'Ya $6/mahine monthly'
                         : 'Or pay $6/mo monthly'}
                     </button>
+                    <button
+                      className={styles.secondaryLink}
+                      onClick={() => router.push('/restore')}
+                    >
+                      {lang === 'hi'
+                        ? 'Pehle se subscribed? Restore karein'
+                        : 'Already subscribed? Restore'}
+                    </button>
                   </>
                 ) : (
                   <>
