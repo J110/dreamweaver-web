@@ -260,6 +260,14 @@ export default function PricingPage() {
                         ? 'Pehle log in karein'
                         : 'First, log in to upgrade'}
                     </span>
+                    <button
+                      className={styles.secondaryLink}
+                      onClick={() => router.push('/restore')}
+                    >
+                      {lang === 'hi'
+                        ? 'Pehle se subscribed? Restore karein'
+                        : 'Already subscribed? Restore'}
+                    </button>
                   </>
                 )}
               </div>
