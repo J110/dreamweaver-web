@@ -1,6 +1,9 @@
 import { isLongStory, isFunnyShort } from '@/utils/contentTypes';
 
-// MUST stay in sync with backend FREE_BACKLOG_DAYS (app/utils/backlog.py).
+// Free-content backlog window. MUST equal backend FREE_BACKLOG_DAYS
+// (app/utils/backlog.py:28 — verified = 14). This seed-extras predicate is the
+// only place SSR gates content outside the backend, so keep it provably in sync;
+// the drift-guard test in enrichGrid.test.js trips if this constant changes.
 const FREE_BACKLOG_MS = 14 * 24 * 60 * 60 * 1000;
 
 function stripAudio(item) {
