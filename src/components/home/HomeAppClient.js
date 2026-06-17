@@ -29,11 +29,10 @@ const MOODS = [
   { id: 'angry', emoji: '😤', label: { en: 'Angry', hi: 'Gussa' } },
 ];
 
-export default function HomeAppClient({ lang, initialItems }) {
-  const { t } = useI18n();
+export default function HomeAppClient({ initialItems }) {
+  const { t, lang, ready } = useI18n();
   const [user, setUser] = useState(null);
   const [stories, setStories] = useState(initialItems);
-  const [loading, setLoading] = useState(false);
   const [activeAge, setActiveAge] = useState('all');
   const [activeMood, setActiveMood] = useState('all');
 
@@ -57,6 +56,7 @@ export default function HomeAppClient({ lang, initialItems }) {
   };
 
   useEffect(() => {
+    if (!ready) return;
     if (isLoggedIn()) {
       setUser(getUser());
     }
@@ -70,7 +70,7 @@ export default function HomeAppClient({ lang, initialItems }) {
     };
     window.addEventListener('dv-auth-changed', handler);
     return () => window.removeEventListener('dv-auth-changed', handler);
-  }, [lang]);
+  }, [lang, ready]);
 
   const getAgeGroup = (s) => {
     if (s.age_group) return s.age_group;
