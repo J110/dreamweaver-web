@@ -138,6 +138,7 @@ export default function ContentCard({ content, onClick }) {
   // grid stays fully static there (tap navigates).
   const [live, setLive] = useState(false);
   const cardRef = useRef(null);
+  const coverImgRef = useRef(null);
   const activate = () => { if (isSvgCover) setLive(true); };
   const deactivate = () => setLive(false);
   // Unmount the live <object> when the card scrolls out of view, so a fast
@@ -153,6 +154,19 @@ export default function ContentCard({ content, onClick }) {
     return () => io.disconnect();
   }, [live]);
 
+  // An SSR'd poster <img> can 404 (missing .webp) BEFORE React hydrates, so the
+  // onError .svg fallback never fires (handler not attached yet) and the broken
+  // image shows its alt text. Re-apply that fallback on mount for any cover that
+  // finished loading with no dimensions (i.e. errored pre-hydration). onError
+  // still covers client-rendered cards; the dataset.fb guard prevents a re-swap.
+  useEffect(() => {
+    const img = coverImgRef.current;
+    if (img && img.complete && img.naturalWidth === 0 && !img.dataset.fb) {
+      img.dataset.fb = '1';
+      img.src = resolvedCover;
+    }
+  }, []);
+
   const cardContent = (
     <>
       <div className={`${styles.cardArt} ${resolvedCover ? styles.cardArtWithImage : getTypeColor(content.type)} ${content.premium_locked ? styles.cardArtLocked : ''}`}>
@@ -166,6 +180,7 @@ export default function ContentCard({ content, onClick }) {
             />
           ) : (
             <img
+              ref={coverImgRef}
               src={posterSrc}
               alt={content.title || 'Story cover'}
               className={styles.coverImage}
