@@ -151,9 +151,6 @@ export default function HomeAppClient({ initialItems }) {
           </div>
         </div>
 
-        {loading ? (
-          <div className={styles.loadingMsg}>{t('loading')}</div>
-        ) : (
           <div className={styles.sections}>
             {storyItems.length > 0 && (
               <section className={styles.section}>
@@ -204,7 +201,6 @@ export default function HomeAppClient({ initialItems }) {
               <div className={styles.emptyMsg}>{t('noStories')}</div>
             )}
           </div>
-        )}
       </div>
     </>
   );
