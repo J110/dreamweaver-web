@@ -35,8 +35,12 @@ export default function HomeAppClient({ initialItems }) {
   const [stories, setStories] = useState(initialItems);
   const [activeAge, setActiveAge] = useState('all');
   const [activeMood, setActiveMood] = useState('all');
+  // false on SSR + first client render so the discovery sort is history-independent
+  // (matches the SSR HTML); flips true after mount → re-sort with the real history.
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    setHydrated(true);
     if (typeof window !== 'undefined') {
       localStorage.removeItem('dv_language_filter');
     }
@@ -93,9 +97,9 @@ export default function HomeAppClient({ initialItems }) {
     return true;
   });
 
-  const storyItems = sortByDiscovery(filteredStories.filter(isStory));
-  const longStoryItems = sortByDiscovery(filteredStories.filter(isLongStory));
-  const lullabyItems = sortByDiscovery(filteredStories.filter(isLullaby));
+  const storyItems = sortByDiscovery(filteredStories.filter(isStory), hydrated);
+  const longStoryItems = sortByDiscovery(filteredStories.filter(isLongStory), hydrated);
+  const lullabyItems = sortByDiscovery(filteredStories.filter(isLullaby), hydrated);
 
   const appName = lang === 'hi' ? 'Sapno ki Duniya' : 'Dream Valley';
   const logoSrc = lang === 'hi' ? '/logo-hi.png' : '/logo-new.png';

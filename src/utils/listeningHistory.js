@@ -106,10 +106,13 @@ export function getHistoryEntry(storyId) {
  * @param {Array} stories - Array of story objects with 'id' field
  * @returns {Array} Sorted copy
  */
-export function sortByDiscovery(stories) {
+export function sortByDiscovery(stories, useHistory = true) {
   if (!stories || !stories.length) return stories;
 
-  const history = _getAll();
+  // useHistory=false yields the history-independent order (newest-first) so an
+  // SSR'd grid and the client's first render agree; the real history re-sort is
+  // applied post-hydration. Defaults true for non-SSR callers (player, flag-off HomeApp).
+  const history = useHistory ? _getAll() : {};
 
   const unlistened = [];
   const listened = [];
