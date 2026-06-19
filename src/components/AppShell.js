@@ -10,6 +10,7 @@ import useVersionCheck from '@/hooks/useVersionCheck';
 import BottomNav from './BottomNav';
 import InstallPrompt from './InstallPrompt';
 import { isNativeApp } from '@/utils/platformDetect';
+import { isAppUser, isLandingHome } from '@/utils/nativeGate';
 import BedtimePopup from './BedtimePopup';
 import { dvAnalytics } from '@/utils/analytics';
 
@@ -79,7 +80,10 @@ export default function AppShell({ children }) {
       let nativeApp = false;
       try { nativeApp = localStorage.getItem('dreamvalley_native_app') === '1'; } catch {}
       const sourceApp = new URLSearchParams(window.location.search).get('source') === 'app';
-      if (!hasCompletedOnboarding() && !nativeApp && !sourceApp) return;
+      // UA-trust: a native app user (durable DreamValleyApp UA) is always an app
+      // user even if WKWebView dropped dreamvalley_native_app or ?source=app didn't
+      // survive a client nav — don't gate on volatile storage. [iOS tab-bar fix]
+      if (!isAppUser({ isNative: isNativeApp(), sourceApp, nativeFlag: nativeApp, onboarded: hasCompletedOnboarding() })) return;
       // Username is cosmetic: chosen anon name → cached user → friendly fallback.
       let username = '';
       try { username = localStorage.getItem('dreamvalley_anon_username') || ''; } catch {}
@@ -272,8 +276,14 @@ export default function AppShell({ children }) {
   const _sourceApp = _sp?.get('source') === 'app';
   let _nativeFlag = false;
   try { _nativeFlag = typeof window !== 'undefined' && localStorage.getItem('dreamvalley_native_app') === '1'; } catch {}
-  const isLandingPage = pathname === '/'
-    && (_forceLanding || (!_sourceApp && !_nativeFlag && !hasCompletedOnboarding()));
+  // UA-trust: native app users (durable DreamValleyApp UA) are NEVER the marketing
+  // landing, so the bottom nav no longer hinges on volatile WKWebView localStorage
+  // or ?source=app surviving a client nav. [iOS tab-bar fix]
+  const _isNative = typeof window !== 'undefined' && isNativeApp();
+  const isLandingPage = isLandingHome({
+    pathname, isNative: _isNative, forceLanding: _forceLanding,
+    sourceApp: _sourceApp, nativeFlag: _nativeFlag, onboarded: hasCompletedOnboarding(),
+  });
   const showNav = !NO_NAV_ROUTES.includes(pathname) && !pathname.startsWith('/player/')
     && !pathname.startsWith('/nap-playlist') && !isSEOPage && !isLandingPage && checked;
 
