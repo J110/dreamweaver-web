@@ -121,6 +121,12 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var c=window.crypto||window.msCrypto;if(c&&!c.randomUUID&&c.getRandomValues){c.randomUUID=function(){var b=c.getRandomValues(new Uint8Array(16));b[6]=(b[6]&15)|64;b[8]=(b[8]&63)|128;var s='';for(var i=0;i<16;i++){s+=(b[i]+256).toString(16).slice(1);if(i===3||i===5||i===7||i===9)s+='-';}return s;};}}catch(e){}})();",
+          }}
+        />
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
