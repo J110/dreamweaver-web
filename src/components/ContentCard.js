@@ -139,7 +139,18 @@ export default function ContentCard({ content, onClick }) {
   const [live, setLive] = useState(false);
   const cardRef = useRef(null);
   const coverImgRef = useRef(null);
-  const activate = () => { if (isSvgCover) setLive(true); };
+  // Upgrade to the live animated <object> ONLY on devices that truly hover
+  // (desktop mouse). iOS WebKit synthesizes a hover on the FIRST tap; if that
+  // swaps the cover <img>->-<object> mid-gesture it destroys the tap target and
+  // WebKit drops the click — so the cover needed a double-tap while the title
+  // (never swapped) opened on the first tap. Gating on (hover: hover) keeps the
+  // desktop hover-preview while letting touch taps navigate on the FIRST tap.
+  // Do NOT remove this gate — the iOS double-tap-on-cover bug silently returns.
+  const activate = () => {
+    if (!isSvgCover) return;
+    if (typeof window === 'undefined' || !window.matchMedia?.('(hover: hover)').matches) return;
+    setLive(true);
+  };
   const deactivate = () => setLive(false);
   // Unmount the live <object> when the card scrolls out of view, so a fast
   // hover-then-scroll never accumulates live documents (hard cap on live count).
