@@ -55,7 +55,7 @@ function getInitialView() {
   }
 }
 
-export default function HomeRouterClient() {
+export default function HomeRouterClient({ nativeRequest = false }) {
   const router = useRouter();
   const [view, setView] = useState(getInitialView);
 
@@ -84,5 +84,5 @@ export default function HomeRouterClient() {
     return <HomeApp />;
   }
 
-  return <LandingPage />;
+  return <LandingPage nativeRequest={nativeRequest} />;
 }
