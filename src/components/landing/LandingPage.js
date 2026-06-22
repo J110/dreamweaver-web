@@ -1,20 +1,35 @@
 'use client';
 
 /**
- * LandingPage — The marketing landing page for new/anonymous visitors.
- * 9 sections + footer per the website spec. Dark warm palette, mobile-first.
- * 'use client' for interactivity (scroll, play button) — SSR still renders HTML.
+ * LandingPage — Marketing landing for new/anonymous visitors.
+ * Flow: Hero · Problem · How · Living Art · Listen · Download band ·
+ * Parents · Adapts (age+mood) · Premium (native-gated) · Final · Footer.
+ *
+ * Two independent systems, by design:
+ *  - Download badges (AppBadges): app-store links, NOT a purchase
+ *    pathway — render for EVERYONE incl. native. No gate import.
+ *  - Premium entry: the ONLY web purchase surface — rendered only when
+ *    `nativeRequest` (computed server-side in app/page.js) is false, so
+ *    it is ABSENT from a native request's HTML.
+ *
+ * SSR-safe i18n: read `lang` from useI18n() only (provider inits 'en',
+ * corrects post-mount) — never localStorage during render.
  */
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { dvAnalytics } from '@/utils/analytics';
+import { useI18n } from '@/utils/i18n';
 import RadioLiveLink from '@/components/RadioLiveLink';
 import RadioLiveCard from '@/components/RadioLiveCard';
+import { LANDING_COPY, MOODS, AGES } from './landingCopy';
 import styles from './landing.module.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.dreamvalley.app';
 const PREVIEW_LIMIT = 60; // seconds
+
+const APP_STORE_URL = 'https://apps.apple.com/sg/app/dream-valley-stories/id6759262548';
+const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.vervetogether.dreamvalley';
 
 /* ─── Fallback content when API is unavailable ─── */
 const FALLBACK_PREVIEWS = [
@@ -32,7 +47,6 @@ const FALLBACK_PREVIEWS = [
   },
 ];
 
-const TYPE_LABELS = { story: 'Story', song: 'Lullaby', long_story: 'Story' };
 const TYPE_ICONS = { story: '📖', song: '🎵', long_story: '📖' };
 
 /* ─── Featured FLUX covers for the landing page ─── */
@@ -48,22 +62,44 @@ const FEATURED_COVERS = [
 
 const FINAL_CTA_COVER = '/covers/gen-01f0b88dc42d.svg';
 
-/* ─── Category tags for the explore section ─── */
-const CATEGORIES = [
-  'Dreamy', 'Adventure', 'Animals', 'Space', 'Fantasy',
-  'Fairy Tales', 'Nature', 'Ocean', 'Bedtime', 'Friendship',
-  'Family', 'Mystery', 'Science',
-];
+/* ─── Download badges — NOT gated (app-store links, not a purchase
+   pathway). Deliberately independent of isNativeRequest; renders for
+   everyone, including native. ─── */
+function AppBadges({ location, className }) {
+  return (
+    <div className={className || styles.appStoreLinks}>
+      <a
+        href={APP_STORE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={styles.appStoreLink}
+        onClick={() => dvAnalytics.track('app_download_click', { platform: 'ios', location })}
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+        </svg>
+        App Store
+      </a>
+      <a
+        href={PLAY_STORE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={styles.appStoreLink}
+        onClick={() => dvAnalytics.track('app_download_click', { platform: 'android', location })}
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+          <path d="M3 20.5v-17c0-.59.34-1.11.84-1.35L13.69 12l-9.85 9.85c-.5-.24-.84-.76-.84-1.35zm13.81-5.38L6.05 21.34l8.49-8.49 2.27 2.27zm.91-.91L19.59 12 17.72 9.79l-2.27 2.27 2.27 2.15zM6.05 2.66l10.76 6.22-2.27 2.27-8.49-8.49z" />
+        </svg>
+        Google Play
+      </a>
+    </div>
+  );
+}
 
-const CATEGORY_SLUGS = {
-  'Dreamy': 'dreamy', 'Adventure': 'adventure', 'Animals': 'animals',
-  'Space': 'space', 'Fantasy': 'fantasy', 'Fairy Tales': 'fairy-tales',
-  'Nature': 'nature', 'Ocean': 'ocean', 'Bedtime': 'bedtime',
-  'Friendship': 'friendship', 'Family': 'family', 'Mystery': 'mystery',
-  'Science': 'science',
-};
+export default function LandingPage({ nativeRequest = false }) {
+  const { lang, setLang } = useI18n();
+  const c = LANDING_COPY[lang];
 
-export default function LandingPage() {
   const [coverIdx, setCoverIdx] = useState(0);
   const howItWorksRef = useRef(null);
   const previewRef = useRef(null);
@@ -227,18 +263,40 @@ export default function LandingPage() {
   };
 
   return (
-    <div className={styles.landing}>
+    <div className={`${styles.landing} ${lang === 'hi' ? styles.hi : ''}`}>
       {/* ━━━ NAVIGATION BAR ━━━ */}
       <nav className={styles.nav}>
         <div className={styles.navInner}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo-new.png" alt="Dream Valley" className={styles.navLogo} />
-          <div className={styles.navLinks}>
-            <Link href="/how-it-works" className={styles.navLink}>How It Works</Link>
-            <Link href="/about" className={styles.navLink}>About</Link>
-            <Link href="/blog" className={styles.navLink}>Blog</Link>
-            <RadioLiveLink label="Radio" />
-            <Link href="/onboarding" className={styles.navCta}>Get Started</Link>
+          <div className={styles.navRight}>
+            <div className={styles.navLinks}>
+              <Link href="/how-it-works" className={styles.navLink}>{c.nav.howItWorks}</Link>
+              <Link href="/about" className={styles.navLink}>{c.nav.about}</Link>
+              <Link href="/blog" className={styles.navLink}>{c.nav.blog}</Link>
+              <RadioLiveLink label={c.nav.radio} />
+            </div>
+            <div className={styles.navActions}>
+              <div className={styles.langToggle} role="group" aria-label="Language">
+                <button
+                  type="button"
+                  onClick={() => setLang('en')}
+                  className={`${styles.langBtn} ${lang === 'en' ? styles.langBtnActive : ''}`}
+                  aria-pressed={lang === 'en'}
+                >
+                  English
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLang('hi')}
+                  className={`${styles.langBtn} ${lang === 'hi' ? styles.langBtnActive : ''}`}
+                  aria-pressed={lang === 'hi'}
+                >
+                  Hindi
+                </button>
+              </div>
+              <Link href="/onboarding" className={styles.navCta}>{c.nav.getStarted}</Link>
+            </div>
           </div>
         </div>
       </nav>
@@ -265,23 +323,20 @@ export default function LandingPage() {
           <div className={styles.heroOverlay} />
         </div>
         <div className={styles.heroContent}>
-          <h1 className={styles.heroTitle}>
-            Bedtime stories that put kids to sleep.
-          </h1>
-          <p className={styles.heroSubtitle}>
-            AI-generated stories every night — with calming narration, original music,
-            and living animated art that gently guides your child from wide awake to sound asleep.
-          </p>
+          <h1 className={styles.heroTitle}>{c.hero.h1}</h1>
+          <p className={styles.heroSubtitle}>{c.hero.sub}</p>
           <div className={styles.heroCtas}>
-            <Link href="/onboarding" className={styles.ctaPrimary}>
-              Try a story tonight — free
-            </Link>
+            <Link href="/onboarding" className={styles.ctaPrimary}>{c.hero.cta1}</Link>
             <button
               onClick={() => scrollTo(howItWorksRef)}
               className={styles.ctaSecondary}
             >
-              See how it works ↓
+              {c.hero.cta2}
             </button>
+          </div>
+          <div className={styles.heroDownload}>
+            <span className={styles.heroDownloadLabel}>{c.hero.orGetApp}</span>
+            <AppBadges location="hero" className={styles.heroBadges} />
           </div>
         </div>
       </section>
@@ -289,23 +344,15 @@ export default function LandingPage() {
       {/* ━━━ SECTION 2: THE PROBLEM ━━━ */}
       <section className={styles.problem}>
         <div className={styles.sectionInner}>
-          <p className={styles.problemLead}>
-            Bedtime shouldn&apos;t be a battle.
-          </p>
-          <p className={styles.problemBody}>
-            But for millions of families, it is. The stalling, the negotiations, the tears.
-            You&apos;ve tried the routine. You&apos;ve tried the white noise. Maybe you&apos;ve even tried melatonin.
-          </p>
-          <p className={styles.problemPivot}>
-            What if the story itself could do the work?
-          </p>
+          <p className={styles.problemLead}>{c.problem.lead}</p>
+          <p className={styles.problemBody}>{c.problem.body}</p>
         </div>
       </section>
 
       {/* ━━━ SECTION 3: HOW DREAM VALLEY WORKS ━━━ */}
       <section className={styles.howItWorks} ref={howItWorksRef}>
         <div className={styles.sectionInner}>
-          <h2 className={styles.sectionTitle}>How Dream Valley Works</h2>
+          <h2 className={styles.sectionTitle}>{c.how.title}</h2>
 
           {/* Pillar 1 */}
           <div className={styles.pillar}>
@@ -320,49 +367,23 @@ export default function LandingPage() {
               </div>
             </div>
             <div className={styles.pillarContent}>
-              <h3 className={styles.pillarTitle}>A new story, every night</h3>
-              <p className={styles.pillarText}>
-                Dream Valley creates original bedtime stories every day — adventures, fairy tales,
-                ocean journeys, forest mysteries, and more. Your child never hears the same story twice.
-                Just pick tonight&apos;s world and press play.
-              </p>
+              <h3 className={styles.pillarTitle}>{c.how.p1Title}</h3>
+              <p className={styles.pillarText}>{c.how.p1Body}</p>
             </div>
           </div>
 
-          {/* Pillar 2 */}
+          {/* Pillar 2 — audio (waveform pictorial; real proof is §Listen below) */}
           <div className={styles.pillar}>
             <div className={styles.pillarVisual}>
-              <div className={styles.voiceShowcase}>
-                <div className={styles.voiceGroup}>
-                  <div className={styles.voiceGroupLabel}>Narration voices</div>
-                  <div className={styles.voiceCards}>
-                    <div className={styles.voiceCard}><span>🌙</span> Calm</div>
-                    <div className={styles.voiceCard}><span>🌿</span> Soft</div>
-                    <div className={styles.voiceCard}><span>🎵</span> Melodic</div>
-                    <div className={styles.voiceCard}><span>🌊</span> Gentle</div>
-                    <div className={styles.voiceCard}><span>🎶</span> Musical</div>
-                    <div className={styles.voiceCard}><span>🎧</span> ASMR</div>
-                  </div>
-                </div>
-                <div className={styles.voiceGroup}>
-                  <div className={styles.voiceGroupLabel}>Original music</div>
-                  <div className={styles.voiceCards}>
-                    <div className={styles.voiceCard}><span>🎵</span> Lullabies</div>
-                    <div className={styles.voiceCard}><span>🌙</span> Ambient</div>
-                    <div className={styles.voiceCard}><span>🎶</span> Soundscapes</div>
-                  </div>
-                </div>
+              <div className={styles.waveform} aria-hidden="true">
+                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => (
+                  <span key={i} className={styles.waveBar} style={{ animationDelay: `${i * 0.11}s` }} />
+                ))}
               </div>
             </div>
             <div className={styles.pillarContent}>
-              <h3 className={styles.pillarTitle}>Six voices. Original music. Living art.</h3>
-              <p className={styles.pillarText}>
-                Pick from six narration voices — from calm whispers to melodic tones.
-                Every lullaby is an original song with real vocals and instrumentation.
-                Every story has its own ambient music that fades as your child drifts off.
-                And each cover is a living scene —
-                water flows, fireflies glow, clouds drift — bringing your child into the story world.
-              </p>
+              <h3 className={styles.pillarTitle}>{c.how.p2Title}</h3>
+              <p className={styles.pillarText}>{c.how.p2Body}</p>
             </div>
           </div>
 
@@ -373,41 +394,63 @@ export default function LandingPage() {
                 <div className={styles.phase}>
                   <div className={`${styles.phaseCircle} ${styles.phase1}`} />
                   <span>Phase 1</span>
-                  <small>Engage</small>
+                  <small>{c.how.phaseEngage}</small>
                 </div>
                 <div className={styles.phaseArrow}>→</div>
                 <div className={styles.phase}>
                   <div className={`${styles.phaseCircle} ${styles.phase2}`} />
                   <span>Phase 2</span>
-                  <small>Descend</small>
+                  <small>{c.how.phaseDescend}</small>
                 </div>
                 <div className={styles.phaseArrow}>→</div>
                 <div className={styles.phase}>
                   <div className={`${styles.phaseCircle} ${styles.phase3}`} />
                   <span>Phase 3</span>
-                  <small>Sleep</small>
+                  <small>{c.how.phaseSleep}</small>
                 </div>
               </div>
             </div>
             <div className={styles.pillarContent}>
-              <h3 className={styles.pillarTitle}>Designed to guide your child to sleep</h3>
-              <p className={styles.pillarText}>
-                Our stories aren&apos;t just calming — they&apos;re engineered.
-                Each one moves through three phases: engaging your child first,
-                then gradually slowing the narration, dimming the visuals, and quieting the music —
-                guiding them through the natural stages of falling asleep.
-                The story and the sleep science are one and the same.
-              </p>
+              <h3 className={styles.pillarTitle}>{c.how.p3Title}</h3>
+              <p className={styles.pillarText}>{c.how.p3Body}</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ━━━ SECTION 4: EXPERIENCE IT ━━━ */}
+      {/* ━━━ SECTION 4: LIVING ART (cover-dims mechanism) ━━━ */}
+      <section className={styles.art}>
+        <div className={styles.sectionInner}>
+          <h2 className={styles.sectionTitle}>{c.art.title}</h2>
+          <p className={styles.sectionSubtitle}>{c.art.lead}</p>
+          <div className={styles.artDemo}>
+            <div className={styles.artStage}>
+              <object
+                type="image/svg+xml"
+                data={FEATURED_COVERS[0]}
+                className={styles.artCover}
+                aria-label="Animated bedtime cover dimming toward sleep"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={FEATURED_COVERS[0]} alt="Animated bedtime cover dimming toward sleep" className={styles.artCover} />
+              </object>
+              <div className={styles.artDim} aria-hidden="true" />
+            </div>
+            <ol className={styles.artPhases}>
+              <li className={styles.artPhase}><span className={styles.artPhaseNum}>1</span><div className={styles.artPhaseText}><span className={styles.artPhaseLabel}>{c.art.phase1Label}</span><p>{c.art.phase1}</p></div></li>
+              <li className={styles.artPhase}><span className={styles.artPhaseNum}>2</span><div className={styles.artPhaseText}><span className={styles.artPhaseLabel}>{c.art.phase2Label}</span><p>{c.art.phase2}</p></div></li>
+              <li className={styles.artPhase}><span className={styles.artPhaseNum}>3</span><div className={styles.artPhaseText}><span className={styles.artPhaseLabel}>{c.art.phase3Label}</span><p>{c.art.phase3}</p></div></li>
+            </ol>
+          </div>
+          <p className={styles.artMechanism}>{c.art.mechanism}</p>
+        </div>
+      </section>
+
+      {/* ━━━ SECTION 5: LISTEN ━━━ */}
       <section className={styles.experience} ref={previewRef}>
         <div className={styles.sectionInner}>
-          <h2 className={styles.sectionTitle}>Listen now — no signup needed</h2>
-          <p className={styles.sectionSubtitle}>A story and a lullaby. Just press play.</p>
+          <h2 className={styles.sectionTitle}>{c.listen.title}</h2>
+          <p className={styles.sectionSubtitle}>{c.listen.sub}</p>
           <div className={styles.radioCardWrap}>
             <RadioLiveCard />
           </div>
@@ -430,12 +473,11 @@ export default function LandingPage() {
                       {TYPE_ICONS[preview.type] || '📖'}
                     </div>
                   )}
-                  {/* Play/Pause button */}
                   {previewEnded !== idx ? (
                     <button
                       className={`${styles.previewPlayBtn} ${playingIdx === idx && !audioRef.current?.paused ? styles.previewPlaying : ''}`}
                       onClick={() => handlePreviewPlay(idx)}
-                      aria-label={playingIdx === idx ? 'Pause preview' : 'Play preview'}
+                      aria-label={playingIdx === idx ? c.listen.pauseAria : c.listen.playAria}
                     >
                       {playingIdx === idx && audioRef.current && !audioRef.current.paused ? (
                         <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
@@ -449,13 +491,12 @@ export default function LandingPage() {
                     </button>
                   ) : (
                     <div className={styles.previewOverlay}>
-                      <p>Want to hear more?</p>
+                      <p>{c.listen.endedQ}</p>
                       <Link href="/onboarding" className={styles.previewOverlayCta}>
-                        Explore free
+                        {c.listen.endedCta}
                       </Link>
                     </div>
                   )}
-                  {/* Progress bar */}
                   {playingIdx === idx && (
                     <div className={styles.previewBarTrack}>
                       <div
@@ -467,7 +508,7 @@ export default function LandingPage() {
                 </div>
                 <div className={styles.previewMeta}>
                   <span className={styles.previewTypeBadge}>
-                    {TYPE_ICONS[preview.type]} {TYPE_LABELS[preview.type] || 'Story'}
+                    {TYPE_ICONS[preview.type]} {c.typeBadge[preview.type] || c.typeBadge.story}
                   </span>
                   <h3 className={styles.previewTitle}>{preview.title}</h3>
                 </div>
@@ -475,170 +516,72 @@ export default function LandingPage() {
             ))}
           </div>
           <Link href="/onboarding" className={styles.ctaPrimary}>
-            Explore all stories — free
+            {c.listen.cta}
           </Link>
         </div>
       </section>
 
-      {/* ━━━ SECTION 5: WHY IT WORKS ━━━ */}
-      <section className={styles.whyItWorks}>
-        <div className={styles.sectionInner}>
-          <h2 className={styles.sectionTitle}>Why It Works</h2>
-          <div className={styles.scienceGrid}>
-            <div className={styles.scienceCard}>
-              <div className={styles.scienceIcon}>🎯</div>
-              <h3>Matches your child&apos;s energy</h3>
-              <p>
-                Stories start engaging — matching your child&apos;s current mood.
-                Then gradually slow the narration, dim the visuals, and quiet the music,
-                guiding them naturally toward sleep.
-              </p>
-            </div>
-            <div className={styles.scienceCard}>
-              <div className={styles.scienceIcon}>✨</div>
-              <h3>Every sense works together</h3>
-              <p>
-                Warm-spectrum visuals protect melatonin. Breathing-rate music slows respiration.
-                Dimming art signals bedtime. Voice, music, and visuals all move toward rest.
-              </p>
-            </div>
-            <div className={styles.scienceCard}>
-              <div className={styles.scienceIcon}>😌</div>
-              <h3>Tuned to how they feel</h3>
-              <p>
-                A wired child needs a different story than an anxious one.
-                Every story is matched to a specific mood — calming your child
-                from wherever they are right now.
-              </p>
-            </div>
-          </div>
-          <Link href="/how-it-works" className={styles.learnMore}>
-            Learn more about our approach →
-          </Link>
+      {/* ━━━ DOWNLOAD BAND (mid-page; not gated) ━━━ */}
+      <section className={styles.downloadBand}>
+        <div className={`${styles.sectionInner} ${styles.downloadBandInner}`}>
+          <span className={styles.downloadBandTitle}>{c.download.bandTitle}</span>
+          <AppBadges location="band" className={styles.appStoreLinks} />
         </div>
       </section>
 
-      {/* ━━━ SECTION 6: TESTIMONIALS ━━━ */}
+      {/* ━━━ SECTION 6: TESTIMONIALS (placeholder — replace before launch) ━━━ */}
       <section className={styles.testimonials}>
         <div className={styles.sectionInner}>
-          <h2 className={styles.sectionTitle}>What Parents Say</h2>
+          <h2 className={styles.sectionTitle}>{c.parents.title}</h2>
           <div className={styles.testimonialGrid}>
             <div className={styles.testimonialCard}>
-              <p className={styles.quote}>
-                &ldquo;My daughter used to fight bedtime for 45 minutes. Now she asks for her
-                Dream Valley story. I actually get my evenings back.&rdquo;
-              </p>
-              <div className={styles.quoteAuthor}>— Sarah, parent of a 4-year-old</div>
+              <p className={styles.quote}>&ldquo;{c.parents.q1}&rdquo;</p>
+              <div className={styles.quoteAuthor}>{c.parents.q1Author}</div>
             </div>
             <div className={styles.testimonialCard}>
-              <p className={styles.quote}>
-                &ldquo;I was using ChatGPT to make up stories every night.
-                Dream Valley is that, but with actual narration, music, and the most beautiful art.
-                My son is obsessed.&rdquo;
-              </p>
-              <div className={styles.quoteAuthor}>— James, parent of a 5-year-old</div>
-            </div>
-            <div className={styles.testimonialCard}>
-              <p className={styles.quote}>
-                &ldquo;We tried everything — melatonin, white noise, staying in the room.
-                This is the first thing that actually made bedtime peaceful.&rdquo;
-              </p>
-              <div className={styles.quoteAuthor}>— Priya, parent of a 3-year-old</div>
+              <p className={styles.quote}>&ldquo;{c.parents.q2}&rdquo;</p>
+              <div className={styles.quoteAuthor}>{c.parents.q2Author}</div>
             </div>
           </div>
+          <p className={styles.testimonialNote}>{c.parents.illustrative}</p>
         </div>
       </section>
 
-      {/* ━━━ SECTION 7: NOT ANOTHER BEDTIME STORY APP ━━━ */}
-      <section className={styles.comparison}>
-        <div className={styles.sectionInner}>
-          <h2 className={styles.sectionTitle}>Not Another Bedtime Story App</h2>
-          <div className={styles.comparisonGrid}>
-            <div className={styles.comparisonCard}>
-              <h3>Unlike ChatGPT bedtime stories...</h3>
-              <p>
-                AI text on a bright screen doesn&apos;t help kids sleep.
-                Dream Valley wraps AI storytelling in calming narration, original music,
-                and animated art that gradually dims — a complete bedtime experience, not a wall of text.
-              </p>
-            </div>
-            <div className={styles.comparisonCard}>
-              <h3>Unlike pre-recorded story libraries...</h3>
-              <p>
-                Fixed libraries run out. Your child hears the same stories again and again
-                until they stop working. Dream Valley generates something new every night —
-                fresh characters, new worlds, original art. Your child never gets bored of bedtime.
-              </p>
-            </div>
-            <div className={styles.comparisonCard}>
-              <h3>Unlike screens before bed...</h3>
-              <p>
-                Blue light, bright UI, autoplay algorithms — normal screens fight sleep.
-                Dream Valley uses warm-spectrum visuals, gradually dimming art, and no ads or autoplay.
-                This is screen time you don&apos;t have to feel guilty about.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ━━━ SECTION 8: EXPLORE DREAM VALLEY ━━━ */}
+      {/* ━━━ SECTION 7: MADE FOR YOUR CHILD, AUTOMATICALLY (age + mood) ━━━ */}
       <section className={styles.explore}>
         <div className={styles.sectionInner}>
-          <h2 className={styles.sectionTitle}>Explore Dream Valley</h2>
-          <div className={styles.exploreGrid}>
-            <div className={styles.exploreCard}>
-              <div className={styles.exploreIcon}>📖</div>
-              <h3>Stories</h3>
-              <p>Adventures that begin exciting and end in sleep. From 5-minute quick tales to 20-minute long journeys.</p>
-            </div>
-            <div className={styles.exploreCard}>
-              <div className={styles.exploreIcon}>🌙</div>
-              <h3>Long Stories</h3>
-              <p>Extended narratives for deeper immersion. Three-phase sleep journeys with rich worlds and characters.</p>
-            </div>
-            <div className={styles.exploreCard}>
-              <div className={styles.exploreIcon}>🎵</div>
-              <h3>Lullabies</h3>
-              <p>Original musical pieces with sleep-safe melodies. Perfect for winding down the last few minutes.</p>
-            </div>
-            <Link href="/before-bed" className={styles.exploreCard}>
-              <div className={styles.exploreIcon}>🌛</div>
-              <h3>Before Bed</h3>
-              <p>Silly songs and musical poems. A wind-down ritual before the bedtime story.</p>
-            </Link>
-          </div>
-          <h3 className={styles.exploreSubtitle}>Tuned to your child&apos;s mood</h3>
-          <p className={styles.moodExplainer}>
-            Bedtime isn&apos;t one-size-fits-all. A wired child needs a different story
-            than an anxious one. Dream Valley matches content to how your child feels right now.
-          </p>
-          <div className={styles.moodRow}>
-            <span className={styles.moodTag}>😌 Calm</span>
-            <span className={styles.moodTag}>🔍 Curious</span>
-            <span className={styles.moodTag}>⚡ Wired</span>
-            <span className={styles.moodTag}>💧 Sad</span>
-            <span className={styles.moodTag}>🌀 Anxious</span>
-            <span className={styles.moodTag}>🔥 Angry</span>
-          </div>
+          <h2 className={styles.sectionTitle}>{c.explore.title}</h2>
+          <p className={styles.sectionSubtitle}>{c.explore.lead}</p>
 
-          <div className={styles.tagRow}>
-            {CATEGORIES.map((cat) => (
-              <Link key={cat} href={`/category/${CATEGORY_SLUGS[cat]}`} className={styles.tag}>
-                {cat}
-              </Link>
+          <h3 className={styles.exploreSubtitle}>{c.explore.byAge}</h3>
+          <div className={styles.ageRow}>
+            {AGES.map((a) => (
+              <Link key={a.href} href={a.href} className={styles.ageTag}>{a[lang]}</Link>
             ))}
           </div>
-          <div className={styles.ageRow}>
-            <Link href="/ages/0-1" className={styles.ageTag}>Ages 0-1</Link>
-            <Link href="/ages/2-5" className={styles.ageTag}>Ages 2-5</Link>
-            <Link href="/ages/6-8" className={styles.ageTag}>Ages 6-8</Link>
-            <Link href="/ages/9-12" className={styles.ageTag}>Ages 9-12</Link>
+
+          <h3 className={styles.exploreSubtitle}>{c.explore.byMood}</h3>
+          <p className={styles.moodExplainer}>{c.explore.moodExplainer}</p>
+          <div className={styles.moodRow}>
+            {MOODS.map((m) => (
+              <span key={m.en} className={styles.moodTag}>{m.e} {m[lang]}</span>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ━━━ SECTION 9: FINAL CTA ━━━ */}
+      {/* ━━━ DREAM VALLEY PREMIUM (web purchase surface — native-gated) ━━━ */}
+      {!nativeRequest && (
+        <section className={styles.premium}>
+          <div className={`${styles.sectionInner} ${styles.premiumInner}`}>
+            <h2 className={styles.premiumTitle}>{c.premium.title}</h2>
+            <p className={styles.premiumLine}>{c.premium.line}</p>
+            <Link href="/pricing" className={styles.premiumCta}>{c.premium.cta} →</Link>
+          </div>
+        </section>
+      )}
+
+      {/* ━━━ SECTION 8: FINAL CTA ━━━ */}
       <section className={styles.finalCta}>
         <div className={styles.finalCtaCover}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -646,44 +589,16 @@ export default function LandingPage() {
           <div className={styles.heroOverlay} />
         </div>
         <div className={styles.finalCtaContent}>
-          <h2 className={styles.finalCtaTitle}>Tonight&apos;s story is waiting.</h2>
-          <p className={styles.finalCtaSubtitle}>
-            A new bedtime adventure every night. Calming voices, original music,
-            and living art that guides your child to sleep.
-          </p>
+          <h2 className={styles.finalCtaTitle}>{c.finalCta.title}</h2>
+          <p className={styles.finalCtaSubtitle}>{c.finalCta.sub}</p>
           <Link href="/onboarding" className={styles.ctaPrimary}>
-            Start free tonight
+            {c.finalCta.cta}
           </Link>
-          <p className={styles.noCreditCard}>No credit card required. Free stories every night.</p>
+          <p className={styles.noCreditCard}>{c.finalCta.noCard}</p>
 
           <div className={styles.appStoreSection}>
-            <p className={styles.appStoreLabel}>Get the app</p>
-            <div className={styles.appStoreLinks}>
-              <a
-                href="https://apps.apple.com/sg/app/dream-valley-stories/id6759262548"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.appStoreLink}
-                onClick={() => dvAnalytics.track('app_download_click', { platform: 'ios', location: 'cta' })}
-              >
-                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
-                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-                </svg>
-                App Store
-              </a>
-              <a
-                href="https://play.google.com/store/apps/details?id=com.vervetogether.dreamvalley"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.appStoreLink}
-                onClick={() => dvAnalytics.track('app_download_click', { platform: 'android', location: 'cta' })}
-              >
-                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
-                  <path d="M3 20.5v-17c0-.59.34-1.11.84-1.35L13.69 12l-9.85 9.85c-.5-.24-.84-.76-.84-1.35zm13.81-5.38L6.05 21.34l8.49-8.49 2.27 2.27zm.91-.91L19.59 12 17.72 9.79l-2.27 2.27 2.27 2.15zM6.05 2.66l10.76 6.22-2.27 2.27-8.49-8.49z"/>
-                </svg>
-                Google Play
-              </a>
-            </div>
+            <p className={styles.appStoreLabel}>{c.finalCta.getApp}</p>
+            <AppBadges location="cta" className={styles.appStoreLinks} />
           </div>
         </div>
       </section>
@@ -694,37 +609,34 @@ export default function LandingPage() {
           <div className={styles.footerBrand}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo-new.png" alt="Dream Valley" className={styles.footerLogo} />
-            <p className={styles.footerTagline}>Magical bedtime stories for kids</p>
+            <p className={styles.footerTagline}>{c.footer.tagline}</p>
           </div>
           <div className={styles.footerLinks}>
             <div className={styles.footerCol}>
-              <h4>Product</h4>
-              <Link href="/how-it-works">How It Works</Link>
-              <Link href="/about">About</Link>
-              <Link href="/blog">Blog</Link>
-              <Link href="/support">Contact</Link>
+              <h4>{c.footer.colProduct}</h4>
+              <Link href="/how-it-works">{c.footer.lkHowItWorks}</Link>
+              <Link href="/about">{c.footer.lkAbout}</Link>
+              <Link href="/blog">{c.footer.lkBlog}</Link>
+              <Link href="/support">{c.footer.lkContact}</Link>
             </div>
             <div className={styles.footerCol}>
-              <h4>Get the App</h4>
-              <a href="https://apps.apple.com/sg/app/dream-valley-stories/id6759262548" target="_blank" rel="noopener noreferrer" onClick={() => dvAnalytics.track('app_download_click', { platform: 'ios', location: 'footer' })}>iOS App Store</a>
-              <a href="https://play.google.com/store/apps/details?id=com.vervetogether.dreamvalley" target="_blank" rel="noopener noreferrer" onClick={() => dvAnalytics.track('app_download_click', { platform: 'android', location: 'footer' })}>Google Play</a>
+              <h4>{c.footer.colApp}</h4>
+              <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" onClick={() => dvAnalytics.track('app_download_click', { platform: 'ios', location: 'footer' })}>{c.footer.lkIos}</a>
+              <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer" onClick={() => dvAnalytics.track('app_download_click', { platform: 'android', location: 'footer' })}>{c.footer.lkPlay}</a>
             </div>
             <div className={styles.footerCol}>
-              <h4>Listen</h4>
-              <RadioLiveLink variant="footer" label="Dream Valley Radio" />
+              <h4>{c.footer.colListen}</h4>
+              <RadioLiveLink variant="footer" label={c.footer.lkRadio} />
             </div>
             <div className={styles.footerCol}>
-              <h4>Legal</h4>
-              <Link href="/privacy">Privacy Policy</Link>
-              <Link href="/support">Terms of Service</Link>
+              <h4>{c.footer.colLegal}</h4>
+              <Link href="/privacy">{c.footer.lkPrivacy}</Link>
+              <Link href="/support">{c.footer.lkTerms}</Link>
             </div>
           </div>
-          <div className={styles.footerTrust}>
-            Dream Valley uses AI to generate stories, narration, music, and art.
-            Content is reviewed for age-appropriateness and safety.
-          </div>
+          <div className={styles.footerTrust}>{c.footer.trust}</div>
           <div className={styles.footerCopy}>
-            &copy; {new Date().getFullYear()} Dream Valley. All rights reserved.
+            &copy; {new Date().getFullYear()} Dream Valley. {c.footer.rights}
           </div>
         </div>
       </footer>
