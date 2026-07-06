@@ -9,6 +9,7 @@ import { captureIntentFromQuery, returnToIntent } from '@/utils/upgradeIntent';
 import {
   getNativeOfferings,
   purchaseNative,
+  restoreNative,
   confirmEntitlementAfterPurchase,
   pollEntitlementUntilPremium,
   identifyNative,
@@ -75,8 +76,9 @@ function PlanOption({ pkg, label, selected, best, onSelect, disabled }) {
 function NativePaywall({ router }) {
   const [offerings, setOfferings] = useState(undefined); // undefined=loading, null=none
   const [plan, setPlan] = useState('annual');
-  const [phase, setPhase] = useState('idle'); // idle | purchasing | confirming
+  const [phase, setPhase] = useState('idle'); // idle | purchasing | restoring | confirming | activating
   const [err, setErr] = useState(null);
+  const [showEmailRestore, setShowEmailRestore] = useState(false);
   const { runGate, gate } = useParentalGate();
   const abortRef = useRef(null);
 
@@ -95,11 +97,42 @@ function NativePaywall({ router }) {
     return purchaseNative(pkgId, gateFn ? { gate: gateFn } : {});
   }
 
+  // Shared post-success reconciliation for BOTH purchase and restore, so neither
+  // routes into a still-locked player: the backend is authoritative for audio
+  // (locked content is served stripped), so enter the player ONLY on
+  // backend-confirmed premium. Slow-but-real -> 'activating' hold + keep polling;
+  // truly-stuck -> reassure + self-heal.
+  async function confirmAndRoute(ac) {
+    setPhase('confirming');
+    let status = await confirmEntitlementAfterPurchase(fetchIsPremium, { signal: ac.signal });
+    if (status === 'activating' && !ac.signal.aborted) {
+      setPhase('activating');
+      const ready = await pollEntitlementUntilPremium(fetchIsPremium, {
+        attempts: 20,
+        delayMs: 3000,
+        signal: ac.signal,
+      });
+      status = ready ? 'premium' : 'stuck';
+    }
+    if (ac.signal.aborted) return;
+    setPhase('idle');
+    if (status === 'premium') {
+      // Resume the exact content the user tapped (intent = /player/<id>?autoplay=1
+      // from the player's locked gate); '/' for a direct /upgrade visit.
+      returnToIntent(router);
+    } else if (status === 'failed') {
+      setErr('We couldn’t confirm your subscription. Please try again.');
+    } else {
+      setErr('Payment received — your subscription is activating and will unlock automatically in a moment.');
+    }
+  }
+
   async function handleBuy() {
     if (!offerings) return;
     const pkg = plan === 'annual' ? offerings.annual : offerings.monthly;
     if (!pkg) return;
     setErr(null);
+    setShowEmailRestore(false);
     setPhase('purchasing');
 
     const gateFn = PARENTAL_GATE_ENABLED ? runGate : undefined;
@@ -122,41 +155,54 @@ function NativePaywall({ router }) {
       return;
     }
 
-    // Purchase succeeded on-device (bridge already truth-checked it attached to
-    // this uid). The backend is authoritative for audio: content stays locked
-    // (audio stripped) until the async RevenueCat webhook flips premium — so we
-    // must NOT enter the player until the backend confirms, or it re-locks in
-    // the user's face right after they paid. Poll the backend; if it's slow but
-    // the SDK confirms the purchase is real, hold an 'activating' state and keep
-    // polling — route to the player ONLY once premium (audio serveable).
-    setPhase('confirming');
+    // Purchase confirmed on-device (bridge truth-checked it attached to this
+    // uid). Reconcile via the shared confirm flow — enters the player only once
+    // the backend can actually serve the (server-gated) audio.
     const ac = new AbortController();
     abortRef.current = ac;
-    let status = await confirmEntitlementAfterPurchase(fetchIsPremium, { signal: ac.signal });
-    if (status === 'activating' && !ac.signal.aborted) {
-      setPhase('activating');
-      const ready = await pollEntitlementUntilPremium(fetchIsPremium, {
-        attempts: 20,
-        delayMs: 3000,
-        signal: ac.signal,
-      });
-      status = ready ? 'premium' : 'stuck';
-    }
+    await confirmAndRoute(ac);
     abortRef.current = null;
-    if (ac.signal.aborted) return;
-    setPhase('idle');
-    if (status === 'premium') {
-      // Resume the exact content the user tapped (intent = /player/<id>?autoplay=1
-      // from the player's locked gate); '/' for a direct /upgrade visit.
-      returnToIntent(router);
-    } else if (status === 'failed') {
-      setErr('That purchase didn’t go through. Please try again.');
-    } else {
-      // 'stuck' — payment is real but the webhook is unusually slow. Never route
-      // into a still-locked player; reassure + self-heal (RevenueCat retries the
-      // webhook; reopening re-reads entitlement on boot).
-      setErr('Payment received — your subscription is activating and will unlock automatically in a moment.');
+  }
+
+  // App-Store-required Restore Purchases (Guideline 3.1.1): StoreKit
+  // restorePurchases via the bridge, NOT the web email-code path. Routes its
+  // success through the SAME confirm flow as a purchase (never dumps into a
+  // still-locked player). Handles the reinstall pre-identity case (re-identify +
+  // retry), a purchase linked to another account (identity_mismatch), and
+  // no-StoreKit-purchase (offer the web/email path for a web subscriber).
+  async function handleRestore() {
+    setErr(null);
+    setShowEmailRestore(false);
+    setPhase('restoring');
+
+    let res = await restoreNative();
+    if (!res.success && res.error === 'not_identified') {
+      const u = getUser();
+      if (u?.uid && (await identifyNative(u.uid))) {
+        res = await restoreNative();
+      }
     }
+    if (!res.success) {
+      setPhase('idle');
+      if (res.error === 'identity_mismatch') {
+        setErr('This subscription is linked to a different account. Sign in with that account to restore.');
+        return;
+      }
+      setErr('Couldn’t restore. Please try again.');
+      return;
+    }
+    if (!res.active) {
+      // No StoreKit purchase on this Apple ID — a web (Stripe) subscriber can
+      // still recover via the email-code path.
+      setPhase('idle');
+      setShowEmailRestore(true);
+      setErr('No App Store subscription found to restore.');
+      return;
+    }
+    const ac = new AbortController();
+    abortRef.current = ac;
+    await confirmAndRoute(ac);
+    abortRef.current = null;
   }
 
   if (offerings === undefined) {
@@ -227,11 +273,20 @@ function NativePaywall({ router }) {
       </p>
       <button
         className={styles.restoreBtn}
-        onClick={() => router.push('/restore')}
+        onClick={handleRestore}
         disabled={busy}
       >
-        Restore subscription
+        {phase === 'restoring' ? 'Restoring…' : 'Restore subscription'}
       </button>
+      {showEmailRestore && (
+        <button
+          className={styles.restoreBtn}
+          style={{ marginTop: 8 }}
+          onClick={() => router.push('/restore')}
+        >
+          Subscribed on the web? Restore by email
+        </button>
+      )}
 
       {gate}
     </div>
