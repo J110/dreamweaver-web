@@ -199,6 +199,16 @@ export const setUser = (user) => {
   if (typeof window === 'undefined') return;
   localStorage.setItem('dreamweaver_user', JSON.stringify(user));
 
+  // Link the native RevenueCat identity to the backend uid so on-device
+  // purchases attach to this account (the webhook resolves entitlements by
+  // this uid). Self-gates on native (no-op on web); fire-and-forget, and the
+  // purchase flow re-identifies on 'not_identified' as a safety net.
+  if (user?.uid) {
+    import('./nativePurchase')
+      .then(({ identifyNative }) => identifyNative(user.uid))
+      .catch(() => { /* ignore */ });
+  }
+
   const username = user?.username;
   const familyId = user?.family_id;
   if (!username) return;
@@ -254,6 +264,11 @@ export const logout = () => {
   // Lazy-imported to avoid an api.js eager-load on every auth.js touch.
   import('./api')
     .then(({ authApi }) => authApi.serverLogout())
+    .catch(() => { /* ignore */ });
+  // Drop the native RevenueCat identity back to anonymous so a subsequent
+  // different user on this device doesn't inherit the prior purchase identity.
+  import('./nativePurchase')
+    .then(({ logoutNative }) => logoutNative())
     .catch(() => { /* ignore */ });
   removeToken();
   removeUser();
