@@ -127,14 +127,28 @@ export async function pollEntitlementUntilPremium(
   return false;
 }
 
+// Post-purchase reconciliation. The on-device purchase succeeds BEFORE the async
+// RevenueCat webhook flips subscription_tier — AND the backend is authoritative
+// for audio (locked content is served with audio stripped, and the player is
+// forbidden from re-injecting seed audio over a locked response). So the client
+// CANNOT play until the webhook lands: an active SDK entitlement proves the
+// purchase is REAL (don't show a false failure) but does NOT make content
+// playable. Returns a status the paywall acts on:
+//   'premium'    — backend confirms → safe to enter the player (audio served)
+//   'activating' — purchase real (SDK) but backend not premium yet → hold a
+//                  patient state + keep polling; do NOT enter the player, which
+//                  would just re-lock (still server-gated) right after paying
+//   'failed'     — no active SDK entitlement → real failure
+//   'aborted'    — caller navigated away mid-confirm
 export async function confirmEntitlementAfterPurchase(
   fetchIsPremium,
   { attempts = 6, delayMs = 1500, signal } = {},
 ) {
-  const viaBackend = await pollEntitlementUntilPremium(fetchIsPremium, { attempts, delayMs, signal });
-  if (viaBackend) return { entitled: true, via: 'backend' };
-  if (signal && signal.aborted) return { entitled: false, via: null };
+  if (await pollEntitlementUntilPremium(fetchIsPremium, { attempts, delayMs, signal })) {
+    return 'premium';
+  }
+  if (signal && signal.aborted) return 'aborted';
   const r = await restoreNative();
-  if (r.success && r.active) return { entitled: true, via: 'sdk_optimistic' };
-  return { entitled: false, via: null };
+  if (r.success && r.active) return 'activating';
+  return 'failed';
 }

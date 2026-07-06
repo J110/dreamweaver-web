@@ -197,6 +197,15 @@ export const getUser = () => {
 
 export const setUser = (user) => {
   if (typeof window === 'undefined') return;
+  // Never DROP a uid we already have: a partial update (e.g. an anon profile
+  // edit that passes only {username, anon}) must not clobber the stored device
+  // identity, or a later purchase can't re-identify with RevenueCat. Merge the
+  // existing uid forward — a no-op on the common path (payload already has uid)
+  // and on setUser(null)/logout (guarded off), so it can't regress those.
+  if (user && typeof user === 'object' && !user.uid) {
+    const existing = getUser();
+    if (existing && existing.uid) user = { ...user, uid: existing.uid };
+  }
   localStorage.setItem('dreamweaver_user', JSON.stringify(user));
 
   // Link the native RevenueCat identity to the backend uid so on-device

@@ -10,6 +10,7 @@ import {
   getNativeOfferings,
   purchaseNative,
   confirmEntitlementAfterPurchase,
+  pollEntitlementUntilPremium,
   identifyNative,
 } from '@/utils/nativePurchase';
 import { getUser } from '@/utils/auth';
@@ -122,20 +123,40 @@ function NativePaywall({ router }) {
     }
 
     // Purchase succeeded on-device (bridge already truth-checked it attached to
-    // this uid). Reconcile with the backend, which flips premium once the async
-    // RevenueCat webhook lands; on timeout, fall back to the SDK's own truth.
+    // this uid). The backend is authoritative for audio: content stays locked
+    // (audio stripped) until the async RevenueCat webhook flips premium — so we
+    // must NOT enter the player until the backend confirms, or it re-locks in
+    // the user's face right after they paid. Poll the backend; if it's slow but
+    // the SDK confirms the purchase is real, hold an 'activating' state and keep
+    // polling — route to the player ONLY once premium (audio serveable).
     setPhase('confirming');
     const ac = new AbortController();
     abortRef.current = ac;
-    const outcome = await confirmEntitlementAfterPurchase(fetchIsPremium, { signal: ac.signal });
+    let status = await confirmEntitlementAfterPurchase(fetchIsPremium, { signal: ac.signal });
+    if (status === 'activating' && !ac.signal.aborted) {
+      setPhase('activating');
+      const ready = await pollEntitlementUntilPremium(fetchIsPremium, {
+        attempts: 20,
+        delayMs: 3000,
+        signal: ac.signal,
+      });
+      status = ready ? 'premium' : 'stuck';
+    }
     abortRef.current = null;
     if (ac.signal.aborted) return;
     setPhase('idle');
-    // Resume the exact content the user tapped (intent = /player/<id>?autoplay=1
-    // set by the player's locked gate); falls back to '/' for a direct /upgrade
-    // visit. ONE paywall entry — both the player gate and /upgrade land here.
-    if (outcome.entitled) returnToIntent(router);
-    else setErr('Your subscription is being confirmed — it’ll unlock in a moment.');
+    if (status === 'premium') {
+      // Resume the exact content the user tapped (intent = /player/<id>?autoplay=1
+      // from the player's locked gate); '/' for a direct /upgrade visit.
+      returnToIntent(router);
+    } else if (status === 'failed') {
+      setErr('That purchase didn’t go through. Please try again.');
+    } else {
+      // 'stuck' — payment is real but the webhook is unusually slow. Never route
+      // into a still-locked player; reassure + self-heal (RevenueCat retries the
+      // webhook; reopening re-reads entitlement on boot).
+      setErr('Payment received — your subscription is activating and will unlock automatically in a moment.');
+    }
   }
 
   if (offerings === undefined) {
@@ -187,7 +208,9 @@ function NativePaywall({ router }) {
           ? 'Opening secure checkout…'
           : phase === 'confirming'
             ? 'Confirming your subscription…'
-            : 'Start my 7-day free trial'}
+            : phase === 'activating'
+              ? 'Activating your subscription…'
+              : 'Start my 7-day free trial'}
       </button>
 
       {selected && (
