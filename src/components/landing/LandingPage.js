@@ -325,9 +325,14 @@ export default function LandingPage({ nativeRequest = false }) {
         <div className={styles.heroContent}>
           <h1 className={styles.heroTitle}>{c.hero.h1}</h1>
           <p className={styles.heroSubtitle}>{c.hero.sub}</p>
-          <div className={styles.heroCtas}>
-            <Link href="/onboarding" className={styles.ctaPrimary}>{c.hero.cta1}</Link>
-            <button
+              <div className={styles.heroCtas}>
+                <Link href="/onboarding" className={styles.ctaPrimary}>{c.hero.cta1}</Link>
+                {!nativeRequest && (
+                  <Link href="/pricing" className={styles.ctaPremium}>
+                    {c.hero.premiumCta}
+                  </Link>
+                )}
+                <button
               onClick={() => scrollTo(howItWorksRef)}
               className={styles.ctaSecondary}
             >
