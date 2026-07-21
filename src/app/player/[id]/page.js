@@ -1474,13 +1474,23 @@ function LockedCTA({ intentPath, lang }) {
     <div style={{ textAlign: 'center', marginTop: 8 }}>
       {native ? (
         <>
-          <p style={{ opacity: 0.7, fontSize: 14 }}>Subscribe at <strong>dreamvalley.app</strong></p>
+          <button
+            onClick={() => { setUpgradeIntent(`${intentPath}?autoplay=1`); router.push('/upgrade'); }}
+            style={{
+              background: 'linear-gradient(135deg, #ff6b9d, #ff9100)', color: '#fff', border: 'none',
+              borderRadius: 28, padding: '14px 36px', fontSize: 16, fontWeight: 700, cursor: 'pointer',
+              width: '100%', maxWidth: 320,
+            }}
+          >
+            Start my 7-day free trial
+          </button>
+          <p style={{ opacity: 0.7, fontSize: 13, marginTop: 18, marginBottom: 0 }}>Already subscribed?</p>
           <button
             onClick={() => router.push('/restore')}
             style={{
               background: 'transparent', color: '#ff9100', border: '1px solid rgba(255,145,0,0.5)',
               borderRadius: 24, padding: '10px 28px', fontSize: 14, fontWeight: 600, cursor: 'pointer',
-              marginTop: 12,
+              marginTop: 8,
             }}
           >
             Restore subscription

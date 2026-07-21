@@ -1,11 +1,22 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { subscriptionApi, billingApi } from '@/utils/api';
 import { openCheckoutUrl } from '@/utils/checkoutPending';
 import { isNativeApp } from '@/utils/platformDetect';
-import { captureIntentFromQuery } from '@/utils/upgradeIntent';
+import { captureIntentFromQuery, returnToIntent } from '@/utils/upgradeIntent';
+import {
+  getNativeOfferings,
+  purchaseNative,
+  restoreNative,
+  confirmEntitlementAfterPurchase,
+  pollEntitlementUntilPremium,
+  identifyNative,
+} from '@/utils/nativePurchase';
+import { getUser } from '@/utils/auth';
+import { PARENTAL_GATE_ENABLED } from '@/utils/paywallConfig';
+import { useParentalGate } from '@/components/ParentalGate';
 import StarField from '@/components/StarField';
 import UpgradeShowcase from '@/components/UpgradeShowcase';
 import styles from './page.module.css';
@@ -16,6 +27,271 @@ const BENEFITS = [
   { icon: '✦', text: 'Save up to 30 days of bedtime favorites' },
   { icon: '✦', text: '7-day free trial — no charge until day 8' },
 ];
+
+async function fetchIsPremium() {
+  try {
+    const d = await subscriptionApi.getCurrent();
+    return d?.effective_premium === true || d?.current_tier?.id === 'premium';
+  } catch {
+    return false;
+  }
+}
+
+function PlanOption({ pkg, label, selected, best, onSelect, disabled }) {
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      disabled={disabled}
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        padding: '12px 16px',
+        borderRadius: 14,
+        cursor: disabled ? 'default' : 'pointer',
+        border: selected ? '2px solid #b9a3ff' : '1px solid rgba(248,246,255,0.18)',
+        background: selected ? 'rgba(185,163,255,0.12)' : 'rgba(255,255,255,0.03)',
+        color: '#f8f6ff',
+        textAlign: 'left',
+      }}
+    >
+      <span style={{ fontWeight: 600 }}>
+        {label}
+        {best && (
+          <span style={{ marginLeft: 8, fontSize: '0.68rem', color: '#b9a3ff' }}>BEST VALUE</span>
+        )}
+      </span>
+      <span style={{ fontWeight: 600 }}>{pkg.priceString}</span>
+    </button>
+  );
+}
+
+// Native paywall: renders the RevenueCat offering at native store prices and
+// drives the on-device purchase. Degrades gracefully — until the RevenueCat
+// SDK is provisioned (keys + ASC products), getNativeOfferings() returns null
+// and we fall back to the text-only "subscribe on web, then restore" CTA, so
+// the same build is safe before and after provisioning.
+function NativePaywall({ router }) {
+  const [offerings, setOfferings] = useState(undefined); // undefined=loading, null=none
+  const [plan, setPlan] = useState('annual');
+  const [phase, setPhase] = useState('idle'); // idle | purchasing | restoring | confirming | activating
+  const [err, setErr] = useState(null);
+  const [showEmailRestore, setShowEmailRestore] = useState(false);
+  const { runGate, gate } = useParentalGate();
+  const abortRef = useRef(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getNativeOfferings().then((o) => {
+      if (!cancelled) setOfferings(o);
+    });
+    return () => {
+      cancelled = true;
+      if (abortRef.current) abortRef.current.abort();
+    };
+  }, []);
+
+  async function attempt(pkgId, gateFn) {
+    return purchaseNative(pkgId, gateFn ? { gate: gateFn } : {});
+  }
+
+  // Shared post-success reconciliation for BOTH purchase and restore, so neither
+  // routes into a still-locked player: the backend is authoritative for audio
+  // (locked content is served stripped), so enter the player ONLY on
+  // backend-confirmed premium. Slow-but-real -> 'activating' hold + keep polling;
+  // truly-stuck -> reassure + self-heal.
+  async function confirmAndRoute(ac) {
+    setPhase('confirming');
+    let status = await confirmEntitlementAfterPurchase(fetchIsPremium, { signal: ac.signal });
+    if (status === 'activating' && !ac.signal.aborted) {
+      setPhase('activating');
+      const ready = await pollEntitlementUntilPremium(fetchIsPremium, {
+        attempts: 20,
+        delayMs: 3000,
+        signal: ac.signal,
+      });
+      status = ready ? 'premium' : 'stuck';
+    }
+    if (ac.signal.aborted) return;
+    setPhase('idle');
+    if (status === 'premium') {
+      // Resume the exact content the user tapped (intent = /player/<id>?autoplay=1
+      // from the player's locked gate); '/' for a direct /upgrade visit.
+      returnToIntent(router);
+    } else if (status === 'failed') {
+      setErr('We couldn’t confirm your subscription. Please try again.');
+    } else {
+      setErr('Payment received — your subscription is activating and will unlock automatically in a moment.');
+    }
+  }
+
+  async function handleBuy() {
+    if (!offerings) return;
+    const pkg = plan === 'annual' ? offerings.annual : offerings.monthly;
+    if (!pkg) return;
+    setErr(null);
+    setShowEmailRestore(false);
+    setPhase('purchasing');
+
+    const gateFn = PARENTAL_GATE_ENABLED ? runGate : undefined;
+    let res = await attempt(pkg.id, gateFn);
+    // Safety net: if identity wasn't linked yet, re-identify and retry once.
+    if (!res.success && res.error === 'not_identified') {
+      const u = getUser();
+      if (u?.uid && (await identifyNative(u.uid))) {
+        res = await attempt(pkg.id, gateFn);
+      }
+    }
+    if (!res.success) {
+      setPhase('idle');
+      if (res.error === 'cancelled' || res.error === 'gate_failed') return; // user backed out
+      if (res.error === 'not_identified') {
+        setErr('Please sign in again, then retry.');
+        return;
+      }
+      setErr('That purchase didn’t go through. Please try again.');
+      return;
+    }
+
+    // Purchase confirmed on-device (bridge truth-checked it attached to this
+    // uid). Reconcile via the shared confirm flow — enters the player only once
+    // the backend can actually serve the (server-gated) audio.
+    const ac = new AbortController();
+    abortRef.current = ac;
+    await confirmAndRoute(ac);
+    abortRef.current = null;
+  }
+
+  // App-Store-required Restore Purchases (Guideline 3.1.1): StoreKit
+  // restorePurchases via the bridge, NOT the web email-code path. Routes its
+  // success through the SAME confirm flow as a purchase (never dumps into a
+  // still-locked player). Handles the reinstall pre-identity case (re-identify +
+  // retry), a purchase linked to another account (identity_mismatch), and
+  // no-StoreKit-purchase (offer the web/email path for a web subscriber).
+  async function handleRestore() {
+    setErr(null);
+    setShowEmailRestore(false);
+    setPhase('restoring');
+
+    let res = await restoreNative();
+    if (!res.success && res.error === 'not_identified') {
+      const u = getUser();
+      if (u?.uid && (await identifyNative(u.uid))) {
+        res = await restoreNative();
+      }
+    }
+    if (!res.success) {
+      setPhase('idle');
+      if (res.error === 'identity_mismatch') {
+        setErr('This subscription is linked to a different account. Sign in with that account to restore.');
+        return;
+      }
+      setErr('Couldn’t restore. Please try again.');
+      return;
+    }
+    if (!res.active) {
+      // No StoreKit purchase on this Apple ID — a web (Stripe) subscriber can
+      // still recover via the email-code path.
+      setPhase('idle');
+      setShowEmailRestore(true);
+      setErr('No App Store subscription found to restore.');
+      return;
+    }
+    const ac = new AbortController();
+    abortRef.current = ac;
+    await confirmAndRoute(ac);
+    abortRef.current = null;
+  }
+
+  if (offerings === undefined) {
+    return <p className={styles.nativeText}>Loading plans…</p>;
+  }
+
+  if (!offerings || (!offerings.monthly && !offerings.annual)) {
+    return (
+      <div className={styles.nativeWrap}>
+        <p className={styles.nativeText}>
+          Subscribe at <strong>dreamvalley.app</strong>, then restore below.
+        </p>
+        <button className={styles.restoreBtn} onClick={() => router.push('/restore')}>
+          Restore subscription
+        </button>
+      </div>
+    );
+  }
+
+  const busy = phase !== 'idle';
+  const selected = plan === 'annual' ? offerings.annual : offerings.monthly;
+
+  return (
+    <div className={styles.nativeWrap}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 14 }}>
+        {offerings.annual && (
+          <PlanOption
+            pkg={offerings.annual}
+            label="Annual"
+            best
+            selected={plan === 'annual'}
+            onSelect={() => setPlan('annual')}
+            disabled={busy}
+          />
+        )}
+        {offerings.monthly && (
+          <PlanOption
+            pkg={offerings.monthly}
+            label="Monthly"
+            selected={plan === 'monthly'}
+            onSelect={() => setPlan('monthly')}
+            disabled={busy}
+          />
+        )}
+      </div>
+
+      <button className={styles.ctaBtn} onClick={handleBuy} disabled={busy || !selected}>
+        {phase === 'purchasing'
+          ? 'Opening secure checkout…'
+          : phase === 'confirming'
+            ? 'Confirming your subscription…'
+            : phase === 'activating'
+              ? 'Activating your subscription…'
+              : 'Start my 7-day free trial'}
+      </button>
+
+      {selected && (
+        <p className={styles.priceDisclosure}>
+          Free for 7 days, then {selected.priceString}
+          {plan === 'annual' ? '/year' : '/month'}. Cancel anytime.
+        </p>
+      )}
+
+      {err && <p className={styles.errorMsg}>{err}</p>}
+
+      <p className={styles.nativeText} style={{ marginTop: 18 }}>
+        Already subscribed?
+      </p>
+      <button
+        className={styles.restoreBtn}
+        onClick={handleRestore}
+        disabled={busy}
+      >
+        {phase === 'restoring' ? 'Restoring…' : 'Restore subscription'}
+      </button>
+      {showEmailRestore && (
+        <button
+          className={styles.restoreBtn}
+          style={{ marginTop: 8 }}
+          onClick={() => router.push('/restore')}
+        >
+          Subscribed on the web? Restore by email
+        </button>
+      )}
+
+      {gate}
+    </div>
+  );
+}
 
 function UpgradeInner() {
   const searchParams = useSearchParams();
@@ -31,6 +307,7 @@ function UpgradeInner() {
   }, [searchParams]);
 
   useEffect(() => {
+    if (native) return undefined; // native prices come from the store offering
     let cancelled = false;
     subscriptionApi
       .getTiers()
@@ -45,8 +322,10 @@ function UpgradeInner() {
       .finally(() => {
         if (!cancelled) setPriceLoaded(true);
       });
-    return () => { cancelled = true; };
-  }, []);
+    return () => {
+      cancelled = true;
+    };
+  }, [native]);
 
   async function handleStartTrial() {
     setError(null);
@@ -71,14 +350,12 @@ function UpgradeInner() {
         <div className={styles.eyebrow}>Dream Valley Premium</div>
 
         <h1 className={styles.headline}>
-          Get the{' '}
-          <span className={styles.headlineAccent}>sweetest sleep</span>{' '}
-          every night
+          Get the <span className={styles.headlineAccent}>sweetest sleep</span> every night
         </h1>
 
         <p className={styles.subheadline}>
-          A warm, full bedtime routine for your little one — calming stories,
-          poems, and lullabies, every single night.
+          A warm, full bedtime routine for your little one — calming stories, poems, and lullabies,
+          every single night.
         </p>
 
         <div className={styles.showcaseWrap}>
@@ -88,7 +365,9 @@ function UpgradeInner() {
         <ul className={styles.benefits}>
           {BENEFITS.map((b, i) => (
             <li key={i} className={styles.benefit}>
-              <span className={styles.benefitIcon} aria-hidden="true">{b.icon}</span>
+              <span className={styles.benefitIcon} aria-hidden="true">
+                {b.icon}
+              </span>
               {b.text}
             </li>
           ))}
@@ -98,24 +377,10 @@ function UpgradeInner() {
 
         <div className={styles.ctaGroup}>
           {native ? (
-            <div className={styles.nativeWrap}>
-              <p className={styles.nativeText}>
-                Subscribe at <strong>dreamvalley.app</strong>, then restore below.
-              </p>
-              <button
-                className={styles.restoreBtn}
-                onClick={() => router.push('/restore')}
-              >
-                Restore subscription
-              </button>
-            </div>
+            <NativePaywall router={router} />
           ) : (
             <>
-              <button
-                className={styles.ctaBtn}
-                onClick={handleStartTrial}
-                disabled={submitting}
-              >
+              <button className={styles.ctaBtn} onClick={handleStartTrial} disabled={submitting}>
                 {submitting ? 'Taking you to checkout…' : 'Start my free trial'}
               </button>
 
@@ -125,15 +390,12 @@ function UpgradeInner() {
                 </p>
               )}
 
-              {error && (
-                <p className={styles.errorMsg}>{error}</p>
-              )}
+              {error && <p className={styles.errorMsg}>{error}</p>}
 
-              <p className={styles.nativeText} style={{ marginTop: 18 }}>Already subscribed?</p>
-              <button
-                className={styles.restoreBtn}
-                onClick={() => router.push('/restore')}
-              >
+              <p className={styles.nativeText} style={{ marginTop: 18 }}>
+                Already subscribed?
+              </p>
+              <button className={styles.restoreBtn} onClick={() => router.push('/restore')}>
                 Restore subscription
               </button>
             </>
@@ -150,7 +412,17 @@ export default function UpgradeClient() {
       <StarField />
       <Suspense
         fallback={
-          <div className={styles.root} style={{ minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(248,246,255,0.5)', fontSize: '0.9rem' }}>
+          <div
+            className={styles.root}
+            style={{
+              minHeight: '100dvh',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'rgba(248,246,255,0.5)',
+              fontSize: '0.9rem',
+            }}
+          >
             Loading…
           </div>
         }
