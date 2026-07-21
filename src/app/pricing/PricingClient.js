@@ -7,7 +7,10 @@ import StarField from '@/components/StarField';
 import { useI18n } from '@/utils/i18n';
 import { isLoggedIn } from '@/utils/auth';
 import { subscriptionApi, billingApi } from '@/utils/api';
+import { dvAnalytics } from '@/utils/analytics';
 import { openCheckoutUrl } from '@/utils/checkoutPending';
+import { clearPricingIntent, readPricingIntent, savePricingIntent } from '@/utils/pricingIntent';
+import { PRICING_REGIONS, getPlanPrice, inferPricingRegion } from '@/utils/regionalPricing';
 import styles from './page.module.css';
 
 const FREE_BULLETS_EN = [
@@ -62,10 +65,24 @@ export default function PricingClient() {
   const [current, setCurrent] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [region, setRegion] = useState(PRICING_REGIONS.ROW);
+  const [selectedPlan, setSelectedPlan] = useState('annual');
 
   useEffect(() => {
-    setAuthed(isLoggedIn());
-    if (!isLoggedIn()) {
+    const loggedIn = isLoggedIn();
+    setAuthed(loggedIn);
+    try {
+      const locale = navigator.language || '';
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      setRegion(inferPricingRegion({ locale, timeZone }));
+      const requestedPlan = new URLSearchParams(window.location.search).get('plan');
+      setSelectedPlan(
+        requestedPlan === 'monthly' || requestedPlan === 'annual'
+          ? requestedPlan
+          : readPricingIntent() || 'annual'
+      );
+    } catch {}
+    if (!loggedIn) {
       setLoading(false);
       return;
     }
@@ -92,10 +109,11 @@ export default function PricingClient() {
     setError(null);
     setSubmitting(true);
     try {
-      const { checkout_url } = await billingApi.startCheckout(plan);
-      if (checkout_url) {
-        openCheckoutUrl(checkout_url);
-        return;
+          const { checkout_url } = await billingApi.startCheckout(plan);
+          if (checkout_url) {
+            clearPricingIntent();
+            openCheckoutUrl(checkout_url);
+            return;
       }
       setError(
         lang === 'hi'
@@ -111,6 +129,32 @@ export default function PricingClient() {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  function selectRegion(nextRegion) {
+    setRegion(nextRegion);
+    dvAnalytics.track('pricing_region_changed', { region: nextRegion });
+  }
+
+  function selectPlan(plan) {
+    setSelectedPlan(plan);
+    dvAnalytics.track('pricing_plan_selected', { plan, region });
+  }
+
+  function continueWithPlan() {
+    savePricingIntent(selectedPlan);
+    const authenticated = isLoggedIn();
+    dvAnalytics.track('pricing_checkout_started', {
+      plan: selectedPlan,
+      region,
+      authenticated,
+    });
+    if (!authenticated) {
+      router.push('/onboarding');
+      return;
+    }
+    setAuthed(true);
+    startCheckout(selectedPlan);
   }
 
   async function openPortal() {
@@ -179,7 +223,29 @@ export default function PricingClient() {
             </button>
           </div>
         ) : (
-          <div className={styles.tierGrid}>
+          <>
+            <div className={styles.regionSwitchWrap}>
+              <span>{lang === 'hi' ? 'Prices dikh rahe hain:' : 'Showing prices for:'}</span>
+              <div className={styles.regionSwitch} role="group" aria-label="Pricing region">
+                <button
+                  type="button"
+                  className={`${styles.regionButton} ${region === PRICING_REGIONS.INDIA ? styles.regionButtonActive : ''}`}
+                  aria-pressed={region === PRICING_REGIONS.INDIA}
+                  onClick={() => selectRegion(PRICING_REGIONS.INDIA)}
+                >
+                  India (₹)
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.regionButton} ${region === PRICING_REGIONS.ROW ? styles.regionButtonActive : ''}`}
+                  aria-pressed={region === PRICING_REGIONS.ROW}
+                  onClick={() => selectRegion(PRICING_REGIONS.ROW)}
+                >
+                  Rest of world ($)
+                </button>
+              </div>
+            </div>
+            <div className={styles.tierGrid}>
             <div className={styles.tierCard}>
               <h2 className={styles.tierName}>
                 {lang === 'hi' ? 'Free' : 'Free'}
@@ -203,14 +269,46 @@ export default function PricingClient() {
               <h2 className={styles.tierName}>
                 {lang === 'hi' ? 'Premium' : 'Premium'}
               </h2>
-              <div className={styles.tierPrice}>
-                <span className={styles.priceAmount}>$40</span>
-                <span className={styles.priceUnit}>
-                  /{lang === 'hi' ? 'saal' : 'yr'}
-                </span>
+              <div className={styles.trialRow}>
                 <span className={styles.trialBadge}>
                   {lang === 'hi' ? '7 din free trial' : '7-day free trial'}
                 </span>
+              </div>
+              <div className={styles.planOptions}>
+                {['annual', 'monthly'].map((plan) => {
+                  const price = getPlanPrice(region, plan);
+                  const selected = selectedPlan === plan;
+                  const period = lang === 'hi'
+                    ? plan === 'annual' ? 'saal' : 'mahina'
+                    : price.period;
+                  return (
+                    <button
+                      key={plan}
+                      type="button"
+                      className={`${styles.planOption} ${selected ? styles.planOptionSelected : ''}`}
+                      aria-pressed={selected}
+                      onClick={() => selectPlan(plan)}
+                    >
+                      <span className={styles.planOptionTop}>
+                        <span className={styles.planLabel}>
+                          {plan === 'annual'
+                            ? lang === 'hi' ? 'Yearly' : 'Annual'
+                            : lang === 'hi' ? 'Monthly' : 'Monthly'}
+                        </span>
+                        {plan === 'annual' && (
+                          <span className={styles.recommendedBadge}>
+                            {lang === 'hi' ? 'Best value' : 'Recommended'}
+                          </span>
+                        )}
+                      </span>
+                      <span className={styles.planPriceRow}>
+                        <strong>{price.amount}</strong>
+                        <span>/{period}</span>
+                      </span>
+                      <span className={styles.webDiscountBadge}>10% web discount</span>
+                    </button>
+                  );
+                })}
               </div>
               <ul className={styles.bulletList}>
                 {premium.map((b, i) => (
@@ -218,61 +316,36 @@ export default function PricingClient() {
                 ))}
               </ul>
               <div className={styles.tierFooter}>
-                {authed ? (
-                  <>
-                    <button
-                      className={styles.primaryBtn}
-                      onClick={() => startCheckout('annual')}
-                      disabled={submitting}
-                    >
-                      {submitting
-                        ? lang === 'hi' ? 'Le ja raha hai...' : 'Taking you to checkout...'
-                        : lang === 'hi' ? 'Start 7-day free trial' : 'Start 7-day free trial'}
-                    </button>
-                    <button
-                      className={styles.secondaryLink}
-                      onClick={() => startCheckout('monthly')}
-                      disabled={submitting}
-                    >
-                      {lang === 'hi'
-                        ? 'Ya $6/mahine monthly'
-                        : 'Or pay $6/mo monthly'}
-                    </button>
-                    <button
-                      className={styles.secondaryLink}
-                      onClick={() => router.push('/restore')}
-                    >
-                      {lang === 'hi'
-                        ? 'Pehle se subscribed? Restore karein'
-                        : 'Already subscribed? Restore'}
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      className={styles.primaryBtn}
-                      onClick={() => router.push('/')}
-                    >
-                      {lang === 'hi' ? 'Shuru karein' : 'Get started'}
-                    </button>
-                    <span className={styles.tierFooterMuted}>
-                      {lang === 'hi'
-                        ? 'Pehle log in karein'
-                        : 'First, log in to upgrade'}
-                    </span>
-                    <button
-                      className={styles.secondaryLink}
-                      onClick={() => router.push('/restore')}
-                    >
-                      {lang === 'hi'
-                        ? 'Pehle se subscribed? Restore karein'
-                        : 'Already subscribed? Restore'}
-                    </button>
-                  </>
+                <button
+                  className={styles.primaryBtn}
+                  onClick={continueWithPlan}
+                  disabled={submitting}
+                >
+                  {submitting
+                    ? lang === 'hi' ? 'Le ja raha hai...' : 'Taking you to checkout...'
+                    : authed
+                      ? lang === 'hi' ? 'Start 7-day free trial' : 'Start 7-day free trial'
+                      : lang === 'hi' ? `${selectedPlan === 'annual' ? 'Yearly' : 'Monthly'} ke saath jaari rakhein` : `Continue with ${selectedPlan === 'annual' ? 'Annual' : 'Monthly'}`}
+                </button>
+                {!authed && (
+                  <span className={styles.tierFooterMuted}>
+                    {lang === 'hi'
+                      ? 'Checkout se pehle apna profile complete karein'
+                      : 'Complete your profile before checkout'}
+                  </span>
                 )}
+                <button
+                  className={styles.secondaryLink}
+                  onClick={() => router.push('/restore')}
+                >
+                  {lang === 'hi'
+                    ? 'Pehle se subscribed? Restore karein'
+                    : 'Already subscribed? Restore'}
+                </button>
               </div>
             </div>
           </div>
+          </>
         )}
 
         {error && <div className={styles.errorBox}>{error}</div>}
