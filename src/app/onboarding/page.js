@@ -7,6 +7,7 @@ import { useI18n } from '@/utils/i18n';
 import { getUser, isLoggedIn, setToken, setUser } from '@/utils/auth';
 import { authApi, userApi } from '@/utils/api';
 import { dvAnalytics } from '@/utils/analytics';
+import { getPricingReturnPath } from '@/utils/pricingIntent';
 import styles from './page.module.css';
 
 const AGE_OPTIONS = [
@@ -91,7 +92,7 @@ export default function OnboardingPage() {
           setLang(selectedLang);
           dvAnalytics.track('onboarding_complete', { childAge, username: trimmed, lang: selectedLang, logged_in: true });
           setLoading(false);
-          router.replace('/');
+          router.replace(getPricingReturnPath());
           return;
         }
       } catch (err) {
@@ -105,7 +106,7 @@ export default function OnboardingPage() {
       setLang(selectedLang);
       dvAnalytics.track('onboarding_complete', { childAge, username: trimmed, lang: selectedLang, anon: true });
       setLoading(false);
-      router.replace('/');
+      router.replace(getPricingReturnPath());
       return;
     }
 
@@ -139,7 +140,7 @@ export default function OnboardingPage() {
           username: trimmed,
           lang: selectedLang,
         });
-        router.replace('/');
+        router.replace(getPricingReturnPath());
       } catch (err) {
         const msg = String(err?.message || err || '');
         if (msg.includes('username_taken') || msg.includes('409')) {
