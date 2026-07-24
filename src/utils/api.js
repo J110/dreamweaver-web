@@ -1,4 +1,5 @@
 import { logout as authLogout, setToken as setStoredToken, getStoredFamilyId } from './auth';
+import { cacheEffectivePremium } from '@/utils/emberlightTheme';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -658,11 +659,9 @@ export const subscriptionApi = {
     // last-known value when a live call is impossible (total API outage).
     // Flag-off → is_premium is always true → this only ever caches 'true'
     // flag-off, so the fallback's deny branch is unreachable flag-off.
-    try {
-      if (typeof data.effective_premium === 'boolean') {
-        localStorage.setItem('dv_effective_premium', String(data.effective_premium));
-      }
-    } catch { /* storage unavailable — fallback just won't have a cache */ }
+    if (typeof data.effective_premium === 'boolean') {
+      cacheEffectivePremium(data.effective_premium, localStorage, window);
+    }
     return data;
   },
 

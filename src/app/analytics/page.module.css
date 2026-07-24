@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #0D0B2E;
+  background: var(--color-deep-night);
   padding: 20px;
 }
 
@@ -74,7 +74,7 @@
 
 .dashboard {
   min-height: 100vh;
-  background: #0D0B2E;
+  background: var(--color-deep-night);
   color: #fff;
   padding: 24px;
   max-width: 1200px;

@@ -8,6 +8,8 @@ import { isLoggedIn, setToken, setUser, tryAdoptNativeToken } from '@/utils/auth
 import { isCheckoutPendingRecent, clearCheckoutPending } from '@/utils/checkoutPending';
 import useVersionCheck from '@/hooks/useVersionCheck';
 import BottomNav from './BottomNav';
+import EmberlightThemeController from '@/components/EmberlightThemeController';
+import EmberlightUpgradeWash from '@/components/EmberlightUpgradeWash';
 import InstallPrompt from './InstallPrompt';
 import { isNativeApp } from '@/utils/platformDetect';
 import { isAppUser, isLandingHome } from '@/utils/nativeGate';
@@ -289,6 +291,8 @@ export default function AppShell({ children }) {
 
   return (
     <I18nProvider>
+      <EmberlightThemeController />
+      <EmberlightUpgradeWash />
       <VoicePreferencesProvider>
         <div style={{ paddingBottom: showNav ? '72px' : '0' }}>
           {children}

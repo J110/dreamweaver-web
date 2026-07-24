@@ -1,3 +1,5 @@
+import { clearEffectivePremium } from './emberlightTheme';
+
 const callPosthog = (fn) => {
   if (typeof window === 'undefined') return;
   import('posthog-js')
@@ -257,6 +259,7 @@ export const logout = () => {
     .catch(() => { /* ignore */ });
   removeToken();
   removeUser();
+  clearEffectivePremium(window.localStorage, window);
   // Clear magic-link polling state so a post-logout /login or /auth/claim
   // mount doesn't auto-resume on stale initiator_session_id values.
   // Without this, sessionStorage survives the logout and the next /login

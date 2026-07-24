@@ -6,8 +6,8 @@
 .landing {
   --lp-bg: #0B0A1E;
   --lp-bg-alt: #0F0D26;
-  --lp-purple: #6B4CE6;
-  --lp-pink: #FF6B9D;
+  --lp-purple: var(--color-primary-purple);
+  --lp-pink: var(--color-primary-pink);
   --lp-amber: #F5C469;
   --lp-cream: #FFF5E6;
   --lp-text: #E8E0F0;
@@ -449,7 +449,7 @@
 }
 
 .phase2 {
-  background: radial-gradient(circle, #B07DDB 30%, #6B4CE6);
+  background: radial-gradient(circle, #B07DDB 30%, var(--color-primary-purple));
   box-shadow: 0 0 14px rgba(107, 76, 230, 0.3);
 }
 

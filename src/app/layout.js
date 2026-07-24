@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import Script from 'next/script';
-import { Quicksand } from 'next/font/google';
+import { Fraunces, Quicksand, Tiro_Devanagari_Hindi } from 'next/font/google';
 import './globals.css';
 import AppShell from '@/components/AppShell';
 import PostHogProvider from '@/components/PostHogProvider';
@@ -8,10 +8,12 @@ import PostHogPageview from '@/components/PostHogPageview';
 
 const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID;
 
-const quicksand = Quicksand({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  display: 'swap',
+const quicksand = Quicksand({ subsets: ['latin'], variable: '--font-dream-ui' });
+const fraunces = Fraunces({ subsets: ['latin'], variable: '--font-dream-display' });
+const tiroHindi = Tiro_Devanagari_Hindi({
+  subsets: ['devanagari'],
+  weight: '400',
+  variable: '--font-dream-devanagari',
 });
 
 export const viewport = {
@@ -118,7 +120,7 @@ const jsonLd = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${quicksand.variable} ${fraunces.variable} ${tiroHindi.variable}`}>
       <head>
         <script
           dangerouslySetInnerHTML={{

@@ -67,18 +67,18 @@
 }
 
 .markdown ul li::marker {
-  color: #6B4CE6;
+  color: var(--color-primary-purple);
 }
 
 .markdown ol li::marker {
-  color: #6B4CE6;
+  color: var(--color-primary-purple);
   font-weight: 600;
 }
 
 .markdown blockquote {
   margin: 24px 0;
   padding: 16px 24px;
-  border-left: 4px solid #6B4CE6;
+  border-left: 4px solid var(--color-primary-purple);
   background: rgba(107, 76, 230, 0.08);
   border-radius: 0 12px 12px 0;
   color: #D8D0E8;

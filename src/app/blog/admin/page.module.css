@@ -27,7 +27,7 @@
 }
 
 .authError {
-  color: #FF6B9D;
+  color: var(--color-primary-pink);
   font-size: 14px;
   margin: 0 0 12px;
 }
@@ -47,13 +47,13 @@
 }
 
 .authInput:focus {
-  border-color: #6B4CE6;
+  border-color: var(--color-primary-purple);
 }
 
 .authBtn {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, #6B4CE6, #8B6CF0);
+  background: linear-gradient(135deg, var(--color-primary-purple), #8B6CF0);
   border: none;
   border-radius: 12px;
   color: #FFF;
@@ -84,7 +84,7 @@
 
 .newPostBtn {
   padding: 10px 20px;
-  background: linear-gradient(135deg, #6B4CE6, #8B6CF0);
+  background: linear-gradient(135deg, var(--color-primary-purple), #8B6CF0);
   border: none;
   border-radius: 20px;
   color: #FFF;
@@ -123,7 +123,7 @@
 
 .tabActive {
   color: #9B7EF0;
-  border-bottom-color: #6B4CE6;
+  border-bottom-color: var(--color-primary-purple);
 }
 
 .loading {
@@ -218,7 +218,7 @@
   background: rgba(255, 107, 157, 0.08);
   border: 1px solid rgba(255, 107, 157, 0.2);
   border-radius: 8px;
-  color: #FF6B9D;
+  color: var(--color-primary-pink);
   font-size: 13px;
   cursor: pointer;
   transition: background 0.2s;
@@ -431,7 +431,7 @@
 .suggestedTag {
   padding: 3px 10px;
   background: rgba(107, 76, 230, 0.06);
-  border: 1px solid rgba(107, 76, 230, 0.12);
+  border: 1px solid var(--dv-soft-accent);
   border-radius: 12px;
   color: #7A6F8E;
   font-size: 12px;
@@ -440,7 +440,7 @@
 }
 
 .suggestedTag:hover {
-  background: rgba(107, 76, 230, 0.12);
+  background: var(--dv-soft-accent);
   color: #9B7EF0;
 }
 
@@ -597,7 +597,7 @@
 
 .publishBtn {
   padding: 12px 28px;
-  background: linear-gradient(135deg, #6B4CE6, #8B6CF0);
+  background: linear-gradient(135deg, var(--color-primary-purple), #8B6CF0);
   border: none;
   border-radius: 12px;
   color: #FFF;

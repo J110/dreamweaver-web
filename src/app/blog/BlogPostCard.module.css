@@ -91,7 +91,7 @@
 .tag {
   font-size: 11px;
   padding: 3px 10px;
-  background: rgba(107, 76, 230, 0.12);
+  background: var(--dv-soft-accent);
   color: #9B7EF0;
   border-radius: 20px;
   text-transform: capitalize;

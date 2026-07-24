@@ -52,6 +52,21 @@ function UpgradeInner() {
     setError(null);
     setSubmitting(true);
     try {
+      let subscription;
+      try {
+        subscription = await subscriptionApi.getCurrent();
+      } catch {
+        setError('We could not confirm your subscription status. Please try again.');
+        return;
+      }
+      if (subscription?.effective_premium === true) {
+        setError('You already have Premium. Manage your subscription in settings.');
+        return;
+      }
+      if (subscription?.effective_premium !== false) {
+        setError('We could not confirm your subscription status. Please try again.');
+        return;
+      }
       const { checkout_url } = await billingApi.startCheckout('monthly');
       if (checkout_url) {
         openCheckoutUrl(checkout_url);
@@ -150,7 +165,7 @@ export default function UpgradeClient() {
       <StarField />
       <Suspense
         fallback={
-          <div className={styles.root} style={{ minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(248,246,255,0.5)', fontSize: '0.9rem' }}>
+          <div className={styles.root} style={{ minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--dv-text-dim)', fontSize: '0.9rem' }}>
             Loading…
           </div>
         }

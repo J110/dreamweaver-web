@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "jest"
+    "test": "jest",
+    "test:emberlight": "jest src/utils/emberlightTheme.test.js src/utils/emberlightTransition.test.js src/utils/authThemeLogout.test.js src/components/EmberlightThemeController.test.js src/components/EmberlightStateFailures.test.js src/app/upgrade/upgradeTheme.test.js src/app/upgrade/UpgradeClient.test.js src/components/StarField.test.js --runInBand",
+    "verify:emberlight": "node scripts/audit-theme-colors.mjs && node scripts/verify-emberlight-routes.mjs"
   },
   "dependencies": {
     "gsap": "^3.14.2",
@@ -20,7 +22,8 @@
     "server-only": "^0.0.1"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
-    "jest-environment-node": "^29.7.0"
+    "@babel/runtime": "^8.0.0",
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1"
   }
 }

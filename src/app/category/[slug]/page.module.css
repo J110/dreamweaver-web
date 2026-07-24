@@ -15,7 +15,7 @@
 }
 
 .breadcrumb a {
-  color: #6B4CE6;
+  color: var(--color-primary-purple);
   text-decoration: none;
 }
 
@@ -81,7 +81,7 @@
 .cardType {
   font-size: 10px;
   font-weight: 700;
-  color: #6B4CE6;
+  color: var(--color-primary-purple);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
