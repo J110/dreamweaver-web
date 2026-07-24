@@ -30,6 +30,40 @@ npm run verify:emberlight
 exit 0
 ```
 
+## CSSOM timing declaration coverage
+
+### Test strengthening
+
+The timing regression now asserts the loaded premium CSSOM animation declaration consumes both `var(--firefly-wander-duration)` and `var(--firefly-glow-duration)`. The free twinkle declaration must consume `var(--star-twinkle-duration)` and `var(--star-twinkle-delay)`.
+
+### Mutation RED evidence
+
+```
+npx jest src/components/StarField.test.js --runInBand -t "independent premium"
+fireflyWander 4s => Expected substring: "var(--firefly-wander-duration)"; received declaration: "fireflyWander 4s ..."
+
+npx jest src/components/StarField.test.js --runInBand -t "retains all 60"
+twinkle 9s => Expected substring: "var(--star-twinkle-duration)"; received declaration: "twinkle 9s ..."
+```
+
+These failures prove the CSSOM fallback rejects hard-coded timing even when jsdom does not resolve custom-property animation durations through `getComputedStyle`.
+
+### Final GREEN evidence
+
+```
+npx jest src/components/StarField.test.js --runInBand
+1 suite passed; 6 tests passed
+
+npm run test:emberlight
+7 suites passed; 33 tests passed
+
+npx jest --runInBand
+9 suites passed; 37 tests passed
+
+npm run verify:emberlight
+exit 0
+```
+
 ## Natural-motion revision
 
 ### Root cause

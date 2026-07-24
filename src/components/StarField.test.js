@@ -124,6 +124,8 @@ describe('StarField theme particles', () => {
         ]
 
     expect(star.style.animationDuration).toBe('')
+    expect(styleRule(":root[data-theme='premium'] .star").style.animation).toContain('var(--firefly-wander-duration)')
+    expect(styleRule(":root[data-theme='premium'] .star").style.animation).toContain('var(--firefly-glow-duration)')
     expect(animationNames).toEqual(['fireflyWander', 'fireflyGlow'])
     expect(durations).toHaveLength(2)
     expect(durations[0]).toBeGreaterThanOrEqual(18)
@@ -137,7 +139,10 @@ describe('StarField theme particles', () => {
     render()
 
     expect(particles().filter((star) => getComputedStyle(star).display !== 'none')).toHaveLength(60)
-    expect(styleRule(":root:not([data-theme='premium']) .star").style.animation).toContain('twinkle')
+    const freeAnimation = styleRule(":root:not([data-theme='premium']) .star").style.animation
+    expect(freeAnimation).toContain('twinkle')
+    expect(freeAnimation).toContain('var(--star-twinkle-duration)')
+    expect(freeAnimation).toContain('var(--star-twinkle-delay)')
     expect(styleRule(":root[data-theme='premium'] .star").style.getPropertyValue('left')).toBe('var(--firefly-left)')
   })
 
