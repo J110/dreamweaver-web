@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "test": "jest",
-    "test:emberlight": "jest src/utils/emberlightTheme.test.js src/utils/emberlightTransition.test.js src/utils/authThemeLogout.test.js src/components/EmberlightThemeController.test.js src/components/EmberlightStateFailures.test.js src/app/upgrade/upgradeTheme.test.js src/app/upgrade/UpgradeClient.test.js src/components/StarField.test.js --runInBand",
+    "test:emberlight": "jest src/utils/emberlightTheme.test.js src/utils/emberlightTransition.test.js src/utils/authThemeLogout.test.js src/components/EmberlightThemeController.test.js src/components/EmberlightStateFailures.test.js src/components/PremiumThemeCoverage.test.js src/components/StarField.test.js src/app/upgrade/upgradeTheme.test.js src/app/upgrade/UpgradeClient.test.js src/app/upgrade/NativeUpgradeRoute.test.js src/app/upgrade/NativeUpgradeCheckout.test.js src/app/player/LockedPremiumRedirect.test.js --runInBand",
     "verify:emberlight": "node scripts/audit-theme-colors.mjs && node scripts/verify-emberlight-routes.mjs"
   },
   "dependencies": {
