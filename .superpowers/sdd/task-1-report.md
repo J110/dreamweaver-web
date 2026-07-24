@@ -1,31 +1,50 @@
-# Task 1: Centralize Premium Theme Resolution
+# Task 1: Theme-gated ambient fireflies
 
-## Delivered
+## Root cause
 
-- Added `src/utils/emberlightTheme.js` with the premium theme resolver, explicit cache reader, and same-tab change event dispatcher.
-- Added Jest coverage for upgrade preview, confirmed/non-confirmed premium resolution, explicit cache values, and same-tab cache change details.
-- Routed `subscriptionApi.getCurrent()` cache writes through `cacheEffectivePremium`.
-- Included the baseline Jest dependency changes and enabled ES modules for the Jest test files while preserving the Next configuration's behavior.
+`StarField` generated only position, size, and twinkle timing. Premium mode therefore had no per-particle transform path, and the shared star CSS could not render differentiated firefly motion. The fixed field also did not clip transformed children.
 
-## TDD evidence
+## RED evidence
 
-1. The initial focused test run failed because `./emberlightTheme` did not exist.
-2. After implementation, the focused suite passed: 1 suite, 7 tests.
-3. The full available suite passed: 1 suite, 7 tests.
+The regression was added before production changes. The initial test environment lacked `@babel/runtime`, then required the jsdom environment; after those test-runtime prerequisites were corrected, the regression failed as intended:
+
+```
+Expected: not ""
+Received: ""
+particles[0].style.getPropertyValue('--firefly-drift-x')
+```
+
+## GREEN evidence
+
+```
+npx jest src/components/StarField.test.js --runInBand
+1 passed, 1 total
+
+npm run test:emberlight
+7 passed, 7 total; 28 passed, 28 total
+
+npx jest --runInBand
+9 passed, 9 total; 32 passed, 32 total
+
+npm run verify:emberlight
+exit 0
+```
+
+## Files
+
+- `src/components/StarField.test.js`
+- `src/components/StarField.js`
+- `src/app/globals.css`
+- `package.json`
+
+## Commit
+
+Implementation commit: `3d99b1bb4c983f7ede880057fc42cf85ff681bb5`
 
 ## Self-review
 
-- The resolver grants the premium theme only for confirmed `true`, except for the `/upgrade` preview route.
-- Cache parsing accepts only the strings `true` and `false`; storage and event errors remain fail-safe.
-- The API no longer writes the cache directly, so same-tab listeners receive the centralized event.
-
-## Review fix
-
-- Restored the original CommonJS `next.config.js` and removed the package-wide ESM opt-in, preserving Next.js runtime behavior.
-- Added a test-only Jest transform for the existing ESM source and test files, so callers do not need to set `NODE_OPTIONS`.
-- Excluded Next.js build output from Jest's module scan to avoid its duplicate-package warning.
-
-## Review fix verification
-
-1. `npx jest src/utils/emberlightTheme.test.js --runInBand` — PASS: 1 suite, 7 tests.
-2. `npx jest --runInBand` — PASS: 1 suite, 7 tests.
+- Each of 60 shared particles receives all four requested firefly path custom properties.
+- Premium CSS changes only premium particles, hides particles 25–60, and retains the free twinkle rule.
+- Reduced-motion premium particles disable animation.
+- The fixed particle layer uses `overflow: hidden` to keep transformed particles inside the viewport.
+- Browser QA was intentionally not run; it is assigned to the controller.
