@@ -43,6 +43,42 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
+.regionSwitchWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 22px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+.regionSwitch {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+}
+.regionButton {
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 13px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.68);
+  font: inherit;
+  cursor: pointer;
+}
+.regionButtonActive {
+  background: rgba(181, 139, 255, 0.24);
+  color: #fff;
+}
+.regionButton:focus-visible,
+.planOption:focus-visible {
+  outline: 3px solid rgba(244, 201, 90, 0.9);
+  outline-offset: 2px;
+}
+
 .tierGrid {
   display: grid;
   grid-template-columns: 1fr;
@@ -81,6 +117,87 @@
   flex-wrap: wrap;
   gap: 6px;
   margin-bottom: 20px;
+}
+.trialRow {
+  margin: -4px 0 18px;
+}
+.planOptions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+@media (min-width: 460px) {
+  .planOptions {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.planOption {
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  background: rgba(5, 4, 38, 0.34);
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+.planOption:hover {
+  transform: translateY(-1px);
+  border-color: rgba(186, 159, 255, 0.55);
+}
+.planOptionSelected {
+  border-color: #baa1ff;
+  background: rgba(124, 92, 255, 0.2);
+  box-shadow: 0 0 0 1px rgba(186, 159, 255, 0.25);
+}
+.planOptionTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 24px;
+}
+.planLabel {
+  font-size: 1rem;
+  font-weight: 700;
+}
+.recommendedBadge,
+.webDiscountBadge {
+  display: inline-flex;
+  width: fit-content;
+  border-radius: 999px;
+  font-size: 0.67rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+.recommendedBadge {
+  padding: 5px 7px;
+  background: linear-gradient(135deg, #f4c95a, #d99c2b);
+  color: #2a1c00;
+  text-transform: uppercase;
+}
+.planPriceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin: 13px 0 9px;
+}
+.planPriceRow strong {
+  font-size: 1.7rem;
+  letter-spacing: -0.02em;
+}
+.planPriceRow span {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.85rem;
+}
+.webDiscountBadge {
+  padding: 5px 8px;
+  border: 1px solid rgba(244, 201, 90, 0.38);
+  color: #ffe39a;
+  background: rgba(244, 201, 90, 0.08);
 }
 .priceAmount {
   font-size: 2.4rem;

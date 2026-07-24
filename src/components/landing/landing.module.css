@@ -256,6 +256,33 @@
   box-shadow: 0 6px 28px rgba(107, 76, 230, 0.6);
 }
 
+.ctaPremium {
+  display: inline-block;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, rgba(244, 201, 90, 0.2), rgba(217, 156, 43, 0.12));
+  border: 1px solid rgba(244, 201, 90, 0.85);
+  color: #ffe39a;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  box-shadow: 0 4px 18px rgba(217, 156, 43, 0.16);
+}
+
+.ctaPremium:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, rgba(244, 201, 90, 0.3), rgba(217, 156, 43, 0.2));
+  box-shadow: 0 6px 24px rgba(217, 156, 43, 0.25);
+}
+
+.ctaPrimary:focus-visible,
+.ctaPremium:focus-visible,
+.ctaSecondary:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 3px;
+}
+
 .ctaSecondary {
   background: none;
   border: none;
