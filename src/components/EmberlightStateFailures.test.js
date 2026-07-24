@@ -1,27 +1,91 @@
-const fs = require('node:fs');
-const path = require('node:path');
+const mockEffects = [];
+const mockSetActive = jest.fn();
 
-test('theme controller trusts authoritative same-tab detail when storage is unavailable', () => {
-  const source = fs.readFileSync(
-    path.join(process.cwd(), 'src/components/EmberlightThemeController.js'),
-    'utf8',
-  );
+jest.mock('@babel/runtime/helpers/interopRequireDefault', () => (
+  (value) => (value?.__esModule ? value : { default: value })
+), { virtual: true });
+jest.mock('@babel/runtime/helpers/defineProperty', () => (
+  (target, key, value) => {
+    target[key] = value;
+    return target;
+  }
+), { virtual: true });
+jest.mock('react', () => ({
+  useEffect: (effect) => mockEffects.push(effect),
+  useState: () => [false, mockSetActive],
+}));
+jest.mock('next/navigation', () => ({
+  usePathname: () => '/settings',
+}));
+jest.mock('@/utils/emberlightTheme', () => require('../utils/emberlightTheme'), {
+  virtual: true,
+});
+jest.mock('@/utils/emberlightTransition', () => require('../utils/emberlightTransition'), {
+  virtual: true,
+});
+jest.mock('./EmberlightUpgradeWash.module.css', () => ({}), { virtual: true });
 
-  expect(source).toContain('const eventPremium = event?.detail?.current');
-  expect(source).toContain("typeof eventPremium === 'boolean'");
+function throwingStorage() {
+  return {
+    getItem: () => {
+      throw new Error('storage unavailable');
+    },
+    setItem: () => {
+      throw new Error('storage unavailable');
+    },
+  };
+}
+
+beforeEach(() => {
+  mockEffects.length = 0;
+  mockSetActive.mockClear();
 });
 
-test('upgrade wash plays once per module session when seen persistence fails', () => {
-  const transition = fs.readFileSync(
-    path.join(process.cwd(), 'src/utils/emberlightTransition.js'),
-    'utf8',
-  );
-  const component = fs.readFileSync(
-    path.join(process.cwd(), 'src/components/EmberlightUpgradeWash.js'),
-    'utf8',
-  );
+test('theme controller applies authoritative same-tab detail when storage writes fail', () => {
+  const target = new EventTarget();
+  const storage = throwingStorage();
+  target.localStorage = storage;
+  target.DreamValleyTheme = { postMessage: jest.fn() };
+  global.window = target;
+  global.localStorage = storage;
+  global.navigator = {};
+  global.document = {
+    documentElement: {
+      setAttribute: jest.fn(),
+      toggleAttribute: jest.fn(),
+    },
+  };
+  const Controller = require('./EmberlightThemeController').default;
+  const { cacheEffectivePremium } = require('../utils/emberlightTheme');
+  Controller();
+  mockEffects.splice(0).forEach((effect) => effect());
 
-  expect(transition).toContain('let upgradeWashSeenThisSession = false');
-  expect(component).toContain('readUpgradeWashSeen(localStorage)');
-  expect(component).toContain('markUpgradeWashSeen(localStorage)');
+  cacheEffectivePremium(true, storage, target);
+
+  expect(document.documentElement.setAttribute).toHaveBeenLastCalledWith(
+    'data-theme',
+    'premium',
+  );
+});
+
+test('upgrade wash suppresses repeated same-session events when seen writes fail', () => {
+  const target = new EventTarget();
+  const storage = throwingStorage();
+  target.localStorage = storage;
+  target.matchMedia = () => ({ matches: false });
+  target.setTimeout = jest.fn();
+  global.window = target;
+  global.localStorage = storage;
+  const Wash = require('./EmberlightUpgradeWash').default;
+  const { THEME_CHANGE_EVENT } = require('../utils/emberlightTheme');
+  Wash();
+  mockEffects.splice(0).forEach((effect) => effect());
+  const transition = () => target.dispatchEvent(new CustomEvent(THEME_CHANGE_EVENT, {
+    detail: { previous: false, current: true },
+  }));
+
+  transition();
+  transition();
+
+  expect(mockSetActive.mock.calls.filter(([value]) => value === true)).toHaveLength(1);
 });
