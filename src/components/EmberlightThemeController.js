@@ -8,6 +8,7 @@ import {
   readEffectivePremium,
   resolveTheme,
 } from '@/utils/emberlightTheme';
+import { subscriptionApi } from '@/utils/api';
 
 export default function EmberlightThemeController() {
   const pathname = usePathname();
@@ -35,6 +36,9 @@ export default function EmberlightThemeController() {
       applyTheme(event?.detail?.current === true);
     };
     applyTheme(readEffectivePremium(window.localStorage) === true);
+    subscriptionApi.getCurrent({ fresh: true })
+      .then((subscription) => applyTheme(subscription?.effective_premium === true))
+      .catch(() => {});
     window.addEventListener('storage', onStorage);
     window.addEventListener(THEME_CHANGE_EVENT, onPremiumChange);
     return () => {

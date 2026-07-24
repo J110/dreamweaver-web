@@ -6,9 +6,13 @@ const { createRoot } = require('react-dom/client')
 const { EFFECTIVE_PREMIUM_KEY, THEME_CHANGE_EVENT } = require('../utils/emberlightTheme')
 
 let mockPathname = '/settings'
+const mockGetCurrent = jest.fn()
 
 jest.mock('next/navigation', () => ({ usePathname: () => mockPathname }), { virtual: true })
 jest.mock('@/utils/emberlightTheme', () => require('../utils/emberlightTheme'), { virtual: true })
+jest.mock('@/utils/api', () => ({
+  subscriptionApi: { getCurrent: (...args) => mockGetCurrent(...args) },
+}), { virtual: true })
 
 global.IS_REACT_ACT_ENVIRONMENT = true
 
@@ -30,6 +34,8 @@ describe('EmberlightThemeController', () => {
     document.body.appendChild(container)
     root = createRoot(container)
     localStorage.clear()
+    mockGetCurrent.mockReset()
+    mockGetCurrent.mockRejectedValue(new Error('offline'))
     mockPathname = '/settings'
     delete document.documentElement.dataset.theme
     document.documentElement.removeAttribute('data-battery-saver')
@@ -45,6 +51,19 @@ describe('EmberlightThemeController', () => {
     localStorage.setItem(EFFECTIVE_PREMIUM_KEY, 'true')
     mount()
 
+    expect(document.documentElement.dataset.theme).toBe('premium')
+  })
+
+  test('activates the premium theme from the authoritative subscription on app start', async () => {
+    mockGetCurrent.mockResolvedValue({ effective_premium: true })
+    const Controller = require('./EmberlightThemeController').default
+
+    await act(async () => {
+      root.render(React.createElement(Controller))
+      await Promise.resolve()
+    })
+
+    expect(mockGetCurrent).toHaveBeenCalledWith({ fresh: true })
     expect(document.documentElement.dataset.theme).toBe('premium')
   })
 

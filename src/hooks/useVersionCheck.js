@@ -16,6 +16,15 @@ import { useEffect, useRef } from 'react';
  * Skips if no NEXT_PUBLIC_BUILD_ID (dev mode).
  */
 const CURRENT_BUILD_ID = process.env.NEXT_PUBLIC_BUILD_ID;
+const RELOAD_ATTEMPT_KEY = 'dv_build_reload_attempt';
+
+export function shouldReloadForBuild({ currentBuildId, serverBuildId, attemptedBuildId }) {
+  return Boolean(
+    serverBuildId
+    && serverBuildId !== currentBuildId
+    && serverBuildId !== attemptedBuildId
+  );
+}
 
 export default function useVersionCheck() {
   const hasCheckedOnLoad = useRef(false);
@@ -29,10 +38,24 @@ export default function useVersionCheck() {
         if (!res.ok) return;
 
         const data = await res.json();
-        if (data.buildId && data.buildId !== CURRENT_BUILD_ID) {
+        let attemptedBuildId = null;
+        try {
+          attemptedBuildId = window.sessionStorage.getItem(RELOAD_ATTEMPT_KEY);
+          if (data.buildId === CURRENT_BUILD_ID) {
+            window.sessionStorage.removeItem(RELOAD_ATTEMPT_KEY);
+          }
+        } catch {
+          return;
+        }
+        if (shouldReloadForBuild({
+          currentBuildId: CURRENT_BUILD_ID,
+          serverBuildId: data.buildId,
+          attemptedBuildId,
+        })) {
           console.log(
             `[VersionCheck] New build detected: ${data.buildId} (current: ${CURRENT_BUILD_ID}). Reloading...`
           );
+          window.sessionStorage.setItem(RELOAD_ATTEMPT_KEY, data.buildId);
           window.location.reload();
         }
       } catch {
