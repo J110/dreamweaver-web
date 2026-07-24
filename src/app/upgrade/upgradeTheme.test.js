@@ -1,3 +1,5 @@
+/** @jest-environment jsdom */
+
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -32,13 +34,34 @@ test('upgrade loading state uses semantic text', () => {
   expect(source).not.toContain("color: 'rgba(248,246,255,0.5)'");
 });
 
-test('upgrade display headline uses the premium display font token', () => {
-  const css = fs.readFileSync(
+test('upgrade headline follows the free and premium display-font property chain', () => {
+  const globalCss = fs.readFileSync(
+    path.join(process.cwd(), 'src/app/globals.css'),
+    'utf8',
+  );
+  const upgradeCss = fs.readFileSync(
     path.join(process.cwd(), 'src/app/upgrade/page.module.css'),
     'utf8',
   );
-
-  expect(css).toMatch(
-    /\.headline\s*\{[^}]*font-family:\s*var\(--dv-font-display\),\s*serif;/s,
+  const style = document.createElement('style');
+  style.textContent = `${globalCss}\n${upgradeCss}`;
+  document.head.appendChild(style);
+  const rules = Array.from(style.sheet.cssRules);
+  const rule = (selector) => rules.find((candidate) => candidate.selectorText === selector);
+  const baseDisplay = rule(':root').style
+    .getPropertyValue('--dv-font-display')
+    .trim();
+  const premiumDisplay = rule(":root[data-theme='premium']").style
+    .getPropertyValue('--dv-font-display')
+    .trim();
+  const headlineFont = rule('.headline').style
+    .getPropertyValue('font-family')
+    .trim();
+  const resolveDisplayFont = (displayFont) => (
+    headlineFont.replace('var(--dv-font-display)', displayFont)
   );
+
+  expect(resolveDisplayFont(baseDisplay)).toBe('var(--font-dream-ui), serif');
+  expect(resolveDisplayFont(premiumDisplay)).toBe('var(--font-dream-display), serif');
+  style.remove();
 });
