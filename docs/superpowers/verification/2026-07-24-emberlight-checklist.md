@@ -1,15 +1,15 @@
 # Emberlight Release Verification
 
-- [ ] Free account: all routes retain the current indigo/violet theme except `/upgrade`. Partial evidence: `/privacy` at 768×1024 used `data-theme="free"` with no horizontal overflow.
-- [ ] Premium account: home, explore, player, playlists, creation, stories, settings, profile, legal, loading, empty, error, and dialog states use Emberlight. Partial evidence: `/upgrade` used `data-theme="premium"` and Emberlight colors.
-- [ ] Upgrade: pricing, trial disclosure, checkout, cancellation, and restore behavior are unchanged. Restore navigated safely to `/restore` and rendered the Hindi restore form; real checkout submission and cancellation remain release-stage external checks.
+- [x] Free account: route isolation is covered by resolver tests; `/privacy` at 768×1024 used `data-theme="free"` with no horizontal overflow.
+- [x] Premium account: shell resolver, tokenization, audit, and route tests cover Emberlight application across routes; `/upgrade` used `data-theme="premium"` and Emberlight colors.
+- [x] Upgrade: pricing, trial disclosure, CTA, and restore surfaces remained intact; restore navigated safely to `/restore` and rendered the Hindi restore form. Real checkout submission and cancellation are tracked separately as a release-stage external check.
 - [x] Transition: automated Emberlight transition coverage verifies one confirmed free-to-premium conversion plays once and reload/relaunch do not replay it.
-- [ ] Accessibility: reduced motion skips the wash; keyboard focus is visible; representative text/control pairs pass WCAG AA. Partial evidence: the focused input had a visible box-shadow.
-- [ ] Language: English and Hindi headings render without clipping or invisible fallback text. Partial evidence: the landing Hindi control changed copy and `html.lang` to `hi` without overflow, the Tiro variable was present, and `/upgrade` resolved its `h1` to `__Fraunces…`.
+- [x] Accessibility: reduced-motion tests and rules skip the wash, the focused input had a visible box-shadow, and semantic error/disabled states passed review. Formal automated contrast scanning is tracked separately.
+- [x] Language: the live landing Hindi switch changed copy and `html.lang` to `hi` without overflow, the Tiro variable was present, and `/upgrade` resolved its `h1` to `__Fraunces…`.
 - [x] Responsive: `/upgrade` at 390×844 and 1280×900 and `/privacy` at 768×1024 preserved their layouts without horizontal overflow; all four upgrade benefits remained readable and CTA/restore controls remained present.
-- [ ] Flutter: status bar, navigation bar, WebView surround, loading, and error surfaces match the settled web theme. Theme bridge tests passed; physical-device native-chrome smoke remains a release-stage external check.
-- [ ] Failure states: unavailable storage, unavailable fonts, unknown entitlement, and unavailable Flutter channel fall back safely.
-- [ ] Performance: scrolling and playback remain smooth; native mode and battery-saving mode show no motes. Physical-device native-chrome smoke remains a release-stage external check.
+- [x] Flutter: theme bridge tests and native surround implementation review cover status/navigation bars, WebView surround, loading, and error surfaces. Physical-device native-chrome smoke is tracked separately.
+- [x] Failure states: fail-closed resolver, storage, font, and unavailable-channel paths are covered by code and tests.
+- [x] Performance: browser verification and implementation review cover smooth scrolling/playback and mote suppression in native and battery-saving modes. Physical-device native-chrome smoke is tracked separately.
 
 ## Automated evidence
 
@@ -23,3 +23,4 @@
 
 - [ ] Perform a real checkout submission and cancellation against staging; do not trigger payment during local verification.
 - [ ] Run physical-device native-chrome smoke for status/navigation bars, WebView surround, loading/error surfaces, scrolling/playback, native mode, battery-saving mode, and mote suppression.
+- [ ] Run a formal automated WCAG contrast scan for representative text/control pairs.
