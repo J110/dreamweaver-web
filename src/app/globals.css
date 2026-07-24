@@ -165,19 +165,19 @@ html {
   }
 }
 
-@keyframes fireflyDrift {
-  0%, 100% {
-    transform: translate3d(0, 0, 0);
-    opacity: 0.35;
-  }
-  35% {
-    transform: translate3d(var(--firefly-mid-x), var(--firefly-mid-y), 0);
-    opacity: 1;
-  }
-  70% {
-    transform: translate3d(var(--firefly-drift-x), var(--firefly-drift-y), 0);
-    opacity: 0.55;
-  }
+@keyframes fireflyWander {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  17% { transform: translate3d(var(--firefly-x1), var(--firefly-y1), 0); }
+  34% { transform: translate3d(var(--firefly-x2), var(--firefly-y2), 0); }
+  51% { transform: translate3d(var(--firefly-x3), var(--firefly-y3), 0); }
+  68% { transform: translate3d(var(--firefly-x4), var(--firefly-y4), 0); }
+  85% { transform: translate3d(var(--firefly-x5), var(--firefly-y5), 0); }
+}
+
+@keyframes fireflyGlow {
+  0%, 100% { opacity: 0.28; }
+  45% { opacity: 1; }
+  70% { opacity: 0.5; }
 }
 
 @keyframes fadeIn {
@@ -610,16 +610,18 @@ label {
 }
 
 :root[data-theme='premium'] .star {
+  left: var(--firefly-left) !important;
+  top: var(--firefly-top) !important;
   width: 3px !important;
   height: 3px !important;
   background: #f6c76f;
   box-shadow: 0 0 5px 2px rgba(246, 199, 111, 0.65), 0 0 14px 5px rgba(233, 164, 94, 0.24);
-  animation-name: fireflyDrift;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
+  animation:
+    fireflyWander var(--firefly-wander-duration) var(--firefly-wander-delay) ease-in-out infinite,
+    fireflyGlow var(--firefly-glow-duration) var(--firefly-glow-delay) ease-in-out infinite;
 }
 
-:root[data-theme='premium'] .star:nth-child(n + 25) {
+:root[data-theme='premium'] .star:nth-child(n + 41) {
   display: none;
 }
 

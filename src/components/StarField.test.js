@@ -44,23 +44,66 @@ describe('StarField theme particles', () => {
     (rule) => rule.selectorText === selector
   )
 
-  test('provides motion paths for premium fireflies while retaining 60 shared particles', () => {
+  test('provides natural premium firefly paths while retaining 60 shared particles', () => {
     render()
 
     const stars = particles()
     expect(stars).toHaveLength(60)
-    expect(stars[0].style.getPropertyValue('--firefly-drift-x')).not.toBe('')
-    expect(stars[0].style.getPropertyValue('--firefly-drift-y')).not.toBe('')
-    expect(stars[0].style.getPropertyValue('--firefly-mid-x')).not.toBe('')
-    expect(stars[0].style.getPropertyValue('--firefly-mid-y')).not.toBe('')
+    expect(stars[0].style.getPropertyValue('--firefly-left')).not.toBe('')
+    expect(stars[0].style.getPropertyValue('--firefly-top')).not.toBe('')
+    for (let waypoint = 1; waypoint <= 5; waypoint += 1) {
+      expect(stars[0].style.getPropertyValue(`--firefly-x${waypoint}`)).not.toBe('')
+      expect(stars[0].style.getPropertyValue(`--firefly-y${waypoint}`)).not.toBe('')
+    }
+    expect(stars[0].style.getPropertyValue('--firefly-wander-duration')).not.toBe('')
+    expect(stars[0].style.getPropertyValue('--firefly-glow-duration')).not.toBe('')
   })
 
-  test('shows exactly 24 premium fireflies through the active theme selector', () => {
+  test('shows exactly 40 premium fireflies across the jittered 8 by 5 grid', () => {
     document.documentElement.dataset.theme = 'premium'
     render()
 
-    expect(particles().filter((star) => getComputedStyle(star).display !== 'none')).toHaveLength(24)
-    expect(styleRule(":root[data-theme='premium'] .star").style.getPropertyValue('animation-name')).toBe('fireflyDrift')
+    const stars = particles()
+    expect(stars.filter((star) => getComputedStyle(star).display !== 'none')).toHaveLength(40)
+    expect(styleRule(":root[data-theme='premium'] .star").style.getPropertyValue('left')).toBe('var(--firefly-left)')
+    expect(styleRule(":root[data-theme='premium'] .star").style.getPropertyValue('top')).toBe('var(--firefly-top)')
+    expect(styleRule(":root[data-theme='premium'] .star").style.animation).toContain('fireflyWander')
+    expect(styleRule(":root[data-theme='premium'] .star").style.animation).toContain('fireflyGlow')
+
+    stars.slice(0, 40).forEach((star, index) => {
+      const column = index % 8
+      const row = Math.floor(index / 8)
+      const left = Number.parseFloat(star.style.getPropertyValue('--firefly-left'))
+      const top = Number.parseFloat(star.style.getPropertyValue('--firefly-top'))
+
+      expect(left).toBeGreaterThanOrEqual(((column + 0.2) / 8) * 100)
+      expect(left).toBeLessThanOrEqual(((column + 0.8) / 8) * 100)
+      expect(top).toBeGreaterThanOrEqual(((row + 0.2) / 5) * 100)
+      expect(top).toBeLessThanOrEqual(((row + 0.8) / 5) * 100)
+
+      for (let waypoint = 1; waypoint <= 5; waypoint += 1) {
+        const x = Number.parseFloat(star.style.getPropertyValue(`--firefly-x${waypoint}`))
+        const y = Number.parseFloat(star.style.getPropertyValue(`--firefly-y${waypoint}`))
+        expect(x).toBeGreaterThanOrEqual(-60)
+        expect(x).toBeLessThanOrEqual(60)
+        expect(y).toBeGreaterThanOrEqual(-50)
+        expect(y).toBeLessThanOrEqual(50)
+      }
+
+      const wanderDuration = Number.parseFloat(star.style.getPropertyValue('--firefly-wander-duration'))
+      const wanderDelay = Number.parseFloat(star.style.getPropertyValue('--firefly-wander-delay'))
+      const glowDuration = Number.parseFloat(star.style.getPropertyValue('--firefly-glow-duration'))
+      const glowDelay = Number.parseFloat(star.style.getPropertyValue('--firefly-glow-delay'))
+
+      expect(wanderDuration).toBeGreaterThanOrEqual(18)
+      expect(wanderDuration).toBeLessThanOrEqual(32)
+      expect(wanderDelay).toBeGreaterThanOrEqual(-32)
+      expect(wanderDelay).toBeLessThanOrEqual(0)
+      expect(glowDuration).toBeGreaterThanOrEqual(3)
+      expect(glowDuration).toBeLessThanOrEqual(7)
+      expect(glowDelay).toBeGreaterThanOrEqual(-7)
+      expect(glowDelay).toBeLessThanOrEqual(0)
+    })
   })
 
   test('retains all 60 twinkling stars through the free theme selector', () => {
@@ -69,6 +112,7 @@ describe('StarField theme particles', () => {
 
     expect(particles().filter((star) => getComputedStyle(star).display !== 'none')).toHaveLength(60)
     expect(styleRule('.star').style.animation).toContain('twinkle')
+    expect(styleRule(":root[data-theme='premium'] .star").style.getPropertyValue('left')).toBe('var(--firefly-left)')
   })
 
   test('declares no animation for premium fireflies when reduced motion is active', () => {

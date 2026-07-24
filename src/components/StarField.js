@@ -7,18 +7,34 @@ export default function StarField() {
 
   useEffect(() => {
     const generateStars = () => {
-      const starArray = Array.from({ length: 60 }, (_, i) => ({
-        id: i,
-        left: Math.random() * 100,
-        top: Math.random() * 100,
-        size: Math.random() * 2 + 0.5,
-        duration: Math.random() * 3 + 2,
-        delay: Math.random() * 5,
-        driftX: Math.round(Math.random() * 80 - 40),
-        driftY: Math.round(Math.random() * 70 - 35),
-        midX: Math.round(Math.random() * 50 - 25),
-        midY: Math.round(Math.random() * 50 - 25),
-      }));
+      const starArray = Array.from({ length: 60 }, (_, i) => {
+        const fireflyColumn = i % 8;
+        const fireflyRow = Math.floor(i / 8);
+        const premiumFirefly = i < 40;
+
+        return {
+          id: i,
+          left: Math.random() * 100,
+          top: Math.random() * 100,
+          size: Math.random() * 2 + 0.5,
+          duration: Math.random() * 3 + 2,
+          delay: Math.random() * 5,
+          fireflyLeft: premiumFirefly
+            ? ((fireflyColumn + 0.2 + Math.random() * 0.6) / 8) * 100
+            : 0,
+          fireflyTop: premiumFirefly
+            ? ((fireflyRow + 0.2 + Math.random() * 0.6) / 5) * 100
+            : 0,
+          waypoints: Array.from({ length: 5 }, () => ({
+            x: Math.round(Math.random() * 120 - 60),
+            y: Math.round(Math.random() * 100 - 50),
+          })),
+          wanderDuration: Math.random() * 14 + 18,
+          wanderDelay: -(Math.random() * 32),
+          glowDuration: Math.random() * 4 + 3,
+          glowDelay: -(Math.random() * 7),
+        };
+      });
       setStars(starArray);
     };
 
@@ -38,10 +54,16 @@ export default function StarField() {
             height: `${star.size}px`,
             animationDuration: `${star.duration}s`,
             animationDelay: `${star.delay}s`,
-            '--firefly-drift-x': `${star.driftX}px`,
-            '--firefly-drift-y': `${star.driftY}px`,
-            '--firefly-mid-x': `${star.midX}px`,
-            '--firefly-mid-y': `${star.midY}px`,
+            '--firefly-left': `${star.fireflyLeft}%`,
+            '--firefly-top': `${star.fireflyTop}%`,
+            ...Object.fromEntries(star.waypoints.flatMap((point, index) => [
+              [`--firefly-x${index + 1}`, `${point.x}px`],
+              [`--firefly-y${index + 1}`, `${point.y}px`],
+            ])),
+            '--firefly-wander-duration': `${star.wanderDuration}s`,
+            '--firefly-wander-delay': `${star.wanderDelay}s`,
+            '--firefly-glow-duration': `${star.glowDuration}s`,
+            '--firefly-glow-delay': `${star.glowDelay}s`,
           }}
         />
       ))}

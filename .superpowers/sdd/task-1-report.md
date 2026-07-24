@@ -30,6 +30,68 @@ npm run verify:emberlight
 exit 0
 ```
 
+## Natural-motion revision
+
+### Root cause
+
+The earlier premium animation used two shared drift points over a short 2–5 second star timing cycle. It created synchronized straight-line return paths, showed only 24 particles, and inherited free-star placement rather than covering the premium scene evenly.
+
+### RED evidence
+
+The strengthened regression was written before revising production code. It failed against the prior implementation:
+
+```
+npx jest src/components/StarField.test.js --runInBand
+--firefly-left Expected: not ""; Received: ""
+premium visible count Expected: 40; Received: 24
+premium left CSS property Expected: "var(--firefly-left)"; Received: ""
+```
+
+### Mutation RED evidence
+
+Every revised behavior was deliberately changed, observed failing, then restored:
+
+```
+npx jest src/components/StarField.test.js --runInBand -t "shows exactly 40"
+n + 40 => Expected length: 40; Received length: 39
+
+npx jest src/components/StarField.test.js --runInBand -t "shows exactly 40"
+fireflyWander -> twinkle => Expected substring: "fireflyWander"; Received: "twinkle ... fireflyGlow ..."
+
+npx jest src/components/StarField.test.js --runInBand -t "shows exactly 40"
+wanderDuration: 40 => Expected: <= 32; Received: 40
+
+npx jest src/components/StarField.test.js --runInBand -t "retains all 60"
+free twinkle -> fireflyGlow => Expected substring: "twinkle"; Received: "fireflyGlow var(--transition-slow) infinite"
+
+npx jest src/components/StarField.test.js --runInBand -t "reduced motion"
+animation: fireflyGlow 1s infinite => Expected: "none"; Received: "fireflyGlow 1s infinite"
+```
+
+### Final GREEN evidence
+
+```
+npx jest src/components/StarField.test.js --runInBand
+1 suite passed; 4 tests passed
+
+npm run test:emberlight
+7 suites passed; 31 tests passed
+
+npx jest --runInBand
+9 suites passed; 35 tests passed
+
+npm run verify:emberlight
+exit 0
+```
+
+### Self-review
+
+- Premium mode displays the first 40 particles and places them in all 8 columns and 5 rows with the specified jitter bounds.
+- Each premium-capable particle has five independent two-axis waypoints, 18–32 second wander timing, and independent 3–7 second glow timing.
+- Premium overrides are root-theme scoped; free mode keeps all 60 randomly positioned twinkling stars.
+- The fixed star layer remains clipped and the premium reduced-motion rule disables all animation.
+- Browser QA was not run, per controller instruction.
+
 ## Files
 
 - `src/components/StarField.test.js`
