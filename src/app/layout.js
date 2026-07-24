@@ -120,7 +120,7 @@ const jsonLd = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${quicksand.variable} ${fraunces.variable} ${tiroHindi.variable}`}>
       <head>
         <script
           type="application/ld+json"
@@ -144,7 +144,7 @@ export default function RootLayout({ children }) {
           </>
         )}
       </head>
-      <body className={`${quicksand.className} ${quicksand.variable} ${fraunces.variable} ${tiroHindi.variable}`}>
+      <body className={quicksand.className}>
         <PostHogProvider>
           <Suspense fallback={null}>
             <PostHogPageview />

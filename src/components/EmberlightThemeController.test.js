@@ -19,11 +19,12 @@ test('theme controller reapplies the theme when storage is cleared', () => {
   expect(source).toContain('event.key === null || event.key === EFFECTIVE_PREMIUM_KEY');
 });
 
-test('layout preserves the generated Quicksand class alongside font variables', () => {
+test('layout provides theme font variables from the root element', () => {
   const source = fs.readFileSync(path.join(process.cwd(), 'src/app/layout.js'), 'utf8');
   expect(source).toContain(
-    'className={`${quicksand.className} ${quicksand.variable} ${fraunces.variable} ${tiroHindi.variable}`}',
+    '<html lang="en" className={`${quicksand.variable} ${fraunces.variable} ${tiroHindi.variable}`}>',
   );
+  expect(source).toContain('<body className={quicksand.className}>');
 });
 
 test('premium reduced motion disables transitions', () => {
