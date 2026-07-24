@@ -28,3 +28,15 @@ export function cacheEffectivePremium(value, storage, eventTarget) {
     }));
   } catch {}
 }
+
+export function clearEffectivePremium(storage, eventTarget) {
+  const previous = readEffectivePremium(storage);
+  try {
+    storage?.removeItem(EFFECTIVE_PREMIUM_KEY);
+  } catch {}
+  try {
+    eventTarget?.dispatchEvent(new CustomEvent(THEME_CHANGE_EVENT, {
+      detail: { previous, current: false },
+    }));
+  } catch {}
+}

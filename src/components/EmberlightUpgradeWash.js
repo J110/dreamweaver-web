@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react';
 import { THEME_CHANGE_EVENT } from '@/utils/emberlightTheme';
 import {
-  UPGRADE_WASH_SEEN_KEY,
   clampWashSeconds,
+  markUpgradeWashSeen,
+  readUpgradeWashSeen,
   shouldRunUpgradeWash,
 } from '@/utils/emberlightTransition';
 import styles from './EmberlightUpgradeWash.module.css';
@@ -15,17 +16,12 @@ export default function EmberlightUpgradeWash() {
 
   useEffect(() => {
     const onPremiumChange = (event) => {
-      let seen = false;
-      try {
-        seen = localStorage.getItem(UPGRADE_WASH_SEEN_KEY) === '1';
-      } catch {}
+      const seen = readUpgradeWashSeen(localStorage);
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const detail = event.detail ?? {};
-      try {
-        if (detail.previous === false && detail.current === true) {
-          localStorage.setItem(UPGRADE_WASH_SEEN_KEY, '1');
-        }
-      } catch {}
+      if (detail.previous === false && detail.current === true) {
+        markUpgradeWashSeen(localStorage);
+      }
       if (!shouldRunUpgradeWash({ ...detail, seen, reducedMotion })) return;
       setActive(true);
       window.setTimeout(() => setActive(false), seconds * 1000);

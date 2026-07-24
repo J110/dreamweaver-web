@@ -13,8 +13,11 @@ export default function EmberlightThemeController() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const applyTheme = () => {
-      const effectivePremium = readEffectivePremium(window.localStorage);
+    const applyTheme = (event) => {
+      const eventPremium = event?.detail?.current;
+      const effectivePremium = typeof eventPremium === 'boolean'
+        ? eventPremium
+        : readEffectivePremium(window.localStorage);
       const theme = resolveTheme({ effectivePremium, pathname });
       document.documentElement.setAttribute('data-theme', theme);
       document.documentElement.toggleAttribute(
