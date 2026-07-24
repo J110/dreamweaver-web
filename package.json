@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test:emberlight": "jest src/utils/emberlightTheme.test.js src/utils/emberlightTransition.test.js src/components/EmberlightThemeController.test.js src/app/upgrade/upgradeTheme.test.js --runInBand",
+    "verify:emberlight": "node scripts/audit-theme-colors.mjs && node scripts/verify-emberlight-routes.mjs"
   },
   "dependencies": {
     "gsap": "^3.14.2",
