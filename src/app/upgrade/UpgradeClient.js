@@ -52,6 +52,7 @@ function UpgradeInner() {
     setError(null);
     setSubmitting(true);
     try {
+      await subscriptionApi.getCurrent().catch(() => null);
       const { checkout_url } = await billingApi.startCheckout('monthly');
       if (checkout_url) {
         openCheckoutUrl(checkout_url);

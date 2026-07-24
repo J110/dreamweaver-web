@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { THEME_CHANGE_EVENT } from '@/utils/emberlightTheme';
+import { getStoredFamilyId } from '@/utils/auth';
 import {
   clampWashSeconds,
   markUpgradeWashSeen,
@@ -16,11 +17,12 @@ export default function EmberlightUpgradeWash() {
 
   useEffect(() => {
     const onPremiumChange = (event) => {
-      const seen = readUpgradeWashSeen(localStorage);
+      const familyId = getStoredFamilyId();
+      const seen = readUpgradeWashSeen(localStorage, familyId);
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const detail = event.detail ?? {};
       if (detail.previous === false && detail.current === true) {
-        markUpgradeWashSeen(localStorage);
+        markUpgradeWashSeen(localStorage, familyId);
       }
       if (!shouldRunUpgradeWash({ ...detail, seen, reducedMotion })) return;
       setActive(true);

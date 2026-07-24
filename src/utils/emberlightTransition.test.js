@@ -1,4 +1,9 @@
-import { clampWashSeconds, shouldRunUpgradeWash } from './emberlightTransition';
+import {
+  clampWashSeconds,
+  markUpgradeWashSeen,
+  readUpgradeWashSeen,
+  shouldRunUpgradeWash,
+} from './emberlightTransition';
 
 test('runs only on a confirmed free-to-premium edge', () => {
   expect(shouldRunUpgradeWash({
@@ -25,4 +30,18 @@ test.each([
   [14, 10],
 ])('clamps %p seconds to %p', (input, expected) => {
   expect(clampWashSeconds(input)).toBe(expected);
+});
+
+test('namespaces wash state by family and keeps anonymous state isolated', () => {
+  const values = new Map();
+  const storage = {
+    getItem: (key) => values.get(key) ?? null,
+    setItem: (key, value) => values.set(key, value),
+  };
+
+  markUpgradeWashSeen(storage, 'family-a');
+
+  expect(readUpgradeWashSeen(storage, 'family-a')).toBe(true);
+  expect(readUpgradeWashSeen(storage, 'family-b')).toBe(false);
+  expect(readUpgradeWashSeen(storage, null)).toBe(false);
 });

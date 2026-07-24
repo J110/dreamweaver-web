@@ -65,3 +65,14 @@ test('upgrade headline follows the free and premium display-font property chain'
   expect(resolveDisplayFont(premiumDisplay)).toBe('var(--font-dream-display), serif');
   style.remove();
 });
+
+test('checkout establishes a confirmed subscription baseline before opening checkout', () => {
+  const source = fs.readFileSync(
+    path.join(process.cwd(), 'src/app/upgrade/UpgradeClient.js'),
+    'utf8',
+  );
+  expect(source.indexOf('await subscriptionApi.getCurrent()')).toBeGreaterThan(-1);
+  expect(source.indexOf('await subscriptionApi.getCurrent()')).toBeLessThan(
+    source.indexOf("billingApi.startCheckout('monthly')"),
+  );
+});

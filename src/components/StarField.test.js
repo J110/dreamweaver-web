@@ -169,4 +169,13 @@ describe('StarField theme particles', () => {
     expect(premiumRule.style.animation).toBe('none')
     expect(premiumRule.style.opacity).toBe('0.65')
   })
+
+  test('stops premium firefly motion for battery saver and unsupported capability fallback', () => {
+    const batteryRule = cssRules(stylesheet.sheet.cssRules).find(
+      (rule) => rule.selectorText === ":root[data-theme='premium'][data-battery-saver] .star"
+    )
+
+    expect(batteryRule.style.animation).toBe('none')
+    expect(batteryRule.style.opacity).toBe('0.65')
+  })
 })

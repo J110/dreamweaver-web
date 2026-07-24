@@ -628,6 +628,11 @@ label {
   display: none;
 }
 
+:root[data-theme='premium'][data-battery-saver] .star {
+  animation: none !important;
+  opacity: 0.65;
+}
+
 @media (prefers-reduced-motion: reduce) {
   :root[data-theme='premium'] .star {
     animation: none !important;

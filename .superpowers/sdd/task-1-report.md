@@ -30,6 +30,52 @@ npm run verify:emberlight
 exit 0
 ```
 
+## Whole-branch entitlement and battery review fixes
+
+### Root causes
+
+- The controller read persisted premium state on mount, allowing a stale cached `true` to select premium before a confirmed event.
+- Checkout started without first fetching `/subscriptions/current`, so a first purchaser had no confirmed `false` cache transition before the later `true` confirmation.
+- Wash persistence and its in-memory replay guard used one device-wide key instead of an account/family namespace.
+- Premium fireflies had no battery-saver selector, while missing connection capability cleared the saver attribute and kept decorative motion active.
+
+### RED evidence
+
+The new regressions ran before production edits:
+
+```
+npx jest src/components/EmberlightThemeController.test.js src/utils/emberlightTransition.test.js src/components/StarField.test.js src/app/upgrade/upgradeTheme.test.js --runInBand
+
+Theme controller: expected applyTheme(false), event.newValue === 'true', and account replacement handling; absent.
+Upgrade baseline: expected await subscriptionApi.getCurrent() before checkout; absent.
+Wash namespace: family-b expected false; received true.
+Battery saver: expected premium battery CSS rule; rule was undefined.
+```
+
+### Fixes
+
+- Mount, unknown events, storage clear, and account replacement now resolve free; same-tab confirmed event detail is authoritative, and cross-tab effective-premium storage uses `event.newValue`.
+- Checkout awaits `subscriptionApi.getCurrent()` before starting payment and tolerates a fetch failure without inferring a free entitlement or changing the preview.
+- Wash storage and session replay state are keyed by `getStoredFamilyId()` with an `anonymous` fallback.
+- Premium battery-saver CSS disables firefly animation; controller defaults to saver activity when connection capability is unavailable while preserving normal motion for explicit `saveData === false`.
+- Restored `docs/superpowers/plans/2026-07-24-emberlight-premium-theme.md` unchanged from the provided source.
+
+### GREEN evidence
+
+```
+Focused affected suites
+5 suites passed; 30 tests passed
+
+npm run test:emberlight
+7 suites passed; 38 tests passed
+
+npx jest --runInBand
+9 suites passed; 42 tests passed
+
+npm run verify:emberlight
+exit 0
+```
+
 ## CSSOM timing declaration coverage
 
 ### Test strengthening

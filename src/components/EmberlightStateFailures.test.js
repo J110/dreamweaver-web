@@ -23,6 +23,7 @@ jest.mock('@/utils/emberlightTheme', () => require('../utils/emberlightTheme'), 
 jest.mock('@/utils/emberlightTransition', () => require('../utils/emberlightTransition'), {
   virtual: true,
 });
+jest.mock('@/utils/auth', () => ({ getStoredFamilyId: () => null }), { virtual: true });
 jest.mock('./EmberlightUpgradeWash.module.css', () => ({}), { virtual: true });
 
 function throwingStorage() {

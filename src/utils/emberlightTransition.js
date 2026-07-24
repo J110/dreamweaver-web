@@ -1,19 +1,25 @@
 export const UPGRADE_WASH_SEEN_KEY = 'dv_emberlight_wash_seen_v1';
-let upgradeWashSeenThisSession = false;
+const upgradeWashSeenThisSession = new Set();
 
-export function readUpgradeWashSeen(storage) {
-  if (upgradeWashSeenThisSession) return true;
+function washSeenKey(familyId) {
+  return `${UPGRADE_WASH_SEEN_KEY}:${familyId || 'anonymous'}`;
+}
+
+export function readUpgradeWashSeen(storage, familyId) {
+  const key = washSeenKey(familyId);
+  if (upgradeWashSeenThisSession.has(key)) return true;
   try {
-    return storage?.getItem(UPGRADE_WASH_SEEN_KEY) === '1';
+    return storage?.getItem(key) === '1';
   } catch {
     return false;
   }
 }
 
-export function markUpgradeWashSeen(storage) {
-  upgradeWashSeenThisSession = true;
+export function markUpgradeWashSeen(storage, familyId) {
+  const key = washSeenKey(familyId);
+  upgradeWashSeenThisSession.add(key);
   try {
-    storage?.setItem(UPGRADE_WASH_SEEN_KEY, '1');
+    storage?.setItem(key, '1');
   } catch {}
 }
 
