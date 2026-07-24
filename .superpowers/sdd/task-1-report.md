@@ -19,6 +19,13 @@
 - Cache parsing accepts only the strings `true` and `false`; storage and event errors remain fail-safe.
 - The API no longer writes the cache directly, so same-tab listeners receive the centralized event.
 
-## Concern
+## Review fix
 
-Jest's ESM execution requires `NODE_OPTIONS=--experimental-vm-modules` in this environment; running the brief's bare `npx jest` command cannot parse ES module imports.
+- Restored the original CommonJS `next.config.js` and removed the package-wide ESM opt-in, preserving Next.js runtime behavior.
+- Added a test-only Jest transform for the existing ESM source and test files, so callers do not need to set `NODE_OPTIONS`.
+- Excluded Next.js build output from Jest's module scan to avoid its duplicate-package warning.
+
+## Review fix verification
+
+1. `npx jest src/utils/emberlightTheme.test.js --runInBand` — PASS: 1 suite, 7 tests.
+2. `npx jest --runInBand` — PASS: 1 suite, 7 tests.
