@@ -73,12 +73,12 @@
 }
 
 .commentLike:hover {
-  color: #FF6B9D;
+  color: var(--color-primary-pink);
   background: rgba(255, 107, 157, 0.08);
 }
 
 .commentLiked {
-  color: #FF6B9D;
+  color: var(--color-primary-pink);
 }
 
 .replyBtn {
@@ -132,7 +132,7 @@
 
 .form {
   background: rgba(30, 25, 60, 0.4);
-  border: 1px solid rgba(107, 76, 230, 0.12);
+  border: 1px solid var(--dv-soft-accent);
   border-radius: 16px;
   padding: 24px;
   display: flex;
@@ -148,7 +148,7 @@
 }
 
 .error {
-  color: #FF6B9D;
+  color: var(--color-primary-pink);
   font-size: 14px;
   margin: 0;
   padding: 8px 14px;
@@ -198,7 +198,7 @@
 .submitBtn {
   align-self: flex-end;
   padding: 10px 24px;
-  background: linear-gradient(135deg, #6B4CE6, #8B6CF0);
+  background: linear-gradient(135deg, var(--color-primary-purple), #8B6CF0);
   border: none;
   border-radius: 20px;
   color: #FFF;

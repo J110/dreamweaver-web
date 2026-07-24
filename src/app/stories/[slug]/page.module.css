@@ -159,7 +159,7 @@
 
 .previewFade {
   font-style: italic;
-  color: #6B4CE6 !important;
+  color: var(--color-primary-purple) !important;
   font-weight: 600;
 }
 
@@ -203,7 +203,7 @@
 
 .categoryLink {
   font-size: 14px;
-  color: #6B4CE6;
+  color: var(--color-primary-purple);
   text-decoration: none;
   font-weight: 600;
   transition: color 0.2s;

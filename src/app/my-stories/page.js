@@ -160,7 +160,7 @@ export default function MyStoriesPage() {
                 style={{
                   margin: '0 0 16px', padding: '12px 16px', cursor: 'pointer',
                   borderRadius: 14, border: '1px solid rgba(107,76,230,0.35)',
-                  background: 'rgba(107,76,230,0.12)', color: 'var(--color-text-light, #fff)',
+                  background: 'var(--dv-soft-accent)', color: 'var(--color-text-light, #fff)',
                   fontFamily: "'Quicksand', sans-serif", fontSize: 14, fontWeight: 600,
                   display: 'flex', alignItems: 'center', gap: 8,
                 }}

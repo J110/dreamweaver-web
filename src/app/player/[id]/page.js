@@ -1492,7 +1492,7 @@ function LockedCTA({ intentPath, lang }) {
             onClick={handleStart}
             disabled={submitting}
             style={{
-              background: 'linear-gradient(135deg, #ff6b9d, #ff9100)', color: '#fff', border: 'none',
+              background: 'linear-gradient(135deg, var(--color-primary-pink), #ff9100)', color: '#fff', border: 'none',
               borderRadius: 28, padding: '14px 36px', fontSize: 16, fontWeight: 700, cursor: 'pointer',
               opacity: submitting ? 0.7 : 1, width: '100%', maxWidth: 320,
             }}

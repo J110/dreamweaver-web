@@ -119,7 +119,7 @@
   position: absolute;
   top: 8px;
   right: 8px;
-  background: linear-gradient(135deg, #ff6b9d, #ff9100);
+  background: linear-gradient(135deg, var(--color-primary-pink), #ff9100);
   color: #fff;
   font-size: 10px;
   font-weight: 700;

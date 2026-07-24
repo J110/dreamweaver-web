@@ -60,7 +60,7 @@
   top: 8px;
   left: 8px;
   z-index: 3;
-  background: linear-gradient(135deg, #FF6B9D, #FF3D7F);
+  background: linear-gradient(135deg, var(--color-primary-pink), #FF3D7F);
   color: #fff;
   font-size: 9px;
   font-weight: 800;
@@ -129,7 +129,7 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #6B4CE6, #FF6B9D);
+  background: linear-gradient(135deg, var(--color-primary-purple), var(--color-primary-pink));
   box-shadow: 0 0 6px rgba(107, 76, 230, 0.5);
 }
 
