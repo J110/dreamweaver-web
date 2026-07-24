@@ -106,13 +106,50 @@ describe('StarField theme particles', () => {
     })
   })
 
+  test('uses independent premium wander and glow timing without free twinkle overrides', () => {
+    document.documentElement.dataset.theme = 'premium'
+    render()
+
+    const star = particles()[0]
+    const style = getComputedStyle(star)
+    const premiumAnimation = style.animation || styleRule(":root[data-theme='premium'] .star").style.animation
+    const animationNames = style.animationName
+      ? style.animationName.split(',').map((name) => name.trim())
+      : premiumAnimation.split(',').map((animation) => animation.trim().split(/\s+/)[0])
+    const durations = style.animationDuration
+      ? style.animationDuration.split(',').map((duration) => Number.parseFloat(duration))
+      : [
+          Number.parseFloat(star.style.getPropertyValue('--firefly-wander-duration')),
+          Number.parseFloat(star.style.getPropertyValue('--firefly-glow-duration')),
+        ]
+
+    expect(star.style.animationDuration).toBe('')
+    expect(animationNames).toEqual(['fireflyWander', 'fireflyGlow'])
+    expect(durations).toHaveLength(2)
+    expect(durations[0]).toBeGreaterThanOrEqual(18)
+    expect(durations[0]).toBeLessThanOrEqual(32)
+    expect(durations[1]).toBeGreaterThanOrEqual(3)
+    expect(durations[1]).toBeLessThanOrEqual(7)
+  })
+
   test('retains all 60 twinkling stars through the free theme selector', () => {
     document.documentElement.dataset.theme = 'free'
     render()
 
     expect(particles().filter((star) => getComputedStyle(star).display !== 'none')).toHaveLength(60)
-    expect(styleRule('.star').style.animation).toContain('twinkle')
+    expect(styleRule(":root:not([data-theme='premium']) .star").style.animation).toContain('twinkle')
     expect(styleRule(":root[data-theme='premium'] .star").style.getPropertyValue('left')).toBe('var(--firefly-left)')
+  })
+
+  test('keeps free twinkle timing between two and five seconds', () => {
+    document.documentElement.dataset.theme = 'free'
+    render()
+
+    const star = particles()[0]
+    const computedDuration = getComputedStyle(star).animationDuration
+    const duration = Number.parseFloat(computedDuration || star.style.getPropertyValue('--star-twinkle-duration'))
+    expect(duration).toBeGreaterThanOrEqual(2)
+    expect(duration).toBeLessThanOrEqual(5)
   })
 
   test('declares no animation for premium fireflies when reduced motion is active', () => {

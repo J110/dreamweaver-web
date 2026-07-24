@@ -52,8 +52,8 @@ export default function StarField() {
             top: `${star.top}%`,
             width: `${star.size}px`,
             height: `${star.size}px`,
-            animationDuration: `${star.duration}s`,
-            animationDelay: `${star.delay}s`,
+            '--star-twinkle-duration': `${star.duration}s`,
+            '--star-twinkle-delay': `${star.delay}s`,
             '--firefly-left': `${star.fireflyLeft}%`,
             '--firefly-top': `${star.fireflyTop}%`,
             ...Object.fromEntries(star.waypoints.flatMap((point, index) => [

@@ -92,6 +92,46 @@ exit 0
 - The fixed star layer remains clipped and the premium reduced-motion rule disables all animation.
 - Browser QA was not run, per controller instruction.
 
+## Premium timing override fix
+
+### Root cause
+
+`StarField` set `animationDuration` and `animationDelay` inline for free twinkle. Those inline longhands overrode the premium animation shorthand, leaving the browser with one approximately 2–5 second animation duration instead of independent wander and glow timing.
+
+### RED evidence
+
+The timing regression was added before production changes and rendered the premium StarField with the shipped stylesheet:
+
+```
+npx jest src/components/StarField.test.js --runInBand -t "independent premium"
+Expected: ""
+Received: "2.421893056076888s"
+star.style.animationDuration
+```
+
+The failure proves the free inline timing override was present on a premium particle.
+
+### Fix and GREEN evidence
+
+- Replaced inline free animation longhands with `--star-twinkle-duration` and `--star-twinkle-delay`.
+- Scoped twinkle animation consumption to `:root:not([data-theme='premium']) .star`.
+- The premium DOM regression asserts no inline duration override, two animation names, wander duration 18–32 seconds, and glow duration 3–7 seconds. jsdom does not resolve animation custom properties through `getComputedStyle`, so the test uses the rendered DOM plus the loaded stylesheet's CSSOM declaration as its fallback while retaining the inline-override assertion that reproduced the browser defect.
+- The free DOM regression confirms twinkle timing stays within 2–5 seconds.
+
+```
+npx jest src/components/StarField.test.js --runInBand
+1 suite passed; 6 tests passed
+
+npm run test:emberlight
+7 suites passed; 33 tests passed
+
+npx jest --runInBand
+9 suites passed; 37 tests passed
+
+npm run verify:emberlight
+exit 0
+```
+
 ## Files
 
 - `src/components/StarField.test.js`

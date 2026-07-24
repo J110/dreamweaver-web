@@ -606,7 +606,10 @@ label {
   position: absolute;
   background-color: var(--color-star-yellow);
   border-radius: 50%;
-  animation: twinkle var(--transition-slow) infinite;
+}
+
+:root:not([data-theme='premium']) .star {
+  animation: twinkle var(--star-twinkle-duration) var(--star-twinkle-delay) infinite;
 }
 
 :root[data-theme='premium'] .star {
