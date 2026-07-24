@@ -52,7 +52,21 @@ function UpgradeInner() {
     setError(null);
     setSubmitting(true);
     try {
-      await subscriptionApi.getCurrent().catch(() => null);
+      let subscription;
+      try {
+        subscription = await subscriptionApi.getCurrent();
+      } catch {
+        setError('We could not confirm your subscription status. Please try again.');
+        return;
+      }
+      if (subscription?.effective_premium === true) {
+        setError('You already have Premium. Manage your subscription in settings.');
+        return;
+      }
+      if (subscription?.effective_premium !== false) {
+        setError('We could not confirm your subscription status. Please try again.');
+        return;
+      }
       const { checkout_url } = await billingApi.startCheckout('monthly');
       if (checkout_url) {
         openCheckoutUrl(checkout_url);

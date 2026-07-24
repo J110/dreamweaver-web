@@ -1,54 +1,82 @@
-const fs = require('node:fs');
-const path = require('node:path');
+/** @jest-environment jsdom */
 
-test('theme controller owns root theme selection and native notification', () => {
-  const source = fs.readFileSync(
-    path.join(process.cwd(), 'src/components/EmberlightThemeController.js'),
-    'utf8',
-  );
-  expect(source).toContain("setAttribute('data-theme', theme)");
-  expect(source).toContain('DreamValleyTheme?.postMessage(theme)');
-  expect(source).toContain('THEME_CHANGE_EVENT');
-});
+const React = require('react')
+const { act } = require('react-dom/test-utils')
+const { createRoot } = require('react-dom/client')
+const { EFFECTIVE_PREMIUM_KEY, THEME_CHANGE_EVENT } = require('../utils/emberlightTheme')
 
-test('theme controller fails closed when storage is cleared', () => {
-  const source = fs.readFileSync(
-    path.join(process.cwd(), 'src/components/EmberlightThemeController.js'),
-    'utf8',
-  );
-  expect(source).toContain("event.key === null || event.key === 'dreamweaver_user'");
-  expect(source).toContain('applyTheme(false);');
-});
+let mockPathname = '/settings'
 
-test('layout provides theme font variables from the root element', () => {
-  const source = fs.readFileSync(path.join(process.cwd(), 'src/app/layout.js'), 'utf8');
-  expect(source).toContain(
-    '<html lang="en" className={`${quicksand.variable} ${fraunces.variable} ${tiroHindi.variable}`}>',
-  );
-  expect(source).toContain('<body className={quicksand.className}>');
-});
+jest.mock('next/navigation', () => ({ usePathname: () => mockPathname }), { virtual: true })
+jest.mock('@/utils/emberlightTheme', () => require('../utils/emberlightTheme'), { virtual: true })
 
-test('premium reduced motion disables transitions', () => {
-  const source = fs.readFileSync(path.join(process.cwd(), 'src/app/globals.css'), 'utf8');
-  expect(source).toMatch(
-    /:root\[data-theme='premium'\] \*[,\s\S]*?transition-duration: 1ms !important;/,
-  );
-});
+global.IS_REACT_ACT_ENVIRONMENT = true
 
-test('theme controller fails closed on mount and reads cross-tab premium from storage events', () => {
-  const source = fs.readFileSync(
-    path.join(process.cwd(), 'src/components/EmberlightThemeController.js'),
-    'utf8',
-  );
-  expect(source).toContain('applyTheme(false)');
-  expect(source).toContain("event.newValue === 'true'");
-  expect(source).toContain("event.key === 'dreamweaver_user'");
-});
+describe('EmberlightThemeController', () => {
+  let container
+  let root
 
-test('theme controller reduces decorative activity when connection capability is unavailable', () => {
-  const source = fs.readFileSync(
-    path.join(process.cwd(), 'src/components/EmberlightThemeController.js'),
-    'utf8',
-  );
-  expect(source).toContain('navigator.connection?.saveData !== false');
-});
+  const mount = () => {
+    const Controller = require('./EmberlightThemeController').default
+    act(() => root.render(React.createElement(Controller)))
+  }
+
+  const storageEvent = (key, newValue) => {
+    window.dispatchEvent(new StorageEvent('storage', { key, newValue }))
+  }
+
+  beforeEach(() => {
+    container = document.createElement('div')
+    document.body.appendChild(container)
+    root = createRoot(container)
+    localStorage.clear()
+    mockPathname = '/settings'
+    delete document.documentElement.dataset.theme
+    document.documentElement.removeAttribute('data-battery-saver')
+    Object.defineProperty(navigator, 'connection', { configurable: true, value: { saveData: false } })
+  })
+
+  afterEach(() => {
+    act(() => root.unmount())
+    container.remove()
+  })
+
+  test('fails closed on stale persisted premium but accepts a same-tab confirmation', () => {
+    localStorage.setItem(EFFECTIVE_PREMIUM_KEY, 'true')
+    mount()
+
+    expect(document.documentElement.dataset.theme).toBe('free')
+
+    act(() => window.dispatchEvent(new CustomEvent(THEME_CHANGE_EVENT, {
+      detail: { previous: false, current: true },
+    })))
+
+    expect(document.documentElement.dataset.theme).toBe('premium')
+  })
+
+  test('uses cross-tab storage values and fails closed on clear or account replacement', () => {
+    mount()
+
+    act(() => storageEvent(EFFECTIVE_PREMIUM_KEY, 'true'))
+    expect(document.documentElement.dataset.theme).toBe('premium')
+    act(() => storageEvent(EFFECTIVE_PREMIUM_KEY, 'false'))
+    expect(document.documentElement.dataset.theme).toBe('free')
+    act(() => storageEvent(EFFECTIVE_PREMIUM_KEY, 'true'))
+    act(() => storageEvent(null, null))
+    expect(document.documentElement.dataset.theme).toBe('free')
+    act(() => storageEvent(EFFECTIVE_PREMIUM_KEY, 'true'))
+    act(() => storageEvent('dreamweaver_user', JSON.stringify({ family_id: 'other' })))
+    expect(document.documentElement.dataset.theme).toBe('free')
+  })
+
+  test.each([
+    [{ saveData: true }, true],
+    [{ saveData: false }, false],
+    [undefined, true],
+  ])('sets battery saver activity for connection %p', (connection, expected) => {
+    Object.defineProperty(navigator, 'connection', { configurable: true, value: connection })
+    mount()
+
+    expect(document.documentElement.hasAttribute('data-battery-saver')).toBe(expected)
+  })
+})

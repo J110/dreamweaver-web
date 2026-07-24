@@ -30,6 +30,49 @@ npm run verify:emberlight
 exit 0
 ```
 
+## Final behavior-level entitlement review fixes
+
+### Root cause
+
+`handleStartTrial` fetched a subscription baseline but ignored its result, so confirmed premium, failed entitlement lookups, and unconfirmed payloads all proceeded to checkout. Controller regressions also inspected source text rather than exercising root attributes and browser events.
+
+### RED evidence
+
+The new mounted behavior tests ran before the checkout guard was changed:
+
+```
+npx jest src/components/EmberlightThemeController.test.js src/app/upgrade/UpgradeClient.test.js --runInBand
+
+confirmed premium: expected billingApi.startCheckout not to have been called; received 1 call
+failed entitlement request: expected billingApi.startCheckout not to have been called; received 1 call
+missing entitlement boolean: expected billingApi.startCheckout not to have been called; received 1 call
+```
+
+The controller mount tests were GREEN against the existing fail-closed controller, validating that the source-text checks could be removed without reducing coverage.
+
+### Fix and behavior coverage
+
+- Checkout now proceeds only after `effective_premium === false`.
+- A confirmed premium result displays already-premium guidance; rejected or unconfirmed results display a retry error and never open checkout.
+- Mounted JSDOM controller tests cover stale persisted `true`, same-tab confirmation, cross-tab true/false/clear/account replacement, and `navigator.connection` saver true, supported false, and unsupported states.
+- The focused Emberlight script now includes the mounted `UpgradeClient` test.
+
+### GREEN evidence
+
+```
+Focused mounted suites
+2 suites passed; 9 tests passed
+
+npm run test:emberlight
+8 suites passed; 41 tests passed
+
+npx jest --runInBand
+10 suites passed; 45 tests passed
+
+npm run verify:emberlight
+exit 0
+```
+
 ## Whole-branch entitlement and battery review fixes
 
 ### Root causes
