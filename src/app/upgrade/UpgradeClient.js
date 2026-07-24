@@ -150,7 +150,7 @@ export default function UpgradeClient() {
       <StarField />
       <Suspense
         fallback={
-          <div className={styles.root} style={{ minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(248,246,255,0.5)', fontSize: '0.9rem' }}>
+          <div className={styles.root} style={{ minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--dv-text-dim)', fontSize: '0.9rem' }}>
             Loading…
           </div>
         }
