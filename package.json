@@ -20,7 +20,6 @@
     "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
-    "@babel/runtime": "^7.28.4",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1"
   }
