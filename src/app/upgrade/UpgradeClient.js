@@ -10,6 +10,7 @@ import {
   confirmEntitlementAfterPurchase,
   getNativeOfferings,
   identifyNative,
+  isAmbiguousPurchaseResult,
   pollEntitlementUntilPremium,
   purchaseNative,
   recoverActivePurchase,
@@ -73,15 +74,25 @@ function NativePaywall({ router }) {
     };
   }, []);
 
-  async function confirmAndRoute(controller) {
+  async function confirmAndRoute(controller, { ambiguous = false } = {}) {
     setPhase('confirming');
-    let status;
+    let status = 'failed';
     try {
       const reconciled = await subscriptionApi.reconcileRevenueCat();
       status = reconciled?.effective_premium
         ? 'premium'
-        : await confirmEntitlementAfterPurchase(fetchIsPremium, { signal: controller.signal });
-    } catch {
+        : 'failed';
+    } catch {}
+
+    if (status !== 'premium' && ambiguous) {
+      setPhase('activating');
+      const ready = await pollEntitlementUntilPremium(fetchIsPremium, {
+        attempts: 20,
+        delayMs: 3000,
+        signal: controller.signal,
+      });
+      status = ready ? 'premium' : 'pending';
+    } else if (status !== 'premium') {
       status = await confirmEntitlementAfterPurchase(fetchIsPremium, { signal: controller.signal });
     }
 
@@ -122,6 +133,13 @@ function NativePaywall({ router }) {
     if (!result.success && result.error === 'not_identified' && user?.uid) {
       if (await identifyNative(user.uid)) result = await purchaseNative(pkg.id);
     }
+    if (isAmbiguousPurchaseResult(result)) {
+      const controller = new AbortController();
+      abortRef.current = controller;
+      await confirmAndRoute(controller, { ambiguous: true });
+      abortRef.current = null;
+      return;
+    }
     if (!result.success) {
       result = await recoverActivePurchase(
         result,
@@ -151,6 +169,13 @@ function NativePaywall({ router }) {
     setPhase('restoring');
 
     const result = await restoreNativeForUser(getUser()?.uid);
+    if (isAmbiguousPurchaseResult(result)) {
+      const controller = new AbortController();
+      abortRef.current = controller;
+      await confirmAndRoute(controller, { ambiguous: true });
+      abortRef.current = null;
+      return;
+    }
     if (!result.success) {
       setPhase('idle');
       setError(
@@ -315,9 +340,19 @@ function UpgradeInner() {
   }
 
   return (
-    <div className={`${styles.root} ${styles.page}`}>
+      <div className={`${styles.root} ${styles.page}`}>
       <div className={styles.card}>
-        <div className={styles.eyebrow}>Dream Valley Premium</div>
+        <div className={styles.headerRow}>
+          <button
+            type="button"
+            aria-label="Back to Dream Valley"
+            onClick={() => router.back()}
+            className={styles.backButton}
+          >
+            ← Back
+          </button>
+          <div className={styles.eyebrow}>Dream Valley Premium</div>
+        </div>
 
         <h1 className={styles.headline}>
           Get the{' '}

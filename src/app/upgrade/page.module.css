@@ -68,6 +68,31 @@
   animation-delay: 0.05s;
 }
 
+.headerRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  margin-bottom: 18px;
+}
+
+.headerRow .eyebrow {
+  margin-bottom: 0;
+}
+
+.backButton {
+  position: absolute;
+  left: 0;
+  padding: 6px 0;
+  border: 0;
+  background: transparent;
+  color: var(--cream);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
 /* Display headline (Fraunces italic) */
 .headline {
   font-family: var(--dv-font-display), serif;

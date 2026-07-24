@@ -1,4 +1,9 @@
-import { parseOfferings, restoreNativeForUser, recoverActivePurchase } from './nativePurchase';
+import {
+  isAmbiguousPurchaseResult,
+  parseOfferings,
+  restoreNativeForUser,
+  recoverActivePurchase,
+} from './nativePurchase';
 
 test('maps RevenueCat monthly and annual packages', () => {
   const monthly = { id: '$rc_monthly', priceString: '$6.00' };
@@ -30,4 +35,10 @@ test('recovers an already-owned purchase through restore', async () => {
   );
 
   expect(result).toEqual({ success: true, restored: true });
+});
+
+test('treats a native bridge timeout as an ambiguous paid purchase', () => {
+  expect(isAmbiguousPurchaseResult({ success: false, error: 'timeout' })).toBe(true);
+  expect(isAmbiguousPurchaseResult({ success: false, error: 'cancelled' })).toBe(false);
+  expect(isAmbiguousPurchaseResult({ success: false, error: 'identity_mismatch' })).toBe(false);
 });

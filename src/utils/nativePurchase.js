@@ -100,6 +100,10 @@ export async function recoverActivePurchase(purchaseResult, restore = restoreNat
     : purchaseResult;
 }
 
+export function isAmbiguousPurchaseResult(result) {
+  return result?.success === false && result?.error === 'timeout';
+}
+
 function sleep(ms, signal) {
   return new Promise((resolve) => {
     const timer = setTimeout(resolve, ms);
