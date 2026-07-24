@@ -2,16 +2,17 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Replace premium-theme twinkling stars with 24 gently drifting amber fireflies while preserving the free theme and every layout.
+**Goal:** Replace premium-theme twinkling stars with 40 slow, naturally wandering amber fireflies while preserving the free theme and every layout.
 
-**Architecture:** Keep `StarField` as the shared ambient layer and enrich each existing particle with CSS custom properties for two-axis drift. Theme-gated global CSS preserves the current free star animation and converts only premium particles into fireflies, hiding particles 25–60.
+**Architecture:** Keep `StarField` as the shared ambient layer and give the first 40 particles premium-only positions from an 8×5 jittered grid. Theme-gated CSS preserves the current free star positions and animation while premium particles follow five independent two-axis waypoints over 18–32 seconds and pulse on a separate 3–7 second rhythm.
 
 **Tech Stack:** React 18, Next.js 14, CSS custom properties and keyframes, Jest with JSDOM.
 
 ## Global Constraints
 
 - The free theme keeps 60 existing yellow opacity-twinkling stars.
-- The premium theme displays exactly 24 warm amber fireflies with independent two-axis drift and glow pulses.
+- The premium theme displays exactly 40 warm amber fireflies distributed through an 8×5 jittered grid.
+- Every firefly follows five independent two-axis waypoints over 18–32 seconds and pulses on a separate 3–7 second rhythm.
 - Layout, typography, cards, buttons, entitlement resolution, and pointer behavior remain unchanged.
 - No canvas, image assets, timers, dependencies, or third-party animation libraries.
 - `prefers-reduced-motion: reduce` stops firefly drift and pulsing without hiding the particles.
@@ -29,7 +30,7 @@
 
 **Interfaces:**
 - Consumes: root `data-theme="premium"` set by `EmberlightThemeController`.
-- Produces: 60 `.star` elements with `--firefly-drift-x`, `--firefly-drift-y`, `--firefly-mid-x`, and `--firefly-mid-y` inline custom properties; premium CSS displays and animates the first 24.
+- Produces: 60 `.star` elements; the first 40 expose premium grid positions, five waypoint pairs, wander duration/delay, and glow duration/delay; premium CSS displays and animates those 40.
 
 - [ ] **Step 1: Write the failing regression test**
 
@@ -56,15 +57,19 @@ describe('StarField theme particles', () => {
     container.remove()
   })
 
-  test('provides motion paths for premium fireflies while retaining 60 shared particles', () => {
+  test('provides natural premium firefly paths while retaining 60 shared particles', () => {
     act(() => root.render(<StarField />))
 
     const particles = container.querySelectorAll('.star')
     expect(particles).toHaveLength(60)
-    expect(particles[0].style.getPropertyValue('--firefly-drift-x')).not.toBe('')
-    expect(particles[0].style.getPropertyValue('--firefly-drift-y')).not.toBe('')
-    expect(particles[0].style.getPropertyValue('--firefly-mid-x')).not.toBe('')
-    expect(particles[0].style.getPropertyValue('--firefly-mid-y')).not.toBe('')
+    expect(particles[0].style.getPropertyValue('--firefly-left')).not.toBe('')
+    expect(particles[0].style.getPropertyValue('--firefly-top')).not.toBe('')
+    for (let waypoint = 1; waypoint <= 5; waypoint += 1) {
+      expect(particles[0].style.getPropertyValue(`--firefly-x${waypoint}`)).not.toBe('')
+      expect(particles[0].style.getPropertyValue(`--firefly-y${waypoint}`)).not.toBe('')
+    }
+    expect(particles[0].style.getPropertyValue('--firefly-wander-duration')).not.toBe('')
+    expect(particles[0].style.getPropertyValue('--firefly-glow-duration')).not.toBe('')
   })
 })
 ```
@@ -77,26 +82,54 @@ Run:
 npx jest src/components/StarField.test.js --runInBand
 ```
 
-Expected: FAIL because `.star` elements do not define `--firefly-drift-x`.
+Expected: FAIL because `.star` elements do not define `--firefly-left`.
 
 - [ ] **Step 3: Add firefly path variables to each shared particle**
 
-Extend each generated particle in `src/components/StarField.js`:
+Define the premium grid position and motion data while generating each particle in `src/components/StarField.js`:
 
 ```javascript
-driftX: Math.round(Math.random() * 80 - 40),
-driftY: Math.round(Math.random() * 70 - 35),
-midX: Math.round(Math.random() * 50 - 25),
-midY: Math.round(Math.random() * 50 - 25),
+const fireflyColumn = i % 8
+const fireflyRow = Math.floor(i / 8)
+const premiumFirefly = i < 40
+
+return {
+  id: i,
+  left: Math.random() * 100,
+  top: Math.random() * 100,
+  size: Math.random() * 2 + 0.5,
+  duration: Math.random() * 3 + 2,
+  delay: Math.random() * 5,
+  fireflyLeft: premiumFirefly
+    ? ((fireflyColumn + 0.2 + Math.random() * 0.6) / 8) * 100
+    : 0,
+  fireflyTop: premiumFirefly
+    ? ((fireflyRow + 0.2 + Math.random() * 0.6) / 5) * 100
+    : 0,
+  waypoints: Array.from({ length: 5 }, () => ({
+    x: Math.round(Math.random() * 120 - 60),
+    y: Math.round(Math.random() * 100 - 50),
+  })),
+  wanderDuration: Math.random() * 14 + 18,
+  wanderDelay: -(Math.random() * 32),
+  glowDuration: Math.random() * 4 + 3,
+  glowDelay: -(Math.random() * 7),
+}
 ```
 
-Add these inline custom properties to each `.star`:
+Add these inline custom properties to each premium-capable `.star`:
 
 ```javascript
-'--firefly-drift-x': `${star.driftX}px`,
-'--firefly-drift-y': `${star.driftY}px`,
-'--firefly-mid-x': `${star.midX}px`,
-'--firefly-mid-y': `${star.midY}px`,
+'--firefly-left': `${star.fireflyLeft}%`,
+'--firefly-top': `${star.fireflyTop}%`,
+...Object.fromEntries(star.waypoints.flatMap((point, index) => [
+  [`--firefly-x${index + 1}`, `${point.x}px`],
+  [`--firefly-y${index + 1}`, `${point.y}px`],
+])),
+'--firefly-wander-duration': `${star.wanderDuration}s`,
+'--firefly-wander-delay': `${star.wanderDelay}s`,
+'--firefly-glow-duration': `${star.glowDuration}s`,
+'--firefly-glow-delay': `${star.glowDelay}s`,
 ```
 
 - [ ] **Step 4: Add premium firefly motion without changing free stars**
@@ -104,32 +137,34 @@ Add these inline custom properties to each `.star`:
 Add premium selectors and keyframes to `src/app/globals.css`:
 
 ```css
-@keyframes fireflyDrift {
-  0%, 100% {
-    transform: translate3d(0, 0, 0);
-    opacity: 0.35;
-  }
-  35% {
-    transform: translate3d(var(--firefly-mid-x), var(--firefly-mid-y), 0);
-    opacity: 1;
-  }
-  70% {
-    transform: translate3d(var(--firefly-drift-x), var(--firefly-drift-y), 0);
-    opacity: 0.55;
-  }
+@keyframes fireflyWander {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  17% { transform: translate3d(var(--firefly-x1), var(--firefly-y1), 0); }
+  34% { transform: translate3d(var(--firefly-x2), var(--firefly-y2), 0); }
+  51% { transform: translate3d(var(--firefly-x3), var(--firefly-y3), 0); }
+  68% { transform: translate3d(var(--firefly-x4), var(--firefly-y4), 0); }
+  85% { transform: translate3d(var(--firefly-x5), var(--firefly-y5), 0); }
+}
+
+@keyframes fireflyGlow {
+  0%, 100% { opacity: 0.28; }
+  45% { opacity: 1; }
+  70% { opacity: 0.5; }
 }
 
 :root[data-theme='premium'] .star {
+  left: var(--firefly-left) !important;
+  top: var(--firefly-top) !important;
   width: 3px !important;
   height: 3px !important;
   background: #f6c76f;
   box-shadow: 0 0 5px 2px rgba(246, 199, 111, 0.65), 0 0 14px 5px rgba(233, 164, 94, 0.24);
-  animation-name: fireflyDrift;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
+  animation:
+    fireflyWander var(--firefly-wander-duration) var(--firefly-wander-delay) ease-in-out infinite,
+    fireflyGlow var(--firefly-glow-duration) var(--firefly-glow-delay) ease-in-out infinite;
 }
 
-:root[data-theme='premium'] .star:nth-child(n + 25) {
+:root[data-theme='premium'] .star:nth-child(n + 41) {
   display: none;
 }
 
@@ -164,8 +199,9 @@ On `http://127.0.0.1:3211/upgrade`, confirm:
 
 ```text
 data-theme is premium
-24 particles are visible
-at least one particle changes its transform over 500ms
+40 particles are visible across all 8 columns and 5 rows
+at least one particle changes direction across three sampled positions
+computed wander duration is between 18s and 32s
 document width does not exceed viewport width
 ```
 
