@@ -31,3 +31,14 @@ test('upgrade loading state uses semantic text', () => {
   );
   expect(source).not.toContain("color: 'rgba(248,246,255,0.5)'");
 });
+
+test('upgrade display headline uses the premium display font token', () => {
+  const css = fs.readFileSync(
+    path.join(process.cwd(), 'src/app/upgrade/page.module.css'),
+    'utf8',
+  );
+
+  expect(css).toMatch(
+    /\.headline\s*\{[^}]*font-family:\s*var\(--dv-font-display\),\s*serif;/s,
+  );
+});

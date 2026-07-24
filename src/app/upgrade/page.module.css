@@ -70,6 +70,7 @@
 
 /* Display headline (Fraunces italic) */
 .headline {
+  font-family: var(--dv-font-display), serif;
   font-size: clamp(1.65rem, 5vw, 2.05rem);
   font-weight: 700;
   line-height: 1.2;

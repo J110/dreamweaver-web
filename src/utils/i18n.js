@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
+import { syncDocumentLanguage } from './documentLanguage';
 
 const LANG_KEY = 'dreamvalley_lang';
 
@@ -262,6 +263,10 @@ export function I18nProvider({ children }) {
     setLangState(saved === 'hi' ? 'hi' : 'en');
     setReady(true);
   }, []);
+
+  useEffect(() => {
+    syncDocumentLanguage(lang);
+  }, [lang]);
 
   const setLang = (newLang) => {
     const safeLang = newLang === 'hi' ? 'hi' : 'en';
