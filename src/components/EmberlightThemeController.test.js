@@ -1,5 +1,5 @@
-import fs from 'node:fs';
-import path from 'node:path';
+const fs = require('node:fs');
+const path = require('node:path');
 
 test('theme controller owns root theme selection and native notification', () => {
   const source = fs.readFileSync(
