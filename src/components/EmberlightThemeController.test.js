@@ -85,7 +85,7 @@ describe('EmberlightThemeController', () => {
   test.each([
     [{ saveData: true }, true],
     [{ saveData: false }, false],
-    [undefined, true],
+    [undefined, false],
   ])('sets battery saver activity for connection %p', (connection, expected) => {
     Object.defineProperty(navigator, 'connection', { configurable: true, value: connection })
     mount()

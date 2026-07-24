@@ -178,4 +178,14 @@ describe('StarField theme particles', () => {
     expect(batteryRule.style.animation).toBe('none')
     expect(batteryRule.style.opacity).toBe('0.65')
   })
+
+  test('keeps premium fireflies animated in the native app', () => {
+    const nativeRule = cssRules(stylesheet.sheet.cssRules).find(
+      (rule) => rule.selectorText === "html[data-native][data-theme='premium'] .star"
+    )
+
+    expect(nativeRule.style.animation).toContain('fireflyWander')
+    expect(nativeRule.style.animation).toContain('fireflyGlow')
+    expect(nativeRule.style.getPropertyPriority('animation')).toBe('important')
+  })
 })

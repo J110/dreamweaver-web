@@ -349,6 +349,32 @@
   transition: width 0.3s linear;
 }
 
+:global(:root[data-theme='premium']) .filterPill,
+:global(:root[data-theme='premium']) .card,
+:global(:root[data-theme='premium']) .shareBtn {
+  border-color: var(--dv-hairline);
+}
+
+:global(:root[data-theme='premium']) .filterPillActive,
+:global(:root[data-theme='premium']) .cardPlaying,
+:global(:root[data-theme='premium']) .shareBtn,
+:global(:root[data-theme='premium']) .miniPlayerBtn {
+  background: var(--dv-soft-accent);
+}
+
+:global(:root[data-theme='premium']) .shareBtn {
+  color: var(--dv-accent);
+}
+
+:global(:root[data-theme='premium']) .miniPlayerInner {
+  background: rgba(44, 29, 32, 0.96);
+  border-color: var(--dv-hairline);
+}
+
+:global(:root[data-theme='premium']) .progressBar {
+  background: var(--dv-hairline);
+}
+
 @media (min-width: 768px) {
   .cardWrapper {
     width: 160px;

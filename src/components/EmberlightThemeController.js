@@ -19,7 +19,7 @@ export default function EmberlightThemeController() {
       document.documentElement.setAttribute('data-theme', theme);
       document.documentElement.toggleAttribute(
         'data-battery-saver',
-        navigator.connection?.saveData !== false,
+        navigator.connection?.saveData === true,
       );
       try {
         window.DreamValleyTheme?.postMessage(theme);

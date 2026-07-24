@@ -131,8 +131,8 @@ export default async function BeforeBedSharePage({ params }) {
         height: '220px',
         borderRadius: '24px',
         overflow: 'hidden',
-        background: 'rgba(107, 76, 230, 0.1)',
-        border: '1px solid rgba(107, 76, 230, 0.2)',
+        background: 'var(--dv-soft-accent)',
+        border: '1px solid var(--dv-hairline)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -165,8 +165,8 @@ export default async function BeforeBedSharePage({ params }) {
       <div style={{
         display: 'inline-flex',
         padding: '4px 14px',
-        background: 'rgba(107, 76, 230, 0.2)',
-        border: '1px solid rgba(107, 76, 230, 0.3)',
+        background: 'var(--dv-soft-accent)',
+        border: '1px solid var(--dv-hairline)',
         borderRadius: '12px',
         marginBottom: '12px',
       }}>
@@ -179,7 +179,7 @@ export default async function BeforeBedSharePage({ params }) {
       <h1 style={{
         fontSize: '26px',
         fontWeight: 700,
-        color: '#FFD93D',
+        color: 'var(--dv-text)',
         textAlign: 'center',
         margin: '0 0 8px',
         lineHeight: 1.3,
@@ -192,7 +192,7 @@ export default async function BeforeBedSharePage({ params }) {
         display: 'flex',
         gap: '12px',
         fontSize: '14px',
-        color: 'rgba(200, 190, 230, 0.7)',
+        color: 'var(--dv-text-dim)',
         marginBottom: '8px',
       }}>
         {duration && <span>{duration}</span>}
@@ -203,7 +203,7 @@ export default async function BeforeBedSharePage({ params }) {
       {item.description && (
         <p style={{
           fontSize: '15px',
-          color: 'rgba(200, 190, 230, 0.8)',
+          color: 'var(--dv-text-dim)',
           textAlign: 'center',
           lineHeight: 1.6,
           margin: '0 0 28px',
@@ -227,7 +227,7 @@ export default async function BeforeBedSharePage({ params }) {
           fontSize: '16px',
           fontWeight: 700,
           textDecoration: 'none',
-          boxShadow: '0 4px 20px rgba(107, 76, 230, 0.4)',
+          boxShadow: 'var(--shadow-md)',
           transition: 'transform 0.2s',
         }}
       >
