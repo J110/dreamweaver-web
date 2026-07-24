@@ -41,15 +41,9 @@ describe('EmberlightThemeController', () => {
     container.remove()
   })
 
-  test('fails closed on stale persisted premium but accepts a same-tab confirmation', () => {
+  test('restores the premium theme from a confirmed persisted entitlement on cold start', () => {
     localStorage.setItem(EFFECTIVE_PREMIUM_KEY, 'true')
     mount()
-
-    expect(document.documentElement.dataset.theme).toBe('free')
-
-    act(() => window.dispatchEvent(new CustomEvent(THEME_CHANGE_EVENT, {
-      detail: { previous: false, current: true },
-    })))
 
     expect(document.documentElement.dataset.theme).toBe('premium')
   })

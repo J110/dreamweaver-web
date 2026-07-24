@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import {
   EFFECTIVE_PREMIUM_KEY,
   THEME_CHANGE_EVENT,
+  readEffectivePremium,
   resolveTheme,
 } from '@/utils/emberlightTheme';
 
@@ -33,7 +34,7 @@ export default function EmberlightThemeController() {
     const onPremiumChange = (event) => {
       applyTheme(event?.detail?.current === true);
     };
-    applyTheme(false);
+    applyTheme(readEffectivePremium(window.localStorage) === true);
     window.addEventListener('storage', onStorage);
     window.addEventListener(THEME_CHANGE_EVENT, onPremiumChange);
     return () => {
