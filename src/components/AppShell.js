@@ -8,6 +8,7 @@ import { isLoggedIn, setToken, setUser, tryAdoptNativeToken } from '@/utils/auth
 import { isCheckoutPendingRecent, clearCheckoutPending } from '@/utils/checkoutPending';
 import useVersionCheck from '@/hooks/useVersionCheck';
 import BottomNav from './BottomNav';
+import EmberlightThemeController from '@/components/EmberlightThemeController';
 import InstallPrompt from './InstallPrompt';
 import { isNativeApp } from '@/utils/platformDetect';
 import BedtimePopup from './BedtimePopup';
@@ -279,6 +280,7 @@ export default function AppShell({ children }) {
 
   return (
     <I18nProvider>
+      <EmberlightThemeController />
       <VoicePreferencesProvider>
         <div style={{ paddingBottom: showNav ? '72px' : '0' }}>
           {children}

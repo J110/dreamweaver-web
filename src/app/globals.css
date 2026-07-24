@@ -28,6 +28,68 @@
   --transition-fast: 150ms ease-in-out;
   --transition-normal: 300ms ease-in-out;
   --transition-slow: 500ms ease-in-out;
+  --dv-bg: var(--color-deep-night);
+  --dv-bg-raised: var(--color-midnight-blue);
+  --dv-surface: var(--color-card-dark);
+  --dv-surface-raised: #2D2364;
+  --dv-accent: var(--color-primary-purple);
+  --dv-accent-pressed: #5137BE;
+  --dv-text: var(--color-text-light);
+  --dv-text-dim: var(--color-text-muted);
+  --dv-text-faint: rgba(248, 246, 255, 0.52);
+  --dv-hairline: rgba(107, 76, 230, 0.24);
+  --dv-soft-accent: rgba(107, 76, 230, 0.12);
+  --dv-focus: #FFF3CD;
+  --dv-font-display: var(--font-dream-ui);
+}
+
+:root[data-theme='premium'] {
+  --color-deep-night: #201418;
+  --color-midnight-blue: #2C1D20;
+  --color-primary-purple: #D9A05F;
+  --color-primary-pink: #A8743F;
+  --color-card-dark: #2C1D20;
+  --color-text-light: #F2E6D8;
+  --color-text-muted: #B39A86;
+  --dv-bg: #201418;
+  --dv-bg-raised: #2C1D20;
+  --dv-surface: #2C1D20;
+  --dv-surface-raised: #3A262A;
+  --dv-accent: #D9A05F;
+  --dv-accent-pressed: #A8743F;
+  --dv-text: #F2E6D8;
+  --dv-text-dim: #B39A86;
+  --dv-text-faint: #8D7568;
+  --dv-hairline: rgba(217, 160, 95, 0.22);
+  --dv-soft-accent: rgba(217, 160, 95, 0.10);
+  --dv-focus: #F6D9A8;
+  --dv-font-display: var(--font-dream-display);
+  --shadow-sm: 0 2px 8px rgba(32, 20, 24, 0.28);
+  --shadow-md: 0 8px 24px rgba(32, 20, 24, 0.36);
+  --shadow-lg: 0 16px 48px rgba(32, 20, 24, 0.44);
+  --transition-fast: 300ms ease-out;
+  --transition-normal: 450ms ease-out;
+  --transition-slow: 600ms ease-out;
+}
+
+:root[data-theme='premium'] :is(h1, h2, h3) {
+  font-family: var(--dv-font-display), serif;
+  font-weight: 350;
+}
+
+:root[data-theme='premium'][lang='hi'] :is(h1, h2, h3) {
+  font-family: var(--font-dream-devanagari), serif;
+  font-weight: 400;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme='premium'] *,
+  :root[data-theme='premium'] *::before,
+  :root[data-theme='premium'] *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Root and Body Styles */
