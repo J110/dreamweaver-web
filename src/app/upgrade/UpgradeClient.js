@@ -1,11 +1,21 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { subscriptionApi, billingApi } from '@/utils/api';
 import { openCheckoutUrl } from '@/utils/checkoutPending';
 import { isNativeApp } from '@/utils/platformDetect';
-import { captureIntentFromQuery } from '@/utils/upgradeIntent';
+import { captureIntentFromQuery, returnToIntent } from '@/utils/upgradeIntent';
+import {
+  confirmEntitlementAfterPurchase,
+  getNativeOfferings,
+  identifyNative,
+  pollEntitlementUntilPremium,
+  purchaseNative,
+  recoverActivePurchase,
+  restoreNativeForUser,
+} from '@/utils/nativePurchase';
+import { getUser } from '@/utils/auth';
 import StarField from '@/components/StarField';
 import UpgradeShowcase from '@/components/UpgradeShowcase';
 import styles from './page.module.css';
@@ -16,6 +26,229 @@ const BENEFITS = [
   { icon: '✦', text: 'Save up to 30 days of bedtime favorites' },
   { icon: '✦', text: '7-day free trial — no charge until day 8' },
 ];
+
+async function fetchIsPremium() {
+  try {
+    const subscription = await subscriptionApi.getCurrent({ fresh: true });
+    return subscription?.effective_premium === true
+      || subscription?.current_tier?.id === 'premium';
+  } catch {
+    return false;
+  }
+}
+
+function PlanOption({ pkg, label, selected, best, onSelect, disabled }) {
+  return (
+    <button
+      type="button"
+      className={`${styles.planOption} ${selected ? styles.planOptionSelected : ''}`}
+      onClick={onSelect}
+      disabled={disabled}
+    >
+      <span className={styles.planCopy}>
+        <span>{label}</span>
+        {best && <span className={styles.bestValue}>BEST VALUE</span>}
+      </span>
+      <span className={styles.planPrice}>{pkg.priceString}</span>
+    </button>
+  );
+}
+
+function NativePaywall({ router }) {
+  const [offerings, setOfferings] = useState(undefined);
+  const [plan, setPlan] = useState('annual');
+  const [phase, setPhase] = useState('idle');
+  const [error, setError] = useState(null);
+  const [showEmailRestore, setShowEmailRestore] = useState(false);
+  const abortRef = useRef(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getNativeOfferings().then((result) => {
+      if (!cancelled) setOfferings(result);
+    });
+    return () => {
+      cancelled = true;
+      abortRef.current?.abort();
+    };
+  }, []);
+
+  async function confirmAndRoute(controller) {
+    setPhase('confirming');
+    let status;
+    try {
+      const reconciled = await subscriptionApi.reconcileRevenueCat();
+      status = reconciled?.effective_premium
+        ? 'premium'
+        : await confirmEntitlementAfterPurchase(fetchIsPremium, { signal: controller.signal });
+    } catch {
+      status = await confirmEntitlementAfterPurchase(fetchIsPremium, { signal: controller.signal });
+    }
+
+    if (status === 'activating' && !controller.signal.aborted) {
+      setPhase('activating');
+      const ready = await pollEntitlementUntilPremium(fetchIsPremium, {
+        attempts: 20,
+        delayMs: 3000,
+        signal: controller.signal,
+      });
+      status = ready ? 'premium' : 'stuck';
+    }
+
+    if (controller.signal.aborted) return;
+    setPhase('idle');
+    if (status === 'premium') {
+      returnToIntent(router);
+    } else if (status === 'failed') {
+      setError('We couldn’t confirm your subscription. Please try again.');
+    } else {
+      setError('Payment received — your subscription is activating and will unlock automatically in a moment.');
+    }
+  }
+
+  async function handleBuy() {
+    if (!offerings) return;
+    const pkg = plan === 'annual' ? offerings.annual : offerings.monthly;
+    if (!pkg) return;
+
+    setError(null);
+    setShowEmailRestore(false);
+    setPhase('purchasing');
+
+    const user = getUser();
+    if (user?.uid) await identifyNative(user.uid);
+    let result = await purchaseNative(pkg.id);
+
+    if (!result.success && result.error === 'not_identified' && user?.uid) {
+      if (await identifyNative(user.uid)) result = await purchaseNative(pkg.id);
+    }
+    if (!result.success) {
+      result = await recoverActivePurchase(
+        result,
+        () => restoreNativeForUser(user?.uid),
+      );
+    }
+    if (!result.success) {
+      setPhase('idle');
+      if (result.error === 'cancelled') return;
+      setError(
+        result.error === 'not_identified'
+          ? 'Please sign in again, then retry.'
+          : 'That purchase didn’t go through. Please try again.',
+      );
+      return;
+    }
+
+    const controller = new AbortController();
+    abortRef.current = controller;
+    await confirmAndRoute(controller);
+    abortRef.current = null;
+  }
+
+  async function handleRestore() {
+    setError(null);
+    setShowEmailRestore(false);
+    setPhase('restoring');
+
+    const result = await restoreNativeForUser(getUser()?.uid);
+    if (!result.success) {
+      setPhase('idle');
+      setError(
+        result.error === 'identity_mismatch'
+          ? 'This subscription is linked to a different account. Sign in with that account to restore.'
+          : 'Couldn’t restore. Please try again.',
+      );
+      return;
+    }
+    if (!result.active) {
+      setPhase('idle');
+      setShowEmailRestore(true);
+      setError('No App Store subscription found to restore.');
+      return;
+    }
+
+    const controller = new AbortController();
+    abortRef.current = controller;
+    await confirmAndRoute(controller);
+    abortRef.current = null;
+  }
+
+  if (offerings === undefined) {
+    return <p className={styles.nativeText}>Loading plans…</p>;
+  }
+
+  if (!offerings || (!offerings.monthly && !offerings.annual)) {
+    return (
+      <div className={styles.nativeWrap}>
+        <p className={styles.nativeText}>
+          Subscription plans are temporarily unavailable. Please try again shortly.
+        </p>
+        <button className={styles.restoreBtn} onClick={handleRestore}>
+          Restore subscription
+        </button>
+        {error && <p className={styles.errorMsg}>{error}</p>}
+      </div>
+    );
+  }
+
+  const busy = phase !== 'idle';
+  const selected = plan === 'annual' ? offerings.annual : offerings.monthly;
+
+  return (
+    <div className={styles.nativeWrap}>
+      <div className={styles.planList}>
+        {offerings.annual && (
+          <PlanOption
+            pkg={offerings.annual}
+            label="Annual"
+            best
+            selected={plan === 'annual'}
+            onSelect={() => setPlan('annual')}
+            disabled={busy}
+          />
+        )}
+        {offerings.monthly && (
+          <PlanOption
+            pkg={offerings.monthly}
+            label="Monthly"
+            selected={plan === 'monthly'}
+            onSelect={() => setPlan('monthly')}
+            disabled={busy}
+          />
+        )}
+      </div>
+
+      <button className={styles.ctaBtn} onClick={handleBuy} disabled={busy || !selected}>
+        {phase === 'purchasing'
+          ? 'Opening secure checkout…'
+          : phase === 'confirming'
+            ? 'Confirming your subscription…'
+            : phase === 'activating'
+              ? 'Activating your subscription…'
+              : 'Start my 7-day free trial'}
+      </button>
+
+      {selected && (
+        <p className={styles.priceDisclosure}>
+          Free for 7 days, then {selected.priceString}
+          {plan === 'annual' ? '/year' : '/month'}. Cancel anytime.
+        </p>
+      )}
+
+      {error && <p className={styles.errorMsg}>{error}</p>}
+
+      <p className={styles.nativeText}>Already subscribed?</p>
+      <button className={styles.restoreBtn} onClick={handleRestore} disabled={busy}>
+        {phase === 'restoring' ? 'Restoring…' : 'Restore subscription'}
+      </button>
+      {showEmailRestore && (
+        <button className={styles.restoreBtn} onClick={() => router.push('/restore')}>
+          Subscribed on the web? Restore by email
+        </button>
+      )}
+    </div>
+  );
+}
 
 function UpgradeInner() {
   const searchParams = useSearchParams();
@@ -31,6 +264,7 @@ function UpgradeInner() {
   }, [searchParams]);
 
   useEffect(() => {
+    if (native) return undefined;
     let cancelled = false;
     subscriptionApi
       .getTiers()
@@ -46,7 +280,7 @@ function UpgradeInner() {
         if (!cancelled) setPriceLoaded(true);
       });
     return () => { cancelled = true; };
-  }, []);
+  }, [native]);
 
   async function handleStartTrial() {
     setError(null);
@@ -113,17 +347,7 @@ function UpgradeInner() {
 
         <div className={styles.ctaGroup}>
           {native ? (
-            <div className={styles.nativeWrap}>
-              <p className={styles.nativeText}>
-                Subscribe at <strong>dreamvalley.app</strong>, then restore below.
-              </p>
-              <button
-                className={styles.restoreBtn}
-                onClick={() => router.push('/restore')}
-              >
-                Restore subscription
-              </button>
-            </div>
+            <NativePaywall router={router} />
           ) : (
             <>
               <button

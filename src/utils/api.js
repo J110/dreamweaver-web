@@ -641,6 +641,13 @@ export const searchApi = {
 // Backend: /api/v1/subscriptions
 
 export const subscriptionApi = {
+  reconcileRevenueCat: async () => {
+    const res = await fetchApi('/api/v1/billing/revenuecat/reconcile', {
+      method: 'POST',
+    });
+    return res.data || {};
+  },
+
   getTiers: async () => {
     const res = await fetchApi('/api/v1/subscriptions/tiers', {
       method: 'GET',
@@ -650,7 +657,8 @@ export const subscriptionApi = {
 
   // Returns { current_tier: {id, name, ...}, since, next_billing_date }.
   // Used by /upgrade/success (polling) and /settings subscription section.
-  getCurrent: async () => {
+  getCurrent: async ({ fresh = false } = {}) => {
+    if (fresh) fetchApi.invalidate('/api/v1/subscriptions/current');
     const res = await fetchApi('/api/v1/subscriptions/current', {
       method: 'GET',
     });

@@ -235,6 +235,63 @@
   border-radius: 14px;
 }
 
+.planList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.planOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--raised) 72%, transparent);
+  color: var(--cream);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.planOptionSelected {
+  border: 2px solid var(--ember);
+  background: color-mix(in srgb, var(--ember) 14%, var(--surface));
+  box-shadow: 0 0 24px var(--ember-glow-soft);
+}
+
+.planOption:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.planCopy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-weight: 700;
+}
+
+.bestValue {
+  color: var(--ink);
+  background: var(--ember);
+  border-radius: 999px;
+  padding: 3px 7px;
+  font-size: 0.64rem;
+  white-space: nowrap;
+}
+
+.planPrice {
+  margin-left: 12px;
+  flex-shrink: 0;
+  color: var(--cream);
+  font-weight: 700;
+}
+
 .nativeText {
   font-size: 0.95rem;
   color: var(--text-muted);
