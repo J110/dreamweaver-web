@@ -144,7 +144,7 @@ export default function RootLayout({ children }) {
           </>
         )}
       </head>
-      <body className={`${quicksand.variable} ${fraunces.variable} ${tiroHindi.variable}`}>
+      <body className={`${quicksand.className} ${quicksand.variable} ${fraunces.variable} ${tiroHindi.variable}`}>
         <PostHogProvider>
           <Suspense fallback={null}>
             <PostHogPageview />

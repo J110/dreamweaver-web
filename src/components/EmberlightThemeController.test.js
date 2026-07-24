@@ -10,3 +10,25 @@ test('theme controller owns root theme selection and native notification', () =>
   expect(source).toContain('DreamValleyTheme?.postMessage(theme)');
   expect(source).toContain('THEME_CHANGE_EVENT');
 });
+
+test('theme controller reapplies the theme when storage is cleared', () => {
+  const source = fs.readFileSync(
+    path.join(process.cwd(), 'src/components/EmberlightThemeController.js'),
+    'utf8',
+  );
+  expect(source).toContain('event.key === null || event.key === EFFECTIVE_PREMIUM_KEY');
+});
+
+test('layout preserves the generated Quicksand class alongside font variables', () => {
+  const source = fs.readFileSync(path.join(process.cwd(), 'src/app/layout.js'), 'utf8');
+  expect(source).toContain(
+    'className={`${quicksand.className} ${quicksand.variable} ${fraunces.variable} ${tiroHindi.variable}`}',
+  );
+});
+
+test('premium reduced motion disables transitions', () => {
+  const source = fs.readFileSync(path.join(process.cwd(), 'src/app/globals.css'), 'utf8');
+  expect(source).toMatch(
+    /:root\[data-theme='premium'\] \*[,\s\S]*?transition-duration: 1ms !important;/,
+  );
+});

@@ -26,7 +26,7 @@ export default function EmberlightThemeController() {
       } catch {}
     };
     const onStorage = (event) => {
-      if (event.key === EFFECTIVE_PREMIUM_KEY) applyTheme();
+      if (event.key === null || event.key === EFFECTIVE_PREMIUM_KEY) applyTheme();
     };
     applyTheme();
     window.addEventListener('storage', onStorage);
