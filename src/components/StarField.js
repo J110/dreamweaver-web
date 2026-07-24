@@ -14,6 +14,10 @@ export default function StarField() {
         size: Math.random() * 2 + 0.5,
         duration: Math.random() * 3 + 2,
         delay: Math.random() * 5,
+        driftX: Math.round(Math.random() * 80 - 40),
+        driftY: Math.round(Math.random() * 70 - 35),
+        midX: Math.round(Math.random() * 50 - 25),
+        midY: Math.round(Math.random() * 50 - 25),
       }));
       setStars(starArray);
     };
@@ -34,6 +38,10 @@ export default function StarField() {
             height: `${star.size}px`,
             animationDuration: `${star.duration}s`,
             animationDelay: `${star.delay}s`,
+            '--firefly-drift-x': `${star.driftX}px`,
+            '--firefly-drift-y': `${star.driftY}px`,
+            '--firefly-mid-x': `${star.midX}px`,
+            '--firefly-mid-y': `${star.midY}px`,
           }}
         />
       ))}
