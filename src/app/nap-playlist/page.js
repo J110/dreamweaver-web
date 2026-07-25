@@ -235,7 +235,7 @@ export default function NapPlaylistPage() {
                 opacity: item.is_locked ? 0.82 : 1,
                 background: item.is_locked ? 'rgba(255,184,77,0.08)' : 'transparent',
               }}
-              onClick={() => item.is_locked ? router.push('/pricing') : playTrack(i)}
+              onClick={() => item.is_locked ? router.push('/upgrade') : playTrack(i)}
             >
               <span style={{ width: 24, textAlign: 'center', opacity: 0.5 }}>{i + 1}</span>
               <span style={{ flex: 1 }}>{item.title}</span>
@@ -245,7 +245,7 @@ export default function NapPlaylistPage() {
                   style={unlockBtn}
                   onClick={(event) => {
                     event.stopPropagation();
-                    router.push('/pricing');
+                    router.push('/upgrade');
                   }}
                 >
                   <span aria-hidden="true">{'🔒'}</span>
