@@ -8,6 +8,7 @@ import { playlistApi } from '@/utils/api';
 import { useI18n } from '@/utils/i18n';
 import StarField from '@/components/StarField';
 import HeartButton from '@/components/HeartButton';
+import { canPlayTrack, nextPlayableIndex } from './playlistState';
 import {
   updateMediaSessionMetadata,
   registerMediaSessionHandlers,
@@ -23,6 +24,20 @@ function resolveAudioUrl(item) {
 function resolveCoverUrl(item) {
   if (!item) return null;
   return item.cover_url || null;
+}
+
+function ControlIcon({ type }) {
+  const paths = {
+    previous: <><path d="M7 6v12" /><path d="m19 6-8 6 8 6Z" /></>,
+    next: <><path d="M17 6v12" /><path d="m5 6 8 6-8 6Z" /></>,
+    play: <path d="m8 5 11 7-11 7Z" />,
+    pause: <><path d="M9 5v14" /><path d="M15 5v14" /></>,
+  };
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {paths[type]}
+    </svg>
+  );
 }
 
 export default function NapPlaylistPage() {
@@ -85,6 +100,7 @@ export default function NapPlaylistPage() {
   }, []);
 
   const playTrack = useCallback((idx) => {
+    if (!canPlayTrack(items, idx)) return;
     if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
     if (progressRef.current) clearInterval(progressRef.current);
     setProgress(0);
@@ -105,9 +121,8 @@ export default function NapPlaylistPage() {
       setIsPlaying(false);
       setProgress(0);
       updatePlaybackState('paused');
-      if (idx + 1 < items.length) {
-        playTrack(idx + 1);
-      }
+      const nextIndex = nextPlayableIndex(items, idx);
+      if (nextIndex !== null) playTrack(nextIndex);
     });
     audio.addEventListener('error', () => {
       setIsPlaying(false);
@@ -139,8 +154,11 @@ export default function NapPlaylistPage() {
     registerMediaSessionHandlers({
       onPlay: () => handlePlayPause(),
       onPause: () => handlePlayPause(),
-      onPrevious: () => { if (currentIndex > 0) playTrack(currentIndex - 1); },
-      onNext: () => { if (currentIndex < items.length - 1) playTrack(currentIndex + 1); },
+      onPrevious: () => { if (canPlayTrack(items, currentIndex - 1)) playTrack(currentIndex - 1); },
+      onNext: () => {
+        const nextIndex = nextPlayableIndex(items, currentIndex);
+        if (nextIndex !== null) playTrack(nextIndex);
+      },
     });
   }, [handlePlayPause, playTrack, currentIndex, items.length]);
 
@@ -179,17 +197,63 @@ export default function NapPlaylistPage() {
         <h2 style={{ textAlign: 'center', fontSize: 20, fontWeight: 700, margin: '12px 0 2px' }}>{currentItem?.title || ''}</h2>
 
         <div style={controlsStyle}>
-          <button style={ctrlBtn} onClick={() => { if (currentIndex > 0) playTrack(currentIndex - 1); }}>{'⏮'}</button>
-          <button style={playBtn} onClick={handlePlayPause}>{isPlaying ? '⏸' : '▶'}</button>
-          <button style={ctrlBtn} onClick={() => { if (currentIndex < items.length - 1) playTrack(currentIndex + 1); }}>{'⏭'}</button>
+          <button
+            style={{ ...ctrlBtn, opacity: canPlayTrack(items, currentIndex - 1) ? 1 : 0.35 }}
+            disabled={!canPlayTrack(items, currentIndex - 1)}
+            aria-label={lang === 'hi' ? 'Pichla track' : 'Previous track'}
+            onClick={() => playTrack(currentIndex - 1)}
+          >
+            <ControlIcon type="previous" />
+          </button>
+          <button
+            style={playBtn}
+            aria-label={isPlaying ? (lang === 'hi' ? 'Rokein' : 'Pause') : (lang === 'hi' ? 'Chalayen' : 'Play')}
+            onClick={handlePlayPause}
+          >
+            <ControlIcon type={isPlaying ? 'pause' : 'play'} />
+          </button>
+          <button
+            style={{ ...ctrlBtn, opacity: nextPlayableIndex(items, currentIndex) !== null ? 1 : 0.35 }}
+            disabled={nextPlayableIndex(items, currentIndex) === null}
+            aria-label={lang === 'hi' ? 'Agla track' : 'Next track'}
+            onClick={() => {
+              const nextIndex = nextPlayableIndex(items, currentIndex);
+              if (nextIndex !== null) playTrack(nextIndex);
+            }}
+          >
+            <ControlIcon type="next" />
+          </button>
         </div>
 
         <div style={trackListStyle}>
           {items.map((item, i) => (
-            <div key={item.content_id || i} style={{ ...trackRow, fontWeight: i === currentIndex ? 700 : 400 }} onClick={() => playTrack(i)}>
+            <div
+              key={`${item.slot || 'track'}-${item.content_id || i}`}
+              style={{
+                ...trackRow,
+                fontWeight: i === currentIndex ? 700 : 400,
+                opacity: item.is_locked ? 0.82 : 1,
+                background: item.is_locked ? 'rgba(255,184,77,0.08)' : 'transparent',
+              }}
+              onClick={() => item.is_locked ? router.push('/pricing') : playTrack(i)}
+            >
               <span style={{ width: 24, textAlign: 'center', opacity: 0.5 }}>{i + 1}</span>
               <span style={{ flex: 1 }}>{item.title}</span>
-              <HeartButton contentId={item.content_id} size={20} />
+              {item.is_locked ? (
+                <button
+                  type="button"
+                  style={unlockBtn}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    router.push('/pricing');
+                  }}
+                >
+                  <span aria-hidden="true">{'🔒'}</span>
+                  {lang === 'hi' ? 'Premium se unlock karein' : 'Unlock with Premium'}
+                </button>
+              ) : (
+                <HeartButton contentId={item.content_id} size={20} />
+              )}
             </div>
           ))}
         </div>
@@ -202,8 +266,9 @@ const pageStyle = { maxWidth: 480, margin: '0 auto', padding: '16px 16px 96px', 
 const closeStyle = { background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', borderRadius: '50%', width: 36, height: 36, fontSize: 18, cursor: 'pointer', flexShrink: 0 };
 const safetyNote = { background: 'rgba(96,165,250,0.12)', borderRadius: 12, padding: '10px 14px', fontSize: 12, opacity: 0.8, marginBottom: 16, lineHeight: 1.5, textAlign: 'center' };
 const artStyle = { width: '100%', aspectRatio: '1/1', maxWidth: 280, margin: '0 auto', borderRadius: 16, overflow: 'hidden' };
-const controlsStyle = { display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 24, margin: '20px 0' };
-const ctrlBtn = { background: 'none', border: 'none', color: '#fff', fontSize: 28, cursor: 'pointer', opacity: 0.8 };
-const playBtn = { background: 'linear-gradient(135deg, #60a5fa, #3b82f6)', border: 'none', color: '#fff', width: 64, height: 64, borderRadius: '50%', fontSize: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' };
+const controlsStyle = { display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 22, margin: '20px 0' };
+const ctrlBtn = { background: 'linear-gradient(145deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06))', border: '1px solid rgba(255,255,255,0.14)', color: '#fff', width: 48, height: 48, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 24px rgba(0,0,0,0.22)', backdropFilter: 'blur(12px)' };
+const playBtn = { background: 'linear-gradient(145deg, #67adff, #347ff0)', border: '1px solid rgba(255,255,255,0.28)', color: '#fff', width: 68, height: 68, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 12px 30px rgba(59,130,246,0.38), inset 0 1px 0 rgba(255,255,255,0.3)' };
 const trackListStyle = { background: 'rgba(255,255,255,0.04)', borderRadius: 16, padding: 8 };
 const trackRow = { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 8px', cursor: 'pointer', borderRadius: 8 };
+const unlockBtn = { display: 'inline-flex', alignItems: 'center', gap: 5, background: 'linear-gradient(135deg, rgba(217,164,92,0.24), rgba(217,164,92,0.12))', border: '1px solid rgba(217,164,92,0.5)', color: '#f4cf96', borderRadius: 999, padding: '7px 10px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap', cursor: 'pointer' };
