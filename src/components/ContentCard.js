@@ -6,7 +6,7 @@ import { getAmbientMusic } from '@/utils/ambientMusic';
 import { isListened } from '@/utils/listeningHistory';
 import { dvAnalytics } from '@/utils/analytics';
 import { useI18n } from '@/utils/i18n';
-import { isFunnyShort, isSillySong, isLullaby, isPoem, isLongStory, getDisplayCategory } from '@/utils/contentTypes';
+import { isFunnyShort, isSillySong, isLullaby, isPoem, isLongStory } from '@/utils/contentTypes';
 import styles from './ContentCard.module.css';
 
 const MOOD_CONFIG = {
@@ -22,15 +22,6 @@ const LANGUAGE_LEVEL_LABELS = {
   basic: 'Keep Simple',
   intermediate: 'Medium',
   advanced: 'Challenge',
-};
-
-const STORY_TYPE_LABELS = {
-  folk_tale: 'Folk Tale',
-  mythological: 'Mythological',
-  fable: 'Fable',
-  nature: 'Nature Story',
-  slice_of_life: 'Slice of Life',
-  dream: 'Dream',
 };
 
 export default function ContentCard({ content, onClick }) {
@@ -61,17 +52,6 @@ export default function ContentCard({ content, onClick }) {
       case 'story':
       default:
         return styles.cardStoryGradient;
-    }
-  };
-
-  const getTypeBadge = (type) => {
-    switch (type?.toLowerCase()) {
-      case 'song':
-        return 'badge-song';
-      case 'long_story':
-      case 'story':
-      default:
-        return 'badge-story';
     }
   };
 
@@ -226,13 +206,6 @@ export default function ContentCard({ content, onClick }) {
         )}
       </div>
       <div className={styles.cardContent}>
-        <div className={styles.cardHeader}>
-          <span className={`badge ${getTypeBadge(content.type)}`}>
-            {content.story_type && STORY_TYPE_LABELS[content.story_type]
-              ? STORY_TYPE_LABELS[content.story_type]
-              : getDisplayCategory(content, lang)}
-          </span>
-        </div>
         <h3 className={styles.cardTitle}>{content.title || 'Untitled'}</h3>
         <div className={styles.cardFooter}>
           <span className={styles.cardMeta}>

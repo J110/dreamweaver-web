@@ -165,10 +165,6 @@
   flex: 1;
 }
 
-.cardHeader {
-  margin-bottom: var(--spacing-sm);
-}
-
 /* Mood badge — small pill in card footer */
 .moodBadge {
   display: inline-flex;
