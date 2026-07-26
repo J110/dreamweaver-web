@@ -9,8 +9,8 @@ Give free users 5 saved-content slots with no offline playback, give premium use
 This contract spans:
 
 - `dreamweaver-backend`: authoritative entitlement and save-limit enforcement.
-- `dreamweaver-web`: save-cap prompt, web offline storage, reconciliation, and offline playback.
-- `dreamweaver`: native cache bridge and native offline playback.
+- `dreamweaver-web`: save-cap prompt, shared browser/WebView offline storage, reconciliation, and offline playback.
+- `dreamweaver`: native entitlement constants and WebView lifecycle verification.
 
 The cap applies to saved-content interactions only. Likes remain separate, but reaching the save cap must not silently create a like.
 
@@ -82,22 +82,24 @@ Changing the selected voice while the item remains saved replaces the cached aud
 
 Unsave removes the server save and the local package. Logout or effective downgrade removes every package belonging to that user.
 
-## Web Storage and Playback
+## Shared Web and Native Storage
 
-The web app stores:
+The browser and native WebView use the same versioned IndexedDB package store. Each user-scoped record contains:
 
-- Audio and cover responses in a versioned Cache Storage cache.
-- A per-user IndexedDB manifest containing content metadata, selected voice, cache keys, state, and retry information.
+- Content metadata.
+- The selected voice and source URLs.
+- Cover and current-voice audio blobs.
+- Package state and retry information.
 
-The service worker intercepts only manifest-owned offline media requests. It remains pass-through for all unrelated traffic.
+The saved library uses the live API when available and falls back to complete local packages when offline. The player creates object URLs from ready package blobs before requesting the network, so cached content plays without connectivity. Object URLs are revoked when playback changes or the owning component unmounts.
 
-The saved library uses the live API when available and falls back to complete local packages when offline. The player resolves a complete local package before requesting the network, so cached content plays without connectivity.
+The service worker remains limited to PWA registration and is not part of the saved-content media path.
 
-## Native Storage and Playback
+## Native Lifecycle
 
-The native web layer sends cache, remove, purge-user, and status requests through the existing Flutter JavaScript bridge. Flutter extends `AudioCacheService` to store the audio, cover, and metadata package under a user-scoped directory and returns a local playback URI.
+The native wrapper keeps using its persistent WebView data store, so the shared IndexedDB package store survives app restarts. The existing `window.__dvAppResumed` lifecycle signal triggers entitlement and package reconciliation after resume.
 
-The native player bridge resolves the user-scoped local URI before the network URL. Native and web use the same package states and entitlement rules even though their storage implementations differ.
+No Flutter file-URI or custom-scheme bridge is added. Flutter subscription constants are aligned with the backend contract, and native tests verify that the persistent WebView path and resume callback remain enabled.
 
 ## Package State and Reconciliation
 
@@ -144,7 +146,7 @@ Backend tests cover:
 - No fallback like when the cap is reached.
 - `offline_allowed` follows effective entitlement.
 
-Web tests cover:
+Shared browser/WebView tests cover:
 
 - Sixth-slot modal copy and `/upgrade` intent routing.
 - Automatic current/default-voice package creation after a confirmed premium save.
@@ -152,19 +154,12 @@ Web tests cover:
 - Offline saved-library rendering and playback without network.
 - Retry after download failure.
 - Removal on unsave, logout, and downgrade.
-- Service-worker pass-through for unrelated requests.
-
-Native tests cover:
-
-- User-scoped package creation and current-voice replacement.
-- Local playback resolution without network.
-- Removal on unsave, logout, and downgrade.
-- Bridge error handling and retry state.
+- User-scoped package isolation and object-URL cleanup.
 
 Cross-platform contract tests assert the same free and premium limits in backend, web, and Flutter.
 
 ## Release
 
-Backend enforcement deploys before clients so no client can exceed 30 saves. Web offline support and the upgrade modal deploy after the backend contract, followed by a coordinated native release containing the Flutter bridge changes.
+Backend enforcement deploys before clients so no client can exceed 30 saves. Web offline support and the upgrade modal deploy after the backend contract. The coordinated native release aligns Flutter constants and verifies persistent WebView lifecycle behavior without adding a new bridge.
 
 Each production deployment uses Deploy Guard snapshot before mutation and Deploy Guard verification afterward. Existing users are reconciled on first authenticated launch; content above the new entitlement remains on the server but cannot gain additional saves until the user drops below the cap.
