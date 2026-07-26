@@ -574,8 +574,8 @@ export async function reconcileOfflineLibrary({
     if (!content?.id) return;
     const record = await store.getPackage(userId, content.id);
     const selectedVoice = content.selected_voice
-      || content.voice_id
       || getDefaultVoice?.(content)
+      || content.voice_id
       || null;
     const desiredVoice = selectOfflineAudio(content, selectedVoice).voiceId;
     if (record?.state === 'ready' && !record.hidden

@@ -439,7 +439,7 @@ test('premium reconciliation removes unsaved packages and retries failed saved p
 
 test('premium reconciliation replaces a ready package with the configured default voice', async () => {
   const store = memoryStore();
-  const content = sampleContentWithVoices();
+  const content = { ...sampleContentWithVoices(), voice_id: 'luna_gentle' };
   await queueOfflinePackage({
     userId: 'default-voice-user',
     content,
