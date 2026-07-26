@@ -71,11 +71,16 @@ export default function HeartButton({
     }
   };
 
-  const removeConfirmedSave = async (userId) => {
+  const removeConfirmedSave = async (userId, sessionEpoch) => {
     if (!userId) return;
     try {
       const store = await openOfflineStore();
-      await removeOfflinePackage({ userId, contentId, store });
+      await removeOfflinePackage({
+        userId,
+        contentId,
+        sessionEpoch,
+        store,
+      });
     } catch {
     }
   };
@@ -133,7 +138,7 @@ export default function HeartButton({
         await interactionApi.unsaveContent(contentId);
         adjustCount(-1);
         flashToast(t('playerRemovedFromSaved'));
-        void removeConfirmedSave(userId);
+        void removeConfirmedSave(userId, sessionEpoch);
       } catch (err) {
         setFilled(true);
         if (err?.status === 401) flashToast(t('heartSignInToSave'));

@@ -53,7 +53,11 @@ test('an online downgrade is authoritative and purges cached packages', async ()
     saveCap: 5,
     offline: false,
   });
-  expect(store.purgePackages).toHaveBeenCalledWith('u1', expect.any(Number));
+  expect(store.purgePackages).toHaveBeenCalledWith(
+    'u1',
+    expect.any(Number),
+    expect.any(Number),
+  );
 });
 
 test('an offline failure never grants access without a confirmed premium lease', async () => {

@@ -57,7 +57,9 @@ test('conditional purge preserves a newer same-key record written after the scan
   let replaced = false;
   const store = createOfflineStore({
     put: async (name, value) => records.set(value.key || value.userId, value),
-    get: async (name, key) => records.get(key) ?? null,
+    get: async (name, key) => name === 'entitlements'
+      ? { userId: 'u1', effectivePremium: false, authorityVersion: 5 }
+      : records.get(key) ?? null,
     getAll: async (name) => {
       const snapshot = [...records.values()];
       if (name === 'packages' && !replaced) {
@@ -81,7 +83,7 @@ test('conditional purge preserves a newer same-key record written after the scan
     },
   });
 
-  await store.purgeUser('u1', 5);
+  await store.purgeUser('u1', 5, 5);
 
   expect(await store.getPackage('u1', 's1')).toMatchObject({ sessionEpoch: 6 });
 });

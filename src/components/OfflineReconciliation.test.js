@@ -115,7 +115,7 @@ test('coalesces startup and resume reconciliation into one authoritative request
     userId: 'u1',
     effectivePremium: true,
     savedItems: [{ id: 'story-1' }],
-    sessionEpoch: 0,
+    sessionEpoch: 1,
     authorityPrepared: true,
     store,
   });

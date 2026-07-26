@@ -9,6 +9,7 @@ import {
   captureOfflineUserEpoch,
   purgeOfflineUser,
   activateOfflineUserSession,
+  createOfflineReconciliationRunner,
 } from './offlineLibrary';
 import { createOfflineStore } from './offlineStore';
 
@@ -23,6 +24,19 @@ function memoryStore() {
     getAll: async (store) => [...stores[store].values()],
     delete: async (store, key) => stores[store].delete(key),
   });
+}
+
+function sharedMemoryDb() {
+  const stores = {
+    packages: new Map(),
+    entitlements: new Map(),
+  };
+  return {
+    put: async (store, value) => stores[store].set(value.key ?? value.userId, value),
+    get: async (store, key) => stores[store].get(key) ?? null,
+    getAll: async (store) => [...stores[store].values()],
+    delete: async (store, key) => stores[store].delete(key),
+  };
 }
 
 function sampleContentWithVoices() {
@@ -381,9 +395,145 @@ test('persisted epoch initializes a reload and logout purges prior-session recor
   expect(captureOfflineUserEpoch('reload-user')).toBe(41);
   await purgeOfflineUser('reload-user', async () => store);
 
-  expect(values.get('dv_offline_epoch:reload-user')).toBe('42');
+  const logoutVersion = Number(values.get('dv_offline_epoch:reload-user'));
+  expect(logoutVersion).toBeGreaterThan(41);
   expect(await store.getPackage('reload-user', 'story-1')).toBeNull();
-  expect(await store.getEntitlementLease('reload-user')).toBeNull();
+  expect(await store.getEntitlementLease('reload-user')).toMatchObject({
+    effectivePremium: false,
+    authorityVersion: logoutVersion,
+  });
   if (previousStorage) Object.defineProperty(global, 'localStorage', previousStorage);
   else delete global.localStorage;
+});
+
+test('two stores allocate unique durable authority versions for the same user', async () => {
+  const db = sharedMemoryDb();
+  const storeA = createOfflineStore(db);
+  const storeB = createOfflineStore(db);
+
+  const [freeVersion, premiumVersion] = await Promise.all([
+    storeA.advanceAuthority('two-tab-version-user', false),
+    storeB.advanceAuthority('two-tab-version-user', true),
+  ]);
+
+  expect(new Set([freeVersion, premiumVersion]).size).toBe(2);
+  await expect(storeA.getAuthorityVersion('two-tab-version-user'))
+    .resolves.toBe(Math.max(freeVersion, premiumVersion));
+});
+
+test('tab A stale free cleanup cannot purge tab B premium package', async () => {
+  const db = sharedMemoryDb();
+  const storeA = createOfflineStore(db);
+  const storeB = createOfflineStore(db);
+  const purgePackages = storeA.purgePackages;
+  let rejectFirstCleanup = true;
+  storeA.purgePackages = async (...args) => {
+    if (rejectFirstCleanup) {
+      rejectFirstCleanup = false;
+      throw new Error('busy');
+    }
+    return purgePackages(...args);
+  };
+  const callbacks = [];
+  const runnerA = createOfflineReconciliationRunner({
+    getCurrentUser: () => ({ uid: 'two-tab-cleanup-user' }),
+    isAuthenticated: () => true,
+    api: {
+      getUserSaves: jest.fn().mockResolvedValue({
+        items: [], effective_premium: false, save_cap: 5,
+      }),
+    },
+    openStore: async () => storeA,
+    scheduleRetry: (callback) => callbacks.push(callback),
+    dedupeMs: 0,
+  });
+  const runnerB = createOfflineReconciliationRunner({
+    getCurrentUser: () => ({ uid: 'two-tab-cleanup-user' }),
+    isAuthenticated: () => true,
+    api: {
+      getUserSaves: jest.fn().mockResolvedValue({
+        items: [], effective_premium: true, save_cap: 30,
+      }),
+    },
+    openStore: async () => storeB,
+    dedupeMs: 0,
+  });
+
+  await runnerA();
+  expect(callbacks).toHaveLength(1);
+  await runnerB();
+  const premiumVersion = await storeB.getAuthorityVersion('two-tab-cleanup-user');
+  await queueOfflinePackage({
+    userId: 'two-tab-cleanup-user',
+    content: sampleContentWithVoices(),
+    selectedVoice: 'female_2',
+    sessionEpoch: premiumVersion,
+    store: storeB,
+    fetchImpl: fetchBlob,
+  });
+  await callbacks.shift()();
+
+  await expect(storeB.getPackage('two-tab-cleanup-user', 'story-1'))
+    .resolves.toMatchObject({ state: 'ready', sessionEpoch: premiumVersion });
+  await expect(storeB.getEntitlementLease('two-tab-cleanup-user'))
+    .resolves.toMatchObject({ effectivePremium: true, authorityVersion: premiumVersion });
+});
+
+test('tab A delayed logout purge cannot delete tab B fresh premium package', async () => {
+  const db = sharedMemoryDb();
+  const storeA = createOfflineStore(db);
+  const storeB = createOfflineStore(db);
+  const userId = 'two-tab-logout-user';
+  let releasePurge;
+  const purgeGate = new Promise((resolve) => {
+    releasePurge = resolve;
+  });
+  let purgeStarted;
+  const started = new Promise((resolve) => {
+    purgeStarted = resolve;
+  });
+  const purgeUser = storeA.purgeUser;
+  storeA.purgeUser = async (...args) => {
+    purgeStarted(args[1]);
+    await purgeGate;
+    return purgeUser(...args);
+  };
+
+  const logout = purgeOfflineUser(userId, async () => storeA);
+  const logoutVersion = await started;
+  activateOfflineUserSession(userId);
+  const runnerB = createOfflineReconciliationRunner({
+    getCurrentUser: () => ({ uid: userId }),
+    isAuthenticated: () => true,
+    api: {
+      getUserSaves: jest.fn().mockResolvedValue({
+        items: [], effective_premium: true, save_cap: 30,
+      }),
+    },
+    openStore: async () => storeB,
+    dedupeMs: 0,
+  });
+
+  await runnerB();
+  const premiumVersion = await storeB.getAuthorityVersion(userId);
+  expect(premiumVersion).toBeGreaterThan(logoutVersion);
+  await queueOfflinePackage({
+    userId,
+    content: sampleContentWithVoices(),
+    selectedVoice: 'female_2',
+    sessionEpoch: premiumVersion,
+    store: storeB,
+    fetchImpl: fetchBlob,
+  });
+  releasePurge();
+  await logout;
+
+  await expect(storeB.getPackage(userId, 'story-1')).resolves.toMatchObject({
+    state: 'ready',
+    authorityVersion: premiumVersion,
+  });
+  await expect(storeB.getEntitlementLease(userId)).resolves.toMatchObject({
+    effectivePremium: true,
+    authorityVersion: premiumVersion,
+  });
 });

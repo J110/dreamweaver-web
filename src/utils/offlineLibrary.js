@@ -30,6 +30,12 @@ function writeStoredNumber(key, value) {
   }
 }
 
+function writeStoredEpoch(userId, value) {
+  const key = epochKey(userId);
+  if (readStoredNumber(key) >= value) return;
+  writeStoredNumber(key, value);
+}
+
 function currentUserSession(userId) {
   const current = userSessions.get(userId);
   const storedEpoch = readStoredNumber(epochKey(userId));
@@ -53,12 +59,26 @@ function isCurrentOfflineUserEpoch(userId, sessionEpoch) {
 function advanceOfflineUserEpoch(userId, active) {
   const epoch = currentUserSession(userId).epoch + 1;
   userSessions.set(userId, { epoch, active });
-  writeStoredNumber(epochKey(userId), epoch);
+  writeStoredEpoch(userId, epoch);
   const prefix = `${userId}:`;
   for (const [key, generation] of packageGenerations) {
     if (key.startsWith(prefix)) packageGenerations.set(key, generation + 1);
   }
   return epoch;
+}
+
+function applyOfflineUserAuthority(userId, authorityVersion, active) {
+  const session = currentUserSession(userId);
+  if (session.epoch > authorityVersion) return false;
+  userSessions.set(userId, { epoch: authorityVersion, active });
+  writeStoredEpoch(userId, authorityVersion);
+  if (session.epoch !== authorityVersion) {
+    const prefix = `${userId}:`;
+    for (const [key, generation] of packageGenerations) {
+      if (key.startsWith(prefix)) packageGenerations.set(key, generation + 1);
+    }
+  }
+  return true;
 }
 
 function markOfflineUserRevoked(userId, sessionEpoch) {
@@ -82,13 +102,29 @@ function isOfflineUserRevoked(userId) {
 
 function prepareOfflineAuthority(userId, effectivePremium, sessionEpoch) {
   if (!isCurrentOfflineUserEpoch(userId, sessionEpoch)) return null;
-  if (effectivePremium === true) {
-    clearOfflineUserRevocation(userId);
-    return sessionEpoch;
-  }
-  const authoritativeEpoch = advanceOfflineUserEpoch(userId, true);
-  markOfflineUserRevoked(userId, authoritativeEpoch);
-  return authoritativeEpoch;
+  const provisionalEpoch = advanceOfflineUserEpoch(userId, true);
+  if (effectivePremium !== true) markOfflineUserRevoked(userId, provisionalEpoch);
+  return provisionalEpoch;
+}
+
+async function claimOfflineAuthority({
+  userId,
+  effectivePremium,
+  sessionEpoch,
+  store,
+  active = true,
+}) {
+  const authorityVersion = store.advanceAuthority
+    ? await store.advanceAuthority(userId, effectivePremium, Date.now(), sessionEpoch)
+    : sessionEpoch;
+  if (!applyOfflineUserAuthority(userId, authorityVersion, active)) return null;
+  if (effectivePremium === true) clearOfflineUserRevocation(userId);
+  return authorityVersion;
+}
+
+async function isSharedAuthorityCurrent(store, userId, authorityVersion) {
+  if (!store.isAuthorityCurrent) return true;
+  return store.isAuthorityCurrent(userId, authorityVersion);
 }
 
 export function activateOfflineUserSession(userId) {
@@ -121,9 +157,14 @@ function writeCurrentPackage({ key, generation, userId, sessionEpoch, store, rec
   const nextWrite = previousWrite.catch(() => null).then(async () => {
     if (packageGenerations.get(key) !== generation
       || !isCurrentOfflineUserEpoch(userId, sessionEpoch)) return null;
-    await store.putPackage(record);
+    const written = store.putPackageIfAuthority
+      ? await store.putPackageIfAuthority(record, sessionEpoch)
+      : await store.putPackage(record);
+    if (written === false) return null;
     if (!isCurrentOfflineUserEpoch(userId, sessionEpoch)) {
-      await store.deletePackage(userId, record.contentId);
+      if (store.deletePackageIfAuthority) {
+        await store.deletePackageIfAuthority(userId, record.contentId, sessionEpoch);
+      }
       return null;
     }
     return record;
@@ -136,12 +177,13 @@ function writeCurrentEntitlementLease({ userId, sessionEpoch, effectivePremium, 
   const previousWrite = entitlementWrites.get(userId) || Promise.resolve();
   const nextWrite = previousWrite.catch(() => null).then(async () => {
     if (!isCurrentOfflineUserEpoch(userId, sessionEpoch)) return false;
-    await store.setEntitlementLease(userId, effectivePremium, Date.now(), sessionEpoch);
+    const written = store.setEntitlementLeaseIfAuthority
+      ? await store.setEntitlementLeaseIfAuthority(
+        userId, effectivePremium, Date.now(), sessionEpoch,
+      )
+      : await store.setEntitlementLease(userId, effectivePremium, Date.now(), sessionEpoch);
+    if (written === false) return false;
     if (!isCurrentOfflineUserEpoch(userId, sessionEpoch)) {
-      const lease = await store.getEntitlementLease(userId);
-      if (lease?.sessionEpoch === sessionEpoch) {
-        await store.deleteEntitlementLease(userId);
-      }
       return false;
     }
     return true;
@@ -179,6 +221,7 @@ export async function queueOfflinePackage({
     contentId: content.id,
     content,
     sessionEpoch,
+    authorityVersion: sessionEpoch,
     voiceId,
     audioSourceUrl: audioUrl || null,
     coverSourceUrl: coverUrl || null,
@@ -222,11 +265,20 @@ export async function queueOfflinePackage({
   }
 }
 
-export function removeOfflinePackage({ userId, contentId, store }) {
+export function removeOfflinePackage({
+  userId,
+  contentId,
+  store,
+  sessionEpoch = captureOfflineUserEpoch(userId),
+}) {
   const key = packageKey(userId, contentId);
   packageGenerations.set(key, (packageGenerations.get(key) || 0) + 1);
   const previousWrite = packageWrites.get(key) || Promise.resolve();
-  const deletion = previousWrite.catch(() => null).then(() => store.deletePackage(userId, contentId));
+  const deletion = previousWrite.catch(() => null).then(() => (
+    store.deletePackageIfAuthority
+      ? store.deletePackageIfAuthority(userId, contentId, sessionEpoch)
+      : store.deletePackage(userId, contentId)
+  ));
   packageWrites.set(key, deletion);
   return deletion;
 }
@@ -303,12 +355,29 @@ export async function reconcileOfflineLibrary({
 }) {
   if (!userId || !store || !isCurrentOfflineUserEpoch(userId, sessionEpoch)) return;
 
+  if (!authorityPrepared) {
+    const provisionalEpoch = prepareOfflineAuthority(userId, effectivePremium, sessionEpoch);
+    if (provisionalEpoch == null) return null;
+    try {
+      sessionEpoch = await claimOfflineAuthority({
+        userId,
+        effectivePremium,
+        sessionEpoch: provisionalEpoch,
+        store,
+      });
+    } catch (error) {
+      error.offlineSessionEpoch = provisionalEpoch;
+      error.offlineCleanupOnly = false;
+      error.offlineAuthorityPrepared = false;
+      throw error;
+    }
+    if (sessionEpoch == null) return null;
+  }
+  if (!isCurrentOfflineUserEpoch(userId, sessionEpoch)
+    || !await isSharedAuthorityCurrent(store, userId, sessionEpoch)) return null;
+
   if (effectivePremium !== true) {
     if (!cleanupOnly) {
-      if (!authorityPrepared) {
-        sessionEpoch = prepareOfflineAuthority(userId, false, sessionEpoch);
-      }
-      if (sessionEpoch == null) return null;
       let written;
       try {
         written = await writeCurrentEntitlementLease({
@@ -322,19 +391,19 @@ export async function reconcileOfflineLibrary({
       if (!written) return null;
     }
     try {
-      await store.purgePackages(userId, sessionEpoch);
+      await store.purgePackages(userId, sessionEpoch, sessionEpoch);
     } catch (error) {
       error.offlineSessionEpoch = sessionEpoch;
       error.offlineCleanupOnly = true;
+      error.offlineAuthorityPrepared = true;
       throw error;
     }
-    return isCurrentOfflineUserEpoch(userId, sessionEpoch) ? sessionEpoch : null;
+    return isCurrentOfflineUserEpoch(userId, sessionEpoch)
+      && await isSharedAuthorityCurrent(store, userId, sessionEpoch)
+      ? sessionEpoch
+      : null;
   }
 
-  if (!cleanupOnly && !authorityPrepared) {
-    sessionEpoch = prepareOfflineAuthority(userId, true, sessionEpoch);
-  }
-  if (sessionEpoch == null) return null;
   if (!await writeCurrentEntitlementLease({
     userId, sessionEpoch, effectivePremium: true, store,
   })) return;
@@ -351,6 +420,7 @@ export async function reconcileOfflineLibrary({
       userId,
       contentId: record.contentId,
       store,
+      sessionEpoch,
     })));
 
   await Promise.all(items.map(async (content) => {
@@ -366,7 +436,10 @@ export async function reconcileOfflineLibrary({
       fetchImpl,
     });
   }));
-  return isCurrentOfflineUserEpoch(userId, sessionEpoch) ? sessionEpoch : null;
+  return isCurrentOfflineUserEpoch(userId, sessionEpoch)
+    && await isSharedAuthorityCurrent(store, userId, sessionEpoch)
+    ? sessionEpoch
+    : null;
 }
 
 export async function loadSavedLibrary({
@@ -470,16 +543,22 @@ export function createOfflineReconciliationRunner({
   let lastCompletedAt = -Infinity;
   let cleanupRetryScheduled = false;
   let cleanupTask = null;
-  let authorityVersion = 0;
   let triggerCount = 0;
 
-  const isCleanupCurrent = (task) => {
+  const isCleanupIdentityCurrent = (task) => {
     if (!task || !isAuthenticated()) return false;
     const user = getCurrentUser();
     const activeUserId = user?.uid || user?.family_id || user?.username;
     return activeUserId === task.userId
-      && task.authorityVersion === authorityVersion
       && isCurrentOfflineUserEpoch(task.userId, task.sessionEpoch);
+  };
+  const isCleanupCurrent = async (task, store) => {
+    if (!isCleanupIdentityCurrent(task)) return false;
+    if (!task.authorityPrepared) {
+      if (!store.getAuthorityVersion) return true;
+      return await store.getAuthorityVersion(task.userId) < task.sessionEpoch;
+    }
+    return isSharedAuthorityCurrent(store, task.userId, task.sessionEpoch);
   };
 
   const scheduleLocalCleanup = (task) => {
@@ -489,13 +568,14 @@ export function createOfflineReconciliationRunner({
     scheduleRetry(async () => {
       cleanupRetryScheduled = false;
       const pending = cleanupTask;
-      if (!isCleanupCurrent(pending)) {
+      if (!isCleanupIdentityCurrent(pending)) {
         cleanupTask = null;
         return;
       }
+      let store;
       try {
-        const store = await openStore();
-        if (!isCleanupCurrent(pending)) {
+        store = await openStore();
+        if (!await isCleanupCurrent(pending, store)) {
           cleanupTask = null;
           return;
         }
@@ -509,14 +589,20 @@ export function createOfflineReconciliationRunner({
           store,
         });
         if (typeof reconciledEpoch === 'number') pending.sessionEpoch = reconciledEpoch;
-        if (isCleanupCurrent(pending)) cleanupTask = null;
+        if (await isCleanupCurrent(pending, store)) cleanupTask = null;
       } catch (error) {
         if (typeof error?.offlineSessionEpoch === 'number') {
           pending.sessionEpoch = error.offlineSessionEpoch;
         }
         if (error?.offlineCleanupOnly === true) pending.cleanupOnly = true;
-        if (isCleanupCurrent(pending)) scheduleLocalCleanup(pending);
-        else cleanupTask = null;
+        if (error?.offlineAuthorityPrepared === false) pending.authorityPrepared = false;
+        if (!isCleanupIdentityCurrent(pending)) {
+          cleanupTask = null;
+        } else if (!store || await isCleanupCurrent(pending, store)) {
+          scheduleLocalCleanup(pending);
+        } else {
+          cleanupTask = null;
+        }
       }
     });
   };
@@ -548,31 +634,38 @@ export function createOfflineReconciliationRunner({
       const confirmedUserId = confirmedUser?.uid || confirmedUser?.family_id || confirmedUser?.username;
       if (!isAuthenticated() || confirmedUserId !== userId
         || !isCurrentOfflineUserEpoch(userId, sessionEpoch)) return null;
-      const preparedEpoch = prepareOfflineAuthority(
+      const provisionalEpoch = prepareOfflineAuthority(
         userId,
         data?.effective_premium === true,
         sessionEpoch,
       );
-      if (preparedEpoch == null) return null;
-      const requestAuthorityVersion = authorityVersion + 1;
-      authorityVersion = requestAuthorityVersion;
+      if (provisionalEpoch == null) return null;
       cleanupTask = null;
 
-      let appliedEpoch = preparedEpoch;
+      let appliedEpoch = provisionalEpoch;
+      let authorityPrepared = false;
       try {
         const store = await openStore();
-        if (!isCurrentOfflineUserEpoch(userId, preparedEpoch)) return null;
+        if (!isCurrentOfflineUserEpoch(userId, provisionalEpoch)) return null;
+        appliedEpoch = await claimOfflineAuthority({
+          userId,
+          effectivePremium: data?.effective_premium === true,
+          sessionEpoch: provisionalEpoch,
+          store,
+        });
+        if (appliedEpoch == null) return null;
+        authorityPrepared = true;
         const reconciledEpoch = await reconcile({
           userId,
           effectivePremium: data?.effective_premium === true,
           savedItems: Array.isArray(data?.items) ? data.items : [],
-          sessionEpoch: preparedEpoch,
+          sessionEpoch: appliedEpoch,
           authorityPrepared: true,
           store,
         });
         appliedEpoch = typeof reconciledEpoch === 'number'
           ? reconciledEpoch
-          : preparedEpoch;
+          : appliedEpoch;
         if (!isCurrentOfflineUserEpoch(userId, appliedEpoch)) return null;
       } catch (error) {
         if (typeof error?.offlineSessionEpoch === 'number') {
@@ -584,8 +677,9 @@ export function createOfflineReconciliationRunner({
           data,
           sessionEpoch: appliedEpoch,
           cleanupOnly: error?.offlineCleanupOnly === true,
-          authorityPrepared: true,
-          authorityVersion: requestAuthorityVersion,
+          authorityPrepared: error?.offlineAuthorityPrepared === false
+            ? false
+            : authorityPrepared,
         });
       }
       lastResult = data;
@@ -611,26 +705,18 @@ export function getOfflineReconciliationRunner(options) {
 
 export async function purgeOfflineUser(userId, openStore = openOfflineStore) {
   if (!userId) return;
-  const purgeEpoch = advanceOfflineUserEpoch(userId, false);
+  const provisionalEpoch = advanceOfflineUserEpoch(userId, false);
+  markOfflineUserRevoked(userId, provisionalEpoch);
   const store = await openStore();
-  if (currentUserSession(userId).epoch !== purgeEpoch
+  if (currentUserSession(userId).epoch !== provisionalEpoch
     || currentUserSession(userId).active !== false) return;
-  const previousEntitlementWrite = entitlementWrites.get(userId) || Promise.resolve();
-  const purgeWrite = previousEntitlementWrite.catch(() => null).then(async () => {
-    if (currentUserSession(userId).epoch !== purgeEpoch
-      || currentUserSession(userId).active !== false) return;
-    await store.purgeUser(userId, purgeEpoch);
+  const purgeEpoch = await claimOfflineAuthority({
+    userId,
+    effectivePremium: false,
+    sessionEpoch: provisionalEpoch,
+    store,
+    active: false,
   });
-  entitlementWrites.set(userId, purgeWrite);
-  await purgeWrite;
-  const writes = [...packageWrites.entries()]
-    .filter(([key]) => key.startsWith(`${userId}:`))
-    .map(([, write]) => write.catch(() => null));
-  const entitlementWrite = entitlementWrites.get(userId);
-  if (entitlementWrite) writes.push(entitlementWrite.catch(() => null));
-  await Promise.all(writes);
-  if (currentUserSession(userId).epoch === purgeEpoch
-    && currentUserSession(userId).active === false) {
-    await store.purgeUser(userId, purgeEpoch);
-  }
+  if (purgeEpoch == null) return;
+  await store.purgeUser(userId, purgeEpoch, purgeEpoch);
 }
