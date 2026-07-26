@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getUser, isLoggedIn } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
@@ -30,6 +30,7 @@ export default function HeartButton({
   const [toast, setToast] = useState(null);
   const [busy, setBusy] = useState(false);
   const [limitModal, setLimitModal] = useState(null);
+  const heartRef = useRef(null);
 
   const flashToast = (msg) => {
     setToast(msg);
@@ -41,12 +42,15 @@ export default function HeartButton({
   };
 
   const offlineUserId = () => {
-    const user = getUser();
-    return user?.uid || user?.family_id || user?.username;
+    try {
+      const user = getUser();
+      return user?.uid || user?.family_id || user?.username || null;
+    } catch {
+      return null;
+    }
   };
 
-  const queueConfirmedSave = async () => {
-    const userId = offlineUserId();
+  const queueConfirmedSave = async (userId) => {
     if (!userId || !content) return;
     const offlineContent = content.id ? content : { ...content, id: contentId };
     try {
@@ -62,8 +66,7 @@ export default function HeartButton({
     }
   };
 
-  const removeConfirmedSave = async () => {
-    const userId = offlineUserId();
+  const removeConfirmedSave = async (userId) => {
     if (!userId) return;
     try {
       const store = await openOfflineStore();
@@ -95,6 +98,7 @@ export default function HeartButton({
     }
 
     const wasFilled = filled;
+    const userId = offlineUserId();
     setBusy(true);
 
     if (!wasFilled) {
@@ -107,7 +111,7 @@ export default function HeartButton({
         } else if (res?.saved) {
           adjustCount(+1);
           flashToast(t('playerSavedToProfile'));
-          if (res.offline_allowed) void queueConfirmedSave();
+          if (res.offline_allowed) void queueConfirmedSave(userId);
         } else {
           setFilled(false);
         }
@@ -123,7 +127,7 @@ export default function HeartButton({
         await interactionApi.unsaveContent(contentId);
         adjustCount(-1);
         flashToast(t('playerRemovedFromSaved'));
-        void removeConfirmedSave();
+        void removeConfirmedSave(userId);
       } catch (err) {
         setFilled(true);
         if (err?.status === 401) flashToast(t('heartSignInToSave'));
@@ -143,6 +147,7 @@ export default function HeartButton({
   return (
     <>
       <button
+        ref={heartRef}
         type="button"
         onClick={handleClick}
         className={cls}
@@ -165,6 +170,7 @@ export default function HeartButton({
           t={t}
           onDismiss={dismissLimitModal}
           onUpgrade={handleUpgrade}
+          returnFocusRef={heartRef}
         />
       )}
     </>

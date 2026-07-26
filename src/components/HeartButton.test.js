@@ -12,13 +12,14 @@ const mockSetUpgradeIntent = jest.fn();
 const mockQueueOfflinePackage = jest.fn();
 const mockRemoveOfflinePackage = jest.fn();
 const mockOpenOfflineStore = jest.fn();
+const mockGetUser = jest.fn();
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: mockPush }),
 }));
 jest.mock('@/utils/auth', () => ({
   isLoggedIn: () => true,
-  getUser: () => ({ uid: 'user-1' }),
+  getUser: (...args) => mockGetUser(...args),
 }));
 jest.mock('@/utils/i18n', () => ({
   useI18n: () => ({
@@ -91,6 +92,7 @@ describe('HeartButton save limits and offline lifecycle', () => {
     mockQueueOfflinePackage.mockReset().mockResolvedValue(null);
     mockRemoveOfflinePackage.mockReset().mockResolvedValue(null);
     mockOpenOfflineStore.mockReset().mockResolvedValue({ name: 'offline-store' });
+    mockGetUser.mockReset().mockReturnValue({ uid: 'user-1' });
     window.history.replaceState({}, '', '/player/story-1?voice=female_2');
   });
 
@@ -99,13 +101,17 @@ describe('HeartButton save limits and offline lifecycle', () => {
     container.remove();
   });
 
-  const renderHeart = (props = {}) => {
+  const renderHeart = (props = {}, parentProps = {}) => {
     act(() => {
-      root.render(React.createElement(HeartButton, {
-        contentId: 'story-1',
-        content: sampleContent,
-        ...props,
-      }));
+      root.render(React.createElement(
+        'div',
+        parentProps,
+        React.createElement(HeartButton, {
+          contentId: 'story-1',
+          content: sampleContent,
+          ...props,
+        }),
+      ));
     });
   };
 
@@ -194,6 +200,7 @@ describe('HeartButton save limits and offline lifecycle', () => {
       heart().dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     expect(mockQueueOfflinePackage).not.toHaveBeenCalled();
+    mockGetUser.mockReturnValue({ uid: 'user-2' });
 
     await act(async () => {
       confirmSave({ saved: true, liked: false, cap_reached: false, offline_allowed: true });
@@ -221,6 +228,7 @@ describe('HeartButton save limits and offline lifecycle', () => {
       heart().dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
     expect(mockRemoveOfflinePackage).not.toHaveBeenCalled();
+    mockGetUser.mockReturnValue({ uid: 'user-2' });
 
     await act(async () => {
       confirmUnsave({ saved: false, liked: false });
@@ -233,6 +241,121 @@ describe('HeartButton save limits and offline lifecycle', () => {
       contentId: 'story-1',
       store: { name: 'offline-store' },
     }));
+  });
+
+  test('malformed cached user data cannot destabilize confirmed save UI', async () => {
+    mockGetUser.mockImplementation(() => {
+      throw new SyntaxError('Malformed cached user');
+    });
+    mockSaveContent.mockResolvedValue({
+      saved: true,
+      liked: false,
+      cap_reached: false,
+      saved_count: 1,
+      save_cap: 30,
+      offline_allowed: true,
+    });
+    renderHeart({ effectivePremium: true });
+
+    await click(heart());
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(heart().getAttribute('aria-pressed')).toBe('true');
+    expect(container.textContent).toContain('Saved to your profile');
+    expect(mockQueueOfflinePackage).not.toHaveBeenCalled();
+  });
+
+  test('modal clicks do not bubble to a clickable card ancestor', async () => {
+    const parentClick = jest.fn();
+    mockSaveContent.mockResolvedValue({
+      saved: false,
+      liked: false,
+      cap_reached: true,
+      saved_count: 5,
+      save_cap: 5,
+      offline_allowed: false,
+    });
+    renderHeart({}, { onClick: parentClick });
+    await click(heart());
+    parentClick.mockClear();
+
+    await click(dialog());
+    await click([...dialog().querySelectorAll('button')]
+      .find((button) => button.textContent === 'Upgrade to Premium'));
+    await click(container.querySelector('[aria-label="Close"]'));
+
+    expect(parentClick).not.toHaveBeenCalled();
+  });
+
+  test('modal traps focus and restores it to the invoking heart', async () => {
+    mockSaveContent.mockResolvedValue({
+      saved: false,
+      liked: false,
+      cap_reached: true,
+      saved_count: 5,
+      save_cap: 5,
+      offline_allowed: false,
+    });
+    renderHeart();
+    heart().focus();
+    await click(heart());
+
+    const dismiss = container.querySelector('[aria-label="Close"]');
+    const upgrade = [...dialog().querySelectorAll('button')]
+      .find((button) => button.textContent === 'Upgrade to Premium');
+    expect(document.activeElement).toBe(dismiss);
+
+    act(() => {
+      document.dispatchEvent(new KeyboardEvent('keydown', {
+        key: 'Tab',
+        shiftKey: true,
+        bubbles: true,
+      }));
+    });
+    expect(document.activeElement).toBe(upgrade);
+
+    act(() => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
+    });
+    expect(document.activeElement).toBe(dismiss);
+
+    act(() => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    });
+    expect(document.activeElement).toBe(heart());
+  });
+
+  test('simultaneous save-limit dialogs use distinct accessible title IDs', async () => {
+    mockSaveContent.mockResolvedValue({
+      saved: false,
+      liked: false,
+      cap_reached: true,
+      saved_count: 5,
+      save_cap: 5,
+      offline_allowed: false,
+    });
+    act(() => {
+      root.render(React.createElement(
+        'div',
+        null,
+        React.createElement(HeartButton, { contentId: 'story-1', content: sampleContent }),
+        React.createElement(HeartButton, {
+          contentId: 'story-2',
+          content: { ...sampleContent, id: 'story-2' },
+        }),
+      ));
+    });
+    const hearts = [...container.querySelectorAll('button[aria-pressed]')];
+    await click(hearts[0]);
+    await click(hearts[1]);
+
+    const dialogs = [...container.querySelectorAll('[role="dialog"]')];
+    const titleIds = dialogs.map((item) => item.getAttribute('aria-labelledby'));
+
+    expect(new Set(titleIds).size).toBe(2);
+    titleIds.forEach((id) => expect(document.getElementById(id)).not.toBeNull());
   });
 
   test('Escape dismisses the save-limit dialog', async () => {
