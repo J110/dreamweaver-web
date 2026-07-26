@@ -169,8 +169,15 @@ export function removeOfflinePackage({ userId, contentId, store }) {
   return deletion;
 }
 
-export async function getReadyOfflinePackage({ userId, contentId, store }) {
+export async function getReadyOfflinePackage({
+  userId,
+  contentId,
+  store,
+  sessionEpoch = captureOfflineUserEpoch(userId),
+}) {
+  if (!isCurrentOfflineUserEpoch(userId, sessionEpoch)) return null;
   const record = await store.getPackage(userId, contentId);
+  if (!isCurrentOfflineUserEpoch(userId, sessionEpoch)) return null;
   if (record?.state !== 'ready' || !record.content || !record.audioBlob || !record.coverBlob) {
     return null;
   }
@@ -198,9 +205,21 @@ export async function resolveOfflinePackage({ userId, contentId, selectedVoice, 
   };
 }
 
-export async function getOfflineSavedItems(userId, store) {
+export async function getOfflineSavedItems(userId, store, {
+  getCurrentUser,
+  sessionEpoch = captureOfflineUserEpoch(userId),
+} = {}) {
+  const activeUserId = () => {
+    const user = getCurrentUser?.();
+    return user?.uid || user?.family_id || user?.username;
+  };
+  const isCurrentRead = () => isCurrentOfflineUserEpoch(userId, sessionEpoch)
+    && (!getCurrentUser || activeUserId() === userId);
+  if (!isCurrentRead()) return [];
   const offlineStore = store || await openOfflineStore();
+  if (!isCurrentRead()) return [];
   const packages = await offlineStore.listReadyPackages(userId);
+  if (!isCurrentRead()) return [];
   return packages
     .filter((record) => record.content && record.audioBlob && record.coverBlob)
     .map((record) => ({
@@ -216,18 +235,34 @@ export async function reconcileOfflineLibrary({
   savedItems,
   store,
   sessionEpoch = captureOfflineUserEpoch(userId),
+  cleanupOnly = false,
   fetchImpl = globalThis.fetch,
 }) {
   if (!userId || !store || !isCurrentOfflineUserEpoch(userId, sessionEpoch)) return;
 
   if (effectivePremium !== true) {
-    sessionEpoch = advanceOfflineUserEpoch(userId, true);
-    await store.purgeUser(userId);
-    if (!isCurrentOfflineUserEpoch(userId, sessionEpoch)) return;
-    const written = await writeCurrentEntitlementLease({
-      userId, sessionEpoch, effectivePremium: false, store,
-    });
-    return written ? sessionEpoch : null;
+    if (!cleanupOnly) {
+      sessionEpoch = advanceOfflineUserEpoch(userId, true);
+      let written;
+      try {
+        written = await writeCurrentEntitlementLease({
+          userId, sessionEpoch, effectivePremium: false, store,
+        });
+      } catch (error) {
+        error.offlineSessionEpoch = sessionEpoch;
+        error.offlineCleanupOnly = false;
+        throw error;
+      }
+      if (!written) return null;
+    }
+    try {
+      await store.purgePackages(userId, sessionEpoch);
+    } catch (error) {
+      error.offlineSessionEpoch = sessionEpoch;
+      error.offlineCleanupOnly = true;
+      throw error;
+    }
+    return isCurrentOfflineUserEpoch(userId, sessionEpoch) ? sessionEpoch : null;
   }
 
   if (!await writeCurrentEntitlementLease({
@@ -276,6 +311,8 @@ export async function loadSavedLibrary({
     return user?.uid || user?.family_id || user?.username;
   };
   const isStaleIdentity = () => getCurrentUser && activeUserId() !== userId;
+  const sessionEpoch = captureOfflineUserEpoch(userId);
+  const isStaleSession = () => !isCurrentOfflineUserEpoch(userId, sessionEpoch);
   let data;
   try {
     data = reconciliationRunner
@@ -283,10 +320,13 @@ export async function loadSavedLibrary({
       : await api.getUserSaves();
     if (!data) throw new Error('Saved library is offline');
   } catch {
-    if (isStaleIdentity()) {
+    if (isStaleIdentity() || isStaleSession()) {
       return { items: [], effectivePremium: false, saveCap: null, offline: true, stale: true };
     }
     const lease = await store.getEntitlementLease(userId);
+    if (isStaleIdentity() || isStaleSession()) {
+      return { items: [], effectivePremium: false, saveCap: null, offline: true, stale: true };
+    }
     if (lease?.effectivePremium !== true) {
       return {
         items: [],
@@ -295,8 +335,16 @@ export async function loadSavedLibrary({
         offline: true,
       };
     }
+    const offlineItems = await getOfflineSavedItems(
+      userId,
+      store,
+      { getCurrentUser, sessionEpoch },
+    );
+    if (isStaleIdentity() || isStaleSession()) {
+      return { items: [], effectivePremium: false, saveCap: null, offline: true, stale: true };
+    }
     return {
-      items: await getOfflineSavedItems(userId, store),
+      items: offlineItems,
       effectivePremium: true,
       saveCap: null,
       offline: true,
@@ -343,7 +391,53 @@ export function createOfflineReconciliationRunner({
   let lastSessionEpoch = null;
   let lastCompletedAt = -Infinity;
   let cleanupRetryScheduled = false;
-  let cleanupRetryUsed = false;
+  let cleanupTask = null;
+
+  const isCleanupCurrent = (task) => {
+    if (!task || !isAuthenticated()) return false;
+    const user = getCurrentUser();
+    const activeUserId = user?.uid || user?.family_id || user?.username;
+    return activeUserId === task.userId
+      && isCurrentOfflineUserEpoch(task.userId, task.sessionEpoch);
+  };
+
+  const scheduleLocalCleanup = (task) => {
+    cleanupTask = task;
+    if (cleanupRetryScheduled) return;
+    cleanupRetryScheduled = true;
+    scheduleRetry(async () => {
+      cleanupRetryScheduled = false;
+      const pending = cleanupTask;
+      if (!isCleanupCurrent(pending)) {
+        cleanupTask = null;
+        return;
+      }
+      try {
+        const store = await openStore();
+        if (!isCleanupCurrent(pending)) {
+          cleanupTask = null;
+          return;
+        }
+        const reconciledEpoch = await reconcile({
+          userId: pending.userId,
+          effectivePremium: pending.data?.effective_premium === true,
+          savedItems: Array.isArray(pending.data?.items) ? pending.data.items : [],
+          sessionEpoch: pending.sessionEpoch,
+          cleanupOnly: pending.cleanupOnly,
+          store,
+        });
+        if (typeof reconciledEpoch === 'number') pending.sessionEpoch = reconciledEpoch;
+        if (isCleanupCurrent(pending)) cleanupTask = null;
+      } catch (error) {
+        if (typeof error?.offlineSessionEpoch === 'number') {
+          pending.sessionEpoch = error.offlineSessionEpoch;
+        }
+        if (error?.offlineCleanupOnly === true) pending.cleanupOnly = true;
+        if (isCleanupCurrent(pending)) scheduleLocalCleanup(pending);
+        else cleanupTask = null;
+      }
+    });
+  };
 
   const run = ({ force = false } = {}) => {
     if (inFlight) return inFlight;
@@ -362,20 +456,17 @@ export function createOfflineReconciliationRunner({
       try {
         data = await api.getUserSaves();
       } catch {
-        return lastUserId === userId && lastSessionEpoch === sessionEpoch
-          && isCurrentOfflineUserEpoch(userId, sessionEpoch)
-          ? lastResult
-          : null;
+        lastResult = null;
+        lastUserId = null;
+        lastSessionEpoch = null;
+        return null;
       }
       const confirmedUser = getCurrentUser();
       const confirmedUserId = confirmedUser?.uid || confirmedUser?.family_id || confirmedUser?.username;
       if (!isAuthenticated() || confirmedUserId !== userId
         || !isCurrentOfflineUserEpoch(userId, sessionEpoch)) return null;
 
-      lastResult = data;
-      lastUserId = userId;
-      lastSessionEpoch = sessionEpoch;
-      lastCompletedAt = now();
+      let appliedEpoch = sessionEpoch;
       try {
         const store = await openStore();
         if (!isCurrentOfflineUserEpoch(userId, sessionEpoch)) return null;
@@ -386,22 +477,26 @@ export function createOfflineReconciliationRunner({
           sessionEpoch,
           store,
         });
-        const appliedEpoch = typeof reconciledEpoch === 'number'
+        appliedEpoch = typeof reconciledEpoch === 'number'
           ? reconciledEpoch
           : sessionEpoch;
         if (!isCurrentOfflineUserEpoch(userId, appliedEpoch)) return null;
-        lastSessionEpoch = appliedEpoch;
-        cleanupRetryUsed = false;
-      } catch {
-        if (!cleanupRetryScheduled && !cleanupRetryUsed) {
-          cleanupRetryScheduled = true;
-          scheduleRetry(() => {
-            cleanupRetryScheduled = false;
-            cleanupRetryUsed = true;
-            void run({ force: true });
-          });
+      } catch (error) {
+        if (typeof error?.offlineSessionEpoch === 'number') {
+          appliedEpoch = error.offlineSessionEpoch;
         }
+        if (!isCurrentOfflineUserEpoch(userId, appliedEpoch)) return null;
+        scheduleLocalCleanup({
+          userId,
+          data,
+          sessionEpoch: appliedEpoch,
+          cleanupOnly: error?.offlineCleanupOnly === true,
+        });
       }
+      lastResult = data;
+      lastUserId = userId;
+      lastSessionEpoch = appliedEpoch;
+      lastCompletedAt = now();
       return data;
     })().finally(() => {
       inFlight = null;
@@ -422,7 +517,16 @@ export async function purgeOfflineUser(userId, openStore = openOfflineStore) {
   if (!userId) return;
   const purgeEpoch = advanceOfflineUserEpoch(userId, false);
   const store = await openStore();
-  await store.purgeUser(userId);
+  if (currentUserSession(userId).epoch !== purgeEpoch
+    || currentUserSession(userId).active !== false) return;
+  const previousEntitlementWrite = entitlementWrites.get(userId) || Promise.resolve();
+  const purgeWrite = previousEntitlementWrite.catch(() => null).then(async () => {
+    if (currentUserSession(userId).epoch !== purgeEpoch
+      || currentUserSession(userId).active !== false) return;
+    await store.purgeUser(userId, purgeEpoch);
+  });
+  entitlementWrites.set(userId, purgeWrite);
+  await purgeWrite;
   const writes = [...packageWrites.entries()]
     .filter(([key]) => key.startsWith(`${userId}:`))
     .map(([, write]) => write.catch(() => null));
@@ -431,6 +535,6 @@ export async function purgeOfflineUser(userId, openStore = openOfflineStore) {
   await Promise.all(writes);
   if (currentUserSession(userId).epoch === purgeEpoch
     && currentUserSession(userId).active === false) {
-    await store.purgeUser(userId);
+    await store.purgeUser(userId, purgeEpoch);
   }
 }

@@ -8,6 +8,7 @@ import {
   getOfflineSavedItems,
   captureOfflineUserEpoch,
   purgeOfflineUser,
+  activateOfflineUserSession,
 } from './offlineLibrary';
 import { createOfflineStore } from './offlineStore';
 
@@ -330,4 +331,28 @@ test('purge rejects package work that captured its epoch before opening the stor
   expect(queued).toBeNull();
   expect(fetchImpl).not.toHaveBeenCalled();
   expect(await store.getPackage('late-save-user', 'story-1')).toBeNull();
+});
+
+test('offline item reads stop when the active user changes while packages are loading', async () => {
+  let activeUser = { uid: 'read-u1' };
+  let releasePackages;
+  const packages = new Promise((resolve) => {
+    releasePackages = () => resolve([{
+      userId: 'read-u1',
+      contentId: 'story-1',
+      state: 'ready',
+      content: { id: 'story-1' },
+      audioBlob: new Blob(['audio']),
+      coverBlob: new Blob(['cover']),
+    }]);
+  });
+  const loading = getOfflineSavedItems('read-u1', {
+    listReadyPackages: () => packages,
+  }, {
+    getCurrentUser: () => activeUser,
+  });
+  activeUser = { uid: 'read-u2' };
+  releasePackages();
+
+  await expect(loading).resolves.toEqual([]);
 });

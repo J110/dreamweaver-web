@@ -27,7 +27,7 @@ test('uses a last-confirmed premium lease and complete ready packages when the A
 
 test('an online downgrade is authoritative and purges cached packages', async () => {
   const store = {
-    purgeUser: jest.fn().mockResolvedValue(undefined),
+    purgePackages: jest.fn().mockResolvedValue(undefined),
     setEntitlementLease: jest.fn().mockResolvedValue(undefined),
   };
 
@@ -49,7 +49,7 @@ test('an online downgrade is authoritative and purges cached packages', async ()
     saveCap: 5,
     offline: false,
   });
-  expect(store.purgeUser).toHaveBeenCalledWith('u1');
+  expect(store.purgePackages).toHaveBeenCalledWith('u1', expect.any(Number));
 });
 
 test('an offline failure never grants access without a confirmed premium lease', async () => {
@@ -110,4 +110,71 @@ test('drops a saved-library result when the active account changes', async () =>
 
   expect(snapshot).toMatchObject({ items: [], stale: true });
   expect(store.getEntitlementLease).not.toHaveBeenCalled();
+});
+
+test('drops offline packages when identity changes while the lease is being read', async () => {
+  let activeUser = { uid: 'offline-u1' };
+  let releaseLease;
+  const lease = new Promise((resolve) => {
+    releaseLease = () => resolve({ effectivePremium: true });
+  });
+  const store = {
+    getEntitlementLease: jest.fn().mockReturnValue(lease),
+    listReadyPackages: jest.fn().mockResolvedValue([{
+      userId: 'offline-u1',
+      contentId: 'story-1',
+      state: 'ready',
+      content: { id: 'story-1' },
+      audioBlob: new Blob(['audio']),
+      coverBlob: new Blob(['cover']),
+    }]),
+  };
+  const loading = loadSavedLibrary({
+    userId: 'offline-u1',
+    api: { getUserSaves: jest.fn().mockRejectedValue(new Error('offline')) },
+    getCurrentUser: () => activeUser,
+    store,
+  });
+  activeUser = { uid: 'offline-u2' };
+  releaseLease();
+
+  await expect(loading).resolves.toMatchObject({ items: [], stale: true });
+  expect(store.listReadyPackages).not.toHaveBeenCalled();
+});
+
+test('drops offline packages when identity changes while packages are being read', async () => {
+  let activeUser = { uid: 'package-u1' };
+  let releasePackages;
+  let packagesStarted;
+  const started = new Promise((resolve) => {
+    packagesStarted = resolve;
+  });
+  const packages = new Promise((resolve) => {
+    releasePackages = () => resolve([{
+      userId: 'package-u1',
+      contentId: 'story-1',
+      state: 'ready',
+      content: { id: 'story-1' },
+      audioBlob: new Blob(['audio']),
+      coverBlob: new Blob(['cover']),
+    }]);
+  });
+  const store = {
+    getEntitlementLease: jest.fn().mockResolvedValue({ effectivePremium: true }),
+    listReadyPackages: jest.fn(() => {
+      packagesStarted();
+      return packages;
+    }),
+  };
+  const loading = loadSavedLibrary({
+    userId: 'package-u1',
+    api: { getUserSaves: jest.fn().mockRejectedValue(new Error('offline')) },
+    getCurrentUser: () => activeUser,
+    store,
+  });
+  await started;
+  activeUser = { uid: 'package-u2' };
+  releasePackages();
+
+  await expect(loading).resolves.toMatchObject({ items: [], stale: true });
 });

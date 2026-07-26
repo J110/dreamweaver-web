@@ -10,12 +10,26 @@ export function createOfflineStore(dbAdapter) {
     listPackages: async (userId) =>
       (await dbAdapter.getAll('packages')).filter((record) => record.userId === userId),
     deletePackage: (userId, contentId) => dbAdapter.delete('packages', packageKey(userId, contentId)),
-    purgeUser: async (userId) => {
+    purgePackages: async (userId, maxSessionEpoch = null) => {
       const records = await dbAdapter.getAll('packages');
       await Promise.all(records
-        .filter((record) => record.userId === userId)
+        .filter((record) => record.userId === userId
+          && (maxSessionEpoch == null || record.sessionEpoch == null
+            || record.sessionEpoch <= maxSessionEpoch))
         .map((record) => dbAdapter.delete('packages', record.key)));
-      await dbAdapter.delete('entitlements', userId);
+    },
+    purgeUser: async (userId, maxSessionEpoch = null) => {
+      const records = await dbAdapter.getAll('packages');
+      await Promise.all(records
+        .filter((record) => record.userId === userId
+          && (maxSessionEpoch == null || record.sessionEpoch == null
+            || record.sessionEpoch <= maxSessionEpoch))
+        .map((record) => dbAdapter.delete('packages', record.key)));
+      const lease = await dbAdapter.get('entitlements', userId);
+      if (lease && (maxSessionEpoch == null || lease.sessionEpoch == null
+        || lease.sessionEpoch <= maxSessionEpoch)) {
+        await dbAdapter.delete('entitlements', userId);
+      }
     },
     setEntitlementLease: (userId, effectivePremium, confirmedAt = Date.now(), sessionEpoch = null) =>
       dbAdapter.put('entitlements', { userId, effectivePremium, confirmedAt, sessionEpoch }),
