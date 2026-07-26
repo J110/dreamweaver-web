@@ -64,6 +64,7 @@ export default function PlayerPage() {
   const audioDisposingRef = useRef(false);
   const progressIntervalRef = useRef(null);
   const voiceSwitchAutoPlayRef = useRef(false);
+  const offlineLookupPendingRef = useRef(false);
   const musicRef = useRef(null);
   const musicPhaseRef = useRef(1); // Current sleep music phase (1=Capture, 2=Descent, 3=Sleep)
   const tracked1MinRef = useRef(false); // Track 1-min milestone once per play
@@ -138,6 +139,7 @@ export default function PlayerPage() {
   useEffect(() => {
     let cancelled = false;
     let resolvedPackage = null;
+    offlineLookupPendingRef.current = true;
     setOfflineLookupSettled(false);
     setOfflinePackage((current) => {
       current?.revoke();
@@ -147,6 +149,7 @@ export default function PlayerPage() {
     const user = getUser();
     const userId = user?.uid || user?.family_id || user?.username;
     if (!content?.id || !selectedVoice || !userId) {
+      offlineLookupPendingRef.current = false;
       setOfflineLookupSettled(true);
       return undefined;
     }
@@ -167,7 +170,10 @@ export default function PlayerPage() {
         resolvedPackage = nextPackage;
         setOfflinePackage(nextPackage);
       } catch {} finally {
-        if (!cancelled) setOfflineLookupSettled(true);
+        if (!cancelled) {
+          offlineLookupPendingRef.current = false;
+          setOfflineLookupSettled(true);
+        }
       }
     })();
 
@@ -318,7 +324,7 @@ export default function PlayerPage() {
   // Resolve audio source
   const getAudioSource = useCallback(() => {
     if (!content) return null;
-    if (!offlineLookupSettled) return null;
+    if (!offlineLookupSettled || offlineLookupPendingRef.current) return null;
     if (offlinePackage?.audioUrl) {
       return {
         url: offlinePackage.audioUrl,
@@ -442,7 +448,7 @@ export default function PlayerPage() {
 
   const handlePlayPause = useCallback(async () => {
     if (!content) return;
-    if (!offlineLookupSettled) return;
+    if (!offlineLookupSettled || offlineLookupPendingRef.current) return;
     // Collapse About panel when play is tapped
     setShowAboutPanel(false);
 
@@ -594,7 +600,7 @@ export default function PlayerPage() {
 
   // Auto-play when voice is switched by user
   useEffect(() => {
-    if (voiceSwitchAutoPlayRef.current && selectedVoice) {
+    if (voiceSwitchAutoPlayRef.current && selectedVoice && offlineLookupSettled && !offlineLookupPendingRef.current) {
       voiceSwitchAutoPlayRef.current = false;
       // Small delay to ensure audio cleanup from handleVoiceChange completes
       const timer = setTimeout(() => {
@@ -602,7 +608,7 @@ export default function PlayerPage() {
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [selectedVoice, handlePlayPause]);
+  }, [selectedVoice, offlineLookupSettled, handlePlayPause]);
 
   // Auto-play narration when arriving from content card click (?autoplay=1).
   // Waits for content + voice to be ready, then triggers play once.
@@ -611,7 +617,7 @@ export default function PlayerPage() {
     if (autoPlayTriggeredRef.current) return;
     if (searchParams.get('autoplay') !== '1') return;
     if (!content || !selectedVoice || loading) return;
-    if (!offlineLookupSettled) return;
+    if (!offlineLookupSettled || offlineLookupPendingRef.current) return;
     if (content.premium_locked) return;
     // Don't auto-play if already playing (e.g., voice switch just triggered)
     if (isPlaying || audioRef.current?.src) return;
@@ -806,6 +812,7 @@ export default function PlayerPage() {
           if (cachedPackage) {
             setContent(cachedPackage.content);
             setIsSaved(true);
+            setLoading(false);
             return;
           }
         } catch {}
