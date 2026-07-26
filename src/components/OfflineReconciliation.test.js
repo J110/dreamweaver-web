@@ -5,6 +5,8 @@ const { act } = require('react-dom/test-utils');
 const { createRoot } = require('react-dom/client');
 
 const mockPush = jest.fn();
+const mockReplace = jest.fn();
+const mockRouter = { push: mockPush, replace: mockReplace };
 const mockGetUserSaves = jest.fn();
 const mockGetCurrentUser = jest.fn();
 const mockWiringStore = {
@@ -18,7 +20,7 @@ const mockWiringStore = {
 
 jest.mock('next/navigation', () => ({
   usePathname: () => '/',
-  useRouter: () => ({ push: mockPush, replace: jest.fn() }),
+  useRouter: () => mockRouter,
 }));
 jest.mock('@/utils/i18n', () => ({
   I18nProvider: ({ children }) => children,
@@ -74,6 +76,7 @@ jest.mock('@/utils/analytics', () => ({
 import {
   activateOfflineUserSession,
   createOfflineReconciliationRunner,
+  getOfflineReconciliationRunner,
   purgeOfflineUser,
 } from '@/utils/offlineLibrary';
 
@@ -113,6 +116,7 @@ test('coalesces startup and resume reconciliation into one authoritative request
     effectivePremium: true,
     savedItems: [{ id: 'story-1' }],
     sessionEpoch: 0,
+    authorityPrepared: true,
     store,
   });
 });
@@ -384,6 +388,47 @@ test('authoritative free result survives an entitlement write failure', async ()
   expect(callbacks).toHaveLength(1);
 });
 
+test('newer premium authority cancels an older pending free cleanup', async () => {
+  let now = 100;
+  const callbacks = [];
+  const api = {
+    getUserSaves: jest.fn()
+      .mockResolvedValueOnce({ items: [], effective_premium: false, save_cap: 5 })
+      .mockResolvedValueOnce({ items: [{ id: 'new-story' }], effective_premium: true, save_cap: 30 }),
+  };
+  const store = {
+    setEntitlementLease: jest.fn().mockResolvedValue(undefined),
+    getEntitlementLease: jest.fn(),
+    deleteEntitlementLease: jest.fn(),
+    purgePackages: jest.fn().mockRejectedValue(new Error('busy')),
+    listPackages: jest.fn().mockResolvedValue([]),
+    getPackage: jest.fn().mockResolvedValue({
+      state: 'ready',
+      content: { id: 'new-story' },
+      audioBlob: new Blob(['audio']),
+      coverBlob: new Blob(['cover']),
+    }),
+  };
+  const runner = createOfflineReconciliationRunner({
+    getCurrentUser: () => ({ uid: 'cleanup-supersession-user' }),
+    isAuthenticated: () => true,
+    api,
+    openStore: jest.fn().mockResolvedValue(store),
+    scheduleRetry: (callback) => callbacks.push(callback),
+    now: () => now,
+    dedupeMs: 10,
+  });
+
+  await runner();
+  expect(callbacks).toHaveLength(1);
+  now = 200;
+  await runner();
+  await callbacks.shift()();
+
+  expect(api.getUserSaves).toHaveBeenCalledTimes(2);
+  expect(store.purgePackages).toHaveBeenCalledTimes(1);
+});
+
 test('old logout does not purge packages created by a same-user re-login', async () => {
   let releaseStore;
   const opening = new Promise((resolve) => {
@@ -401,12 +446,20 @@ test('old logout does not purge packages created by a same-user re-login', async
 });
 
 test('AppShell wires startup, native resume, online, focus, and auth refresh through one deduped runner', async () => {
+  let now = 100;
+  const dateNow = jest.spyOn(Date, 'now').mockImplementation(() => now);
   mockGetUserSaves.mockReset().mockResolvedValue({
     items: [],
     effective_premium: true,
     save_cap: 30,
   });
   mockGetCurrentUser.mockReset().mockResolvedValue({ uid: 'app-shell-user' });
+  const wiredRunner = getOfflineReconciliationRunner({
+    getCurrentUser: () => ({ uid: 'app-shell-user' }),
+    isAuthenticated: () => true,
+    api: { getUserSaves: (...args) => mockGetUserSaves(...args) },
+    openStore: async () => mockWiringStore,
+  });
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
@@ -416,17 +469,38 @@ test('AppShell wires startup, native resume, online, focus, and auth refresh thr
     await Promise.resolve();
     await Promise.resolve();
   });
+  expect(mockGetCurrentUser).toHaveBeenCalled();
+  expect(wiredRunner.getTriggerCount()).toBe(3);
+  expect(mockGetUserSaves).toHaveBeenCalledTimes(1);
+
+  now = 1200;
   await act(async () => {
     window.dispatchEvent(new Event('online'));
+    await Promise.resolve();
+    await Promise.resolve();
+  });
+  expect(wiredRunner.getTriggerCount()).toBe(4);
+  expect(mockGetUserSaves).toHaveBeenCalledTimes(2);
+
+  now = 2300;
+  await act(async () => {
     window.dispatchEvent(new Event('focus'));
+    await Promise.resolve();
+    await Promise.resolve();
+  });
+  expect(wiredRunner.getTriggerCount()).toBe(5);
+  expect(mockGetUserSaves).toHaveBeenCalledTimes(3);
+
+  now = 3400;
+  await act(async () => {
     window.__dvAppResumed();
     await Promise.resolve();
     await Promise.resolve();
   });
-
-  expect(mockGetCurrentUser).toHaveBeenCalled();
-  expect(mockGetUserSaves).toHaveBeenCalledTimes(1);
+  expect(wiredRunner.getTriggerCount()).toBe(6);
+  expect(mockGetUserSaves).toHaveBeenCalledTimes(4);
 
   act(() => root.unmount());
   container.remove();
+  dateNow.mockRestore();
 });

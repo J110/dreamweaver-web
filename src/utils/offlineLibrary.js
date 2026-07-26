@@ -6,8 +6,39 @@ const userSessions = new Map();
 const entitlementWrites = new Map();
 let sharedOfflineReconciliationRunner = null;
 
+const epochKey = (userId) => `dv_offline_epoch:${userId}`;
+const revocationKey = (userId) => `dv_offline_revoked:${userId}`;
+
+function offlineStorage() {
+  if (typeof window !== 'undefined') return window.localStorage;
+  return Object.getOwnPropertyDescriptor(globalThis, 'localStorage')?.value || null;
+}
+
+function readStoredNumber(key) {
+  try {
+    const value = Number(offlineStorage()?.getItem(key));
+    return Number.isFinite(value) && value >= 0 ? value : 0;
+  } catch {
+    return 0;
+  }
+}
+
+function writeStoredNumber(key, value) {
+  try {
+    offlineStorage()?.setItem(key, String(value));
+  } catch {
+  }
+}
+
 function currentUserSession(userId) {
-  return userSessions.get(userId) || { epoch: 0, active: true };
+  const current = userSessions.get(userId);
+  const storedEpoch = readStoredNumber(epochKey(userId));
+  if (!current || storedEpoch > current.epoch) {
+    const session = { epoch: storedEpoch, active: current?.active !== false };
+    userSessions.set(userId, session);
+    return session;
+  }
+  return current;
 }
 
 export function captureOfflineUserEpoch(userId) {
@@ -22,11 +53,42 @@ function isCurrentOfflineUserEpoch(userId, sessionEpoch) {
 function advanceOfflineUserEpoch(userId, active) {
   const epoch = currentUserSession(userId).epoch + 1;
   userSessions.set(userId, { epoch, active });
+  writeStoredNumber(epochKey(userId), epoch);
   const prefix = `${userId}:`;
   for (const [key, generation] of packageGenerations) {
     if (key.startsWith(prefix)) packageGenerations.set(key, generation + 1);
   }
   return epoch;
+}
+
+function markOfflineUserRevoked(userId, sessionEpoch) {
+  writeStoredNumber(revocationKey(userId), sessionEpoch);
+}
+
+function clearOfflineUserRevocation(userId) {
+  try {
+    offlineStorage()?.removeItem(revocationKey(userId));
+  } catch {
+  }
+}
+
+function isOfflineUserRevoked(userId) {
+  try {
+    return offlineStorage()?.getItem(revocationKey(userId)) != null;
+  } catch {
+    return false;
+  }
+}
+
+function prepareOfflineAuthority(userId, effectivePremium, sessionEpoch) {
+  if (!isCurrentOfflineUserEpoch(userId, sessionEpoch)) return null;
+  if (effectivePremium === true) {
+    clearOfflineUserRevocation(userId);
+    return sessionEpoch;
+  }
+  const authoritativeEpoch = advanceOfflineUserEpoch(userId, true);
+  markOfflineUserRevoked(userId, authoritativeEpoch);
+  return authoritativeEpoch;
 }
 
 export function activateOfflineUserSession(userId) {
@@ -236,13 +298,17 @@ export async function reconcileOfflineLibrary({
   store,
   sessionEpoch = captureOfflineUserEpoch(userId),
   cleanupOnly = false,
+  authorityPrepared = false,
   fetchImpl = globalThis.fetch,
 }) {
   if (!userId || !store || !isCurrentOfflineUserEpoch(userId, sessionEpoch)) return;
 
   if (effectivePremium !== true) {
     if (!cleanupOnly) {
-      sessionEpoch = advanceOfflineUserEpoch(userId, true);
+      if (!authorityPrepared) {
+        sessionEpoch = prepareOfflineAuthority(userId, false, sessionEpoch);
+      }
+      if (sessionEpoch == null) return null;
       let written;
       try {
         written = await writeCurrentEntitlementLease({
@@ -265,6 +331,10 @@ export async function reconcileOfflineLibrary({
     return isCurrentOfflineUserEpoch(userId, sessionEpoch) ? sessionEpoch : null;
   }
 
+  if (!cleanupOnly && !authorityPrepared) {
+    sessionEpoch = prepareOfflineAuthority(userId, true, sessionEpoch);
+  }
+  if (sessionEpoch == null) return null;
   if (!await writeCurrentEntitlementLease({
     userId, sessionEpoch, effectivePremium: true, store,
   })) return;
@@ -322,6 +392,14 @@ export async function loadSavedLibrary({
   } catch {
     if (isStaleIdentity() || isStaleSession()) {
       return { items: [], effectivePremium: false, saveCap: null, offline: true, stale: true };
+    }
+    if (isOfflineUserRevoked(userId)) {
+      return {
+        items: [],
+        effectivePremium: false,
+        saveCap: null,
+        offline: true,
+      };
     }
     const lease = await store.getEntitlementLease(userId);
     if (isStaleIdentity() || isStaleSession()) {
@@ -392,12 +470,15 @@ export function createOfflineReconciliationRunner({
   let lastCompletedAt = -Infinity;
   let cleanupRetryScheduled = false;
   let cleanupTask = null;
+  let authorityVersion = 0;
+  let triggerCount = 0;
 
   const isCleanupCurrent = (task) => {
     if (!task || !isAuthenticated()) return false;
     const user = getCurrentUser();
     const activeUserId = user?.uid || user?.family_id || user?.username;
     return activeUserId === task.userId
+      && task.authorityVersion === authorityVersion
       && isCurrentOfflineUserEpoch(task.userId, task.sessionEpoch);
   };
 
@@ -424,6 +505,7 @@ export function createOfflineReconciliationRunner({
           savedItems: Array.isArray(pending.data?.items) ? pending.data.items : [],
           sessionEpoch: pending.sessionEpoch,
           cleanupOnly: pending.cleanupOnly,
+          authorityPrepared: pending.authorityPrepared,
           store,
         });
         if (typeof reconciledEpoch === 'number') pending.sessionEpoch = reconciledEpoch;
@@ -440,6 +522,7 @@ export function createOfflineReconciliationRunner({
   };
 
   const run = ({ force = false } = {}) => {
+    triggerCount += 1;
     if (inFlight) return inFlight;
     if (!isAuthenticated()) return Promise.resolve(null);
     const user = getCurrentUser();
@@ -465,21 +548,31 @@ export function createOfflineReconciliationRunner({
       const confirmedUserId = confirmedUser?.uid || confirmedUser?.family_id || confirmedUser?.username;
       if (!isAuthenticated() || confirmedUserId !== userId
         || !isCurrentOfflineUserEpoch(userId, sessionEpoch)) return null;
+      const preparedEpoch = prepareOfflineAuthority(
+        userId,
+        data?.effective_premium === true,
+        sessionEpoch,
+      );
+      if (preparedEpoch == null) return null;
+      const requestAuthorityVersion = authorityVersion + 1;
+      authorityVersion = requestAuthorityVersion;
+      cleanupTask = null;
 
-      let appliedEpoch = sessionEpoch;
+      let appliedEpoch = preparedEpoch;
       try {
         const store = await openStore();
-        if (!isCurrentOfflineUserEpoch(userId, sessionEpoch)) return null;
+        if (!isCurrentOfflineUserEpoch(userId, preparedEpoch)) return null;
         const reconciledEpoch = await reconcile({
           userId,
           effectivePremium: data?.effective_premium === true,
           savedItems: Array.isArray(data?.items) ? data.items : [],
-          sessionEpoch,
+          sessionEpoch: preparedEpoch,
+          authorityPrepared: true,
           store,
         });
         appliedEpoch = typeof reconciledEpoch === 'number'
           ? reconciledEpoch
-          : sessionEpoch;
+          : preparedEpoch;
         if (!isCurrentOfflineUserEpoch(userId, appliedEpoch)) return null;
       } catch (error) {
         if (typeof error?.offlineSessionEpoch === 'number') {
@@ -491,6 +584,8 @@ export function createOfflineReconciliationRunner({
           data,
           sessionEpoch: appliedEpoch,
           cleanupOnly: error?.offlineCleanupOnly === true,
+          authorityPrepared: true,
+          authorityVersion: requestAuthorityVersion,
         });
       }
       lastResult = data;
@@ -503,6 +598,7 @@ export function createOfflineReconciliationRunner({
     });
     return inFlight;
   };
+  run.getTriggerCount = () => triggerCount;
   return run;
 }
 

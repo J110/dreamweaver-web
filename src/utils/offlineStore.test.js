@@ -49,3 +49,39 @@ test('purges packages and entitlement lease for one user only', async () => {
   expect(await store.getEntitlementLease('u1')).toBeNull();
   expect(await store.getEntitlementLease('u2')).toMatchObject({ effectivePremium: true });
 });
+
+test('conditional purge preserves a newer same-key record written after the scan', async () => {
+  const records = new Map([
+    ['u1:s1', { key: 'u1:s1', userId: 'u1', contentId: 's1', sessionEpoch: 4 }],
+  ]);
+  let replaced = false;
+  const store = createOfflineStore({
+    put: async (name, value) => records.set(value.key || value.userId, value),
+    get: async (name, key) => records.get(key) ?? null,
+    getAll: async (name) => {
+      const snapshot = [...records.values()];
+      if (name === 'packages' && !replaced) {
+        replaced = true;
+        records.set('u1:s1', {
+          key: 'u1:s1',
+          userId: 'u1',
+          contentId: 's1',
+          sessionEpoch: 6,
+        });
+      }
+      return snapshot;
+    },
+    delete: async (name, key) => records.delete(key),
+    deleteIfEpochAtMost: async (name, key, userId, cutoff) => {
+      const current = records.get(key);
+      if (current?.userId === userId
+        && (current.sessionEpoch == null || current.sessionEpoch <= cutoff)) {
+        records.delete(key);
+      }
+    },
+  });
+
+  await store.purgeUser('u1', 5);
+
+  expect(await store.getPackage('u1', 's1')).toMatchObject({ sessionEpoch: 6 });
+});

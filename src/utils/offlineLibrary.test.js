@@ -356,3 +356,34 @@ test('offline item reads stop when the active user changes while packages are lo
 
   await expect(loading).resolves.toEqual([]);
 });
+
+test('persisted epoch initializes a reload and logout purges prior-session records', async () => {
+  const values = new Map([['dv_offline_epoch:reload-user', '41']]);
+  const previousStorage = Object.getOwnPropertyDescriptor(global, 'localStorage');
+  Object.defineProperty(global, 'localStorage', {
+    configurable: true,
+    value: {
+      getItem: (key) => values.get(key) ?? null,
+      setItem: (key, value) => values.set(key, String(value)),
+      removeItem: (key) => values.delete(key),
+    },
+  });
+  const store = memoryStore();
+  await store.putPackage({
+    key: 'reload-user:story-1',
+    userId: 'reload-user',
+    contentId: 'story-1',
+    sessionEpoch: 41,
+    state: 'ready',
+  });
+  await store.setEntitlementLease('reload-user', true, 100, 41);
+
+  expect(captureOfflineUserEpoch('reload-user')).toBe(41);
+  await purgeOfflineUser('reload-user', async () => store);
+
+  expect(values.get('dv_offline_epoch:reload-user')).toBe('42');
+  expect(await store.getPackage('reload-user', 'story-1')).toBeNull();
+  expect(await store.getEntitlementLease('reload-user')).toBeNull();
+  if (previousStorage) Object.defineProperty(global, 'localStorage', previousStorage);
+  else delete global.localStorage;
+});

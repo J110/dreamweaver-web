@@ -1,4 +1,8 @@
-import { loadSavedLibrary } from '@/utils/offlineLibrary';
+import {
+  createOfflineReconciliationRunner,
+  loadSavedLibrary,
+  reconcileOfflineLibrary,
+} from '@/utils/offlineLibrary';
 
 test('uses a last-confirmed premium lease and complete ready packages when the API is offline', async () => {
   const packageRecord = {
@@ -177,4 +181,96 @@ test('drops offline packages when identity changes while packages are being read
   releasePackages();
 
   await expect(loading).resolves.toMatchObject({ items: [], stale: true });
+});
+
+test('failed free lease write still suppresses an older premium offline fallback', async () => {
+  const values = new Map();
+  const previousStorage = Object.getOwnPropertyDescriptor(global, 'localStorage');
+  Object.defineProperty(global, 'localStorage', {
+    configurable: true,
+    value: {
+      getItem: (key) => values.get(key) ?? null,
+      setItem: (key, value) => values.set(key, String(value)),
+      removeItem: (key) => values.delete(key),
+    },
+  });
+  const store = {
+    setEntitlementLease: jest.fn().mockRejectedValue(new Error('write failed')),
+    getEntitlementLease: jest.fn().mockResolvedValue({ effectivePremium: true }),
+    listReadyPackages: jest.fn().mockResolvedValue([{
+      userId: 'revoked-user',
+      contentId: 'story-1',
+      state: 'ready',
+      content: { id: 'story-1' },
+      audioBlob: new Blob(['audio']),
+      coverBlob: new Blob(['cover']),
+    }]),
+  };
+
+  await expect(reconcileOfflineLibrary({
+    userId: 'revoked-user',
+    effectivePremium: false,
+    savedItems: [],
+    store,
+  })).rejects.toThrow('write failed');
+  const snapshot = await loadSavedLibrary({
+    userId: 'revoked-user',
+    api: { getUserSaves: jest.fn().mockRejectedValue(new Error('offline')) },
+    store,
+  });
+
+  expect(snapshot).toMatchObject({ items: [], effectivePremium: false, offline: true });
+  expect(store.getEntitlementLease).not.toHaveBeenCalled();
+  expect(store.listReadyPackages).not.toHaveBeenCalled();
+  if (previousStorage) Object.defineProperty(global, 'localStorage', previousStorage);
+  else delete global.localStorage;
+});
+
+test('authoritative free suppresses premium fallback even when the store cannot open', async () => {
+  const values = new Map();
+  const previousStorage = Object.getOwnPropertyDescriptor(global, 'localStorage');
+  Object.defineProperty(global, 'localStorage', {
+    configurable: true,
+    value: {
+      getItem: (key) => values.get(key) ?? null,
+      setItem: (key, value) => values.set(key, String(value)),
+      removeItem: (key) => values.delete(key),
+    },
+  });
+  const runner = createOfflineReconciliationRunner({
+    getCurrentUser: () => ({ uid: 'open-failure-revoked-user' }),
+    isAuthenticated: () => true,
+    api: {
+      getUserSaves: jest.fn().mockResolvedValue({
+        items: [],
+        effective_premium: false,
+        save_cap: 5,
+      }),
+    },
+    openStore: jest.fn().mockRejectedValue(new Error('IndexedDB unavailable')),
+    scheduleRetry: jest.fn(),
+  });
+
+  await runner();
+  const store = {
+    getEntitlementLease: jest.fn().mockResolvedValue({ effectivePremium: true }),
+    listReadyPackages: jest.fn().mockResolvedValue([{
+      userId: 'open-failure-revoked-user',
+      contentId: 'story-1',
+      state: 'ready',
+      content: { id: 'story-1' },
+      audioBlob: new Blob(['audio']),
+      coverBlob: new Blob(['cover']),
+    }]),
+  };
+  const snapshot = await loadSavedLibrary({
+    userId: 'open-failure-revoked-user',
+    api: { getUserSaves: jest.fn().mockRejectedValue(new Error('offline')) },
+    store,
+  });
+
+  expect(snapshot).toMatchObject({ items: [], effectivePremium: false, offline: true });
+  expect(store.getEntitlementLease).not.toHaveBeenCalled();
+  if (previousStorage) Object.defineProperty(global, 'localStorage', previousStorage);
+  else delete global.localStorage;
 });
