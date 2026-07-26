@@ -30,18 +30,18 @@ const FREE_BULLETS_HI = [
 const PREMIUM_BULLETS_EN = [
   'Voice cloning — stories in your voice (3 voice slots)',
   '30 personalized story credits every month',
-  'Last 30 days of stories saved',
+  '30 saved favorites with automatic offline listening for the current voice',
   "Episodic memory — your kid's character remembers their adventures",
-  'Karaoke mode + bookmark resume + offline downloads',
+  'Karaoke mode + bookmark resume',
   'Up to 3 kid profiles',
 ];
 
 const PREMIUM_BULLETS_HI = [
   'Voice cloning — kahaniyaan aapki aawaaz mein (3 voice slots)',
   '30 personalized story credits har mahine',
-  'Pichhle 30 din ki sabhi kahaniyaan saved',
+  '30 favorite kahaniyaan save karein, current voice ke saath automatically offline',
   'Episodic memory — aapke kid ka character apni adventures yaad rakhta hai',
-  'Karaoke mode + bookmark resume + offline downloads',
+  'Karaoke mode + bookmark resume',
   '3 tak kid profiles',
 ];
 

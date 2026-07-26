@@ -95,8 +95,10 @@ export default function SupportPage() {
 
               <p className={styles.bold}>Can I use Dream Valley offline?</p>
               <p>
-                Dream Valley currently requires an internet connection to stream stories and
-                narration. We are exploring offline support for future updates.
+                Free accounts can save up to 5 favorite stories. Premium accounts can save up to
+                30 favorites, and Dream Valley automatically prepares the current narrator voice
+                for each saved story for offline listening. Streaming other stories or switching
+                to a voice that has not been prepared still requires an internet connection.
               </p>
 
               <p className={styles.bold}>How do I report a problem with a story?</p>
