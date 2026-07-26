@@ -215,3 +215,44 @@ test('keeps the upgrade banner button affordance', () => {
 
   expect(upgradeBanner).toMatch(/cursor: pointer;/);
 });
+
+test('bounds both 150px Golden Ticket copy variants below the artwork', () => {
+  const css = fs.readFileSync(path.resolve(__dirname, 'page.module.css'), 'utf8');
+  const planCard = css.match(/\.planCard \{([^}]*)\}/)?.[1];
+  const ticketImage = css.match(/\.ticketImage \{([^}]*)\}/)?.[1];
+  const ticketBody = css.match(/\.ticketBody \{([^}]*)\}/)?.[1];
+  const compactCss = css.slice(css.indexOf('@media (max-width: 391px)'));
+  const compactBody = compactCss.match(/\.ticketBody \{([^}]*)\}/)?.[1];
+  const compactEyebrow = compactCss.match(/\.ticketEyebrow \{([^}]*)\}/)?.[1];
+  const compactStrong = compactCss.match(/\.ticketBody strong \{([^}]*)\}/)?.[1];
+  const compactDetail = compactCss.match(/\.ticketBody > span:last-child \{([^}]*)\}/)?.[1];
+  const aspectRatio = Number(planCard?.match(/aspect-ratio:\s*([\d.]+)/)?.[1]);
+  const imagePercent = Number(ticketImage?.match(/height:\s*(\d+)%/)?.[1]);
+  const lowerRegionHeight = (150 / aspectRatio) * (1 - imagePercent / 100);
+  const availableCopyHeight = lowerRegionHeight - 12;
+  const compactCopyHeight = 8 + (12 * 1.1 * 3) + (9 * 1.2 * 3) + (3 * 2);
+  const copies = [
+    ['Premium pass', 'Unlock your full library', '30 favorites + offline downloads'],
+    ['Premium library', '30 saves included', 'Save favorites and listen offline'],
+  ];
+
+  expect(aspectRatio).toBe(0.76);
+  expect(imagePercent).toBe(45);
+  expect(ticketBody).toMatch(/top:\s*45%;/);
+  expect(ticketBody).toMatch(/right:\s*0;/);
+  expect(ticketBody).toMatch(/bottom:\s*0;/);
+  expect(ticketBody).toMatch(/left:\s*0;/);
+  expect(ticketBody).toMatch(/justify-content:\s*flex-end;/);
+  expect(ticketBody).toMatch(/box-sizing:\s*border-box;/);
+  expect(ticketBody).toMatch(/overflow:\s*hidden;/);
+  expect(compactBody).toMatch(/padding:\s*0 14px 12px;/);
+  expect(compactBody).toMatch(/gap:\s*3px;/);
+  expect(compactEyebrow).toMatch(/font-size:\s*8px;/);
+  expect(compactStrong).toMatch(/font-size:\s*12px;/);
+  expect(compactStrong).toMatch(/line-height:\s*1\.1;/);
+  expect(compactDetail).toMatch(/font-size:\s*9px;/);
+  expect(compactDetail).toMatch(/line-height:\s*1\.2;/);
+  expect(copies).toHaveLength(2);
+  copies.forEach((copy) => expect(copy).toHaveLength(3));
+  expect(compactCopyHeight).toBeLessThan(availableCopyHeight);
+});

@@ -192,12 +192,17 @@
 
 .ticketBody {
   position: absolute;
-  left: 24px;
-  right: 24px;
-  bottom: 24px;
+  top: 45%;
+  right: 0;
+  bottom: 0;
+  left: 0;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   gap: 6px;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0 24px 24px;
 }
 
 .ticketEyebrow {
@@ -237,6 +242,25 @@
   .upgradeBannerAction {
     grid-column: 2;
     justify-self: start;
+  }
+
+  .ticketBody {
+    gap: 3px;
+    padding: 0 14px 12px;
+  }
+
+  .ticketEyebrow {
+    font-size: 8px;
+  }
+
+  .ticketBody strong {
+    font-size: 12px;
+    line-height: 1.1;
+  }
+
+  .ticketBody > span:last-child {
+    font-size: 9px;
+    line-height: 1.2;
   }
 }
 
