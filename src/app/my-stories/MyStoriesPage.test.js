@@ -92,7 +92,10 @@ test('free users get clickable upgrade messaging and a trailing locked card with
   expect(planCard.textContent).toContain('Premium pass');
   expect(planCard.textContent).toContain('Unlock your full library');
   expect(planCard.textContent).toContain('30 favorites + offline downloads');
-  expect(planCard.querySelector('img')).toBeNull();
+  const freeImage = planCard.querySelector('img');
+  expect(freeImage).not.toBeNull();
+  expect(freeImage.getAttribute('src')).toBe('/upgrade-showcase.webp');
+  expect(freeImage.getAttribute('alt')).toBe('');
 
   await act(async () => upgradeBanner.click());
   expect(mockRouter.push).toHaveBeenCalledWith(
@@ -123,7 +126,10 @@ test('premium users with no saves get a permanent non-interactive offline-listen
   expect(premiumCard.textContent).toContain('Premium library');
   expect(premiumCard.textContent).toContain('30 saves included');
   expect(premiumCard.textContent).toContain('Save favorites and listen offline');
-  expect(premiumCard.querySelector('img')).toBeNull();
+  const premiumImage = premiumCard.querySelector('img');
+  expect(premiumImage).not.toBeNull();
+  expect(premiumImage.getAttribute('src')).toBe('/upgrade-showcase.webp');
+  expect(premiumImage.getAttribute('alt')).toBe('');
   expect(container.querySelector('[data-library-upgrade-banner]')).toBeNull();
 
   await act(async () => root.unmount());

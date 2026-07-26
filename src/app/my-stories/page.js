@@ -218,6 +218,11 @@ export default function MyStoriesPage() {
                   ))}
                   {isPremiumUser ? (
                     <div className={styles.planCard} data-library-plan-card="premium">
+                      <img
+                        src="/upgrade-showcase.webp"
+                        alt=""
+                        className={styles.ticketImage}
+                      />
                       <span className={styles.ticketBorder} aria-hidden />
                       <span className={styles.ticketBody}>
                         <span className={styles.ticketEyebrow}>Premium library</span>
@@ -232,6 +237,11 @@ export default function MyStoriesPage() {
                       className={`${styles.planCard} ${styles.lockedPlanCard}`}
                       data-library-plan-card="free"
                     >
+                      <img
+                        src="/upgrade-showcase.webp"
+                        alt=""
+                        className={styles.ticketImage}
+                      />
                       <span className={styles.ticketBorder} aria-hidden />
                       <span className={styles.ticketBody}>
                         <span className={styles.ticketEyebrow}>Premium pass</span>
