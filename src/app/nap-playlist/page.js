@@ -252,7 +252,7 @@ export default function NapPlaylistPage() {
                   {lang === 'hi' ? 'Premium se unlock karein' : 'Unlock with Premium'}
                 </button>
               ) : (
-                <HeartButton contentId={item.content_id} size={20} />
+                <HeartButton contentId={item.content_id} content={item} size={20} />
               )}
             </div>
           ))}

@@ -1356,6 +1356,8 @@ export default function PlayerPage() {
         <div className={styles.actions}>
           <HeartButton
             contentId={content.id}
+            content={content}
+            selectedVoice={selectedVoice}
             initialSaved={isSaved}
             initialCount={content.save_count || 0}
             variant="full"

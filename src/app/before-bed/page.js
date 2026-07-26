@@ -430,7 +430,7 @@ function BeforeBedContent() {
                         </span>
                         <div className={styles.cardActions}>
                           <ShareBtn type="silly-songs" id={song.id} title={song.title} />
-                          {!song.premium_locked && <HeartButton contentId={song.id} variant="compact" />}
+                          {!song.premium_locked && <HeartButton contentId={song.id} content={song} variant="compact" />}
                           <button
                             className={styles.playBtn}
                             onClick={(e) => {
@@ -484,7 +484,7 @@ function BeforeBedContent() {
                         </span>
                         <div className={styles.cardActions}>
                           <ShareBtn type="poems" id={poem.id} title={poem.title} />
-                          {!poem.premium_locked && <HeartButton contentId={poem.id} variant="compact" />}
+                          {!poem.premium_locked && <HeartButton contentId={poem.id} content={poem} variant="compact" />}
                           <button
                             className={styles.playBtn}
                             onClick={(e) => {
@@ -540,7 +540,7 @@ function BeforeBedContent() {
                           </span>
                           <div className={styles.cardActions}>
                             <ShareBtn type="funny-shorts" id={short.id} title={short.title} />
-                            {!short.premium_locked && <HeartButton contentId={short.id} variant="compact" />}
+                            {!short.premium_locked && <HeartButton contentId={short.id} content={short} variant="compact" />}
                             <button
                               className={styles.playBtn}
                               onClick={(e) => {

@@ -346,7 +346,7 @@ export default function PlaylistPage() {
               {it.title || SLOT_LABEL[it.slot]?.[lang] || it.slot}
             </span>
             {it.is_fallback && <span style={miniBadgeStyle}>•</span>}
-            {it.content_id && <HeartButton contentId={it.content_id} variant="compact" />}
+            {it.content_id && <HeartButton contentId={it.content_id} content={it} variant="compact" />}
           </div>
         ))}
       </div>
