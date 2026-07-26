@@ -88,6 +88,12 @@ test('free users get clickable upgrade messaging and a trailing locked card with
     .filter((button) => button.textContent.includes('Upgrade to Premium'));
   expect(upgradeActions).toHaveLength(2);
 
+  await act(async () => upgradeActions[0].click());
+  expect(mockRouter.push).toHaveBeenCalledWith(
+    '/upgrade?intent=%2Fmy-stories'
+  );
+
+  mockRouter.push.mockClear();
   await act(async () => upgradeActions[1].click());
   expect(mockRouter.push).toHaveBeenCalledWith(
     '/upgrade?intent=%2Fmy-stories'
@@ -97,9 +103,9 @@ test('free users get clickable upgrade messaging and a trailing locked card with
   container.remove();
 });
 
-test('premium users get a permanent offline-listening encouragement card', async () => {
+test('premium users with no saves get a permanent non-interactive offline-listening encouragement card', async () => {
   const { container, root } = await renderPage({
-    items: [{ id: 'one', title: 'One' }],
+    items: [],
     effective_premium: true,
     save_cap: 30,
   });
@@ -108,7 +114,10 @@ test('premium users get a permanent offline-listening encouragement card', async
     'You have 30 slots. Save more favorites that you can listen to offline.'
   );
   expect(container.textContent).not.toContain('Upgrade to Premium');
-  expect(container.querySelector('[data-library-plan-card="premium"]')).not.toBeNull();
+  expect(container.querySelectorAll('[data-saved-content-card]')).toHaveLength(0);
+  const planCard = container.querySelector('[data-library-plan-card="premium"]');
+  expect(planCard).not.toBeNull();
+  expect(planCard.tagName).toBe('DIV');
 
   await act(async () => root.unmount());
   container.remove();
