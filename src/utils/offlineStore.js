@@ -17,9 +17,10 @@ export function createOfflineStore(dbAdapter) {
         .map((record) => dbAdapter.delete('packages', record.key)));
       await dbAdapter.delete('entitlements', userId);
     },
-    setEntitlementLease: (userId, effectivePremium, confirmedAt = Date.now()) =>
-      dbAdapter.put('entitlements', { userId, effectivePremium, confirmedAt }),
+    setEntitlementLease: (userId, effectivePremium, confirmedAt = Date.now(), sessionEpoch = null) =>
+      dbAdapter.put('entitlements', { userId, effectivePremium, confirmedAt, sessionEpoch }),
     getEntitlementLease: (userId) => dbAdapter.get('entitlements', userId),
+    deleteEntitlementLease: (userId) => dbAdapter.delete('entitlements', userId),
   };
 }
 

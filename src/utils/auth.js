@@ -1,5 +1,5 @@
 import { clearEffectivePremium } from './emberlightTheme';
-import { purgeOfflineUser } from './offlineLibrary';
+import { activateOfflineUserSession, purgeOfflineUser } from './offlineLibrary';
 
 const callPosthog = (fn) => {
   if (typeof window === 'undefined') return;
@@ -201,6 +201,8 @@ export const getUser = () => {
 export const setUser = (user) => {
   if (typeof window === 'undefined') return;
   localStorage.setItem('dreamweaver_user', JSON.stringify(user));
+  const offlineUserId = user?.uid || user?.family_id || user?.username;
+  if (offlineUserId) activateOfflineUserSession(offlineUserId);
 
   const username = user?.username;
   const familyId = user?.family_id;

@@ -6,6 +6,8 @@ import {
   selectOfflineAudio,
   reconcileOfflineLibrary,
   getOfflineSavedItems,
+  captureOfflineUserEpoch,
+  purgeOfflineUser,
 } from './offlineLibrary';
 import { createOfflineStore } from './offlineStore';
 
@@ -302,4 +304,30 @@ test('offline saved items include only complete ready packages', async () => {
   await expect(getOfflineSavedItems('u1', store)).resolves.toEqual([
     expect.objectContaining({ id: 'story-1', offlineReady: true }),
   ]);
+});
+
+test('purge rejects package work that captured its epoch before opening the store', async () => {
+  const store = memoryStore();
+  const sessionEpoch = captureOfflineUserEpoch('late-save-user');
+  let releaseStore;
+  const storeOpening = new Promise((resolve) => {
+    releaseStore = () => resolve(store);
+  });
+  const purge = purgeOfflineUser('late-save-user', () => storeOpening);
+  const fetchImpl = jest.fn(fetchBlob);
+
+  const queued = await queueOfflinePackage({
+    userId: 'late-save-user',
+    content: sampleContentWithVoices(),
+    selectedVoice: 'female_2',
+    sessionEpoch,
+    store,
+    fetchImpl,
+  });
+  releaseStore();
+  await purge;
+
+  expect(queued).toBeNull();
+  expect(fetchImpl).not.toHaveBeenCalled();
+  expect(await store.getPackage('late-save-user', 'story-1')).toBeNull();
 });

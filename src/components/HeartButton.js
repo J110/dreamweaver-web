@@ -6,7 +6,11 @@ import { getUser, isLoggedIn } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
 import { interactionApi } from '@/utils/api';
 import { setUpgradeIntent } from '@/utils/upgradeIntent';
-import { queueOfflinePackage, removeOfflinePackage } from '@/utils/offlineLibrary';
+import {
+  captureOfflineUserEpoch,
+  queueOfflinePackage,
+  removeOfflinePackage,
+} from '@/utils/offlineLibrary';
 import { openOfflineStore } from '@/utils/offlineStore';
 import SaveLimitModal from './SaveLimitModal';
 import styles from './HeartButton.module.css';
@@ -50,13 +54,14 @@ export default function HeartButton({
     }
   };
 
-  const queueConfirmedSave = async (userId) => {
+  const queueConfirmedSave = async (userId, sessionEpoch) => {
     if (!userId || !content) return;
     const offlineContent = content.id ? content : { ...content, id: contentId };
     try {
       const store = await openOfflineStore();
       await queueOfflinePackage({
         userId,
+        sessionEpoch,
         content: offlineContent,
         selectedVoice,
         store,
@@ -99,6 +104,7 @@ export default function HeartButton({
 
     const wasFilled = filled;
     const userId = offlineUserId();
+    const sessionEpoch = userId ? captureOfflineUserEpoch(userId) : null;
     setBusy(true);
 
     if (!wasFilled) {
@@ -111,7 +117,7 @@ export default function HeartButton({
         } else if (res?.saved) {
           adjustCount(+1);
           flashToast(t('playerSavedToProfile'));
-          if (res.offline_allowed) void queueConfirmedSave(userId);
+          if (res.offline_allowed) void queueConfirmedSave(userId, sessionEpoch);
         } else {
           setFilled(false);
         }

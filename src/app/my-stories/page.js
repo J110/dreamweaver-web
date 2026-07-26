@@ -82,7 +82,17 @@ export default function MyStoriesPage() {
       const currentUser = getUser();
       const userId = currentUser?.uid || currentUser?.family_id || currentUser?.username;
       const store = await openOfflineStore();
-      const savesData = await loadSavedLibrary({ userId, reconciliationRunner, store });
+      const savesData = await loadSavedLibrary({
+        userId,
+        reconciliationRunner,
+        getCurrentUser: getUser,
+        store,
+      });
+      if (savesData.stale) {
+        setFavorites([]);
+        setSaved([]);
+        return;
+      }
       const items = savesData.items;
       setFavorites(items);
       setSaved(items);

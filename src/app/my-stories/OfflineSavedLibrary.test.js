@@ -90,3 +90,24 @@ test('uses a shared reconciliation result without issuing a second saves request
     offline: false,
   });
 });
+
+test('drops a saved-library result when the active account changes', async () => {
+  const store = {
+    getEntitlementLease: jest.fn().mockResolvedValue({ effectivePremium: true }),
+    listReadyPackages: jest.fn().mockResolvedValue([]),
+  };
+
+  const snapshot = await loadSavedLibrary({
+    userId: 'u1',
+    reconciliationRunner: jest.fn().mockResolvedValue({
+      items: [{ id: 'u1-story' }],
+      effective_premium: true,
+      save_cap: 30,
+    }),
+    getCurrentUser: () => ({ uid: 'u2' }),
+    store,
+  });
+
+  expect(snapshot).toMatchObject({ items: [], stale: true });
+  expect(store.getEntitlementLease).not.toHaveBeenCalled();
+});

@@ -13,6 +13,7 @@ const mockQueueOfflinePackage = jest.fn();
 const mockRemoveOfflinePackage = jest.fn();
 const mockOpenOfflineStore = jest.fn();
 const mockGetUser = jest.fn();
+const mockCaptureOfflineUserEpoch = jest.fn();
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: mockPush }),
@@ -47,6 +48,7 @@ jest.mock('@/utils/upgradeIntent', () => ({
   setUpgradeIntent: (...args) => mockSetUpgradeIntent(...args),
 }));
 jest.mock('@/utils/offlineLibrary', () => ({
+  captureOfflineUserEpoch: (...args) => mockCaptureOfflineUserEpoch(...args),
   queueOfflinePackage: (...args) => mockQueueOfflinePackage(...args),
   removeOfflinePackage: (...args) => mockRemoveOfflinePackage(...args),
 }));
@@ -93,6 +95,7 @@ describe('HeartButton save limits and offline lifecycle', () => {
     mockRemoveOfflinePackage.mockReset().mockResolvedValue(null);
     mockOpenOfflineStore.mockReset().mockResolvedValue({ name: 'offline-store' });
     mockGetUser.mockReset().mockReturnValue({ uid: 'user-1' });
+    mockCaptureOfflineUserEpoch.mockReset().mockReturnValue(7);
     window.history.replaceState({}, '', '/player/story-1?voice=female_2');
   });
 
@@ -211,6 +214,7 @@ describe('HeartButton save limits and offline lifecycle', () => {
     expect(heart().getAttribute('aria-pressed')).toBe('true');
     expect(mockQueueOfflinePackage).toHaveBeenCalledWith(expect.objectContaining({
       userId: 'user-1',
+      sessionEpoch: 7,
       content: sampleContent,
       selectedVoice: 'female_2',
       store: { name: 'offline-store' },
