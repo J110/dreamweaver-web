@@ -125,11 +125,12 @@ Incomplete packages are never presented as offline-playable.
 - Storage quota or download failure: keep the save, mark the package failed, and retry later.
 - Unsave API failure: keep both the saved state and local package.
 - Local deletion failure: hide the package immediately and retry physical cleanup later.
-- Entitlement cannot be verified after a cached premium session: preserve files but do not expose offline playback until entitlement is confirmed.
+- No network is available after a previously confirmed premium session: use the last confirmed premium entitlement so downloaded items remain playable offline.
+- A later online entitlement refresh confirms downgrade: stop exposing offline packages immediately and purge them.
 
 ## Security and Privacy
 
-Offline packages are user-scoped. Logout and downgrade trigger purge, and one signed-in user cannot enumerate another user's manifest.
+Offline packages are user-scoped. Logout and a confirmed downgrade trigger purge, and one signed-in user cannot enumerate another user's manifest. A device that stays offline after a server-side downgrade retains access until its next entitlement refresh; this is an unavoidable property of true offline playback.
 
 Browser origin storage and native application storage provide platform isolation, not DRM. No new long-lived media credentials are stored.
 
