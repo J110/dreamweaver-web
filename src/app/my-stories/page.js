@@ -193,9 +193,18 @@ export default function MyStoriesPage() {
             </div>
 
             {saveCap != null && !isPremiumUser && (
-              <button type="button" onClick={handleUpgrade} className={styles.upgradeBanner}>
-                <span aria-hidden>✨</span>
-                <span>{saved.length}/{saveCap} saved. Upgrade to Premium for more slots and offline downloads</span>
+              <button
+                type="button"
+                onClick={handleUpgrade}
+                className={styles.upgradeBanner}
+                data-library-upgrade-banner
+              >
+                <span className={styles.savedCount}>{saved.length} of {saveCap}{' '}</span>
+                <span className={styles.upgradeBannerCopy}>
+                  <strong>saved</strong>
+                  <small>More slots + offline downloads</small>
+                </span>
+                <span className={styles.upgradeBannerAction}>Get Premium →</span>
               </button>
             )}
 
@@ -209,9 +218,12 @@ export default function MyStoriesPage() {
                   ))}
                   {isPremiumUser ? (
                     <div className={styles.planCard} data-library-plan-card="premium">
-                      <img src="/upgrade-showcase.webp" alt="" className={styles.planCardImage} />
-                      <strong>You have 30 slots. </strong>
-                      <span>Save more favorites that you can listen to offline.</span>
+                      <span className={styles.ticketBorder} aria-hidden />
+                      <span className={styles.ticketBody}>
+                        <span className={styles.ticketEyebrow}>Premium library</span>
+                        <strong>30 saves included</strong>
+                        <span>Save favorites and listen offline</span>
+                      </span>
                     </div>
                   ) : (
                     <button
@@ -220,10 +232,12 @@ export default function MyStoriesPage() {
                       className={`${styles.planCard} ${styles.lockedPlanCard}`}
                       data-library-plan-card="free"
                     >
-                      <img src="/upgrade-showcase.webp" alt="" className={styles.planCardImage} />
-                      <span className={styles.lockBadge}>🔒 Premium</span>
-                      <strong>Upgrade to Premium</strong>
-                      <span>Get more slots and offline downloads</span>
+                      <span className={styles.ticketBorder} aria-hidden />
+                      <span className={styles.ticketBody}>
+                        <span className={styles.ticketEyebrow}>Premium pass</span>
+                        <strong>Unlock your full library</strong>
+                        <span>30 favorites + offline downloads</span>
+                      </span>
                     </button>
                   )}
                 </div>

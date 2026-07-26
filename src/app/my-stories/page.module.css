@@ -103,63 +103,129 @@
 .upgradeBanner {
   appearance: none;
   width: 100%;
-  margin: 0 0 16px;
-  padding: 12px 16px;
-  cursor: pointer;
-  border: 1px solid rgba(107, 76, 230, 0.35);
-  border-radius: 14px;
-  background: var(--dv-soft-accent);
-  color: var(--color-text-light, #fff);
-  font-family: 'Quicksand', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  text-align: left;
-  display: flex;
+  margin: 0 0 18px;
+  padding: 11px 14px;
+  border: 1px solid rgba(255, 220, 151, 0.8);
+  border-radius: 16px;
+  background: linear-gradient(105deg, #f7cd7a, #d99838);
+  color: #2a1908;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  text-align: left;
+  box-shadow: 0 8px 22px rgba(218, 143, 44, 0.24);
+}
+
+.savedCount {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.upgradeBannerCopy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.upgradeBannerCopy strong,
+.upgradeBannerCopy small,
+.upgradeBannerAction {
+  font-family: 'Quicksand', sans-serif;
+}
+
+.upgradeBannerCopy strong {
+  font-size: 13px;
+}
+
+.upgradeBannerCopy small {
+  font-size: 11px;
+  line-height: 1.25;
+  opacity: 0.78;
+}
+
+.upgradeBannerAction {
+  padding: 7px 9px;
+  border-radius: 999px;
+  background: rgba(42, 25, 8, 0.9);
+  color: #fff8e8;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
 }
 
 .planCard {
+  appearance: none;
+  position: relative;
   overflow: hidden;
-  min-height: 220px;
-  padding: var(--spacing-lg);
-  border: 1px solid rgba(107, 76, 230, 0.35);
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: 0.76;
+  padding: 18px;
+  border: 1px solid #e1a84d;
   border-radius: var(--radius-lg);
-  background: var(--color-card-dark);
-  color: var(--color-text-light);
+  background: linear-gradient(155deg, #724918, #2a1a0c);
+  color: #fff7e6;
   font-family: 'Quicksand', sans-serif;
   text-align: left;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
 }
 
-.planCardImage {
-  width: calc(100% + (var(--spacing-lg) * 2));
-  height: 116px;
-  margin: calc(var(--spacing-lg) * -1) calc(var(--spacing-lg) * -1) var(--spacing-sm);
-  object-fit: cover;
+.ticketBorder {
+  position: absolute;
+  inset: 11px;
+  border: 1px dashed rgba(255, 229, 179, 0.58);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.ticketBody {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ticketEyebrow {
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ticketBody strong {
+  font-size: clamp(15px, 4.2vw, 20px);
+  line-height: 1.15;
+}
+
+.ticketBody > span:last-child {
+  font-size: clamp(11px, 3vw, 14px);
+  line-height: 1.3;
+  opacity: 0.82;
 }
 
 .lockedPlanCard {
-  appearance: none;
   cursor: pointer;
-}
-
-.lockBadge {
-  align-self: flex-start;
-  padding: 4px 8px;
-  border-radius: var(--radius-sm);
-  background: var(--dv-soft-accent);
-  color: var(--color-text-light);
-  font-size: 12px;
-  font-weight: 700;
 }
 
 .upgradeBanner:focus-visible,
 .lockedPlanCard:focus-visible {
   outline: 3px solid var(--color-primary-teal);
   outline-offset: 3px;
+}
+
+@media (max-width: 359px) {
+  .upgradeBanner {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .upgradeBannerAction {
+    grid-column: 2;
+    justify-self: start;
+  }
 }
 
 /* Empty State */

@@ -80,21 +80,25 @@ test('free users get clickable upgrade messaging and a trailing locked card with
     save_cap: 5,
   });
 
-  expect(container.textContent).toContain(
-    '5/5 saved. Upgrade to Premium for more slots and offline downloads'
-  );
   expect(container.querySelectorAll('[data-saved-content-card]')).toHaveLength(5);
-  const upgradeActions = [...container.querySelectorAll('button')]
-    .filter((button) => button.textContent.includes('Upgrade to Premium'));
-  expect(upgradeActions).toHaveLength(2);
+  const upgradeBanner = container.querySelector('[data-library-upgrade-banner]');
+  const planCard = container.querySelector('[data-library-plan-card="free"]');
 
-  await act(async () => upgradeActions[0].click());
+  expect(upgradeBanner.textContent).toContain('5 of 5 saved');
+  expect(upgradeBanner.textContent).toContain('More slots + offline downloads');
+  expect(upgradeBanner.textContent).toContain('Get Premium →');
+  expect(planCard.textContent).toContain('Premium pass');
+  expect(planCard.textContent).toContain('Unlock your full library');
+  expect(planCard.textContent).toContain('30 favorites + offline downloads');
+  expect(planCard.querySelector('img')).toBeNull();
+
+  await act(async () => upgradeBanner.click());
   expect(mockRouter.push).toHaveBeenCalledWith(
     '/upgrade?intent=%2Fmy-stories'
   );
 
   mockRouter.push.mockClear();
-  await act(async () => upgradeActions[1].click());
+  await act(async () => planCard.click());
   expect(mockRouter.push).toHaveBeenCalledWith(
     '/upgrade?intent=%2Fmy-stories'
   );
@@ -110,14 +114,15 @@ test('premium users with no saves get a permanent non-interactive offline-listen
     save_cap: 30,
   });
 
-  expect(container.textContent).toContain(
-    'You have 30 slots. Save more favorites that you can listen to offline.'
-  );
-  expect(container.textContent).not.toContain('Upgrade to Premium');
   expect(container.querySelectorAll('[data-saved-content-card]')).toHaveLength(0);
-  const planCard = container.querySelector('[data-library-plan-card="premium"]');
-  expect(planCard).not.toBeNull();
-  expect(planCard.tagName).toBe('DIV');
+  const premiumCard = container.querySelector('[data-library-plan-card="premium"]');
+
+  expect(premiumCard.tagName).toBe('DIV');
+  expect(premiumCard.textContent).toContain('Premium library');
+  expect(premiumCard.textContent).toContain('30 saves included');
+  expect(premiumCard.textContent).toContain('Save favorites and listen offline');
+  expect(premiumCard.querySelector('img')).toBeNull();
+  expect(container.querySelector('[data-library-upgrade-banner]')).toBeNull();
 
   await act(async () => root.unmount());
   container.remove();
