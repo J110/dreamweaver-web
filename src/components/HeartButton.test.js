@@ -289,6 +289,26 @@ describe('HeartButton save limits and offline lifecycle', () => {
     expect(parentClick).not.toHaveBeenCalled();
   });
 
+  test('backdrop click dismisses without reaching a clickable card ancestor', async () => {
+    const parentClick = jest.fn();
+    mockSaveContent.mockResolvedValue({
+      saved: false,
+      liked: false,
+      cap_reached: true,
+      saved_count: 5,
+      save_cap: 5,
+      offline_allowed: false,
+    });
+    renderHeart({}, { onClick: parentClick });
+    await click(heart());
+    parentClick.mockClear();
+
+    await click(container.querySelector('.backdrop'));
+
+    expect(dialog()).toBeNull();
+    expect(parentClick).not.toHaveBeenCalled();
+  });
+
   test('modal traps focus and restores it to the invoking heart', async () => {
     mockSaveContent.mockResolvedValue({
       saved: false,

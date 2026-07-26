@@ -51,11 +51,11 @@ export default function SaveLimitModal({ premium, t, onDismiss, onUpgrade, retur
   return (
     <div
       className={styles.backdrop}
-      onMouseDown={(event) => {
+      onMouseDown={(event) => event.stopPropagation()}
+      onClick={(event) => {
         event.stopPropagation();
         if (event.target === event.currentTarget) onDismiss();
       }}
-      onClick={stopClick}
     >
       <div
         ref={dialogRef}
