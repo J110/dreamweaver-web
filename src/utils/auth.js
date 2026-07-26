@@ -1,4 +1,5 @@
 import { clearEffectivePremium } from './emberlightTheme';
+import { purgeOfflineUser } from './offlineLibrary';
 
 const callPosthog = (fn) => {
   if (typeof window === 'undefined') return;
@@ -246,15 +247,15 @@ export const isLoggedIn = () => {
 };
 
 export const logout = () => {
-  // Read username before clearing so we can clean its alias flag.
   const u = getUser();
+  const userId = u?.uid || u?.family_id || u?.username || null;
+  const offlinePurge = userId
+    ? Promise.resolve(purgeOfflineUser(userId)).catch(() => {})
+    : Promise.resolve();
   if (u?.username) {
     localStorage.removeItem(`dv_alias_done:${u.username}`);
   }
-  // Server-side revoke (best-effort, fire-and-forget). The api.js wrapper
-  // catches errors so a failed revoke never blocks client-side logout.
-  // Lazy-imported to avoid an api.js eager-load on every auth.js touch.
-  import('./api')
+  const serverRevoke = import('./api')
     .then(({ authApi }) => authApi.serverLogout())
     .catch(() => { /* ignore */ });
   removeToken();
@@ -274,4 +275,5 @@ export const logout = () => {
     try { posthog.capture('auth_logout', {}); } catch { /* ignore */ }
     posthog.reset();
   });
+  return Promise.all([offlinePurge, serverRevoke]);
 };

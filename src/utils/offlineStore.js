@@ -7,6 +7,8 @@ export function createOfflineStore(dbAdapter) {
     listReadyPackages: async (userId) =>
       (await dbAdapter.getAll('packages')).filter((record) =>
         record.userId === userId && record.state === 'ready'),
+    listPackages: async (userId) =>
+      (await dbAdapter.getAll('packages')).filter((record) => record.userId === userId),
     deletePackage: (userId, contentId) => dbAdapter.delete('packages', packageKey(userId, contentId)),
     purgeUser: async (userId) => {
       const records = await dbAdapter.getAll('packages');

@@ -1,7 +1,15 @@
-import { packageKey } from './offlineStore';
+import { openOfflineStore, packageKey } from './offlineStore';
 
 const packageGenerations = new Map();
 const packageWrites = new Map();
+let sharedOfflineReconciliationRunner = null;
+
+function invalidateOfflineUserPackages(userId) {
+  const prefix = `${userId}:`;
+  for (const [key, generation] of packageGenerations) {
+    if (key.startsWith(prefix)) packageGenerations.set(key, generation + 1);
+  }
+}
 
 function getAssetDirectory(content, assetType) {
   if (content.type === 'poem') return `${assetType}/poems${content.lang === 'hi' ? '-hi' : ''}`;
@@ -124,4 +132,163 @@ export async function resolveOfflinePackage({ userId, contentId, selectedVoice, 
       urlApi.revokeObjectURL(coverUrl);
     },
   };
+}
+
+export async function getOfflineSavedItems(userId, store) {
+  const offlineStore = store || await openOfflineStore();
+  const packages = await offlineStore.listReadyPackages(userId);
+  return packages
+    .filter((record) => record.content && record.audioBlob && record.coverBlob)
+    .map((record) => ({
+      ...record.content,
+      id: record.content.id || record.contentId,
+      offlineReady: true,
+    }));
+}
+
+export async function reconcileOfflineLibrary({
+  userId,
+  effectivePremium,
+  savedItems,
+  store,
+  fetchImpl = globalThis.fetch,
+}) {
+  if (!userId || !store) return;
+
+  if (effectivePremium !== true) {
+    invalidateOfflineUserPackages(userId);
+    await store.purgeUser(userId);
+    await store.setEntitlementLease(userId, false);
+    return;
+  }
+
+  await store.setEntitlementLease(userId, true);
+  const items = Array.isArray(savedItems) ? savedItems : [];
+  const savedIds = new Set(items.map((item) => item?.id).filter(Boolean));
+  const packages = store.listPackages
+    ? await store.listPackages(userId)
+    : await store.listReadyPackages(userId);
+
+  await Promise.all(packages
+    .filter((record) => !savedIds.has(record.contentId))
+    .map((record) => removeOfflinePackage({
+      userId,
+      contentId: record.contentId,
+      store,
+    })));
+
+  await Promise.all(items.map(async (content) => {
+    if (!content?.id) return;
+    const record = await store.getPackage(userId, content.id);
+    if (record?.state === 'ready' && record.content && record.audioBlob && record.coverBlob) return;
+    await queueOfflinePackage({
+      userId,
+      content,
+      selectedVoice: record?.voiceId || content.selected_voice || content.voice_id,
+      store,
+      fetchImpl,
+    });
+  }));
+}
+
+export async function loadSavedLibrary({ userId, api, reconciliationRunner, store }) {
+  let data;
+  try {
+    data = reconciliationRunner
+      ? await reconciliationRunner()
+      : await api.getUserSaves();
+    if (!data) throw new Error('Saved library is offline');
+  } catch {
+    const lease = await store.getEntitlementLease(userId);
+    if (lease?.effectivePremium !== true) {
+      return {
+        items: [],
+        effectivePremium: false,
+        saveCap: null,
+        offline: true,
+      };
+    }
+    return {
+      items: await getOfflineSavedItems(userId, store),
+      effectivePremium: true,
+      saveCap: null,
+      offline: true,
+    };
+  }
+
+  const items = Array.isArray(data?.items) ? data.items : [];
+  const effectivePremium = data?.effective_premium === true;
+  if (!reconciliationRunner) {
+    try {
+      await reconcileOfflineLibrary({
+        userId,
+        effectivePremium,
+        savedItems: items,
+        store,
+      });
+    } catch {
+    }
+  }
+  return {
+    items,
+    effectivePremium,
+    saveCap: typeof data?.save_cap === 'number' ? data.save_cap : null,
+    offline: false,
+  };
+}
+
+export function createOfflineReconciliationRunner({
+  getCurrentUser,
+  isAuthenticated,
+  api,
+  openStore,
+  reconcile = reconcileOfflineLibrary,
+}) {
+  let inFlight = null;
+
+  return () => {
+    if (inFlight) return inFlight;
+    inFlight = (async () => {
+      if (!isAuthenticated()) return null;
+      const user = getCurrentUser();
+      const userId = user?.uid || user?.family_id || user?.username;
+      if (!userId) return null;
+
+      let data;
+      try {
+        data = await api.getUserSaves();
+      } catch {
+        return null;
+      }
+      const confirmedUser = getCurrentUser();
+      const confirmedUserId = confirmedUser?.uid || confirmedUser?.family_id || confirmedUser?.username;
+      if (!isAuthenticated() || confirmedUserId !== userId) return null;
+
+      const store = await openStore();
+      await reconcile({
+        userId,
+        effectivePremium: data?.effective_premium === true,
+        savedItems: Array.isArray(data?.items) ? data.items : [],
+        store,
+      });
+      return data;
+    })().finally(() => {
+      inFlight = null;
+    });
+    return inFlight;
+  };
+}
+
+export function getOfflineReconciliationRunner(options) {
+  if (!sharedOfflineReconciliationRunner) {
+    sharedOfflineReconciliationRunner = createOfflineReconciliationRunner(options);
+  }
+  return sharedOfflineReconciliationRunner;
+}
+
+export async function purgeOfflineUser(userId, openStore = openOfflineStore) {
+  if (!userId) return;
+  invalidateOfflineUserPackages(userId);
+  const store = await openStore();
+  await store.purgeUser(userId);
 }

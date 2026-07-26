@@ -27,6 +27,15 @@ test('isolates packages by user and returns only ready records', async () => {
   expect((await store.listReadyPackages('u1')).map((x) => x.contentId)).toEqual(['s1']);
 });
 
+test('lists every package state for one user', async () => {
+  const store = createOfflineStore(createMemoryDb());
+  await store.putPackage({ key: 'u1:s1', userId: 'u1', contentId: 's1', state: 'ready' });
+  await store.putPackage({ key: 'u1:s2', userId: 'u1', contentId: 's2', state: 'failed' });
+  await store.putPackage({ key: 'u2:s1', userId: 'u2', contentId: 's1', state: 'pending' });
+
+  expect((await store.listPackages('u1')).map((record) => record.contentId)).toEqual(['s1', 's2']);
+});
+
 test('purges packages and entitlement lease for one user only', async () => {
   const store = createOfflineStore(createMemoryDb());
   await store.putPackage({ key: 'u1:s1', userId: 'u1', contentId: 's1', state: 'ready' });

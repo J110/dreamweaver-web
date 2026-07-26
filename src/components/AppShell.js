@@ -4,7 +4,10 @@ import { useEffect, useState, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { I18nProvider, hasCompletedOnboarding } from '@/utils/i18n';
 import { VoicePreferencesProvider } from '@/utils/voicePreferences';
-import { isLoggedIn, setToken, setUser, tryAdoptNativeToken } from '@/utils/auth';
+import { getUser, isLoggedIn, setToken, setUser, tryAdoptNativeToken } from '@/utils/auth';
+import { interactionApi } from '@/utils/api';
+import { getOfflineReconciliationRunner, reconcileOfflineLibrary } from '@/utils/offlineLibrary';
+import { openOfflineStore } from '@/utils/offlineStore';
 import { isCheckoutPendingRecent, clearCheckoutPending } from '@/utils/checkoutPending';
 import useVersionCheck from '@/hooks/useVersionCheck';
 import BottomNav from './BottomNav';
@@ -36,6 +39,17 @@ export default function AppShell({ children }) {
   const router = useRouter();
   const [checked, setChecked] = useState(false);
   const tokenValidated = useRef(false);
+  const offlineReconciliationRef = useRef(null);
+  if (!offlineReconciliationRef.current) {
+    offlineReconciliationRef.current = getOfflineReconciliationRunner({
+      getCurrentUser: getUser,
+      isAuthenticated: isLoggedIn,
+      api: interactionApi,
+      openStore: openOfflineStore,
+      reconcile: reconcileOfflineLibrary,
+    });
+  }
+  const reconcileOffline = offlineReconciliationRef.current;
 
   // Auto-reload on app open/foreground when a new deployment is detected.
   // Only checks on startup and visibility change — never mid-session.
@@ -106,6 +120,20 @@ export default function AppShell({ children }) {
     })();
   }, []);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const refreshOfflineLibrary = () => {
+      void reconcileOffline();
+    };
+    refreshOfflineLibrary();
+    window.addEventListener('focus', refreshOfflineLibrary);
+    window.addEventListener('online', refreshOfflineLibrary);
+    return () => {
+      window.removeEventListener('focus', refreshOfflineLibrary);
+      window.removeEventListener('online', refreshOfflineLibrary);
+    };
+  }, [reconcileOffline]);
+
   // Native app-resume hook (#35 Q3). The Flutter lifecycle observer calls this
   // on EVERY foreground — so it must be cheap + guarded. Sends the user to the
   // authoritative /upgrade/success backoff poll ONLY when a recent checkout is
@@ -116,6 +144,7 @@ export default function AppShell({ children }) {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const onResumed = () => {
+      void reconcileOffline();
       try {
         if (!isCheckoutPendingRecent()) return; // common case: cheap no-op
         let premium = false;
@@ -128,7 +157,7 @@ export default function AppShell({ children }) {
     window.__dvAppResumed = onResumed;
     onResumed(); // cold-launch return safety net
     return () => { try { if (window.__dvAppResumed === onResumed) delete window.__dvAppResumed; } catch { /* ignore */ } };
-  }, [router]);
+  }, [reconcileOffline, router]);
 
   // Register service worker for PWA support (required for beforeinstallprompt on Chrome)
   useEffect(() => {
@@ -217,7 +246,9 @@ export default function AppShell({ children }) {
         // (365d sliding) instead of being logged out. Only a 410-dormant
         // verdict logs out + redirects (handled inside fetchApi); transient
         // 401s / network errors keep the session. _retried caps retries at 1.
-        import('@/utils/api').then(({ authApi }) => authApi.getCurrentUser().catch(() => {}));
+        import('@/utils/api').then(({ authApi }) => authApi.getCurrentUser()
+          .then(() => reconcileOffline())
+          .catch(() => {}));
       }
       return;
     }
@@ -255,11 +286,13 @@ export default function AppShell({ children }) {
     // (handled inside fetchApi); transient 401s / network errors keep it.
     if (!isPublic && isLoggedIn() && !tokenValidated.current) {
       tokenValidated.current = true;
-      import('@/utils/api').then(({ authApi }) => authApi.getCurrentUser().catch(() => {}));
+      import('@/utils/api').then(({ authApi }) => authApi.getCurrentUser()
+        .then(() => reconcileOffline())
+        .catch(() => {}));
     }
 
     setChecked(true);
-  }, [pathname, router]);
+  }, [pathname, reconcileOffline, router]);
 
   // Hide nav on public routes, player pages, SEO pages, and while checking auth
   // On home page (/), show nav for logged-in app users (story grid), hide for anonymous (landing page)

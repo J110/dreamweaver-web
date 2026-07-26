@@ -8,6 +8,13 @@ import RadioLiveCard from '@/components/RadioLiveCard';
 import { isLoggedIn, getUser } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
 import { interactionApi } from '@/utils/api';
+import {
+  getOfflineReconciliationRunner,
+  loadSavedLibrary,
+  reconcileOfflineLibrary,
+} from '@/utils/offlineLibrary';
+import { openOfflineStore } from '@/utils/offlineStore';
+import { setUpgradeIntent } from '@/utils/upgradeIntent';
 import styles from './page.module.css';
 
 const THEMES_DATA = [
@@ -35,6 +42,13 @@ export default function MyStoriesPage() {
   const [prefThemes, setPrefThemes] = useState([]);
   const [prefLength, setPrefLength] = useState('medium');
   const [prefContentType, setPrefContentType] = useState('story');
+  const reconciliationRunner = getOfflineReconciliationRunner({
+    getCurrentUser: getUser,
+    isAuthenticated: isLoggedIn,
+    api: interactionApi,
+    openStore: openOfflineStore,
+    reconcile: reconcileOfflineLibrary,
+  });
 
   useEffect(() => {
     if (isLoggedIn()) {
@@ -65,13 +79,15 @@ export default function MyStoriesPage() {
   const loadUserContent = async ({ silent = false } = {}) => {
     if (!silent) setLoading(true);
     try {
-      const savesData = await interactionApi.getUserSaves().catch(() => ({ items: [] }));
-      const items = savesData.items || [];
+      const currentUser = getUser();
+      const userId = currentUser?.uid || currentUser?.family_id || currentUser?.username;
+      const store = await openOfflineStore();
+      const savesData = await loadSavedLibrary({ userId, reconciliationRunner, store });
+      const items = savesData.items;
       setFavorites(items);
       setSaved(items);
-      // save_cap is null when the paywall is off → no invitation shown.
-      setSaveCap(typeof savesData.save_cap === 'number' ? savesData.save_cap : null);
-      setIsPremiumUser(savesData.effective_premium !== false);
+      setSaveCap(savesData.saveCap);
+      setIsPremiumUser(savesData.effectivePremium);
     } catch (err) {
       console.error('Error loading content:', err);
     } finally {
@@ -107,6 +123,12 @@ export default function MyStoriesPage() {
       ? prev.filter((t) => t !== themeId)
       : [...prev, themeId]
     );
+  };
+
+  const handleUpgrade = () => {
+    const intent = `${window.location.pathname}${window.location.search}`;
+    setUpgradeIntent(intent);
+    router.push(`/upgrade?intent=${encodeURIComponent(intent)}`);
   };
 
   const getFilteredContent = (items) => {
@@ -156,7 +178,7 @@ export default function MyStoriesPage() {
 
             {saveCap != null && !isPremiumUser && (
               <div
-                onClick={() => router.push('/pricing')}
+                onClick={handleUpgrade}
                 style={{
                   margin: '0 0 16px', padding: '12px 16px', cursor: 'pointer',
                   borderRadius: 14, border: '1px solid rgba(107,76,230,0.35)',
@@ -168,8 +190,8 @@ export default function MyStoriesPage() {
                 <span aria-hidden>✨</span>
                 <span>
                   {lang === 'hi'
-                    ? `${saved.length} / ${saveCap} saved — Premium mein 20 favorites milte hain.`
-                    : `${saved.length} of ${saveCap} saved — Premium unlocks 20.`}
+                    ? `${saved.length} / ${saveCap} saved — Premium mein 30 favorites milte hain.`
+                    : `${saved.length} of ${saveCap} saved — Premium unlocks 30.`}
                 </span>
               </div>
             )}

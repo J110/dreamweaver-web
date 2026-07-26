@@ -4,16 +4,21 @@ import {
   getReadyOfflinePackage,
   resolveOfflinePackage,
   selectOfflineAudio,
+  reconcileOfflineLibrary,
+  getOfflineSavedItems,
 } from './offlineLibrary';
 import { createOfflineStore } from './offlineStore';
 
 function memoryStore() {
-  const packages = new Map();
+  const stores = {
+    packages: new Map(),
+    entitlements: new Map(),
+  };
   return createOfflineStore({
-    put: async (store, value) => packages.set(value.key, value),
-    get: async (store, key) => packages.get(key) ?? null,
-    getAll: async () => [...packages.values()],
-    delete: async (store, key) => packages.delete(key),
+    put: async (store, value) => stores[store].set(value.key ?? value.userId, value),
+    get: async (store, key) => stores[store].get(key) ?? null,
+    getAll: async (store) => [...stores[store].values()],
+    delete: async (store, key) => stores[store].delete(key),
   });
 }
 
@@ -198,4 +203,103 @@ test('does not restore a removed package when its earlier download finishes', as
   await download;
 
   expect(await store.getPackage('u1', 'story-1')).toBeNull();
+});
+
+test('confirmed downgrade purges packages and records a free entitlement lease', async () => {
+  const store = memoryStore();
+  await queueOfflinePackage({
+    userId: 'u1', content: sampleContentWithVoices(), selectedVoice: 'female_2', store, fetchImpl: fetchBlob,
+  });
+
+  await reconcileOfflineLibrary({
+    userId: 'u1', effectivePremium: false, savedItems: [], store, fetchImpl: fetchBlob,
+  });
+
+  expect(await store.listReadyPackages('u1')).toEqual([]);
+  expect(await store.getEntitlementLease('u1')).toMatchObject({ effectivePremium: false });
+});
+
+test('confirmed downgrade invalidates a package download already in flight', async () => {
+  const store = memoryStore();
+  const releases = [];
+  let downloadsStarted;
+  const started = new Promise((resolve) => { downloadsStarted = resolve; });
+  const download = queueOfflinePackage({
+    userId: 'u1',
+    content: sampleContentWithVoices(),
+    selectedVoice: 'female_2',
+    store,
+    fetchImpl: () => new Promise((resolve) => {
+      releases.push(() => resolve(new Response(new Blob(['late']))));
+      if (releases.length === 2) downloadsStarted();
+    }),
+  });
+  await started;
+
+  const downgrade = reconcileOfflineLibrary({
+    userId: 'u1', effectivePremium: false, savedItems: [], store,
+  });
+  releases.forEach((release) => release());
+  await Promise.all([download, downgrade]);
+
+  expect(await store.getPackage('u1', 'story-1')).toBeNull();
+});
+
+test('premium reconciliation removes unsaved packages and retries failed saved packages', async () => {
+  const store = memoryStore();
+  await queueOfflinePackage({
+    userId: 'u1', content: sampleContentWithVoices(), selectedVoice: 'female_2', store, fetchImpl: fetchBlob,
+  });
+  const retryContent = {
+    ...sampleContentWithVoices(),
+    id: 'retry-me',
+    title: 'Retry Me',
+  };
+  await store.putPackage({
+    key: 'u1:retry-me',
+    userId: 'u1',
+    contentId: 'retry-me',
+    content: retryContent,
+    voiceId: 'female_2',
+    state: 'failed',
+  });
+  await store.putPackage({
+    key: 'u1:stale-failed',
+    userId: 'u1',
+    contentId: 'stale-failed',
+    content: { ...retryContent, id: 'stale-failed' },
+    state: 'failed',
+  });
+
+  await reconcileOfflineLibrary({
+    userId: 'u1',
+    effectivePremium: true,
+    savedItems: [retryContent],
+    store,
+    fetchImpl: fetchBlob,
+  });
+
+  expect(await store.getPackage('u1', 'story-1')).toBeNull();
+  expect(await store.getPackage('u1', 'stale-failed')).toBeNull();
+  expect(await store.getPackage('u1', 'retry-me')).toMatchObject({ state: 'ready' });
+  expect(await store.getEntitlementLease('u1')).toMatchObject({ effectivePremium: true });
+});
+
+test('offline saved items include only complete ready packages', async () => {
+  const store = memoryStore();
+  await queueOfflinePackage({
+    userId: 'u1', content: sampleContentWithVoices(), selectedVoice: 'female_2', store, fetchImpl: fetchBlob,
+  });
+  await store.putPackage({
+    key: 'u1:incomplete',
+    userId: 'u1',
+    contentId: 'incomplete',
+    content: { id: 'incomplete', title: 'Incomplete' },
+    state: 'ready',
+    audioBlob: new Blob(['audio']),
+  });
+
+  await expect(getOfflineSavedItems('u1', store)).resolves.toEqual([
+    expect.objectContaining({ id: 'story-1', offlineReady: true }),
+  ]);
 });
