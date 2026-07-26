@@ -1,6 +1,8 @@
 /** @jest-environment jsdom */
 
 import React from 'react';
+import fs from 'fs';
+import path from 'path';
 import { act } from 'react-dom/test-utils';
 import { createRoot } from 'react-dom/client';
 
@@ -190,4 +192,20 @@ test('refreshes cached My Stories when another screen confirms a save', async ()
 
   await act(async () => root.unmount());
   container.remove();
+});
+
+test('uses the compact upgrade-banner layout at a 390px viewport', () => {
+  const css = fs.readFileSync(path.resolve(__dirname, 'page.module.css'), 'utf8');
+  const compactLayout = css.match(
+    /@media \(max-width: (\d+)px\) \{[\s\S]*?\.upgradeBanner \{[\s\S]*?grid-template-columns: auto minmax\(0, 1fr\);/
+  );
+
+  expect(Number(compactLayout?.[1])).toBeGreaterThanOrEqual(390);
+});
+
+test('keeps the upgrade banner button affordance', () => {
+  const css = fs.readFileSync(path.resolve(__dirname, 'page.module.css'), 'utf8');
+  const upgradeBanner = css.match(/\.upgradeBanner \{([^}]*)\}/)?.[1];
+
+  expect(upgradeBanner).toMatch(/cursor: pointer;/);
 });

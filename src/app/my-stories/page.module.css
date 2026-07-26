@@ -102,6 +102,7 @@
 
 .upgradeBanner {
   appearance: none;
+  cursor: pointer;
   width: 100%;
   margin: 0 0 18px;
   padding: 11px 14px;
@@ -217,7 +218,7 @@
   outline-offset: 3px;
 }
 
-@media (max-width: 359px) {
+@media (max-width: 391px) {
   .upgradeBanner {
     grid-template-columns: auto minmax(0, 1fr);
   }
