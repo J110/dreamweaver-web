@@ -11,9 +11,10 @@ const mockGetContentById = jest.fn();
 const mockAudioInstances = [];
 const mockGetDefaultVoice = () => 'female_1';
 const mockVoicePreferences = { getDefaultVoice: mockGetDefaultVoice, voicePrefs: true };
+let mockPlayerId = 'api-only-story';
 
 jest.mock('next/navigation', () => ({
-  useParams: () => ({ id: 'api-only-story' }),
+  useParams: () => ({ id: mockPlayerId }),
   useRouter: () => ({ replace: jest.fn() }),
   useSearchParams: () => ({ get: (key) => key === 'autoplay' ? '1' : null }),
 }));
@@ -102,6 +103,7 @@ beforeEach(() => {
   mockOpenOfflineStore.mockReset();
   mockGetContentById.mockReset();
   mockAudioInstances.length = 0;
+  mockPlayerId = 'api-only-story';
   global.Audio = MockAudio;
   window.Audio = MockAudio;
 });
@@ -122,11 +124,15 @@ test('hydrates and plays a cached API-only story only after lookup settles, then
       { voice: 'female_2', url: 'https://media.example/female-2.mp3' },
     ],
   };
+  const nextContent = { ...content, id: 'next-api-only-story', title: 'A different cached story' };
   const firstRevoke = jest.fn();
   const secondRevoke = jest.fn();
   const lookupResolvers = [];
   mockOpenOfflineStore.mockResolvedValue({});
-  mockGetReadyOfflinePackage.mockResolvedValue({ content, voiceId: 'female_1' });
+  mockGetReadyOfflinePackage.mockImplementation(({ contentId }) => Promise.resolve({
+    content: contentId === 'next-api-only-story' ? nextContent : content,
+    voiceId: 'female_1',
+  }));
   mockResolveOfflinePackage.mockImplementation(() => new Promise((resolve) => lookupResolvers.push(resolve)));
 
   const container = document.createElement('div');
@@ -139,6 +145,9 @@ test('hydrates and plays a cached API-only story only after lookup settles, then
   expect(mockGetContentById).not.toHaveBeenCalled();
   expect(mockAudioInstances).toHaveLength(0);
   expect(mockResolveOfflinePackage).toHaveBeenCalledTimes(1);
+  await act(async () => { jest.advanceTimersByTime(250); });
+
+  expect(mockAudioInstances).toHaveLength(0);
 
   await act(async () => {
     lookupResolvers.shift()({ content, audioUrl: 'blob:first-audio', coverUrl: 'blob:first-cover', revoke: firstRevoke });
@@ -173,7 +182,13 @@ test('hydrates and plays a cached API-only story only after lookup settles, then
   expect(mockAudioInstances[1].src).toBe('blob:second-audio');
   expect(mockAudioInstances[1].play).toHaveBeenCalledTimes(1);
 
+  mockPlayerId = 'next-api-only-story';
+  await act(async () => root.render(<PlayerPage />));
+  await flush();
+
+  expect(container.textContent).toContain('A different cached story');
+  expect(secondRevoke).toHaveBeenCalled();
+
   await act(async () => root.unmount());
-  expect(secondRevoke).toHaveBeenCalledTimes(1);
   container.remove();
 });
