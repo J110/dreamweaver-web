@@ -12,7 +12,7 @@ import { useI18n, hasCompletedOnboarding } from '@/utils/i18n';
 import { useVoicePreferences } from '@/utils/voicePreferences';
 import { getUser, isLoggedIn } from '@/utils/auth';
 import { openOfflineStore } from '@/utils/offlineStore';
-import { resolveOfflinePackage } from '@/utils/offlineLibrary';
+import { getReadyOfflinePackage, resolveOfflinePackage } from '@/utils/offlineLibrary';
 import { VOICES, getVoiceId, getVoiceLabel } from '@/utils/voiceConfig';
 import { stripEmotionMarkers } from '@/utils/textUtils';
 import { getDisplayCategory, getDisplayCategoryUpper } from '@/utils/contentTypes';
@@ -56,6 +56,7 @@ export default function PlayerPage() {
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [offlinePackage, setOfflinePackage] = useState(null);
+  const [offlineLookupSettled, setOfflineLookupSettled] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
   const [showAboutPanel, setShowAboutPanel] = useState(false);
   const aboutPanelRef = useRef(null);
@@ -137,6 +138,7 @@ export default function PlayerPage() {
   useEffect(() => {
     let cancelled = false;
     let resolvedPackage = null;
+    setOfflineLookupSettled(false);
     setOfflinePackage((current) => {
       current?.revoke();
       return null;
@@ -144,7 +146,10 @@ export default function PlayerPage() {
 
     const user = getUser();
     const userId = user?.uid || user?.family_id || user?.username;
-    if (!content?.id || !selectedVoice || !userId) return undefined;
+    if (!content?.id || !selectedVoice || !userId) {
+      setOfflineLookupSettled(true);
+      return undefined;
+    }
 
     (async () => {
       try {
@@ -152,6 +157,7 @@ export default function PlayerPage() {
         const nextPackage = await resolveOfflinePackage({
           userId,
           contentId: content.id,
+          selectedVoice,
           store,
         });
         if (cancelled) {
@@ -160,7 +166,9 @@ export default function PlayerPage() {
         }
         resolvedPackage = nextPackage;
         setOfflinePackage(nextPackage);
-      } catch {}
+      } catch {} finally {
+        if (!cancelled) setOfflineLookupSettled(true);
+      }
     })();
 
     return () => {
@@ -310,6 +318,7 @@ export default function PlayerPage() {
   // Resolve audio source
   const getAudioSource = useCallback(() => {
     if (!content) return null;
+    if (!offlineLookupSettled) return null;
     if (offlinePackage?.audioUrl) {
       return {
         url: offlinePackage.audioUrl,
@@ -371,7 +380,7 @@ export default function PlayerPage() {
       url: `${API_URL}/api/v1/audio/tts?${params.toString()}`,
       isPregen: false,
     };
-  }, [content, offlinePackage?.audioUrl, selectedVoice, lang]);
+  }, [content, offlineLookupSettled, offlinePackage?.audioUrl, selectedVoice, lang]);
 
   const startProgressTracking = useCallback(() => {
     if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
@@ -433,6 +442,7 @@ export default function PlayerPage() {
 
   const handlePlayPause = useCallback(async () => {
     if (!content) return;
+    if (!offlineLookupSettled) return;
     // Collapse About panel when play is tapped
     setShowAboutPanel(false);
 
@@ -580,7 +590,7 @@ export default function PlayerPage() {
       setAudioLoading(false);
       setAudioError(lang === 'hi' ? 'Audio mein error aa gaya' : 'Audio error occurred');
     }
-  }, [content, isPlaying, lang, getAudioSource, startProgressTracking, stopProgressTracking]);
+  }, [content, offlineLookupSettled, isPlaying, lang, getAudioSource, startProgressTracking, stopProgressTracking]);
 
   // Auto-play when voice is switched by user
   useEffect(() => {
@@ -601,6 +611,7 @@ export default function PlayerPage() {
     if (autoPlayTriggeredRef.current) return;
     if (searchParams.get('autoplay') !== '1') return;
     if (!content || !selectedVoice || loading) return;
+    if (!offlineLookupSettled) return;
     if (content.premium_locked) return;
     // Don't auto-play if already playing (e.g., voice switch just triggered)
     if (isPlaying || audioRef.current?.src) return;
@@ -610,7 +621,7 @@ export default function PlayerPage() {
       handlePlayPause();
     }, 200);
     return () => clearTimeout(timer);
-  }, [content, selectedVoice, loading, isPlaying, searchParams, handlePlayPause]);
+  }, [content, selectedVoice, loading, offlineLookupSettled, isPlaying, searchParams, handlePlayPause]);
 
   // Media Session: Register lock screen controls (play/pause/seek)
   useEffect(() => {
@@ -781,6 +792,24 @@ export default function PlayerPage() {
 
   useEffect(() => {
     const loadContent = async () => {
+      setOfflineLookupSettled(false);
+      const user = getUser();
+      const userId = user?.uid || user?.family_id || user?.username;
+      if (userId) {
+        try {
+          const store = await openOfflineStore();
+          const cachedPackage = await getReadyOfflinePackage({
+            userId,
+            contentId: params.id,
+            store,
+          });
+          if (cachedPackage) {
+            setContent(cachedPackage.content);
+            setIsSaved(true);
+            return;
+          }
+        } catch {}
+      }
       // Fail-closed seed fallback: when the API can't return a lock verdict
       // (empty response or thrown error), serve bundled seed audio ONLY for a
       // CONFIRMED-unlocked user (effective_premium === true — covers flag-off
