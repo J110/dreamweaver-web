@@ -10,7 +10,9 @@ import { getStories } from '@/utils/seedData';
 import { getAmbientMusic } from '@/utils/ambientMusic';
 import { useI18n, hasCompletedOnboarding } from '@/utils/i18n';
 import { useVoicePreferences } from '@/utils/voicePreferences';
-import { isLoggedIn } from '@/utils/auth';
+import { getUser, isLoggedIn } from '@/utils/auth';
+import { openOfflineStore } from '@/utils/offlineStore';
+import { resolveOfflinePackage } from '@/utils/offlineLibrary';
 import { VOICES, getVoiceId, getVoiceLabel } from '@/utils/voiceConfig';
 import { stripEmotionMarkers } from '@/utils/textUtils';
 import { getDisplayCategory, getDisplayCategoryUpper } from '@/utils/contentTypes';
@@ -53,6 +55,7 @@ export default function PlayerPage() {
   const [audioError, setAudioError] = useState(null);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState(null);
+  const [offlinePackage, setOfflinePackage] = useState(null);
   const [shareCopied, setShareCopied] = useState(false);
   const [showAboutPanel, setShowAboutPanel] = useState(false);
   const aboutPanelRef = useRef(null);
@@ -130,6 +133,41 @@ export default function PlayerPage() {
     }
     voiceInitializedRef.current = true;
   }, [content, lang, getDefaultVoice, voicePrefs]);
+
+  useEffect(() => {
+    let cancelled = false;
+    let resolvedPackage = null;
+    setOfflinePackage((current) => {
+      current?.revoke();
+      return null;
+    });
+
+    const user = getUser();
+    const userId = user?.uid || user?.family_id || user?.username;
+    if (!content?.id || !selectedVoice || !userId) return undefined;
+
+    (async () => {
+      try {
+        const store = await openOfflineStore();
+        const nextPackage = await resolveOfflinePackage({
+          userId,
+          contentId: content.id,
+          store,
+        });
+        if (cancelled) {
+          nextPackage?.revoke();
+          return;
+        }
+        resolvedPackage = nextPackage;
+        setOfflinePackage(nextPackage);
+      } catch {}
+    })();
+
+    return () => {
+      cancelled = true;
+      resolvedPackage?.revoke();
+    };
+  }, [content?.id, selectedVoice]);
 
   // Auto-start ambient music — prefer musicParams (per-story unique), fallback to musicProfile (shared)
   //
@@ -272,6 +310,13 @@ export default function PlayerPage() {
   // Resolve audio source
   const getAudioSource = useCallback(() => {
     if (!content) return null;
+    if (offlinePackage?.audioUrl) {
+      return {
+        url: offlinePackage.audioUrl,
+        isPregen: true,
+        duration: content.duration_seconds,
+      };
+    }
     if (content.premium_locked) return null;
     const variants = content.audio_variants || [];
 
@@ -326,7 +371,7 @@ export default function PlayerPage() {
       url: `${API_URL}/api/v1/audio/tts?${params.toString()}`,
       isPregen: false,
     };
-  }, [content, selectedVoice, lang]);
+  }, [content, offlinePackage?.audioUrl, selectedVoice, lang]);
 
   const startProgressTracking = useCallback(() => {
     if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
@@ -1059,7 +1104,7 @@ export default function PlayerPage() {
   const voiceSwitchOptions = getVoiceSwitchOptions();
 
   // Derive cover from cover_file when cover is null — same logic as ContentCard.
-  const resolvedCover = content.cover || (() => {
+  const resolvedCover = offlinePackage?.coverUrl || content.cover || (() => {
     const f = content.cover_file;
     if (!f) return null;
     if (content.type === 'poem') return `/covers/${content.lang === 'hi' ? 'poems-hi' : 'poems'}/${f}`;
@@ -1086,7 +1131,7 @@ export default function PlayerPage() {
           } : undefined}
         >
           {resolvedCover ? (
-            coverHasVariants ? (
+            coverHasVariants && !offlinePackage?.coverUrl ? (
               /* 4-variant stack: smooth crossfade between progressive darkening levels */
               <>
                 {content.cover_variants.map((variant, i) => (
