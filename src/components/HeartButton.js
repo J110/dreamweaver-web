@@ -26,6 +26,7 @@ export default function HeartButton({
   className = '',
   activeClassName = '',
   onAuthRequired,
+  onSavedChange,
 }) {
   const { t } = useI18n();
   const router = useRouter();
@@ -120,6 +121,7 @@ export default function HeartButton({
           setFilled(false);
           setLimitModal(effectivePremium === true || res.save_cap > 5 ? 'premium' : 'free');
         } else if (res?.saved) {
+          onSavedChange?.(true);
           adjustCount(+1);
           flashToast(t('playerSavedToProfile'));
           if (res.offline_allowed) void queueConfirmedSave(userId, sessionEpoch);
@@ -136,6 +138,7 @@ export default function HeartButton({
       setFilled(false);
       try {
         await interactionApi.unsaveContent(contentId);
+        onSavedChange?.(false);
         adjustCount(-1);
         flashToast(t('playerRemovedFromSaved'));
         void removeConfirmedSave(userId, sessionEpoch);

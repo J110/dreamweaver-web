@@ -8,6 +8,8 @@ const mockGetReadyOfflinePackage = jest.fn();
 const mockResolveOfflinePackage = jest.fn();
 const mockOpenOfflineStore = jest.fn();
 const mockGetContentById = jest.fn();
+const mockQueueOfflinePackage = jest.fn();
+const mockSubscribeOfflineLibraryChanges = jest.fn();
 const mockAudioInstances = [];
 const mockGetDefaultVoice = () => 'female_1';
 const mockVoicePreferences = { getDefaultVoice: mockGetDefaultVoice, voicePrefs: true };
@@ -41,6 +43,9 @@ jest.mock('@/utils/offlineStore', () => ({ openOfflineStore: () => mockOpenOffli
 jest.mock('@/utils/offlineLibrary', () => ({
   getReadyOfflinePackage: (...args) => mockGetReadyOfflinePackage(...args),
   resolveOfflinePackage: (...args) => mockResolveOfflinePackage(...args),
+  queueOfflinePackage: (...args) => mockQueueOfflinePackage(...args),
+  subscribeOfflineLibraryChanges: (...args) => mockSubscribeOfflineLibraryChanges(...args),
+  captureOfflineUserEpoch: () => 0,
 }));
 jest.mock('@/utils/voiceConfig', () => ({
   VOICES: {
@@ -104,6 +109,8 @@ beforeEach(() => {
   mockResolveOfflinePackage.mockReset();
   mockOpenOfflineStore.mockReset();
   mockGetContentById.mockReset();
+  mockQueueOfflinePackage.mockReset().mockResolvedValue(null);
+  mockSubscribeOfflineLibraryChanges.mockReset().mockReturnValue(() => {});
   mockAudioInstances.length = 0;
   mockPlayerId = 'api-only-story';
   global.Audio = MockAudio;
@@ -214,6 +221,7 @@ test('revokes both ready package object URLs when the rendered player unmounts',
     revokeObjectURL,
   };
   const store = {
+    getEntitlementLease: jest.fn().mockResolvedValue({ effectivePremium: true }),
     getPackage: jest.fn().mockResolvedValue({
       state: 'ready',
       content,
@@ -243,5 +251,100 @@ test('revokes both ready package object URLs when the rendered player unmounts',
   expect(revokeObjectURL).toHaveBeenCalledTimes(2);
   expect(revokeObjectURL).toHaveBeenNthCalledWith(1, 'blob:unmount-audio');
   expect(revokeObjectURL).toHaveBeenNthCalledWith(2, 'blob:unmount-cover');
+  container.remove();
+});
+
+test('mounted cached playback pauses, revokes, and hides metadata on an authority broadcast', async () => {
+  const content = {
+    id: 'api-only-story',
+    title: 'Revoked cached story',
+    type: 'story',
+    text: 'Cached text',
+    cover: 'https://media.example/cover.jpg',
+    audio_variants: [{ voice: 'female_1', url: 'https://media.example/female-1.mp3' }],
+  };
+  const revoke = jest.fn();
+  let authorityListener;
+  mockSubscribeOfflineLibraryChanges.mockImplementation((listener) => {
+    authorityListener = listener;
+    return jest.fn();
+  });
+  mockOpenOfflineStore.mockResolvedValue({});
+  mockGetReadyOfflinePackage.mockResolvedValue({ content, voiceId: 'female_1' });
+  mockResolveOfflinePackage.mockResolvedValue({
+    content,
+    audioUrl: 'blob:revoked-audio',
+    coverUrl: 'blob:revoked-cover',
+    revoke,
+  });
+
+  const container = document.createElement('div');
+  const root = createRoot(container);
+  document.body.appendChild(container);
+  await act(async () => root.render(<PlayerPage />));
+  await flush();
+  await act(async () => { jest.runOnlyPendingTimers(); });
+
+  expect(container.textContent).toContain('Revoked cached story');
+  expect(mockAudioInstances[0].src).toBe('blob:revoked-audio');
+
+  await act(async () => {
+    authorityListener({ type: 'authority', userId: 'u1', effectivePremium: false });
+    await Promise.resolve();
+  });
+
+  expect(mockAudioInstances[0].pause).toHaveBeenCalled();
+  expect(mockAudioInstances[0].src).toBe('');
+  expect(revoke).toHaveBeenCalled();
+  expect(container.textContent).not.toContain('Revoked cached story');
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('rendered voice changes replace the package for a confirmed premium save', async () => {
+  const content = {
+    id: 'api-only-story',
+    title: 'Live saved story',
+    type: 'story',
+    text: 'Live text',
+    cover: 'https://media.example/cover.jpg',
+    is_saved: true,
+    audio_variants: [
+      { voice: 'female_1', url: 'https://media.example/female-1.mp3' },
+      { voice: 'female_2', url: 'https://media.example/female-2.mp3' },
+    ],
+  };
+  const store = {
+    getEntitlementLease: jest.fn().mockResolvedValue({ effectivePremium: true }),
+  };
+  mockOpenOfflineStore.mockResolvedValue(store);
+  mockGetReadyOfflinePackage.mockResolvedValue(null);
+  mockResolveOfflinePackage.mockResolvedValue(null);
+  mockGetContentById.mockResolvedValue(content);
+
+  const container = document.createElement('div');
+  const root = createRoot(container);
+  document.body.appendChild(container);
+  await act(async () => root.render(<PlayerPage />));
+  await flush();
+  mockQueueOfflinePackage.mockClear();
+
+  const switchButton = [...container.querySelectorAll('button')]
+    .find((button) => button.textContent.includes('female_2'));
+  await act(async () => {
+    switchButton.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await Promise.resolve();
+    await Promise.resolve();
+  });
+
+  expect(mockQueueOfflinePackage).toHaveBeenCalledWith(expect.objectContaining({
+    userId: 'u1',
+    content,
+    selectedVoice: 'female_2',
+    store,
+  }));
+
+  await act(async () => root.unmount());
   container.remove();
 });

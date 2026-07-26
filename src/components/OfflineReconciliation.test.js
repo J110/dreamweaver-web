@@ -28,6 +28,7 @@ jest.mock('@/utils/i18n', () => ({
 }));
 jest.mock('@/utils/voicePreferences', () => ({
   VoicePreferencesProvider: ({ children }) => children,
+  getStoredDefaultVoice: () => 'female_1',
 }));
 jest.mock('@/utils/auth', () => ({
   getUser: () => ({ uid: 'app-shell-user', onboarding_complete: true }),

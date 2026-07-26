@@ -99,6 +99,29 @@ test('uses a shared reconciliation result without issuing a second saves request
   });
 });
 
+test('returns a healthy live library when IndexedDB is unavailable', async () => {
+  const api = {
+    getUserSaves: jest.fn().mockResolvedValue({
+      items: [{ id: 'live-story', title: 'Live Story' }],
+      effective_premium: true,
+      save_cap: 30,
+    }),
+  };
+  const openStore = jest.fn().mockRejectedValue(new Error('IndexedDB unavailable'));
+
+  await expect(loadSavedLibrary({
+    userId: 'u1',
+    api,
+    openStore,
+  })).resolves.toEqual({
+    items: [{ id: 'live-story', title: 'Live Story' }],
+    effectivePremium: true,
+    saveCap: 30,
+    offline: false,
+  });
+  expect(api.getUserSaves).toHaveBeenCalledTimes(1);
+});
+
 test('drops a saved-library result when the active account changes', async () => {
   const store = {
     getEntitlementLease: jest.fn().mockResolvedValue({ effectivePremium: true }),

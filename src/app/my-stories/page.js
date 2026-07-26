@@ -14,6 +14,7 @@ import {
   reconcileOfflineLibrary,
 } from '@/utils/offlineLibrary';
 import { openOfflineStore } from '@/utils/offlineStore';
+import { getStoredDefaultVoice } from '@/utils/voicePreferences';
 import { setUpgradeIntent } from '@/utils/upgradeIntent';
 import styles from './page.module.css';
 
@@ -48,6 +49,7 @@ export default function MyStoriesPage() {
     api: interactionApi,
     openStore: openOfflineStore,
     reconcile: reconcileOfflineLibrary,
+    getDefaultVoice: (content) => getStoredDefaultVoice(content?.lang || content?.language || lang),
   });
 
   useEffect(() => {
@@ -81,12 +83,11 @@ export default function MyStoriesPage() {
     try {
       const currentUser = getUser();
       const userId = currentUser?.uid || currentUser?.family_id || currentUser?.username;
-      const store = await openOfflineStore();
       const savesData = await loadSavedLibrary({
         userId,
         reconciliationRunner,
         getCurrentUser: getUser,
-        store,
+        openStore: openOfflineStore,
       });
       if (savesData.stale) {
         setFavorites([]);

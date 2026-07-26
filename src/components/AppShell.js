@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { I18nProvider, hasCompletedOnboarding } from '@/utils/i18n';
-import { VoicePreferencesProvider } from '@/utils/voicePreferences';
+import { getStoredDefaultVoice, VoicePreferencesProvider } from '@/utils/voicePreferences';
 import { getUser, isLoggedIn, setToken, setUser, tryAdoptNativeToken } from '@/utils/auth';
 import { interactionApi } from '@/utils/api';
 import { getOfflineReconciliationRunner, reconcileOfflineLibrary } from '@/utils/offlineLibrary';
@@ -47,6 +47,7 @@ export default function AppShell({ children }) {
       api: interactionApi,
       openStore: openOfflineStore,
       reconcile: reconcileOfflineLibrary,
+      getDefaultVoice: (content) => getStoredDefaultVoice(content?.lang || content?.language || 'en'),
     });
   }
   const reconcileOffline = offlineReconciliationRef.current;

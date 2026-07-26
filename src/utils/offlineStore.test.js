@@ -4,6 +4,7 @@ function createMemoryDb() {
   const stores = new Map([
     ['packages', new Map()],
     ['entitlements', new Map()],
+    ['tombstones', new Map()],
   ]);
 
   return {
@@ -25,6 +26,18 @@ test('isolates packages by user and returns only ready records', async () => {
   await store.putPackage({ key: 'u1:s2', userId: 'u1', contentId: 's2', state: 'failed' });
 
   expect((await store.listReadyPackages('u1')).map((x) => x.contentId)).toEqual(['s1']);
+});
+
+test('normalizes missing package and entitlement reads to null', async () => {
+  const store = createOfflineStore({
+    put: async () => {},
+    get: async () => undefined,
+    getAll: async () => [],
+    delete: async () => {},
+  });
+
+  await expect(store.getPackage('u1', 'missing')).resolves.toBeNull();
+  await expect(store.getEntitlementLease('u1')).resolves.toBeNull();
 });
 
 test('lists every package state for one user', async () => {

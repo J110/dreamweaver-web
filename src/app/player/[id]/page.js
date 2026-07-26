@@ -12,7 +12,13 @@ import { useI18n, hasCompletedOnboarding } from '@/utils/i18n';
 import { useVoicePreferences } from '@/utils/voicePreferences';
 import { getUser, isLoggedIn } from '@/utils/auth';
 import { openOfflineStore } from '@/utils/offlineStore';
-import { getReadyOfflinePackage, resolveOfflinePackage } from '@/utils/offlineLibrary';
+import {
+  captureOfflineUserEpoch,
+  getReadyOfflinePackage,
+  queueOfflinePackage,
+  resolveOfflinePackage,
+  subscribeOfflineLibraryChanges,
+} from '@/utils/offlineLibrary';
 import { VOICES, getVoiceId, getVoiceLabel } from '@/utils/voiceConfig';
 import { stripEmotionMarkers } from '@/utils/textUtils';
 import { getDisplayCategory, getDisplayCategoryUpper } from '@/utils/contentTypes';
@@ -57,6 +63,7 @@ export default function PlayerPage() {
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [offlinePackage, setOfflinePackage] = useState(null);
   const [offlineLookupSettled, setOfflineLookupSettled] = useState(false);
+  const [offlineLibraryRevision, setOfflineLibraryRevision] = useState(0);
   const [shareCopied, setShareCopied] = useState(false);
   const [showAboutPanel, setShowAboutPanel] = useState(false);
   const aboutPanelRef = useRef(null);
@@ -65,6 +72,8 @@ export default function PlayerPage() {
   const progressIntervalRef = useRef(null);
   const voiceSwitchAutoPlayRef = useRef(false);
   const offlineLookupPendingRef = useRef(false);
+  const offlinePackageRef = useRef(null);
+  const offlineHydratedRef = useRef(false);
   const musicRef = useRef(null);
   const musicPhaseRef = useRef(1); // Current sleep music phase (1=Capture, 2=Descent, 3=Sleep)
   const tracked1MinRef = useRef(false); // Track 1-min milestone once per play
@@ -143,6 +152,7 @@ export default function PlayerPage() {
     setOfflineLookupSettled(false);
     setOfflinePackage((current) => {
       current?.revoke();
+      offlinePackageRef.current = null;
       return null;
     });
 
@@ -168,6 +178,7 @@ export default function PlayerPage() {
           return;
         }
         resolvedPackage = nextPackage;
+        offlinePackageRef.current = nextPackage;
         setOfflinePackage(nextPackage);
       } catch {} finally {
         if (!cancelled) {
@@ -180,8 +191,9 @@ export default function PlayerPage() {
     return () => {
       cancelled = true;
       resolvedPackage?.revoke();
+      if (offlinePackageRef.current === resolvedPackage) offlinePackageRef.current = null;
     };
-  }, [content?.id, selectedVoice]);
+  }, [content?.id, selectedVoice, offlineLibraryRevision]);
 
   // Auto-start ambient music — prefer musicParams (per-story unique), fallback to musicProfile (shared)
   //
@@ -441,6 +453,69 @@ export default function PlayerPage() {
       progressIntervalRef.current = null;
     }
   }, []);
+
+  useEffect(() => subscribeOfflineLibraryChanges((change) => {
+    const user = getUser();
+    const userId = user?.uid || user?.family_id || user?.username;
+    if (!userId || change?.userId !== userId) return;
+    if (change.type === 'removed' && change.contentId !== content?.id) return;
+    if (change.type === 'package' && change.contentId !== content?.id) return;
+
+    const cached = offlinePackageRef.current;
+    if (cached) {
+      cached.revoke();
+      offlinePackageRef.current = null;
+      setOfflinePackage(null);
+    }
+    if (change.type !== 'package' && audioRef.current) {
+      audioDisposingRef.current = true;
+      audioRef.current.pause();
+      audioRef.current.src = '';
+      audioRef.current = null;
+      window.__dvAudioElement = null;
+      setIsPlaying(false);
+      stopProgressTracking();
+      updatePlaybackState('paused');
+      setTimeout(() => { audioDisposingRef.current = false; }, 50);
+    }
+    if ((change.type === 'removed' || change.effectivePremium === false)
+      && offlineHydratedRef.current) {
+      offlineHydratedRef.current = false;
+      setContent(null);
+      setError(t('playerError'));
+      setLoading(false);
+    }
+    setOfflineLibraryRevision((revision) => revision + 1);
+  }), [content?.id, stopProgressTracking, t]);
+
+  useEffect(() => {
+    if (!content?.id || !selectedVoice || !isSaved) return undefined;
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) return undefined;
+    const user = getUser();
+    const userId = user?.uid || user?.family_id || user?.username;
+    if (!userId) return undefined;
+    const sessionEpoch = captureOfflineUserEpoch(userId);
+    let cancelled = false;
+    (async () => {
+      try {
+        const store = await openOfflineStore();
+        const lease = await store.getEntitlementLease(userId);
+        if (cancelled || lease?.effectivePremium !== true) return;
+        await queueOfflinePackage({
+          userId,
+          content,
+          selectedVoice,
+          sessionEpoch,
+          store,
+          fetchImpl: globalThis.fetch,
+        });
+      } catch {
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [content, isSaved, selectedVoice]);
 
   const handleAboutToggle = useCallback(() => {
     setShowAboutPanel(prev => !prev);
@@ -799,6 +874,7 @@ export default function PlayerPage() {
   useEffect(() => {
     const loadContent = async () => {
       setOfflineLookupSettled(false);
+      offlineHydratedRef.current = false;
       const user = getUser();
       const userId = user?.uid || user?.family_id || user?.username;
       if (userId) {
@@ -810,6 +886,7 @@ export default function PlayerPage() {
             store,
           });
           if (cachedPackage) {
+            offlineHydratedRef.current = true;
             setContent(cachedPackage.content);
             setIsSaved(true);
             setLoading(false);
@@ -823,6 +900,7 @@ export default function PlayerPage() {
       // and premium). A free user OR an undeterminable status (e.g. the status
       // call also fails) gets NO audio and renders locked. Never fail open.
       const serveSeedFallback = async (seedMatch, notFoundKey) => {
+        offlineHydratedRef.current = false;
         if (!seedMatch) { setError(t(notFoundKey)); return; }
         // Resolve effective_premium WITHOUT a hard dependency on the call that
         // just failed: (1) a live getCurrent — succeeds whenever the backend is
@@ -888,6 +966,7 @@ export default function PlayerPage() {
               data.story_type = seedMatch.story_type;
             }
           }
+          offlineHydratedRef.current = false;
           setContent(data);
           setIsSaved(data.is_saved || false);
         } else {
@@ -1359,6 +1438,7 @@ export default function PlayerPage() {
             content={content}
             selectedVoice={selectedVoice}
             initialSaved={isSaved}
+            onSavedChange={setIsSaved}
             initialCount={content.save_count || 0}
             variant="full"
             className={styles.actionButton}

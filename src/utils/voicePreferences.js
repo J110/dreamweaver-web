@@ -5,6 +5,16 @@ import { VOICES, getVoiceId } from './voiceConfig';
 
 const PREFS_KEY = 'dreamvalley_voice_prefs';
 
+export function getStoredDefaultVoice(lang = 'en') {
+  let preferredVoice = 'female_1';
+  try {
+    const parsed = JSON.parse(localStorage.getItem(PREFS_KEY) || 'null');
+    if (parsed?.completed && parsed.preferredVoice) preferredVoice = parsed.preferredVoice;
+  } catch {
+  }
+  return getVoiceId(preferredVoice, lang);
+}
+
 /**
  * Voice preferences shape:
  * {

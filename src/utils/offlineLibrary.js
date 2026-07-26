@@ -5,6 +5,8 @@ const packageWrites = new Map();
 const userSessions = new Map();
 const entitlementWrites = new Map();
 let sharedOfflineReconciliationRunner = null;
+const OFFLINE_CHANGE_EVENT = 'dv-offline-library-change';
+const OFFLINE_BROADCAST_KEY = 'dv_offline_broadcast';
 
 const epochKey = (userId) => `dv_offline_epoch:${userId}`;
 const revocationKey = (userId) => `dv_offline_revoked:${userId}`;
@@ -12,6 +14,35 @@ const revocationKey = (userId) => `dv_offline_revoked:${userId}`;
 function offlineStorage() {
   if (typeof window !== 'undefined') return window.localStorage;
   return Object.getOwnPropertyDescriptor(globalThis, 'localStorage')?.value || null;
+}
+
+function broadcastOfflineLibraryChange(change) {
+  const detail = { ...change, emittedAt: Date.now() };
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new window.CustomEvent(OFFLINE_CHANGE_EVENT, { detail }));
+  }
+  try {
+    offlineStorage()?.setItem(OFFLINE_BROADCAST_KEY, JSON.stringify(detail));
+  } catch {
+  }
+}
+
+export function subscribeOfflineLibraryChanges(listener) {
+  if (typeof window === 'undefined') return () => {};
+  const onLocalChange = (event) => listener(event.detail);
+  const onStorage = (event) => {
+    if (event.key !== OFFLINE_BROADCAST_KEY || !event.newValue) return;
+    try {
+      listener(JSON.parse(event.newValue));
+    } catch {
+    }
+  };
+  window.addEventListener(OFFLINE_CHANGE_EVENT, onLocalChange);
+  window.addEventListener('storage', onStorage);
+  return () => {
+    window.removeEventListener(OFFLINE_CHANGE_EVENT, onLocalChange);
+    window.removeEventListener('storage', onStorage);
+  };
 }
 
 function readStoredNumber(key) {
@@ -83,6 +114,12 @@ function applyOfflineUserAuthority(userId, authorityVersion, active) {
 
 function markOfflineUserRevoked(userId, sessionEpoch) {
   writeStoredNumber(revocationKey(userId), sessionEpoch);
+  broadcastOfflineLibraryChange({
+    type: 'authority',
+    userId,
+    effectivePremium: false,
+    authorityVersion: sessionEpoch,
+  });
 }
 
 function clearOfflineUserRevocation(userId) {
@@ -118,7 +155,15 @@ async function claimOfflineAuthority({
     ? await store.advanceAuthority(userId, effectivePremium, Date.now(), sessionEpoch)
     : sessionEpoch;
   if (!applyOfflineUserAuthority(userId, authorityVersion, active)) return null;
-  if (effectivePremium === true) clearOfflineUserRevocation(userId);
+  if (effectivePremium === true) {
+    clearOfflineUserRevocation(userId);
+  }
+  broadcastOfflineLibraryChange({
+    type: 'authority',
+    userId,
+    effectivePremium: effectivePremium === true,
+    authorityVersion,
+  });
   return authorityVersion;
 }
 
@@ -170,7 +215,9 @@ function writeCurrentPackage({ key, generation, userId, sessionEpoch, store, rec
     return record;
   });
   packageWrites.set(key, nextWrite);
-  return nextWrite;
+  return nextWrite.finally(() => {
+    if (packageWrites.get(key) === nextWrite) packageWrites.delete(key);
+  });
 }
 
 function writeCurrentEntitlementLease({ userId, sessionEpoch, effectivePremium, store }) {
@@ -189,7 +236,9 @@ function writeCurrentEntitlementLease({ userId, sessionEpoch, effectivePremium, 
     return true;
   });
   entitlementWrites.set(userId, nextWrite);
-  return nextWrite;
+  return nextWrite.finally(() => {
+    if (entitlementWrites.get(userId) === nextWrite) entitlementWrites.delete(userId);
+  });
 }
 
 export function selectOfflineAudio(content, selectedVoice) {
@@ -209,7 +258,31 @@ export async function queueOfflinePackage({
   store,
   fetchImpl,
 }) {
-  if (!isCurrentOfflineUserEpoch(userId, sessionEpoch)) return null;
+  if (!isCurrentOfflineUserEpoch(userId, sessionEpoch) || isOfflineUserRevoked(userId)) return null;
+  const lease = store.getEntitlementLease
+    ? await store.getEntitlementLease(userId)
+    : null;
+  if (lease?.effectivePremium === false) return null;
+  if (!lease) {
+    const provisionalEpoch = prepareOfflineAuthority(userId, true, sessionEpoch);
+    if (provisionalEpoch == null) return null;
+    sessionEpoch = await claimOfflineAuthority({
+      userId,
+      effectivePremium: true,
+      sessionEpoch: provisionalEpoch,
+      store,
+    });
+    if (sessionEpoch == null) return null;
+  }
+  if (!isCurrentOfflineUserEpoch(userId, sessionEpoch) || isOfflineUserRevoked(userId)) return null;
+  if (store.isAuthorityCurrent
+    && !await store.isAuthorityCurrent(userId, sessionEpoch)) return null;
+  if (store.getTombstone && await store.getTombstone(userId, content.id)) {
+    const cleared = store.clearTombstoneIfAuthority
+      ? await store.clearTombstoneIfAuthority(userId, content.id, sessionEpoch)
+      : false;
+    if (cleared === false) return null;
+  }
   const { voiceId, audioUrl } = selectOfflineAudio(content, selectedVoice);
   const coverUrl = getOfflineCoverUrl(content);
   const key = packageKey(userId, content.id);
@@ -222,6 +295,7 @@ export async function queueOfflinePackage({
     content,
     sessionEpoch,
     authorityVersion: sessionEpoch,
+    hidden: false,
     voiceId,
     audioSourceUrl: audioUrl || null,
     coverSourceUrl: coverUrl || null,
@@ -253,9 +327,18 @@ export async function queueOfflinePackage({
     if (!audioBlob || !coverBlob) throw new Error('Offline package download was incomplete');
 
     const readyRecord = { ...baseRecord, state: 'ready', audioBlob, coverBlob };
-    return await writeCurrentPackage({
+    const ready = await writeCurrentPackage({
       key, generation, userId, sessionEpoch, store, record: readyRecord,
     });
+    if (ready) {
+      broadcastOfflineLibraryChange({
+        type: 'package',
+        userId,
+        contentId: content.id,
+        voiceId,
+      });
+    }
+    return ready;
   } catch (error) {
     if (!isCurrentOfflineUserEpoch(userId, sessionEpoch)) return null;
     const failedRecord = { ...baseRecord, state: 'failed', error: error.message };
@@ -270,17 +353,66 @@ export function removeOfflinePackage({
   contentId,
   store,
   sessionEpoch = captureOfflineUserEpoch(userId),
+  authorityPrepared = false,
 }) {
   const key = packageKey(userId, contentId);
   packageGenerations.set(key, (packageGenerations.get(key) || 0) + 1);
   const previousWrite = packageWrites.get(key) || Promise.resolve();
-  const deletion = previousWrite.catch(() => null).then(() => (
-    store.deletePackageIfAuthority
-      ? store.deletePackageIfAuthority(userId, contentId, sessionEpoch)
-      : store.deletePackage(userId, contentId)
-  ));
+  const deletion = previousWrite.catch(() => null).then(async () => {
+    let removalEpoch = sessionEpoch;
+    const lease = store.getEntitlementLease
+      ? await store.getEntitlementLease(userId)
+      : null;
+    if (!authorityPrepared && lease?.effectivePremium === true && store.advanceAuthority) {
+      removalEpoch = await store.advanceAuthority(userId, true, Date.now(), sessionEpoch);
+      if (!applyOfflineUserAuthority(userId, removalEpoch, true)) return false;
+      broadcastOfflineLibraryChange({
+        type: 'authority',
+        userId,
+        effectivePremium: true,
+        authorityVersion: removalEpoch,
+      });
+    }
+    const record = await store.getPackage(userId, contentId);
+    const tombstone = {
+      key,
+      userId,
+      contentId,
+      sessionEpoch: removalEpoch,
+      authorityVersion: removalEpoch,
+      state: 'tombstone',
+      hidden: true,
+      tombstonedAt: Date.now(),
+    };
+    const tombstoneWritten = store.putTombstoneIfAuthority
+      ? await store.putTombstoneIfAuthority(tombstone, removalEpoch)
+      : await store.putTombstone?.(tombstone);
+    if (tombstoneWritten === false) return false;
+    if (record) {
+      const hiddenRecord = {
+        ...record,
+        state: 'tombstone',
+        hidden: true,
+        tombstonedAt: tombstone.tombstonedAt,
+        sessionEpoch: removalEpoch,
+        authorityVersion: removalEpoch,
+        audioBlob: null,
+        coverBlob: null,
+      };
+      const hidden = store.putPackageIfAuthority
+        ? await store.putPackageIfAuthority(hiddenRecord, removalEpoch)
+        : await store.putPackage(hiddenRecord);
+      if (hidden === false) return false;
+    }
+    broadcastOfflineLibraryChange({ type: 'removed', userId, contentId });
+    return store.deletePackageIfAuthority
+      ? store.deletePackageIfAuthority(userId, contentId, removalEpoch)
+      : store.deletePackage(userId, contentId);
+  });
   packageWrites.set(key, deletion);
-  return deletion;
+  return deletion.finally(() => {
+    if (packageWrites.get(key) === deletion) packageWrites.delete(key);
+  });
 }
 
 export async function getReadyOfflinePackage({
@@ -289,10 +421,18 @@ export async function getReadyOfflinePackage({
   store,
   sessionEpoch = captureOfflineUserEpoch(userId),
 }) {
-  if (!isCurrentOfflineUserEpoch(userId, sessionEpoch)) return null;
+  if (!isCurrentOfflineUserEpoch(userId, sessionEpoch) || isOfflineUserRevoked(userId)) return null;
+  const lease = store.getEntitlementLease
+    ? await store.getEntitlementLease(userId)
+    : null;
+  if (lease?.effectivePremium !== true) return null;
+  if (store.isAuthorityCurrent
+    && !await store.isAuthorityCurrent(userId, sessionEpoch)) return null;
+  if (store.getTombstone && await store.getTombstone(userId, contentId)) return null;
   const record = await store.getPackage(userId, contentId);
-  if (!isCurrentOfflineUserEpoch(userId, sessionEpoch)) return null;
-  if (record?.state !== 'ready' || !record.content || !record.audioBlob || !record.coverBlob) {
+  if (!isCurrentOfflineUserEpoch(userId, sessionEpoch) || isOfflineUserRevoked(userId)) return null;
+  if (record?.hidden || record?.state !== 'ready'
+    || !record.content || !record.audioBlob || !record.coverBlob) {
     return null;
   }
   return record;
@@ -328,10 +468,15 @@ export async function getOfflineSavedItems(userId, store, {
     return user?.uid || user?.family_id || user?.username;
   };
   const isCurrentRead = () => isCurrentOfflineUserEpoch(userId, sessionEpoch)
+    && !isOfflineUserRevoked(userId)
     && (!getCurrentUser || activeUserId() === userId);
   if (!isCurrentRead()) return [];
   const offlineStore = store || await openOfflineStore();
   if (!isCurrentRead()) return [];
+  const lease = offlineStore.getEntitlementLease
+    ? await offlineStore.getEntitlementLease(userId)
+    : null;
+  if (!isCurrentRead() || lease?.effectivePremium !== true) return [];
   const packages = await offlineStore.listReadyPackages(userId);
   if (!isCurrentRead()) return [];
   return packages
@@ -351,6 +496,7 @@ export async function reconcileOfflineLibrary({
   sessionEpoch = captureOfflineUserEpoch(userId),
   cleanupOnly = false,
   authorityPrepared = false,
+  getDefaultVoice,
   fetchImpl = globalThis.fetch,
 }) {
   if (!userId || !store || !isCurrentOfflineUserEpoch(userId, sessionEpoch)) return;
@@ -421,16 +567,24 @@ export async function reconcileOfflineLibrary({
       contentId: record.contentId,
       store,
       sessionEpoch,
+      authorityPrepared: true,
     })));
 
   await Promise.all(items.map(async (content) => {
     if (!content?.id) return;
     const record = await store.getPackage(userId, content.id);
-    if (record?.state === 'ready' && record.content && record.audioBlob && record.coverBlob) return;
+    const selectedVoice = content.selected_voice
+      || content.voice_id
+      || getDefaultVoice?.(content)
+      || null;
+    const desiredVoice = selectOfflineAudio(content, selectedVoice).voiceId;
+    if (record?.state === 'ready' && !record.hidden
+      && record.voiceId === desiredVoice
+      && record.content && record.audioBlob && record.coverBlob) return;
     await queueOfflinePackage({
       userId,
       content,
-      selectedVoice: record?.voiceId || content.selected_voice || content.voice_id,
+      selectedVoice,
       sessionEpoch,
       store,
       fetchImpl,
@@ -448,6 +602,7 @@ export async function loadSavedLibrary({
   reconciliationRunner,
   getCurrentUser,
   store,
+  openStore = openOfflineStore,
 }) {
   const activeUserId = () => {
     const user = getCurrentUser?.();
@@ -456,6 +611,11 @@ export async function loadSavedLibrary({
   const isStaleIdentity = () => getCurrentUser && activeUserId() !== userId;
   const sessionEpoch = captureOfflineUserEpoch(userId);
   const isStaleSession = () => !isCurrentOfflineUserEpoch(userId, sessionEpoch);
+  let resolvedStore = store || null;
+  const ensureStore = async () => {
+    if (!resolvedStore) resolvedStore = await openStore();
+    return resolvedStore;
+  };
   let data;
   try {
     data = reconciliationRunner
@@ -474,7 +634,18 @@ export async function loadSavedLibrary({
         offline: true,
       };
     }
-    const lease = await store.getEntitlementLease(userId);
+    let offlineStore;
+    try {
+      offlineStore = await ensureStore();
+    } catch {
+      return {
+        items: [],
+        effectivePremium: false,
+        saveCap: null,
+        offline: true,
+      };
+    }
+    const lease = await offlineStore.getEntitlementLease(userId);
     if (isStaleIdentity() || isStaleSession()) {
       return { items: [], effectivePremium: false, saveCap: null, offline: true, stale: true };
     }
@@ -488,7 +659,7 @@ export async function loadSavedLibrary({
     }
     const offlineItems = await getOfflineSavedItems(
       userId,
-      store,
+      offlineStore,
       { getCurrentUser, sessionEpoch },
     );
     if (isStaleIdentity() || isStaleSession()) {
@@ -509,11 +680,12 @@ export async function loadSavedLibrary({
   const effectivePremium = data?.effective_premium === true;
   if (!reconciliationRunner) {
     try {
+      const offlineStore = await ensureStore();
       await reconcileOfflineLibrary({
         userId,
         effectivePremium,
         savedItems: items,
-        store,
+        store: offlineStore,
       });
     } catch {
     }
@@ -532,6 +704,7 @@ export function createOfflineReconciliationRunner({
   api,
   openStore,
   reconcile = reconcileOfflineLibrary,
+  getDefaultVoice,
   scheduleRetry = (callback) => setTimeout(callback, 2000),
   now = Date.now,
   dedupeMs = 1000,
@@ -586,6 +759,7 @@ export function createOfflineReconciliationRunner({
           sessionEpoch: pending.sessionEpoch,
           cleanupOnly: pending.cleanupOnly,
           authorityPrepared: pending.authorityPrepared,
+          getDefaultVoice,
           store,
         });
         if (typeof reconciledEpoch === 'number') pending.sessionEpoch = reconciledEpoch;
@@ -661,6 +835,7 @@ export function createOfflineReconciliationRunner({
           savedItems: Array.isArray(data?.items) ? data.items : [],
           sessionEpoch: appliedEpoch,
           authorityPrepared: true,
+          getDefaultVoice,
           store,
         });
         appliedEpoch = typeof reconciledEpoch === 'number'

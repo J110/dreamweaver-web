@@ -33,7 +33,7 @@ export function createOfflineStore(dbAdapter) {
       await dbAdapter.delete(storeName, key);
     }
   };
-  const currentAuthority = async (userId) => dbAdapter.get('entitlements', userId);
+  const currentAuthority = async (userId) => (await dbAdapter.get('entitlements', userId)) ?? null;
   const authorityMatches = (
     lease,
     authorityVersion,
@@ -55,6 +55,14 @@ export function createOfflineStore(dbAdapter) {
         const current = await dbAdapter.get('packages', record.key);
         if (current?.userId === userId && authorityVersionOf(current) <= cutoff) {
           await dbAdapter.delete('packages', record.key);
+        }
+      }
+      const tombstones = (await dbAdapter.getAll('tombstones')) ?? [];
+      for (const record of tombstones.filter((candidate) => candidate.userId === userId)) {
+        if (!authorityMatches(await currentAuthority(userId), authorityVersion)) return false;
+        const current = await dbAdapter.get('tombstones', record.key);
+        if (current?.userId === userId && authorityVersionOf(current) <= cutoff) {
+          await dbAdapter.delete('tombstones', record.key);
         }
       }
       return true;
@@ -79,12 +87,46 @@ export function createOfflineStore(dbAdapter) {
         return true;
       });
     },
-    getPackage: (userId, contentId) => dbAdapter.get('packages', packageKey(userId, contentId)),
-    listReadyPackages: async (userId) =>
-      (await dbAdapter.getAll('packages')).filter((record) =>
-        record.userId === userId && record.state === 'ready'),
+    getPackage: async (userId, contentId) =>
+      (await dbAdapter.get('packages', packageKey(userId, contentId))) ?? null,
+    listReadyPackages: async (userId) => {
+      const tombstones = new Set(
+        ((await dbAdapter.getAll('tombstones')) ?? [])
+          .filter((record) => record.userId === userId)
+          .map((record) => record.key),
+      );
+      return ((await dbAdapter.getAll('packages')) ?? []).filter((record) =>
+        record.userId === userId && record.state === 'ready' && !tombstones.has(record.key));
+    },
     listPackages: async (userId) =>
-      (await dbAdapter.getAll('packages')).filter((record) => record.userId === userId),
+      ((await dbAdapter.getAll('packages')) ?? []).filter((record) => record.userId === userId),
+    putTombstone: (record) => dbAdapter.put('tombstones', record),
+    putTombstoneIfAuthority: (record, authorityVersion) => {
+      if (dbAdapter.putTombstoneIfAuthority) {
+        return dbAdapter.putTombstoneIfAuthority(record, authorityVersion);
+      }
+      return withAuthorityLock(dbAdapter, record.userId, async () => {
+        if (!authorityMatches(
+          await currentAuthority(record.userId), authorityVersion, true,
+        )) return false;
+        await dbAdapter.put('tombstones', record);
+        return true;
+      });
+    },
+    getTombstone: async (userId, contentId) =>
+      (await dbAdapter.get('tombstones', packageKey(userId, contentId))) ?? null,
+    clearTombstoneIfAuthority: (userId, contentId, authorityVersion) => {
+      if (dbAdapter.clearTombstoneIfAuthority) {
+        return dbAdapter.clearTombstoneIfAuthority(userId, contentId, authorityVersion);
+      }
+      return withAuthorityLock(dbAdapter, userId, async () => {
+        if (!authorityMatches(
+          await currentAuthority(userId), authorityVersion, true,
+        )) return false;
+        await dbAdapter.delete('tombstones', packageKey(userId, contentId));
+        return true;
+      });
+    },
     deletePackage: (userId, contentId) => dbAdapter.delete('packages', packageKey(userId, contentId)),
     deletePackageIfAuthority: (userId, contentId, authorityVersion) => {
       if (dbAdapter.deletePackageIfAuthority) {
@@ -119,6 +161,12 @@ export function createOfflineStore(dbAdapter) {
         .map((record) => deleteIfEpochAtMost(
           'packages', record.key, userId, maxSessionEpoch,
         )));
+      const tombstones = (await dbAdapter.getAll('tombstones')) ?? [];
+      await Promise.all(tombstones
+        .filter((record) => record.userId === userId)
+        .map((record) => deleteIfEpochAtMost(
+          'tombstones', record.key, userId, maxSessionEpoch,
+        )));
     },
     purgeUser: async (
       userId,
@@ -133,6 +181,12 @@ export function createOfflineStore(dbAdapter) {
         .filter((record) => record.userId === userId)
         .map((record) => deleteIfEpochAtMost(
           'packages', record.key, userId, maxSessionEpoch,
+        )));
+      const tombstones = (await dbAdapter.getAll('tombstones')) ?? [];
+      await Promise.all(tombstones
+        .filter((record) => record.userId === userId)
+        .map((record) => deleteIfEpochAtMost(
+          'tombstones', record.key, userId, maxSessionEpoch,
         )));
       await deleteIfEpochAtMost('entitlements', userId, userId, maxSessionEpoch);
     },
@@ -207,7 +261,7 @@ export function createOfflineStore(dbAdapter) {
         return true;
       });
     },
-    getEntitlementLease: (userId) => dbAdapter.get('entitlements', userId),
+    getEntitlementLease: async (userId) => (await dbAdapter.get('entitlements', userId)) ?? null,
     deleteEntitlementLease: (userId) => dbAdapter.delete('entitlements', userId),
   };
 }
@@ -279,6 +333,34 @@ function createIndexedDbAdapter(database) {
           setResult(true);
         };
       }),
+    putTombstoneIfAuthority: (record, authorityVersion) =>
+      transactionResult(['entitlements', 'tombstones'], (transaction, setResult) => {
+        const request = transaction.objectStore('entitlements').get(record.userId);
+        request.onsuccess = () => {
+          const lease = request.result;
+          if (authorityVersionOf(lease) !== authorityVersion
+            || lease?.effectivePremium !== true) {
+            setResult(false);
+            return;
+          }
+          transaction.objectStore('tombstones').put(record);
+          setResult(true);
+        };
+      }),
+    clearTombstoneIfAuthority: (userId, contentId, authorityVersion) =>
+      transactionResult(['entitlements', 'tombstones'], (transaction, setResult) => {
+        const request = transaction.objectStore('entitlements').get(userId);
+        request.onsuccess = () => {
+          const lease = request.result;
+          if (authorityVersionOf(lease) !== authorityVersion
+            || lease?.effectivePremium !== true) {
+            setResult(false);
+            return;
+          }
+          transaction.objectStore('tombstones').delete(packageKey(userId, contentId));
+          setResult(true);
+        };
+      }),
     deletePackageIfAuthority: (userId, contentId, cutoff, authorityVersion) =>
       transactionResult(['entitlements', 'packages'], (transaction, setResult) => {
         const request = transaction.objectStore('entitlements').get(userId);
@@ -300,7 +382,7 @@ function createIndexedDbAdapter(database) {
         };
       }),
     purgePackagesIfAuthority: (userId, cutoff, authorityVersion) =>
-      transactionResult(['entitlements', 'packages'], (transaction, setResult) => {
+      transactionResult(['entitlements', 'packages', 'tombstones'], (transaction, setResult) => {
         const request = transaction.objectStore('entitlements').get(userId);
         request.onsuccess = () => {
           if (authorityVersionOf(request.result) !== authorityVersion) {
@@ -314,6 +396,14 @@ function createIndexedDbAdapter(database) {
               .filter((record) => record.userId === userId
                 && authorityVersionOf(record) <= cutoff)
               .forEach((record) => packageStore.delete(record.key));
+            const tombstoneStore = transaction.objectStore('tombstones');
+            const tombstonesRequest = tombstoneStore.getAll();
+            tombstonesRequest.onsuccess = () => {
+              tombstonesRequest.result
+                .filter((record) => record.userId === userId
+                  && authorityVersionOf(record) <= cutoff)
+                .forEach((record) => tombstoneStore.delete(record.key));
+            };
             setResult(true);
           };
         };
@@ -368,7 +458,7 @@ export function openOfflineStore(indexedDBImpl = globalThis.indexedDB) {
   }
 
   return new Promise((resolve, reject) => {
-    const request = indexedDBImpl.open('dv-offline-library', 1);
+    const request = indexedDBImpl.open('dv-offline-library', 2);
 
     request.onupgradeneeded = () => {
       const database = request.result;
@@ -378,8 +468,16 @@ export function openOfflineStore(indexedDBImpl = globalThis.indexedDB) {
       if (!database.objectStoreNames.contains('entitlements')) {
         database.createObjectStore('entitlements', { keyPath: 'userId' });
       }
+      if (!database.objectStoreNames.contains('tombstones')) {
+        database.createObjectStore('tombstones', { keyPath: 'key' });
+      }
     };
-    request.onsuccess = () => resolve(createOfflineStore(createIndexedDbAdapter(request.result)));
+    request.onsuccess = () => {
+      const database = request.result;
+      database.onversionchange = () => database.close();
+      resolve(createOfflineStore(createIndexedDbAdapter(database)));
+    };
     request.onerror = () => reject(request.error);
+    request.onblocked = () => reject(request.error || new Error('IndexedDB upgrade is blocked'));
   });
 }

@@ -10,6 +10,7 @@ import {
   purgeOfflineUser,
   activateOfflineUserSession,
   createOfflineReconciliationRunner,
+  subscribeOfflineLibraryChanges,
 } from './offlineLibrary';
 import { createOfflineStore } from './offlineStore';
 
@@ -17,6 +18,7 @@ function memoryStore() {
   const stores = {
     packages: new Map(),
     entitlements: new Map(),
+    tombstones: new Map(),
   };
   return createOfflineStore({
     put: async (store, value) => stores[store].set(value.key ?? value.userId, value),
@@ -30,6 +32,7 @@ function sharedMemoryDb() {
   const stores = {
     packages: new Map(),
     entitlements: new Map(),
+    tombstones: new Map(),
   };
   return {
     put: async (store, value) => stores[store].set(value.key ?? value.userId, value),
@@ -98,6 +101,7 @@ test('replaces cached audio when the selected voice changes', async () => {
 test('keeps the newer voice package when an older download finishes last', async () => {
   const store = memoryStore();
   const content = sampleContentWithVoices();
+  await store.setEntitlementLease('u1', true, 100, captureOfflineUserEpoch('u1'));
   const releaseOlderDownloads = [];
   const olderFetch = jest.fn(() => new Promise((resolve) => {
     releaseOlderDownloads.push(() => resolve(new Response(new Blob(['older']))));
@@ -145,6 +149,26 @@ test('does not resolve incomplete or failed packages for playback', async () => 
   });
 
   expect(await resolveOfflinePackage({ userId: 'u1', contentId: 'story-1', store })).toBeNull();
+});
+
+test('does not expose a ready package without current premium authority', async () => {
+  const store = memoryStore();
+  await store.putPackage({
+    key: 'authority-user:story-1',
+    userId: 'authority-user',
+    contentId: 'story-1',
+    state: 'ready',
+    content: sampleContentWithVoices(),
+    audioBlob: new Blob(['audio']),
+    coverBlob: new Blob(['cover']),
+  });
+  await store.setEntitlementLease('authority-user', false, 100);
+
+  expect(await getReadyOfflinePackage({
+    userId: 'authority-user',
+    contentId: 'story-1',
+    store,
+  })).toBeNull();
 });
 
 test('does not resolve a package for a different selected voice', async () => {
@@ -200,6 +224,117 @@ test('removes the package when the premium save is removed', async () => {
 
   await removeOfflinePackage({ userId: 'u1', contentId: 'story-1', store });
   expect(await store.getPackage('u1', 'story-1')).toBeNull();
+  expect(await store.getTombstone('u1', 'story-1')).toMatchObject({
+    state: 'tombstone',
+    hidden: true,
+  });
+});
+
+test('persists a hidden tombstone before failed deletion and clears it on a later premium write', async () => {
+  const store = memoryStore();
+  await queueOfflinePackage({
+    userId: 'tombstone-user',
+    content: sampleContentWithVoices(),
+    selectedVoice: 'female_2',
+    store,
+    fetchImpl: fetchBlob,
+  });
+  const deletePackage = store.deletePackageIfAuthority;
+  store.deletePackageIfAuthority = jest.fn().mockRejectedValue(new Error('delete failed'));
+
+  await expect(removeOfflinePackage({
+    userId: 'tombstone-user',
+    contentId: 'story-1',
+    store,
+  })).rejects.toThrow('delete failed');
+
+  expect(await store.getPackage('tombstone-user', 'story-1')).toMatchObject({
+    state: 'tombstone',
+    hidden: true,
+  });
+  expect(await getOfflineSavedItems('tombstone-user', store)).toEqual([]);
+  expect(await resolveOfflinePackage({
+    userId: 'tombstone-user',
+    contentId: 'story-1',
+    selectedVoice: 'female_2',
+    store,
+  })).toBeNull();
+
+  store.deletePackageIfAuthority = deletePackage;
+  await queueOfflinePackage({
+    userId: 'tombstone-user',
+    content: sampleContentWithVoices(),
+    selectedVoice: 'female_2',
+    store,
+    fetchImpl: fetchBlob,
+  });
+  expect(await store.getPackage('tombstone-user', 'story-1')).toMatchObject({
+    state: 'ready',
+    hidden: false,
+  });
+});
+
+test('broadcasts package removal to same-tab listeners', async () => {
+  const handlers = new Map();
+  const values = new Map();
+  const previousWindow = Object.getOwnPropertyDescriptor(global, 'window');
+  Object.defineProperty(global, 'window', {
+    configurable: true,
+    value: {
+      localStorage: {
+        getItem: (key) => values.get(key) ?? null,
+        setItem: (key, value) => values.set(key, String(value)),
+        removeItem: (key) => values.delete(key),
+      },
+      CustomEvent: class {
+        constructor(type, options) {
+          this.type = type;
+          this.detail = options.detail;
+        }
+      },
+      addEventListener: (type, handler) => handlers.set(type, handler),
+      removeEventListener: (type) => handlers.delete(type),
+      dispatchEvent: (event) => handlers.get(event.type)?.(event),
+    },
+  });
+  const store = memoryStore();
+  await queueOfflinePackage({
+    userId: 'broadcast-user',
+    content: sampleContentWithVoices(),
+    selectedVoice: 'female_2',
+    store,
+    fetchImpl: fetchBlob,
+  });
+  const listener = jest.fn();
+  const unsubscribe = subscribeOfflineLibraryChanges(listener);
+
+  await removeOfflinePackage({
+    userId: 'broadcast-user',
+    contentId: 'story-1',
+    store,
+  });
+
+  expect(listener).toHaveBeenCalledWith(expect.objectContaining({
+    type: 'removed',
+    userId: 'broadcast-user',
+    contentId: 'story-1',
+  }));
+  handlers.get('storage')({
+    key: 'dv_offline_broadcast',
+    newValue: JSON.stringify({
+      type: 'authority',
+      userId: 'broadcast-user',
+      effectivePremium: false,
+    }),
+  });
+  expect(listener).toHaveBeenCalledWith(expect.objectContaining({
+    type: 'authority',
+    userId: 'broadcast-user',
+    effectivePremium: false,
+  }));
+  unsubscribe();
+  if (previousWindow) Object.defineProperty(global, 'window', previousWindow);
+  else delete global.window;
 });
 
 test('does not restore a removed package when its earlier download finishes', async () => {
@@ -300,6 +435,31 @@ test('premium reconciliation removes unsaved packages and retries failed saved p
   expect(await store.getPackage('u1', 'stale-failed')).toBeNull();
   expect(await store.getPackage('u1', 'retry-me')).toMatchObject({ state: 'ready' });
   expect(await store.getEntitlementLease('u1')).toMatchObject({ effectivePremium: true });
+});
+
+test('premium reconciliation replaces a ready package with the configured default voice', async () => {
+  const store = memoryStore();
+  const content = sampleContentWithVoices();
+  await queueOfflinePackage({
+    userId: 'default-voice-user',
+    content,
+    selectedVoice: 'female_1',
+    store,
+    fetchImpl: fetchBlob,
+  });
+
+  await reconcileOfflineLibrary({
+    userId: 'default-voice-user',
+    effectivePremium: true,
+    savedItems: [content],
+    getDefaultVoice: () => 'female_2',
+    store,
+    fetchImpl: fetchBlob,
+  });
+
+  const record = await store.getPackage('default-voice-user', 'story-1');
+  expect(record).toMatchObject({ state: 'ready', voiceId: 'female_2' });
+  expect(await record.audioBlob.text()).toBe('https://media.example/female-2.mp3');
 });
 
 test('offline saved items include only complete ready packages', async () => {
