@@ -193,46 +193,51 @@ export default function MyStoriesPage() {
             </div>
 
             {saveCap != null && !isPremiumUser && (
-              <div
-                onClick={handleUpgrade}
-                style={{
-                  margin: '0 0 16px', padding: '12px 16px', cursor: 'pointer',
-                  borderRadius: 14, border: '1px solid rgba(107,76,230,0.35)',
-                  background: 'var(--dv-soft-accent)', color: 'var(--color-text-light, #fff)',
-                  fontFamily: "'Quicksand', sans-serif", fontSize: 14, fontWeight: 600,
-                  display: 'flex', alignItems: 'center', gap: 8,
-                }}
-              >
+              <button type="button" onClick={handleUpgrade} className={styles.upgradeBanner}>
                 <span aria-hidden>✨</span>
-                <span>
-                  {lang === 'hi'
-                    ? `${saved.length} / ${saveCap} saved — Premium mein 30 favorites milte hain.`
-                    : `${saved.length} of ${saveCap} saved — Premium unlocks 30.`}
-                </span>
-              </div>
+                <span>{saved.length}/{saveCap} saved. Upgrade to Premium for more slots and offline downloads</span>
+              </button>
             )}
 
             {loading ? (
               <div className={styles.loadingMessage}>{t('loading')}</div>
-            ) : filteredContent.length > 0 ? (
-              <div className={styles.grid}>
-                {filteredContent.map((item) => (
-                  <ContentCard key={item.id} content={item} />
-                ))}
-              </div>
             ) : (
-              <div className={styles.emptyState}>
-                <div className={styles.emptyIcon}>❤️</div>
-                <h3 className={styles.emptyTitle}>
-                  {t('myEmptyFavorites')}
-                </h3>
-                <p className={styles.emptyText}>
-                  {t('myEmptyFavoritesText')}
-                </p>
-                <button onClick={() => router.push('/before-bed')} className="btn btn-primary">
-                  {t('myExplore')}
-                </button>
-              </div>
+              <>
+                <div className={styles.grid}>
+                  {filteredContent.map((item) => (
+                    <ContentCard key={item.id} content={item} />
+                  ))}
+                  {isPremiumUser ? (
+                    <div className={styles.planCard} data-library-plan-card="premium">
+                      <img src="/upgrade-showcase.webp" alt="" className={styles.planCardImage} />
+                      <strong>You have 30 slots. </strong>
+                      <span>Save more favorites that you can listen to offline.</span>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleUpgrade}
+                      className={`${styles.planCard} ${styles.lockedPlanCard}`}
+                      data-library-plan-card="free"
+                    >
+                      <img src="/upgrade-showcase.webp" alt="" className={styles.planCardImage} />
+                      <span className={styles.lockBadge}>🔒 Premium</span>
+                      <strong>Upgrade to Premium</strong>
+                      <span>Get more slots and offline downloads</span>
+                    </button>
+                  )}
+                </div>
+                {filteredContent.length === 0 && (
+                  <div className={styles.emptyState}>
+                    <div className={styles.emptyIcon}>❤️</div>
+                    <h3 className={styles.emptyTitle}>{t('myEmptyFavorites')}</h3>
+                    <p className={styles.emptyText}>{t('myEmptyFavoritesText')}</p>
+                    <button onClick={() => router.push('/before-bed')} className="btn btn-primary">
+                      {t('myExplore')}
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </>
         ) : (

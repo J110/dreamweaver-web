@@ -14,7 +14,9 @@ jest.mock('next/navigation', () => ({
 }));
 jest.mock('@/components/StarField', () => () => null);
 jest.mock('@/components/RadioLiveCard', () => () => null);
-jest.mock('@/components/ContentCard', () => ({ content }) => <div>{content.title}</div>);
+jest.mock('@/components/ContentCard', () => ({ content }) => (
+  <div data-saved-content-card>{content.title}</div>
+));
 jest.mock('@/utils/auth', () => ({
   isLoggedIn: () => true,
   getUser: () => ({ uid: 'u1' }),
@@ -47,6 +49,70 @@ jest.mock('./page.module.css', () => ({}));
 import MyStoriesPage from './page';
 
 global.IS_REACT_ACT_ENVIRONMENT = true;
+
+async function renderPage(response) {
+  mockOpenOfflineStore.mockRejectedValue(new Error('IndexedDB unavailable'));
+  mockGetUserSaves.mockReset().mockResolvedValue(response);
+  mockRouter.push.mockReset();
+  window.history.replaceState({}, '', '/my-stories');
+  const container = document.createElement('div');
+  const root = createRoot(container);
+  document.body.appendChild(container);
+  await act(async () => {
+    root.render(<MyStoriesPage />);
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+  });
+  return { container, root };
+}
+
+test('free users get clickable upgrade messaging and a trailing locked card without losing a save slot', async () => {
+  const { container, root } = await renderPage({
+    items: [
+      { id: 'one', title: 'One' },
+      { id: 'two', title: 'Two' },
+      { id: 'three', title: 'Three' },
+      { id: 'four', title: 'Four' },
+      { id: 'five', title: 'Five' },
+    ],
+    effective_premium: false,
+    save_cap: 5,
+  });
+
+  expect(container.textContent).toContain(
+    '5/5 saved. Upgrade to Premium for more slots and offline downloads'
+  );
+  expect(container.querySelectorAll('[data-saved-content-card]')).toHaveLength(5);
+  const upgradeActions = [...container.querySelectorAll('button')]
+    .filter((button) => button.textContent.includes('Upgrade to Premium'));
+  expect(upgradeActions).toHaveLength(2);
+
+  await act(async () => upgradeActions[1].click());
+  expect(mockRouter.push).toHaveBeenCalledWith(
+    '/upgrade?intent=%2Fmy-stories'
+  );
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('premium users get a permanent offline-listening encouragement card', async () => {
+  const { container, root } = await renderPage({
+    items: [{ id: 'one', title: 'One' }],
+    effective_premium: true,
+    save_cap: 30,
+  });
+
+  expect(container.textContent).toContain(
+    'You have 30 slots. Save more favorites that you can listen to offline.'
+  );
+  expect(container.textContent).not.toContain('Upgrade to Premium');
+  expect(container.querySelector('[data-library-plan-card="premium"]')).not.toBeNull();
+
+  await act(async () => root.unmount());
+  container.remove();
+});
 
 test('renders live saves when IndexedDB is unavailable', async () => {
   mockOpenOfflineStore.mockRejectedValue(new Error('IndexedDB unavailable'));
