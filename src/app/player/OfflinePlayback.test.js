@@ -70,6 +70,8 @@ jest.mock('./[id]/page.module.css', () => ({}));
 
 import PlayerPage from './[id]/page';
 
+const { resolveOfflinePackage: resolveReadyOfflinePackage } = jest.requireActual('@/utils/offlineLibrary');
+
 global.IS_REACT_ACT_ENVIRONMENT = true;
 
 class MockAudio {
@@ -190,5 +192,56 @@ test('hydrates and plays a cached API-only story only after lookup settles, then
   expect(secondRevoke).toHaveBeenCalled();
 
   await act(async () => root.unmount());
+  container.remove();
+});
+
+test('revokes both ready package object URLs when the rendered player unmounts', async () => {
+  const content = {
+    id: 'api-only-story',
+    title: 'Saved only in IndexedDB',
+    type: 'story',
+    text: 'A cached bedtime story',
+    cover: 'https://media.example/cover.jpg',
+    audio_variants: [{ voice: 'female_1', url: 'https://media.example/female-1.mp3' }],
+  };
+  const audioBlob = new Blob(['audio']);
+  const coverBlob = new Blob(['cover']);
+  const revokeObjectURL = jest.fn();
+  const urlApi = {
+    createObjectURL: jest.fn()
+      .mockReturnValueOnce('blob:unmount-audio')
+      .mockReturnValueOnce('blob:unmount-cover'),
+    revokeObjectURL,
+  };
+  const store = {
+    getPackage: jest.fn().mockResolvedValue({
+      state: 'ready',
+      content,
+      voiceId: 'female_1',
+      audioBlob,
+      coverBlob,
+    }),
+  };
+  mockOpenOfflineStore.mockResolvedValue(store);
+  mockGetReadyOfflinePackage.mockResolvedValue({ content, voiceId: 'female_1' });
+  mockResolveOfflinePackage.mockImplementation((options) => (
+    resolveReadyOfflinePackage({ ...options, urlApi })
+  ));
+
+  const container = document.createElement('div');
+  const root = createRoot(container);
+  document.body.appendChild(container);
+  await act(async () => root.render(<PlayerPage />));
+  await flush();
+
+  expect(container.querySelector('img').getAttribute('src')).toBe('blob:unmount-cover');
+  expect(urlApi.createObjectURL).toHaveBeenNthCalledWith(1, audioBlob);
+  expect(urlApi.createObjectURL).toHaveBeenNthCalledWith(2, coverBlob);
+
+  await act(async () => root.unmount());
+
+  expect(revokeObjectURL).toHaveBeenCalledTimes(2);
+  expect(revokeObjectURL).toHaveBeenNthCalledWith(1, 'blob:unmount-audio');
+  expect(revokeObjectURL).toHaveBeenNthCalledWith(2, 'blob:unmount-cover');
   container.remove();
 });
