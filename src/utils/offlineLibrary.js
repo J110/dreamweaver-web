@@ -27,6 +27,10 @@ function broadcastOfflineLibraryChange(change) {
   }
 }
 
+export function notifySavedLibraryChanged(change) {
+  broadcastOfflineLibraryChange({ type: 'saved-library', ...change });
+}
+
 export function subscribeOfflineLibraryChanges(listener) {
   if (typeof window === 'undefined') return () => {};
   const onLocalChange = (event) => listener(event.detail);

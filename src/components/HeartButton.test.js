@@ -14,6 +14,7 @@ const mockRemoveOfflinePackage = jest.fn();
 const mockOpenOfflineStore = jest.fn();
 const mockGetUser = jest.fn();
 const mockCaptureOfflineUserEpoch = jest.fn();
+const mockNotifySavedLibraryChanged = jest.fn();
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: mockPush }),
@@ -49,6 +50,7 @@ jest.mock('@/utils/upgradeIntent', () => ({
 }));
 jest.mock('@/utils/offlineLibrary', () => ({
   captureOfflineUserEpoch: (...args) => mockCaptureOfflineUserEpoch(...args),
+  notifySavedLibraryChanged: (...args) => mockNotifySavedLibraryChanged(...args),
   queueOfflinePackage: (...args) => mockQueueOfflinePackage(...args),
   removeOfflinePackage: (...args) => mockRemoveOfflinePackage(...args),
 }));
@@ -96,6 +98,7 @@ describe('HeartButton save limits and offline lifecycle', () => {
     mockOpenOfflineStore.mockReset().mockResolvedValue({ name: 'offline-store' });
     mockGetUser.mockReset().mockReturnValue({ uid: 'user-1' });
     mockCaptureOfflineUserEpoch.mockReset().mockReturnValue(7);
+    mockNotifySavedLibraryChanged.mockReset();
     window.history.replaceState({}, '', '/player/story-1?voice=female_2');
   });
 
@@ -219,6 +222,24 @@ describe('HeartButton save limits and offline lifecycle', () => {
       selectedVoice: 'female_2',
       store: { name: 'offline-store' },
     }));
+  });
+
+  test('confirmed save notifies cached saved-library screens', async () => {
+    mockSaveContent.mockResolvedValue({
+      saved: true,
+      liked: false,
+      cap_reached: false,
+      offline_allowed: false,
+    });
+    renderHeart();
+
+    await click(heart());
+
+    expect(mockNotifySavedLibraryChanged).toHaveBeenCalledWith({
+      userId: 'user-1',
+      contentId: 'story-1',
+      saved: true,
+    });
   });
 
   test('unsave removes the package only after server success', async () => {

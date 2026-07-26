@@ -12,6 +12,7 @@ import {
   getOfflineReconciliationRunner,
   loadSavedLibrary,
   reconcileOfflineLibrary,
+  subscribeOfflineLibraryChanges,
 } from '@/utils/offlineLibrary';
 import { openOfflineStore } from '@/utils/offlineStore';
 import { getStoredDefaultVoice } from '@/utils/voicePreferences';
@@ -120,6 +121,10 @@ export default function MyStoriesPage() {
       window.removeEventListener('focus', refresh);
     };
   }, []);
+
+  useEffect(() => subscribeOfflineLibraryChanges((change) => {
+    if (change?.type === 'saved-library') loadUserContent({ silent: true });
+  }), []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

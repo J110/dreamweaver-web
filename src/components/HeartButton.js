@@ -8,6 +8,7 @@ import { interactionApi } from '@/utils/api';
 import { setUpgradeIntent } from '@/utils/upgradeIntent';
 import {
   captureOfflineUserEpoch,
+  notifySavedLibraryChanged,
   queueOfflinePackage,
   removeOfflinePackage,
 } from '@/utils/offlineLibrary';
@@ -124,6 +125,7 @@ export default function HeartButton({
           onSavedChange?.(true);
           adjustCount(+1);
           flashToast(t('playerSavedToProfile'));
+          notifySavedLibraryChanged({ userId, contentId, saved: true });
           if (res.offline_allowed) void queueConfirmedSave(userId, sessionEpoch);
         } else {
           setFilled(false);
@@ -141,6 +143,7 @@ export default function HeartButton({
         onSavedChange?.(false);
         adjustCount(-1);
         flashToast(t('playerRemovedFromSaved'));
+        notifySavedLibraryChanged({ userId, contentId, saved: false });
         void removeConfirmedSave(userId, sessionEpoch);
       } catch (err) {
         setFilled(true);

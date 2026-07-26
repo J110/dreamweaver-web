@@ -72,3 +72,42 @@ test('renders live saves when IndexedDB is unavailable', async () => {
   await act(async () => root.unmount());
   container.remove();
 });
+
+test('refreshes cached My Stories when another screen confirms a save', async () => {
+  mockOpenOfflineStore.mockResolvedValue({});
+  mockGetUserSaves
+    .mockReset()
+    .mockResolvedValueOnce({
+      items: [],
+      effective_premium: false,
+      save_cap: 5,
+    })
+    .mockResolvedValueOnce({
+      items: [{ id: 'mobile-save', title: 'Mobile Save' }],
+      effective_premium: false,
+      save_cap: 5,
+    });
+  const container = document.createElement('div');
+  const root = createRoot(container);
+  document.body.appendChild(container);
+
+  await act(async () => {
+    root.render(<MyStoriesPage />);
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+  });
+  await act(async () => {
+    window.dispatchEvent(new CustomEvent('dv-offline-library-change', {
+      detail: { type: 'saved-library', userId: 'u1', saved: true },
+    }));
+    await Promise.resolve();
+    await Promise.resolve();
+  });
+
+  expect(mockGetUserSaves).toHaveBeenCalledTimes(2);
+  expect(container.textContent).toContain('Mobile Save');
+
+  await act(async () => root.unmount());
+  container.remove();
+});
