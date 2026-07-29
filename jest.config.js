@@ -1,10 +1,14 @@
-const nextJest = require('next/jest');
-
-const createJestConfig = nextJest({ dir: './' });
-
-const customJestConfig = {
+module.exports = {
+  testEnvironment: 'jest-environment-node',
+  testMatch: ['**/*.test.js'],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  testEnvironment: 'jest-environment-jsdom',
+  modulePathIgnorePatterns: ['<rootDir>/.next/'],
+  moduleNameMapper: {
+    '\\.(css|less|scss|sass)$': '<rootDir>/test/styleMock.js',
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '^server-only$': '<rootDir>/test/server-only.js',
+  },
+  transform: {
+    '^.+\\.js$': ['babel-jest', { presets: ['next/babel'] }],
+  },
 };
-
-module.exports = createJestConfig(customJestConfig);

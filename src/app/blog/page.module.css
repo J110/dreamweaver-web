@@ -13,7 +13,7 @@
 }
 
 .breadcrumb a {
-  color: #6B4CE6;
+  color: var(--color-primary-purple);
   text-decoration: none;
 }
 

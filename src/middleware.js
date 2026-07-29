@@ -2,11 +2,7 @@ import { NextResponse } from 'next/server';
 import { isNativeUA } from '@/utils/nativeUA';
 
 /**
- * Compliance backstop (non-optional): native requests must never reach
- * a web purchase route. /pricing and /upgrade are redirected to home at
- * the edge — so a native request receives a redirect, never the purchase
- * HTML (absent, not hidden). Defense-in-depth alongside the in-render
- * isNativeRequest() gate in each route's server component.
+ * Compliance backstop: native requests must never reach web-only pricing.
  *
  * Keyed on the durable DreamValleyApp UA + ?source=app — never
  * localStorage. Shares the single NATIVE_UA source via nativeUA.js.
@@ -24,5 +20,5 @@ export function middleware(request) {
 }
 
 export const config = {
-  matcher: ['/pricing', '/upgrade'],
+  matcher: ['/pricing'],
 };

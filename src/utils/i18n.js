@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
+import { syncDocumentLanguage } from './documentLanguage';
 
 const LANG_KEY = 'dreamvalley_lang';
 
@@ -81,8 +82,12 @@ const translations = {
     playerSaved: 'Saved',
     playerSavedToProfile: 'Saved to your profile',
     playerRemovedFromSaved: 'Removed from saved',
-    heartLiked: 'Liked!',
-    heartCapHint: 'Liked! Your 5 free saves are full — Premium saves 20.',
+    heartCapTitle: 'Your 5 free saves are full',
+    heartCapBody: 'Upgrade to Premium for 30 saved favorites and offline listening.',
+    heartCapUpgrade: 'Upgrade to Premium',
+    heartCapDismiss: 'Close',
+    premiumCapTitle: 'Your Premium library is full',
+    premiumCapBody: 'Your Premium library is full. Remove one saved favorite to add another.',
     heartSignInToSave: 'Sign in to save',
     playerShare: 'Share',
     playerShareCopied: 'Link Copied!',
@@ -214,8 +219,12 @@ const translations = {
     playerSaved: 'Save hai',
     playerSavedToProfile: 'Aapki profile mein save ho gaya',
     playerRemovedFromSaved: 'Save se hata diya',
-    heartLiked: 'Pasand kiya!',
-    heartCapHint: 'Pasand kiya! Aapke 5 free saves bhar gaye — Premium mein 20 save hote hain.',
+    heartCapTitle: 'Aapke 5 free saves bhar gaye hain',
+    heartCapBody: '30 pasandida kahaniyan save karne aur offline sunne ke liye Premium lein.',
+    heartCapUpgrade: 'Premium lein',
+    heartCapDismiss: 'Band karein',
+    premiumCapTitle: 'Aapki Premium library bhar gayi hai',
+    premiumCapBody: 'Aapki Premium library bhar gayi hai. Nayi pasandida kahani jodne ke liye ek saved kahani hatayein.',
     heartSignInToSave: 'Save karne ke liye sign in karein',
     playerShare: 'Share',
     playerShareCopied: 'Link Copy hua!',
@@ -284,6 +293,10 @@ export function I18nProvider({ children }) {
     setLangState(saved === 'hi' ? 'hi' : 'en');
     setReady(true);
   }, []);
+
+  useEffect(() => {
+    syncDocumentLanguage(lang);
+  }, [lang]);
 
   const setLang = (newLang) => {
     const safeLang = newLang === 'hi' ? 'hi' : 'en';

@@ -1,0 +1,66 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.wash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(130% 95% at 50% 112%, rgba(233, 164, 94, 0.60), rgba(233, 164, 94, 0.14) 55%, rgba(42, 37, 80, 0) 85%);
+  animation: emberlight-wash var(--wash-seconds) ease both;
+}
+
+.line {
+  position: absolute;
+  right: 0;
+  bottom: 17%;
+  left: 0;
+  color: #F6E7CF;
+  font-family: var(--font-dream-display), serif;
+  font-size: 1rem;
+  font-style: italic;
+  text-align: center;
+  animation: emberlight-line var(--wash-seconds) ease both;
+}
+
+.motes {
+  position: absolute;
+  inset: 0;
+  opacity: 0.55;
+  background-image:
+    radial-gradient(circle, #F6D9A8 0 1.5px, transparent 2.5px),
+    radial-gradient(circle, #F6D9A8 0 1px, transparent 2px);
+  background-position: 18% 88%, 76% 72%;
+  background-size: 140px 180px, 190px 230px;
+  animation: emberlight-motes 18s linear both;
+}
+
+@keyframes emberlight-wash {
+  0% { opacity: 0; }
+  25%, 75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes emberlight-line {
+  0% { opacity: 0; transform: translateY(10px); }
+  30%, 78% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; }
+}
+
+@keyframes emberlight-motes {
+  0% { opacity: 0; transform: translateY(12%); }
+  12% { opacity: 0.55; }
+  100% { opacity: 0; transform: translateY(-12%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay { display: none; }
+}
+
+html[data-battery-saver] .motes,
+html[data-native] .motes {
+  display: none;
+}

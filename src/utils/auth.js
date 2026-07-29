@@ -1,3 +1,6 @@
+import { clearEffectivePremium } from './emberlightTheme';
+import { activateOfflineUserSession, purgeOfflineUser } from './offlineLibrary';
+
 const callPosthog = (fn) => {
   if (typeof window === 'undefined') return;
   import('posthog-js')
@@ -198,6 +201,8 @@ export const getUser = () => {
 export const setUser = (user) => {
   if (typeof window === 'undefined') return;
   localStorage.setItem('dreamweaver_user', JSON.stringify(user));
+  const offlineUserId = user?.uid || user?.family_id || user?.username;
+  if (offlineUserId) activateOfflineUserSession(offlineUserId);
 
   const username = user?.username;
   const familyId = user?.family_id;
@@ -244,19 +249,20 @@ export const isLoggedIn = () => {
 };
 
 export const logout = () => {
-  // Read username before clearing so we can clean its alias flag.
   const u = getUser();
+  const userId = u?.uid || u?.family_id || u?.username || null;
+  const offlinePurge = userId
+    ? Promise.resolve(purgeOfflineUser(userId)).catch(() => {})
+    : Promise.resolve();
   if (u?.username) {
     localStorage.removeItem(`dv_alias_done:${u.username}`);
   }
-  // Server-side revoke (best-effort, fire-and-forget). The api.js wrapper
-  // catches errors so a failed revoke never blocks client-side logout.
-  // Lazy-imported to avoid an api.js eager-load on every auth.js touch.
-  import('./api')
+  const serverRevoke = import('./api')
     .then(({ authApi }) => authApi.serverLogout())
     .catch(() => { /* ignore */ });
   removeToken();
   removeUser();
+  clearEffectivePremium(window.localStorage, window);
   // Clear magic-link polling state so a post-logout /login or /auth/claim
   // mount doesn't auto-resume on stale initiator_session_id values.
   // Without this, sessionStorage survives the logout and the next /login
@@ -271,4 +277,5 @@ export const logout = () => {
     try { posthog.capture('auth_logout', {}); } catch { /* ignore */ }
     posthog.reset();
   });
+  return Promise.all([offlinePurge, serverRevoke]);
 };

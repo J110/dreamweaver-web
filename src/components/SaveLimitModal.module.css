@@ -1,0 +1,70 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2200;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(9, 7, 30, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.dialog {
+  position: relative;
+  width: min(100%, 420px);
+  border: 1px solid rgba(160, 137, 255, 0.5);
+  border-radius: 24px;
+  padding: 32px 28px 28px;
+  color: #fff;
+  text-align: center;
+  background: linear-gradient(155deg, #332474, #18113f);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+
+.dialog h2 {
+  margin: 0 24px 12px;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.dialog p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.dismiss {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.upgrade {
+  width: 100%;
+  margin-top: 24px;
+  border: 0;
+  border-radius: 14px;
+  padding: 14px 18px;
+  color: #251956;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  background: linear-gradient(135deg, #f8d77a, #ffedb2);
+}
+
+.dismiss:focus-visible,
+.upgrade:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}

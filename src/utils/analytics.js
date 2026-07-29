@@ -4,6 +4,17 @@
  * Uses localStorage for persistent user ID, sessionStorage for sessions.
  */
 
+function safeUUID() {
+  try { if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID(); } catch (e) {}
+  // iOS < 15.4 fallback — crypto.getRandomValues is iOS 7+
+  let b;
+  try { b = (typeof crypto !== 'undefined' && crypto.getRandomValues) ? crypto.getRandomValues(new Uint8Array(16)) : null; } catch (e) { b = null; }
+  if (!b) { b = []; for (let i = 0; i < 16; i++) b[i] = Math.floor(Math.random() * 256); }
+  b[6] = (b[6] & 0x0f) | 0x40; b[8] = (b[8] & 0x3f) | 0x80;
+  let s = ''; for (let j = 0; j < 16; j++) { s += (b[j] + 256).toString(16).slice(1); if (j === 3 || j === 5 || j === 7 || j === 9) s += '-'; }
+  return s;
+}
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 const ANALYTICS_ENDPOINT = `${API_URL}/api/v1/analytics/events`;
 const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
@@ -28,7 +39,7 @@ class Analytics {
   _getOrCreateUserId() {
     let id = localStorage.getItem('dv_uid');
     if (!id) {
-      id = crypto.randomUUID();
+      id = safeUUID();
       localStorage.setItem('dv_uid', id);
     }
     return id;
@@ -44,7 +55,7 @@ class Analytics {
       return stored;
     }
 
-    const newId = crypto.randomUUID();
+    const newId = safeUUID();
     sessionStorage.setItem('dv_session', newId);
     sessionStorage.setItem('dv_last_activity', now.toString());
     sessionStorage.setItem('dv_session_start', now.toString());

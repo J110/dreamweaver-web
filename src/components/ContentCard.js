@@ -6,7 +6,7 @@ import { getAmbientMusic } from '@/utils/ambientMusic';
 import { isListened } from '@/utils/listeningHistory';
 import { dvAnalytics } from '@/utils/analytics';
 import { useI18n } from '@/utils/i18n';
-import { isFunnyShort, isSillySong, isLullaby, isPoem, isLongStory, getDisplayCategory } from '@/utils/contentTypes';
+import { isFunnyShort, isSillySong, isLullaby, isPoem, isLongStory } from '@/utils/contentTypes';
 import styles from './ContentCard.module.css';
 
 const MOOD_CONFIG = {
@@ -22,15 +22,6 @@ const LANGUAGE_LEVEL_LABELS = {
   basic: 'Keep Simple',
   intermediate: 'Medium',
   advanced: 'Challenge',
-};
-
-const STORY_TYPE_LABELS = {
-  folk_tale: 'Folk Tale',
-  mythological: 'Mythological',
-  fable: 'Fable',
-  nature: 'Nature Story',
-  slice_of_life: 'Slice of Life',
-  dream: 'Dream',
 };
 
 export default function ContentCard({ content, onClick }) {
@@ -61,17 +52,6 @@ export default function ContentCard({ content, onClick }) {
       case 'story':
       default:
         return styles.cardStoryGradient;
-    }
-  };
-
-  const getTypeBadge = (type) => {
-    switch (type?.toLowerCase()) {
-      case 'song':
-        return 'badge-song';
-      case 'long_story':
-      case 'story':
-      default:
-        return 'badge-story';
     }
   };
 
@@ -138,7 +118,19 @@ export default function ContentCard({ content, onClick }) {
   // grid stays fully static there (tap navigates).
   const [live, setLive] = useState(false);
   const cardRef = useRef(null);
-  const activate = () => { if (isSvgCover) setLive(true); };
+  const coverImgRef = useRef(null);
+  // Upgrade to the live animated <object> ONLY on devices that truly hover
+  // (desktop mouse). iOS WebKit synthesizes a hover on the FIRST tap; if that
+  // swaps the cover <img>->-<object> mid-gesture it destroys the tap target and
+  // WebKit drops the click — so the cover needed a double-tap while the title
+  // (never swapped) opened on the first tap. Gating on (hover: hover) keeps the
+  // desktop hover-preview while letting touch taps navigate on the FIRST tap.
+  // Do NOT remove this gate — the iOS double-tap-on-cover bug silently returns.
+  const activate = () => {
+    if (!isSvgCover) return;
+    if (typeof window === 'undefined' || !window.matchMedia?.('(hover: hover)').matches) return;
+    setLive(true);
+  };
   const deactivate = () => setLive(false);
   // Unmount the live <object> when the card scrolls out of view, so a fast
   // hover-then-scroll never accumulates live documents (hard cap on live count).
@@ -153,6 +145,19 @@ export default function ContentCard({ content, onClick }) {
     return () => io.disconnect();
   }, [live]);
 
+  // An SSR'd poster <img> can 404 (missing .webp) BEFORE React hydrates, so the
+  // onError .svg fallback never fires (handler not attached yet) and the broken
+  // image shows its alt text. Re-apply that fallback on mount for any cover that
+  // finished loading with no dimensions (i.e. errored pre-hydration). onError
+  // still covers client-rendered cards; the dataset.fb guard prevents a re-swap.
+  useEffect(() => {
+    const img = coverImgRef.current;
+    if (img && img.complete && img.naturalWidth === 0 && !img.dataset.fb) {
+      img.dataset.fb = '1';
+      img.src = resolvedCover;
+    }
+  }, []);
+
   const cardContent = (
     <>
       <div className={`${styles.cardArt} ${resolvedCover ? styles.cardArtWithImage : getTypeColor(content.type)} ${content.premium_locked ? styles.cardArtLocked : ''}`}>
@@ -166,6 +171,7 @@ export default function ContentCard({ content, onClick }) {
             />
           ) : (
             <img
+              ref={coverImgRef}
               src={posterSrc}
               alt={content.title || 'Story cover'}
               className={styles.coverImage}
@@ -200,13 +206,6 @@ export default function ContentCard({ content, onClick }) {
         )}
       </div>
       <div className={styles.cardContent}>
-        <div className={styles.cardHeader}>
-          <span className={`badge ${getTypeBadge(content.type)}`}>
-            {content.story_type && STORY_TYPE_LABELS[content.story_type]
-              ? STORY_TYPE_LABELS[content.story_type]
-              : getDisplayCategory(content, lang)}
-          </span>
-        </div>
         <h3 className={styles.cardTitle}>{content.title || 'Untitled'}</h3>
         <div className={styles.cardFooter}>
           <span className={styles.cardMeta}>

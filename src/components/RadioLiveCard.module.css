@@ -6,7 +6,7 @@
   padding: 18px 20px;
   margin: 0 12px 20px;
   border-radius: 16px;
-  background: linear-gradient(135deg, #6B4CE6 0%, #FF6B9D 100%);
+  background: linear-gradient(135deg, var(--color-primary-purple) 0%, var(--color-primary-pink) 100%);
   color: #fff;
   text-decoration: none;
   box-shadow: 0 8px 24px rgba(107, 76, 230, 0.35);

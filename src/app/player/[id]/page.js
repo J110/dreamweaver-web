@@ -5,20 +5,25 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import StarField from '@/components/StarField';
 import HeartButton from '@/components/HeartButton';
-import { contentApi, feedbackApi, subscriptionApi, billingApi } from '@/utils/api';
-import { openCheckoutUrl } from '@/utils/checkoutPending';
+import { contentApi, feedbackApi } from '@/utils/api';
 import { getStories } from '@/utils/seedData';
 import { getAmbientMusic } from '@/utils/ambientMusic';
 import { useI18n, hasCompletedOnboarding } from '@/utils/i18n';
 import { useVoicePreferences } from '@/utils/voicePreferences';
-import { isLoggedIn } from '@/utils/auth';
+import { getUser, isLoggedIn } from '@/utils/auth';
+import { openOfflineStore } from '@/utils/offlineStore';
+import {
+  captureOfflineUserEpoch,
+  getReadyOfflinePackage,
+  queueOfflinePackage,
+  resolveOfflinePackage,
+  subscribeOfflineLibraryChanges,
+} from '@/utils/offlineLibrary';
 import { VOICES, getVoiceId, getVoiceLabel } from '@/utils/voiceConfig';
 import { stripEmotionMarkers } from '@/utils/textUtils';
 import { getDisplayCategory, getDisplayCategoryUpper } from '@/utils/contentTypes';
 import { recordListen, markCompleted } from '@/utils/listeningHistory';
 import { dvAnalytics } from '@/utils/analytics';
-import { isNativeApp } from '@/utils/platformDetect';
-import UpgradeShowcase from '@/components/UpgradeShowcase';
 import { setUpgradeIntent } from '@/utils/upgradeIntent';
 import posthog from 'posthog-js';
 import useCoverVisualSystem from '@/hooks/useCoverVisualSystem';
@@ -56,6 +61,9 @@ export default function PlayerPage() {
   const [audioError, setAudioError] = useState(null);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState(null);
+  const [offlinePackage, setOfflinePackage] = useState(null);
+  const [offlineLookupSettled, setOfflineLookupSettled] = useState(false);
+  const [offlineLibraryRevision, setOfflineLibraryRevision] = useState(0);
   const [shareCopied, setShareCopied] = useState(false);
   const [showAboutPanel, setShowAboutPanel] = useState(false);
   const aboutPanelRef = useRef(null);
@@ -63,6 +71,9 @@ export default function PlayerPage() {
   const audioDisposingRef = useRef(false);
   const progressIntervalRef = useRef(null);
   const voiceSwitchAutoPlayRef = useRef(false);
+  const offlineLookupPendingRef = useRef(false);
+  const offlinePackageRef = useRef(null);
+  const offlineHydratedRef = useRef(false);
   const musicRef = useRef(null);
   const musicPhaseRef = useRef(1); // Current sleep music phase (1=Capture, 2=Descent, 3=Sleep)
   const tracked1MinRef = useRef(false); // Track 1-min milestone once per play
@@ -133,6 +144,56 @@ export default function PlayerPage() {
     }
     voiceInitializedRef.current = true;
   }, [content, lang, getDefaultVoice, voicePrefs]);
+
+  useEffect(() => {
+    let cancelled = false;
+    let resolvedPackage = null;
+    offlineLookupPendingRef.current = true;
+    setOfflineLookupSettled(false);
+    setOfflinePackage((current) => {
+      current?.revoke();
+      offlinePackageRef.current = null;
+      return null;
+    });
+
+    const user = getUser();
+    const userId = user?.uid || user?.family_id || user?.username;
+    if (!content?.id || !selectedVoice || !userId) {
+      offlineLookupPendingRef.current = false;
+      setOfflineLookupSettled(true);
+      return undefined;
+    }
+
+    (async () => {
+      try {
+        const store = await openOfflineStore();
+        const nextPackage = await resolveOfflinePackage({
+          userId,
+          contentId: content.id,
+          selectedVoice,
+          store,
+        });
+        if (cancelled) {
+          nextPackage?.revoke();
+          return;
+        }
+        resolvedPackage = nextPackage;
+        offlinePackageRef.current = nextPackage;
+        setOfflinePackage(nextPackage);
+      } catch {} finally {
+        if (!cancelled) {
+          offlineLookupPendingRef.current = false;
+          setOfflineLookupSettled(true);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      resolvedPackage?.revoke();
+      if (offlinePackageRef.current === resolvedPackage) offlinePackageRef.current = null;
+    };
+  }, [content?.id, selectedVoice, offlineLibraryRevision]);
 
   // Auto-start ambient music — prefer musicParams (per-story unique), fallback to musicProfile (shared)
   //
@@ -275,6 +336,14 @@ export default function PlayerPage() {
   // Resolve audio source
   const getAudioSource = useCallback(() => {
     if (!content) return null;
+    if (!offlineLookupSettled || offlineLookupPendingRef.current) return null;
+    if (offlinePackage?.audioUrl) {
+      return {
+        url: offlinePackage.audioUrl,
+        isPregen: true,
+        duration: content.duration_seconds,
+      };
+    }
     if (content.premium_locked) return null;
     const variants = content.audio_variants || [];
 
@@ -329,7 +398,7 @@ export default function PlayerPage() {
       url: `${API_URL}/api/v1/audio/tts?${params.toString()}`,
       isPregen: false,
     };
-  }, [content, selectedVoice, lang]);
+  }, [content, offlineLookupSettled, offlinePackage?.audioUrl, selectedVoice, lang]);
 
   const startProgressTracking = useCallback(() => {
     if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
@@ -385,12 +454,76 @@ export default function PlayerPage() {
     }
   }, []);
 
+  useEffect(() => subscribeOfflineLibraryChanges((change) => {
+    const user = getUser();
+    const userId = user?.uid || user?.family_id || user?.username;
+    if (!userId || change?.userId !== userId) return;
+    if (change.type === 'removed' && change.contentId !== content?.id) return;
+    if (change.type === 'package' && change.contentId !== content?.id) return;
+
+    const cached = offlinePackageRef.current;
+    if (cached) {
+      cached.revoke();
+      offlinePackageRef.current = null;
+      setOfflinePackage(null);
+    }
+    if (change.type !== 'package' && audioRef.current) {
+      audioDisposingRef.current = true;
+      audioRef.current.pause();
+      audioRef.current.src = '';
+      audioRef.current = null;
+      window.__dvAudioElement = null;
+      setIsPlaying(false);
+      stopProgressTracking();
+      updatePlaybackState('paused');
+      setTimeout(() => { audioDisposingRef.current = false; }, 50);
+    }
+    if ((change.type === 'removed' || change.effectivePremium === false)
+      && offlineHydratedRef.current) {
+      offlineHydratedRef.current = false;
+      setContent(null);
+      setError(t('playerError'));
+      setLoading(false);
+    }
+    setOfflineLibraryRevision((revision) => revision + 1);
+  }), [content?.id, stopProgressTracking, t]);
+
+  useEffect(() => {
+    if (!content?.id || !selectedVoice || !isSaved) return undefined;
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) return undefined;
+    const user = getUser();
+    const userId = user?.uid || user?.family_id || user?.username;
+    if (!userId) return undefined;
+    const sessionEpoch = captureOfflineUserEpoch(userId);
+    let cancelled = false;
+    (async () => {
+      try {
+        const store = await openOfflineStore();
+        const lease = await store.getEntitlementLease(userId);
+        if (cancelled || lease?.effectivePremium !== true) return;
+        await queueOfflinePackage({
+          userId,
+          content,
+          selectedVoice,
+          sessionEpoch,
+          store,
+          fetchImpl: globalThis.fetch,
+        });
+      } catch {
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [content, isSaved, selectedVoice]);
+
   const handleAboutToggle = useCallback(() => {
     setShowAboutPanel(prev => !prev);
   }, []);
 
   const handlePlayPause = useCallback(async () => {
     if (!content) return;
+    if (!offlineLookupSettled || offlineLookupPendingRef.current) return;
     // Collapse About panel when play is tapped
     setShowAboutPanel(false);
 
@@ -538,11 +671,11 @@ export default function PlayerPage() {
       setAudioLoading(false);
       setAudioError(lang === 'hi' ? 'Audio mein error aa gaya' : 'Audio error occurred');
     }
-  }, [content, isPlaying, lang, getAudioSource, startProgressTracking, stopProgressTracking]);
+  }, [content, offlineLookupSettled, isPlaying, lang, getAudioSource, startProgressTracking, stopProgressTracking]);
 
   // Auto-play when voice is switched by user
   useEffect(() => {
-    if (voiceSwitchAutoPlayRef.current && selectedVoice) {
+    if (voiceSwitchAutoPlayRef.current && selectedVoice && offlineLookupSettled && !offlineLookupPendingRef.current) {
       voiceSwitchAutoPlayRef.current = false;
       // Small delay to ensure audio cleanup from handleVoiceChange completes
       const timer = setTimeout(() => {
@@ -550,7 +683,7 @@ export default function PlayerPage() {
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [selectedVoice, handlePlayPause]);
+  }, [selectedVoice, offlineLookupSettled, handlePlayPause]);
 
   // Auto-play narration when arriving from content card click (?autoplay=1).
   // Waits for content + voice to be ready, then triggers play once.
@@ -559,6 +692,7 @@ export default function PlayerPage() {
     if (autoPlayTriggeredRef.current) return;
     if (searchParams.get('autoplay') !== '1') return;
     if (!content || !selectedVoice || loading) return;
+    if (!offlineLookupSettled || offlineLookupPendingRef.current) return;
     if (content.premium_locked) return;
     // Don't auto-play if already playing (e.g., voice switch just triggered)
     if (isPlaying || audioRef.current?.src) return;
@@ -568,7 +702,7 @@ export default function PlayerPage() {
       handlePlayPause();
     }, 200);
     return () => clearTimeout(timer);
-  }, [content, selectedVoice, loading, isPlaying, searchParams, handlePlayPause]);
+  }, [content, selectedVoice, loading, offlineLookupSettled, isPlaying, searchParams, handlePlayPause]);
 
   // Media Session: Register lock screen controls (play/pause/seek)
   useEffect(() => {
@@ -739,12 +873,34 @@ export default function PlayerPage() {
 
   useEffect(() => {
     const loadContent = async () => {
+      setOfflineLookupSettled(false);
+      offlineHydratedRef.current = false;
+      const user = getUser();
+      const userId = user?.uid || user?.family_id || user?.username;
+      if (userId) {
+        try {
+          const store = await openOfflineStore();
+          const cachedPackage = await getReadyOfflinePackage({
+            userId,
+            contentId: params.id,
+            store,
+          });
+          if (cachedPackage) {
+            offlineHydratedRef.current = true;
+            setContent(cachedPackage.content);
+            setIsSaved(true);
+            setLoading(false);
+            return;
+          }
+        } catch {}
+      }
       // Fail-closed seed fallback: when the API can't return a lock verdict
       // (empty response or thrown error), serve bundled seed audio ONLY for a
       // CONFIRMED-unlocked user (effective_premium === true — covers flag-off
       // and premium). A free user OR an undeterminable status (e.g. the status
       // call also fails) gets NO audio and renders locked. Never fail open.
       const serveSeedFallback = async (seedMatch, notFoundKey) => {
+        offlineHydratedRef.current = false;
         if (!seedMatch) { setError(t(notFoundKey)); return; }
         // Resolve effective_premium WITHOUT a hard dependency on the call that
         // just failed: (1) a live getCurrent — succeeds whenever the backend is
@@ -810,6 +966,7 @@ export default function PlayerPage() {
               data.story_type = seedMatch.story_type;
             }
           }
+          offlineHydratedRef.current = false;
           setContent(data);
           setIsSaved(data.is_saved || false);
         } else {
@@ -1014,6 +1171,13 @@ export default function PlayerPage() {
     return options;
   };
 
+  useEffect(() => {
+    if (!content?.premium_locked) return;
+    const intentPath = `/player/${params.id}?autoplay=1`;
+    setUpgradeIntent(intentPath);
+    router.replace(`/upgrade?intent=${encodeURIComponent(intentPath)}`);
+  }, [content?.premium_locked, params.id, router]);
+
   if (loading) {
     return (
       <>
@@ -1042,53 +1206,11 @@ export default function PlayerPage() {
   }
 
   if (content.premium_locked) {
-    const lockedCover = content.cover || (content.cover_file && (
-      content.subtype === 'silly_song' ? `/covers/silly-songs/${content.cover_file}`
-        : content.subtype === 'funny_short' ? `/covers/${(content.lang || 'en') === 'hi' ? 'funny-shorts-hi' : 'funny-shorts'}/${content.cover_file}`
-        : content.type === 'poem' ? `/covers/poems/${content.cover_file}`
-        : null
-    ));
     return (
       <>
         <StarField />
         <div className={styles.app}>
-          <button onClick={handleBack} className={styles.backButton}>
-            {'←'} {t('playerBack')}
-          </button>
-          {lockedCover && (
-            <div className={styles.albumArt} style={{ opacity: 0.55 }}>
-              <img src={lockedCover} alt={content.title || ''} className={styles.coverImage} />
-              <div style={{
-                position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: 'linear-gradient(180deg, transparent 20%, rgba(13,11,46,0.7) 100%)', borderRadius: 'inherit',
-              }}>
-                <span style={{ fontSize: 48 }} aria-hidden>🔒</span>
-              </div>
-            </div>
-          )}
-          {!lockedCover && <div style={{ fontSize: 48, textAlign: 'center', marginTop: 32 }} aria-hidden>🔒</div>}
-          <div style={{ textAlign: 'center', marginTop: 16 }}>
-            <div style={{ fontWeight: 700, fontSize: 20, marginBottom: 6 }}>{content.title || ''}</div>
-            <div style={{ opacity: 0.7, marginBottom: 20, fontSize: 14 }}>
-              {lang === 'hi' ? 'Yeh Premium content hai' : 'This is a Premium story'}
-            </div>
-          </div>
-          <div style={{ margin: '24px auto 0', maxWidth: 420, padding: '0 16px' }}>
-            <UpgradeShowcase />
-            <ul style={{ listStyle: 'none', padding: 0, margin: '20px 0', textAlign: 'left' }}>
-              {[
-                'Full story library — every story, poem & lullaby',
-                'Complete bedtime routine with playlists',
-                'Save up to 30 days of bedtime favorites',
-                '7-day free trial — no charge until day 8',
-              ].map((b, i) => (
-                <li key={i} style={{ padding: '6px 0', fontSize: 14, opacity: 0.85 }}>
-                  <span style={{ color: '#d4af5a', marginRight: 8 }}>✦</span>{b}
-                </li>
-              ))}
-            </ul>
-            <LockedCTA intentPath={`/player/${params.id}`} lang={lang} />
-          </div>
+          <div className={styles.loadingMessage}>Loading…</div>
         </div>
       </>
     );
@@ -1097,7 +1219,7 @@ export default function PlayerPage() {
   const voiceSwitchOptions = getVoiceSwitchOptions();
 
   // Derive cover from cover_file when cover is null — same logic as ContentCard.
-  const resolvedCover = content.cover || (() => {
+  const resolvedCover = offlinePackage?.coverUrl || content.cover || (() => {
     const f = content.cover_file;
     if (!f) return null;
     if (content.type === 'poem') return `/covers/${content.lang === 'hi' ? 'poems-hi' : 'poems'}/${f}`;
@@ -1124,7 +1246,7 @@ export default function PlayerPage() {
           } : undefined}
         >
           {resolvedCover ? (
-            coverHasVariants ? (
+            coverHasVariants && !offlinePackage?.coverUrl ? (
               /* 4-variant stack: smooth crossfade between progressive darkening levels */
               <>
                 {content.cover_variants.map((variant, i) => (
@@ -1313,7 +1435,10 @@ export default function PlayerPage() {
         <div className={styles.actions}>
           <HeartButton
             contentId={content.id}
+            content={content}
+            selectedVoice={selectedVoice}
             initialSaved={isSaved}
+            onSavedChange={setIsSaved}
             initialCount={content.save_count || 0}
             variant="full"
             className={styles.actionButton}
@@ -1439,85 +1564,5 @@ export default function PlayerPage() {
         </div>
       )}
     </>
-  );
-}
-
-function LockedCTA({ intentPath, lang }) {
-  const router = useRouter();
-  const [priceInfo, setPriceInfo] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState(null);
-  const native = isNativeApp();
-
-  useEffect(() => {
-    setUpgradeIntent(intentPath);
-    subscriptionApi.getCurrent()
-      .then((sub) => {
-        const tier = sub?.current_tier || {};
-        if (tier.price) setPriceInfo({ price: tier.price, trialDays: tier.trial_days_monthly ?? 7 });
-      })
-      .catch(() => {});
-  }, [intentPath]);
-
-  async function handleStart() {
-    setError(null);
-    setSubmitting(true);
-    try {
-      const { checkout_url } = await billingApi.startCheckout('monthly');
-      if (checkout_url) { openCheckoutUrl(checkout_url); return; }
-      setError('Could not start checkout. Try again.');
-    } catch { setError('Something went wrong. Try again.'); }
-    finally { setSubmitting(false); }
-  }
-
-  return (
-    <div style={{ textAlign: 'center', marginTop: 8 }}>
-      {native ? (
-        <>
-          <p style={{ opacity: 0.7, fontSize: 14 }}>Subscribe at <strong>dreamvalley.app</strong></p>
-          <button
-            onClick={() => router.push('/restore')}
-            style={{
-              background: 'transparent', color: '#ff9100', border: '1px solid rgba(255,145,0,0.5)',
-              borderRadius: 24, padding: '10px 28px', fontSize: 14, fontWeight: 600, cursor: 'pointer',
-              marginTop: 12,
-            }}
-          >
-            Restore subscription
-          </button>
-        </>
-      ) : (
-        <>
-          <button
-            onClick={handleStart}
-            disabled={submitting}
-            style={{
-              background: 'linear-gradient(135deg, #ff6b9d, #ff9100)', color: '#fff', border: 'none',
-              borderRadius: 28, padding: '14px 36px', fontSize: 16, fontWeight: 700, cursor: 'pointer',
-              opacity: submitting ? 0.7 : 1, width: '100%', maxWidth: 320,
-            }}
-          >
-            {submitting ? 'Taking you to checkout...' : 'Start my free trial'}
-          </button>
-          {priceInfo && (
-            <p style={{ opacity: 0.5, fontSize: 12, marginTop: 10 }}>
-              Free for {priceInfo.trialDays} days, then ${priceInfo.price}/month. Cancel anytime.
-            </p>
-          )}
-          <p style={{ opacity: 0.7, fontSize: 13, marginTop: 18, marginBottom: 0 }}>Already subscribed?</p>
-          <button
-            onClick={() => router.push('/restore')}
-            style={{
-              background: 'transparent', color: '#ff9100', border: '1px solid rgba(255,145,0,0.5)',
-              borderRadius: 24, padding: '10px 28px', fontSize: 14, fontWeight: 600, cursor: 'pointer',
-              marginTop: 8,
-            }}
-          >
-            Restore subscription
-          </button>
-        </>
-      )}
-      {error && <p style={{ color: '#ff6b6b', fontSize: 13, marginTop: 8 }}>{error}</p>}
-    </div>
   );
 }

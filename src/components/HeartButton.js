@@ -1,16 +1,25 @@
 'use client';
 
-import { useState } from 'react';
-import { isLoggedIn } from '@/utils/auth';
+import { useCallback, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { getUser, isLoggedIn } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
 import { interactionApi } from '@/utils/api';
-import { isNativeApp } from '@/utils/platformDetect';
+import { setUpgradeIntent } from '@/utils/upgradeIntent';
+import {
+  captureOfflineUserEpoch,
+  notifySavedLibraryChanged,
+  queueOfflinePackage,
+  removeOfflinePackage,
+} from '@/utils/offlineLibrary';
+import { openOfflineStore } from '@/utils/offlineStore';
+import SaveLimitModal from './SaveLimitModal';
 import styles from './HeartButton.module.css';
-
-const HINT_SESSION_KEY = 'dv_heart_cap_hint_shown';
 
 export default function HeartButton({
   contentId,
+  content,
+  selectedVoice,
   effectivePremium,
   initialSaved = false,
   initialCount = null,
@@ -18,15 +27,16 @@ export default function HeartButton({
   className = '',
   activeClassName = '',
   onAuthRequired,
+  onSavedChange,
 }) {
   const { t } = useI18n();
-  // filled = heart shows as active. mode tracks WHY it's filled so untapping
-  // calls the right teardown (a cap-fallback like must be unliked, not unsaved).
+  const router = useRouter();
   const [filled, setFilled] = useState(initialSaved);
-  const [mode, setMode] = useState(initialSaved ? 'saved' : null);
   const [count, setCount] = useState(typeof initialCount === 'number' ? initialCount : null);
   const [toast, setToast] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [limitModal, setLimitModal] = useState(null);
+  const heartRef = useRef(null);
 
   const flashToast = (msg) => {
     setToast(msg);
@@ -35,6 +45,56 @@ export default function HeartButton({
 
   const adjustCount = (delta) => {
     setCount((c) => (typeof c === 'number' ? Math.max(0, c + delta) : c));
+  };
+
+  const offlineUserId = () => {
+    try {
+      const user = getUser();
+      return user?.uid || user?.family_id || user?.username || null;
+    } catch {
+      return null;
+    }
+  };
+
+  const queueConfirmedSave = async (userId, sessionEpoch) => {
+    if (!userId || !content) return;
+    const offlineContent = content.id ? content : { ...content, id: contentId };
+    try {
+      const store = await openOfflineStore();
+      await queueOfflinePackage({
+        userId,
+        sessionEpoch,
+        content: offlineContent,
+        selectedVoice,
+        store,
+        fetchImpl: globalThis.fetch,
+      });
+    } catch {
+    }
+  };
+
+  const removeConfirmedSave = async (userId, sessionEpoch) => {
+    if (!userId) return;
+    try {
+      const store = await openOfflineStore();
+      await removeOfflinePackage({
+        userId,
+        contentId,
+        sessionEpoch,
+        store,
+      });
+    } catch {
+    }
+  };
+
+  const dismissLimitModal = useCallback(() => setLimitModal(null), []);
+
+  const handleUpgrade = () => {
+    const intent = typeof window === 'undefined'
+      ? '/'
+      : `${window.location.pathname}${window.location.search}`;
+    setUpgradeIntent(intent);
+    router.push(`/upgrade?intent=${encodeURIComponent(intent)}`);
   };
 
   const handleClick = async (e) => {
@@ -50,61 +110,43 @@ export default function HeartButton({
     }
 
     const wasFilled = filled;
-    const prevMode = mode;
+    const userId = offlineUserId();
+    const sessionEpoch = userId ? captureOfflineUserEpoch(userId) : null;
     setBusy(true);
 
     if (!wasFilled) {
-      // Optimistic fill.
       setFilled(true);
       try {
         const res = await interactionApi.saveContent(contentId);
         if (res?.cap_reached) {
-          // Backend registered a like, NOT a save. Heart still fills.
-          setMode('liked');
-          // Gentle upgrade hint only for the FREE cap (save_cap === 5), on
-          // web, not premium, and at most once per session. Native = "Liked!"
-          // only (reader-app rule). Premium hitting their own 20 cap = "Liked!".
-          const freeCapHit = typeof res.save_cap === 'number' && res.save_cap <= 5;
-          const showHint =
-            !isNativeApp() &&
-            effectivePremium !== true &&
-            freeCapHit &&
-            typeof window !== 'undefined' &&
-            !sessionStorage.getItem(HINT_SESSION_KEY);
-          if (showHint) {
-            sessionStorage.setItem(HINT_SESSION_KEY, '1');
-            flashToast(t('heartCapHint'));
-          } else {
-            flashToast(t('heartLiked'));
-          }
-        } else {
-          setMode('saved');
+          setFilled(false);
+          setLimitModal(effectivePremium === true || res.save_cap > 5 ? 'premium' : 'free');
+        } else if (res?.saved) {
+          onSavedChange?.(true);
           adjustCount(+1);
           flashToast(t('playerSavedToProfile'));
+          notifySavedLibraryChanged({ userId, contentId, saved: true });
+          if (res.offline_allowed) void queueConfirmedSave(userId, sessionEpoch);
+        } else {
+          setFilled(false);
         }
       } catch (err) {
         setFilled(false);
-        setMode(prevMode);
-        // 401 from silent401: token preserved, no logout, no /login bounce.
         if (err?.status === 401) flashToast(t('heartSignInToSave'));
       } finally {
         setBusy(false);
       }
     } else {
-      // Optimistic un-fill.
       setFilled(false);
-      setMode(null);
       try {
-        if (prevMode === 'liked') {
-          await interactionApi.unlikeContent(contentId);
-        } else {
-          await interactionApi.unsaveContent(contentId);
-          adjustCount(-1);
-        }
+        await interactionApi.unsaveContent(contentId);
+        onSavedChange?.(false);
+        adjustCount(-1);
         flashToast(t('playerRemovedFromSaved'));
+        notifySavedLibraryChanged({ userId, contentId, saved: false });
+        void removeConfirmedSave(userId, sessionEpoch);
       } catch (err) {
         setFilled(true);
-        setMode(prevMode);
         if (err?.status === 401) flashToast(t('heartSignInToSave'));
       } finally {
         setBusy(false);
@@ -122,6 +164,7 @@ export default function HeartButton({
   return (
     <>
       <button
+        ref={heartRef}
         type="button"
         onClick={handleClick}
         className={cls}
@@ -138,6 +181,15 @@ export default function HeartButton({
         )}
       </button>
       {toast && <div className={styles.toast}>{toast}</div>}
+      {limitModal && (
+        <SaveLimitModal
+          premium={limitModal === 'premium'}
+          t={t}
+          onDismiss={dismissLimitModal}
+          onUpgrade={handleUpgrade}
+          returnFocusRef={heartRef}
+        />
+      )}
     </>
   );
 }

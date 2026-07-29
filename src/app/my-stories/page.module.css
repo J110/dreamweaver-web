@@ -59,3 +59,169 @@
   color: var(--color-text-muted);
   font-size: 14px;
 }
+
+.upgradeBanner {
+  appearance: none;
+  cursor: pointer;
+  width: 100%;
+  margin: 0 0 14px;
+  padding: 11px 14px;
+  border: 1px solid rgba(255, 220, 151, 0.8);
+  border-radius: 16px;
+  background: linear-gradient(105deg, #f7cd7a, #d99838);
+  color: #2a1908;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  box-shadow: 0 8px 22px rgba(218, 143, 44, 0.24);
+}
+
+.savedCount {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.upgradeBannerCopy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.upgradeBannerCopy strong,
+.upgradeBannerCopy small,
+.upgradeBannerAction {
+  font-family: 'Quicksand', sans-serif;
+}
+
+.upgradeBannerCopy strong {
+  font-size: 13px;
+}
+
+.upgradeBannerCopy small {
+  font-size: 11px;
+  line-height: 1.25;
+  opacity: 0.78;
+}
+
+.upgradeBannerAction {
+  padding: 7px 9px;
+  border-radius: 999px;
+  background: rgba(42, 25, 8, 0.9);
+  color: #fff8e8;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.planCard {
+  appearance: none;
+  position: relative;
+  overflow: hidden;
+  flex: 0 0 148px;
+  width: 148px;
+  min-height: 200px;
+  aspect-ratio: 0.76;
+  padding: 14px;
+  border: 1px solid #e1a84d;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(155deg, #724918, #2a1a0c);
+  color: #fff7e6;
+  font-family: 'Quicksand', sans-serif;
+  text-align: left;
+  scroll-snap-align: start;
+}
+
+.ticketImage {
+  position: absolute;
+  inset: 0 0 auto;
+  width: 100%;
+  height: 45%;
+  object-fit: cover;
+}
+
+.ticketBorder {
+  position: absolute;
+  top: calc(45% + 8px);
+  right: 8px;
+  bottom: 8px;
+  left: 8px;
+  border: 1px dashed rgba(255, 229, 179, 0.58);
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+.ticketBody {
+  position: absolute;
+  top: 45%;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 4px;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0 14px 15px;
+}
+
+.ticketEyebrow {
+  font-size: 8px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ticketBody strong {
+  font-size: 12px;
+  line-height: 1.1;
+}
+
+.ticketBody > span:last-child {
+  font-size: 9px;
+  line-height: 1.2;
+  opacity: 0.82;
+}
+
+.lockedPlanCard {
+  cursor: pointer;
+}
+
+.upgradeBanner:focus-visible,
+.lockedPlanCard:focus-visible {
+  outline: 3px solid var(--color-primary-teal);
+  outline-offset: 3px;
+}
+
+@media (max-width: 391px) {
+  .upgradeBanner {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .upgradeBannerAction {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .ticketBody {
+    gap: 3px;
+    padding: 0 14px 12px;
+  }
+
+  .ticketEyebrow {
+    font-size: 8px;
+  }
+
+  .ticketBody strong {
+    font-size: 12px;
+    line-height: 1.1;
+  }
+
+  .ticketBody > span:last-child {
+    font-size: 9px;
+    line-height: 1.2;
+  }
+}

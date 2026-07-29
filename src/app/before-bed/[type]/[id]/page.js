@@ -98,7 +98,7 @@ export default async function BeforeBedSharePage({ params }) {
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#ccc', gap: '16px', padding: '24px' }}>
         <div style={{ fontSize: '48px' }}>{config.emoji}</div>
         <p style={{ fontSize: '18px', margin: 0 }}>This {config.label.toLowerCase()} is no longer available.</p>
-        <Link href="/before-bed" style={{ color: '#6B4CE6', textDecoration: 'none', fontWeight: 600 }}>
+        <Link href="/before-bed" style={{ color: 'var(--color-primary-purple)', textDecoration: 'none', fontWeight: 600 }}>
           Browse Before Bed
         </Link>
       </div>
@@ -131,8 +131,8 @@ export default async function BeforeBedSharePage({ params }) {
         height: '220px',
         borderRadius: '24px',
         overflow: 'hidden',
-        background: 'rgba(107, 76, 230, 0.1)',
-        border: '1px solid rgba(107, 76, 230, 0.2)',
+        background: 'var(--dv-soft-accent)',
+        border: '1px solid var(--dv-hairline)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -165,12 +165,12 @@ export default async function BeforeBedSharePage({ params }) {
       <div style={{
         display: 'inline-flex',
         padding: '4px 14px',
-        background: 'rgba(107, 76, 230, 0.2)',
-        border: '1px solid rgba(107, 76, 230, 0.3)',
+        background: 'var(--dv-soft-accent)',
+        border: '1px solid var(--dv-hairline)',
         borderRadius: '12px',
         marginBottom: '12px',
       }}>
-        <span style={{ fontSize: '12px', color: '#B8B3D8', letterSpacing: '1.5px', fontWeight: 500 }}>
+        <span style={{ fontSize: '12px', color: 'var(--color-text-muted)', letterSpacing: '1.5px', fontWeight: 500 }}>
           {config.emoji} {config.label.toUpperCase()}
         </span>
       </div>
@@ -179,7 +179,7 @@ export default async function BeforeBedSharePage({ params }) {
       <h1 style={{
         fontSize: '26px',
         fontWeight: 700,
-        color: '#FFD93D',
+        color: 'var(--dv-text)',
         textAlign: 'center',
         margin: '0 0 8px',
         lineHeight: 1.3,
@@ -192,7 +192,7 @@ export default async function BeforeBedSharePage({ params }) {
         display: 'flex',
         gap: '12px',
         fontSize: '14px',
-        color: 'rgba(200, 190, 230, 0.7)',
+        color: 'var(--dv-text-dim)',
         marginBottom: '8px',
       }}>
         {duration && <span>{duration}</span>}
@@ -203,7 +203,7 @@ export default async function BeforeBedSharePage({ params }) {
       {item.description && (
         <p style={{
           fontSize: '15px',
-          color: 'rgba(200, 190, 230, 0.8)',
+          color: 'var(--dv-text-dim)',
           textAlign: 'center',
           lineHeight: 1.6,
           margin: '0 0 28px',
@@ -221,13 +221,13 @@ export default async function BeforeBedSharePage({ params }) {
           alignItems: 'center',
           gap: '8px',
           padding: '14px 36px',
-          background: 'linear-gradient(135deg, #6B4CE6, #FF6B9D)',
+          background: 'linear-gradient(135deg, var(--color-primary-purple), var(--color-primary-pink))',
           borderRadius: '28px',
           color: '#fff',
           fontSize: '16px',
           fontWeight: 700,
           textDecoration: 'none',
-          boxShadow: '0 4px 20px rgba(107, 76, 230, 0.4)',
+          boxShadow: 'var(--shadow-md)',
           transition: 'transform 0.2s',
         }}
       >
@@ -240,7 +240,7 @@ export default async function BeforeBedSharePage({ params }) {
         style={{
           marginTop: '16px',
           fontSize: '14px',
-          color: '#6B4CE6',
+          color: 'var(--color-primary-purple)',
           textDecoration: 'none',
         }}
       >

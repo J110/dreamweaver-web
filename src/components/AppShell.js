@@ -3,13 +3,19 @@
 import { useEffect, useState, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { I18nProvider, hasCompletedOnboarding } from '@/utils/i18n';
-import { VoicePreferencesProvider } from '@/utils/voicePreferences';
-import { isLoggedIn, setToken, setUser, tryAdoptNativeToken } from '@/utils/auth';
+import { getStoredDefaultVoice, VoicePreferencesProvider } from '@/utils/voicePreferences';
+import { getUser, isLoggedIn, setToken, setUser, tryAdoptNativeToken } from '@/utils/auth';
+import { interactionApi } from '@/utils/api';
+import { getOfflineReconciliationRunner, reconcileOfflineLibrary } from '@/utils/offlineLibrary';
+import { openOfflineStore } from '@/utils/offlineStore';
 import { isCheckoutPendingRecent, clearCheckoutPending } from '@/utils/checkoutPending';
 import useVersionCheck from '@/hooks/useVersionCheck';
 import BottomNav from './BottomNav';
+import EmberlightThemeController from '@/components/EmberlightThemeController';
+import EmberlightUpgradeWash from '@/components/EmberlightUpgradeWash';
 import InstallPrompt from './InstallPrompt';
 import { isNativeApp } from '@/utils/platformDetect';
+import { isAppUser, isLandingHome } from '@/utils/nativeGate';
 import BedtimePopup from './BedtimePopup';
 import { dvAnalytics } from '@/utils/analytics';
 
@@ -33,6 +39,18 @@ export default function AppShell({ children }) {
   const router = useRouter();
   const [checked, setChecked] = useState(false);
   const tokenValidated = useRef(false);
+  const offlineReconciliationRef = useRef(null);
+  if (!offlineReconciliationRef.current) {
+    offlineReconciliationRef.current = getOfflineReconciliationRunner({
+      getCurrentUser: getUser,
+      isAuthenticated: isLoggedIn,
+      api: interactionApi,
+      openStore: openOfflineStore,
+      reconcile: reconcileOfflineLibrary,
+      getDefaultVoice: (content) => getStoredDefaultVoice(content?.lang || content?.language || 'en'),
+    });
+  }
+  const reconcileOffline = offlineReconciliationRef.current;
 
   // Auto-reload on app open/foreground when a new deployment is detected.
   // Only checks on startup and visibility change — never mid-session.
@@ -79,7 +97,10 @@ export default function AppShell({ children }) {
       let nativeApp = false;
       try { nativeApp = localStorage.getItem('dreamvalley_native_app') === '1'; } catch {}
       const sourceApp = new URLSearchParams(window.location.search).get('source') === 'app';
-      if (!hasCompletedOnboarding() && !nativeApp && !sourceApp) return;
+      // UA-trust: a native app user (durable DreamValleyApp UA) is always an app
+      // user even if WKWebView dropped dreamvalley_native_app or ?source=app didn't
+      // survive a client nav — don't gate on volatile storage. [iOS tab-bar fix]
+      if (!isAppUser({ isNative: isNativeApp(), sourceApp, nativeFlag: nativeApp, onboarded: hasCompletedOnboarding() })) return;
       // Username is cosmetic: chosen anon name → cached user → friendly fallback.
       let username = '';
       try { username = localStorage.getItem('dreamvalley_anon_username') || ''; } catch {}
@@ -100,6 +121,20 @@ export default function AppShell({ children }) {
     })();
   }, []);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const refreshOfflineLibrary = () => {
+      void reconcileOffline();
+    };
+    refreshOfflineLibrary();
+    window.addEventListener('focus', refreshOfflineLibrary);
+    window.addEventListener('online', refreshOfflineLibrary);
+    return () => {
+      window.removeEventListener('focus', refreshOfflineLibrary);
+      window.removeEventListener('online', refreshOfflineLibrary);
+    };
+  }, [reconcileOffline]);
+
   // Native app-resume hook (#35 Q3). The Flutter lifecycle observer calls this
   // on EVERY foreground — so it must be cheap + guarded. Sends the user to the
   // authoritative /upgrade/success backoff poll ONLY when a recent checkout is
@@ -110,6 +145,7 @@ export default function AppShell({ children }) {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const onResumed = () => {
+      void reconcileOffline();
       try {
         if (!isCheckoutPendingRecent()) return; // common case: cheap no-op
         let premium = false;
@@ -122,7 +158,7 @@ export default function AppShell({ children }) {
     window.__dvAppResumed = onResumed;
     onResumed(); // cold-launch return safety net
     return () => { try { if (window.__dvAppResumed === onResumed) delete window.__dvAppResumed; } catch { /* ignore */ } };
-  }, [router]);
+  }, [reconcileOffline, router]);
 
   // Register service worker for PWA support (required for beforeinstallprompt on Chrome)
   useEffect(() => {
@@ -211,7 +247,9 @@ export default function AppShell({ children }) {
         // (365d sliding) instead of being logged out. Only a 410-dormant
         // verdict logs out + redirects (handled inside fetchApi); transient
         // 401s / network errors keep the session. _retried caps retries at 1.
-        import('@/utils/api').then(({ authApi }) => authApi.getCurrentUser().catch(() => {}));
+        import('@/utils/api').then(({ authApi }) => authApi.getCurrentUser()
+          .then(() => reconcileOffline())
+          .catch(() => {}));
       }
       return;
     }
@@ -249,11 +287,13 @@ export default function AppShell({ children }) {
     // (handled inside fetchApi); transient 401s / network errors keep it.
     if (!isPublic && isLoggedIn() && !tokenValidated.current) {
       tokenValidated.current = true;
-      import('@/utils/api').then(({ authApi }) => authApi.getCurrentUser().catch(() => {}));
+      import('@/utils/api').then(({ authApi }) => authApi.getCurrentUser()
+        .then(() => reconcileOffline())
+        .catch(() => {}));
     }
 
     setChecked(true);
-  }, [pathname, router]);
+  }, [pathname, reconcileOffline, router]);
 
   // Hide nav on public routes, player pages, SEO pages, and while checking auth
   // On home page (/), show nav for logged-in app users (story grid), hide for anonymous (landing page)
@@ -272,13 +312,21 @@ export default function AppShell({ children }) {
   const _sourceApp = _sp?.get('source') === 'app';
   let _nativeFlag = false;
   try { _nativeFlag = typeof window !== 'undefined' && localStorage.getItem('dreamvalley_native_app') === '1'; } catch {}
-  const isLandingPage = pathname === '/'
-    && (_forceLanding || (!_sourceApp && !_nativeFlag && !hasCompletedOnboarding()));
+  // UA-trust: native app users (durable DreamValleyApp UA) are NEVER the marketing
+  // landing, so the bottom nav no longer hinges on volatile WKWebView localStorage
+  // or ?source=app surviving a client nav. [iOS tab-bar fix]
+  const _isNative = typeof window !== 'undefined' && isNativeApp();
+  const isLandingPage = isLandingHome({
+    pathname, isNative: _isNative, forceLanding: _forceLanding,
+    sourceApp: _sourceApp, nativeFlag: _nativeFlag, onboarded: hasCompletedOnboarding(),
+  });
   const showNav = !NO_NAV_ROUTES.includes(pathname) && !pathname.startsWith('/player/')
     && !pathname.startsWith('/nap-playlist') && !isSEOPage && !isLandingPage && checked;
 
   return (
     <I18nProvider>
+      <EmberlightThemeController />
+      <EmberlightUpgradeWash />
       <VoicePreferencesProvider>
         <div style={{ paddingBottom: showNav ? '72px' : '0' }}>
           {children}

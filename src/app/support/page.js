@@ -42,11 +42,11 @@ export default function SupportPage() {
               <ul className={styles.list}>
                 <li>
                   <span className={styles.bold}>General Support:</span>{' '}
-                  <a href="mailto:support@dreamvalley.app" style={{ color: '#6B4CE6' }}>support@dreamvalley.app</a>
+                  <a href="mailto:support@dreamvalley.app" style={{ color: 'var(--color-primary-purple)' }}>support@dreamvalley.app</a>
                 </li>
                 <li>
                   <span className={styles.bold}>Privacy Concerns:</span>{' '}
-                  <a href="mailto:privacy@dreamvalley.app" style={{ color: '#6B4CE6' }}>privacy@dreamvalley.app</a>
+                  <a href="mailto:privacy@dreamvalley.app" style={{ color: 'var(--color-primary-purple)' }}>privacy@dreamvalley.app</a>
                 </li>
               </ul>
               <div className={styles.highlight}>
@@ -95,15 +95,17 @@ export default function SupportPage() {
 
               <p className={styles.bold}>Can I use Dream Valley offline?</p>
               <p>
-                Dream Valley currently requires an internet connection to stream stories and
-                narration. We are exploring offline support for future updates.
+                Free accounts can save up to 5 favorite stories. Premium accounts can save up to
+                30 favorites, and Dream Valley automatically prepares the current narrator voice
+                for each saved story for offline listening. Streaming other stories or switching
+                to a voice that has not been prepared still requires an internet connection.
               </p>
 
               <p className={styles.bold}>How do I report a problem with a story?</p>
               <p>
                 If you find any issue with a story &mdash; such as audio problems, content
                 concerns, or technical glitches &mdash; please email us at{' '}
-                <a href="mailto:support@dreamvalley.app" style={{ color: '#6B4CE6' }}>support@dreamvalley.app</a>{' '}
+                <a href="mailto:support@dreamvalley.app" style={{ color: 'var(--color-primary-purple)' }}>support@dreamvalley.app</a>{' '}
                 with the story name and a description of the issue.
               </p>
             </div>
@@ -119,7 +121,7 @@ export default function SupportPage() {
               <p className={styles.bold}>How do I delete my account?</p>
               <p>
                 To delete your account and all associated data, please email{' '}
-                <a href="mailto:privacy@dreamvalley.app" style={{ color: '#6B4CE6' }}>privacy@dreamvalley.app</a>{' '}
+                <a href="mailto:privacy@dreamvalley.app" style={{ color: 'var(--color-primary-purple)' }}>privacy@dreamvalley.app</a>{' '}
                 with the subject line &quot;Account Deletion Request.&quot; We will process your
                 request within 30 days.
               </p>
@@ -130,7 +132,7 @@ export default function SupportPage() {
                 a chosen username, age group, and content preferences. We do not collect real
                 email addresses, names, or payment information. For full details, please see
                 our{' '}
-                <Link href="/privacy" style={{ color: '#6B4CE6' }}>Privacy Policy</Link>.
+                <Link href="/privacy" style={{ color: 'var(--color-primary-purple)' }}>Privacy Policy</Link>.
               </p>
 
               <div className={styles.highlightImportant}>
@@ -138,7 +140,7 @@ export default function SupportPage() {
                   <span className={styles.bold}>Parents:</span> If you have concerns about your
                   child&apos;s data or want to exercise your parental rights under COPPA, please
                   contact us at{' '}
-                  <a href="mailto:privacy@dreamvalley.app" style={{ color: '#6B4CE6' }}>privacy@dreamvalley.app</a>.
+                  <a href="mailto:privacy@dreamvalley.app" style={{ color: 'var(--color-primary-purple)' }}>privacy@dreamvalley.app</a>.
                 </p>
               </div>
             </div>
@@ -174,7 +176,7 @@ export default function SupportPage() {
               <div className={styles.highlight}>
                 <p>
                   If none of these steps resolve your issue, please email us at{' '}
-                  <a href="mailto:support@dreamvalley.app" style={{ color: '#6B4CE6' }}>support@dreamvalley.app</a>{' '}
+                  <a href="mailto:support@dreamvalley.app" style={{ color: 'var(--color-primary-purple)' }}>support@dreamvalley.app</a>{' '}
                   with details about the problem and your device information.
                 </p>
               </div>

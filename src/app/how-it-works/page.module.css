@@ -7,7 +7,7 @@
 }
 
 .breadcrumb { font-size: 13px; color: #7A6F8E; margin: 0 auto 24px; max-width: 760px; }
-.breadcrumb a { color: #6B4CE6; text-decoration: none; }
+.breadcrumb a { color: var(--color-primary-purple); text-decoration: none; }
 
 /* Hero */
 .hero {
@@ -116,7 +116,7 @@
 .audioLayer {
   padding: 20px;
   background: rgba(30, 25, 60, 0.5);
-  border-left: 3px solid #6B4CE6;
+  border-left: 3px solid var(--color-primary-purple);
   border-radius: 0 12px 12px 0;
 }
 

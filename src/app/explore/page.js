@@ -192,7 +192,7 @@ export default function ExplorePage() {
   return (
     <>
       <StarField />
-      <Suspense fallback={<div style={{ padding: '48px', textAlign: 'center', color: '#B8B3D8' }}>Loading...</div>}>
+      <Suspense fallback={<div style={{ padding: '48px', textAlign: 'center', color: 'var(--color-text-muted)' }}>Loading...</div>}>
         <ExploreContent />
       </Suspense>
     </>
