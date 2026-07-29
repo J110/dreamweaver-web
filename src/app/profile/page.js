@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import StarField from '@/components/StarField';
+import RadioLiveCard from '@/components/RadioLiveCard';
 import { isLoggedIn, getUser, logout } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
 import { useVoicePreferences } from '@/utils/voicePreferences';
@@ -108,6 +109,10 @@ export default function ProfilePage() {
           </div>
           <h2 className={styles.username}>{user.username}</h2>
           <p className={styles.appLabel}>{appName}</p>
+        </div>
+
+        <div className={styles.radioBanner}>
+          <RadioLiveCard />
         </div>
 
         <div className={styles.settings}>

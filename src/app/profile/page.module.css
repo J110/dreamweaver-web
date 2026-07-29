@@ -23,6 +23,10 @@
   padding: 32px 0;
 }
 
+.radioBanner {
+  margin: 0 -12px 20px;
+}
+
 .avatar {
   width: 80px;
   height: 80px;
