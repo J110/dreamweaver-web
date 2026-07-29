@@ -38,7 +38,7 @@
 .empty button {
   border: 0;
   border-radius: 999px;
-  background: #6b4ce6;
+  background: var(--color-primary-purple);
   color: #fff;
   cursor: pointer;
   font: inherit;
