@@ -1,0 +1,42 @@
+.overlay {
+  position: fixed;
+  z-index: 50;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(9, 7, 28, 0.72);
+}
+
+.dialog {
+  width: min(100%, 360px);
+  border: 1px solid rgba(212, 175, 90, 0.36);
+  border-radius: 20px;
+  background: #201a3b;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  color: #f8f5ff;
+  padding: 24px;
+}
+
+.dialog h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.dialog p {
+  margin: 12px 0 20px;
+  color: rgba(248, 245, 255, 0.76);
+  line-height: 1.5;
+}
+
+.dialog button {
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+  background: #d4af5a;
+  color: #201a3b;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  padding: 12px 16px;
+}

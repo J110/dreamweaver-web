@@ -1,0 +1,41 @@
+.shelf {
+  margin: 0 0 28px;
+}
+
+.title {
+  margin: 0 0 12px;
+  color: #f8f5ff;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.track {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 2px 16px 14px 0;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(248, 245, 255, 0.72);
+}
+
+.empty button {
+  border: 0;
+  border-radius: 999px;
+  background: #6b4ce6;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 8px 14px;
+}
