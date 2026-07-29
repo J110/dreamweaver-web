@@ -15,12 +15,12 @@ import styles from './page.module.css';
 
 const LOCKED_PREVIEWS = {
   characters: [
-    { id: 'character-1', label: 'Moon Explorer', image: '/upgrade-showcase.webp' },
-    { id: 'character-2', label: 'Dream Guardian', image: '/blog/covers/default.webp' },
+    { id: 'character-1', labelKey: 'myMoonExplorer', image: '/upgrade-showcase.webp' },
+    { id: 'character-2', labelKey: 'myDreamGuardian', image: '/blog/covers/default.webp' },
   ],
   voices: [
-    { id: 'voice-1', label: 'Gentle Storyteller', image: '/og-image.png' },
-    { id: 'voice-2', label: 'Moonlight Voice', image: '/upgrade-showcase.webp' },
+    { id: 'voice-1', labelKey: 'myGentleStoryteller', image: '/og-image.png' },
+    { id: 'voice-2', labelKey: 'myMoonlightVoice', image: '/upgrade-showcase.webp' },
   ],
 };
 
@@ -127,6 +127,7 @@ export default function MyStoriesPage() {
             <CreationCard
               icon="＋"
               label={t('myCreateContent')}
+              statusLabel={t('myComingSoon')}
               onActivate={(event) => openComingSoon('content', event)}
             />
             {loading && <div className={styles.loadingMessage}>{t('loading')}</div>}
@@ -137,13 +138,15 @@ export default function MyStoriesPage() {
             <CreationCard
               icon="＋"
               label={t('myCreateCharacter')}
+              statusLabel={t('myComingSoon')}
               onActivate={(event) => openComingSoon('character', event)}
             />
             {LOCKED_PREVIEWS.characters.map((preview) => (
               <LockedPreviewCard
                 key={preview.id}
                 imageSrc={preview.image}
-                label={preview.label}
+                label={t(preview.labelKey)}
+                lockedLabel={t('myLocked')}
                 onActivate={(event) => openComingSoon('character', event)}
               />
             ))}
@@ -153,13 +156,15 @@ export default function MyStoriesPage() {
             <CreationCard
               icon="●"
               label={t('myRecordVoice')}
+              statusLabel={t('myComingSoon')}
               onActivate={(event) => openComingSoon('voice', event)}
             />
             {LOCKED_PREVIEWS.voices.map((preview) => (
               <LockedPreviewCard
                 key={preview.id}
                 imageSrc={preview.image}
-                label={preview.label}
+                label={t(preview.labelKey)}
+                lockedLabel={t('myLocked')}
                 onActivate={(event) => openComingSoon('voice', event)}
               />
             ))}

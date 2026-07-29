@@ -8,6 +8,7 @@ import { interactionApi, subscriptionApi } from '../../utils/api';
 import { isLoggedIn } from '../../utils/auth';
 
 const mockRouter = { push: jest.fn() };
+let mockLang = 'en';
 
 jest.mock('next/navigation', () => ({
   useRouter: () => mockRouter,
@@ -28,7 +29,7 @@ jest.mock('../../utils/api', () => ({
 }));
 
 jest.mock('../../utils/i18n', () => {
-  const copy = {
+  const englishCopy = {
     loading: 'Loading',
     myContentTitle: 'My Content',
     myContentSubtitle: 'Your saved stories and creative tools',
@@ -39,6 +40,12 @@ jest.mock('../../utils/i18n', () => {
     myCreateContent: 'Create Content',
     myCreateCharacter: 'Create Character',
     myRecordVoice: 'Record Voice',
+    myComingSoon: 'Coming soon',
+    myLocked: 'Locked',
+    myMoonExplorer: 'Moon Explorer',
+    myDreamGuardian: 'Dream Guardian',
+    myGentleStoryteller: 'Gentle Storyteller',
+    myMoonlightVoice: 'Moonlight Voice',
     myComingSoonClose: 'Got it',
     myContentComingTitle: 'Content creation is coming soon',
     myCharacterComingTitle: 'Character creation is coming soon',
@@ -50,11 +57,29 @@ jest.mock('../../utils/i18n', () => {
     myStoriesSubtitle: 'Your favorite stories, all in one place',
     myPreferences: 'Preferences',
   };
+  const hindiCopy = {
+    ...englishCopy,
+    myContentTitle: 'Mera Content',
+    myContentSubtitle: 'Aapki save ki hui kahaniyan aur creative tools',
+    myCredits: 'Credits',
+    myFavorites: 'Pasandida',
+    myCharacters: 'Kirdaar',
+    myVoices: 'Aawaazein',
+    myCreateContent: 'Content Banayein',
+    myCreateCharacter: 'Kirdaar Banayein',
+    myRecordVoice: 'Aawaaz Record Karein',
+    myComingSoon: 'Jaldi aa raha hai',
+    myLocked: 'Band hai',
+    myMoonExplorer: 'Chaand ka Khoji',
+    myDreamGuardian: 'Sapnon ka Rakhwala',
+    myGentleStoryteller: 'Pyaara Kahanikaar',
+    myMoonlightVoice: 'Chaandni ki Aawaaz',
+  };
 
   return {
     useI18n: () => ({
-      lang: 'en',
-      t: (key) => copy[key] || key,
+      lang: mockLang,
+      t: (key) => (mockLang === 'hi' ? hindiCopy : englishCopy)[key] || key,
     }),
   };
 });
@@ -89,6 +114,7 @@ function headings() {
 
 beforeEach(() => {
   jest.clearAllMocks();
+  mockLang = 'en';
   isLoggedIn.mockReturnValue(true);
   interactionApi.getUserSaves.mockResolvedValue({ items: [] });
   subscriptionApi.getCurrent.mockResolvedValue({ credits_total: 3 });
@@ -125,4 +151,17 @@ test('signed-out visitors see the free allowance', async () => {
   await renderPage();
   expect(document.body.textContent).toContain('Credits: 3');
   expect(subscriptionApi.getCurrent).not.toHaveBeenCalled();
+});
+
+test('Hindi mode translates preview labels and card status copy', async () => {
+  mockLang = 'hi';
+  await renderPage();
+  expect(document.body.textContent).toContain('Jaldi aa raha hai');
+  expect(document.body.textContent).toContain('Chaand ka Khoji');
+  expect(document.body.textContent).toContain('Sapnon ka Rakhwala');
+  expect(document.body.textContent).toContain('Pyaara Kahanikaar');
+  expect(document.body.textContent).toContain('Chaandni ki Aawaaz');
+  expect(document.body.textContent).toContain('Band hai');
+  expect(document.body.textContent).not.toContain('Moon Explorer');
+  expect(host.querySelector('[aria-label="Band hai: Chaand ka Khoji"]')).not.toBeNull();
 });

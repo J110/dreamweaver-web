@@ -25,7 +25,7 @@ afterEach(() => {
 test('creation card activates from click', () => {
   const onActivate = jest.fn();
   act(() => root.render(
-    <CreationCard icon="＋" label="Create Character" onActivate={onActivate} />
+    <CreationCard icon="＋" label="Create Character" statusLabel="Coming soon" onActivate={onActivate} />
   ));
   host.querySelector('button').click();
   expect(onActivate).toHaveBeenCalledTimes(1);
@@ -43,12 +43,38 @@ test('shelf associates a whitespace title with one heading ID', () => {
 test('locked preview is announced as locked and activates', () => {
   const onActivate = jest.fn();
   act(() => root.render(
-    <LockedPreviewCard imageSrc="/upgrade-showcase.webp" label="Moon Explorer" onActivate={onActivate} />
+    <LockedPreviewCard
+      imageSrc="/upgrade-showcase.webp"
+      label="Moon Explorer"
+      lockedLabel="Locked"
+      onActivate={onActivate}
+    />
   ));
   const button = host.querySelector('button');
   expect(button.getAttribute('aria-label')).toContain('Locked');
   button.click();
   expect(onActivate).toHaveBeenCalledTimes(1);
+});
+
+test('creation card renders caller-supplied Hindi status copy', () => {
+  act(() => root.render(
+    <CreationCard icon="＋" label="Kirdaar Banayein" statusLabel="Jaldi aa raha hai" />
+  ));
+  expect(host.textContent).toContain('Jaldi aa raha hai');
+  expect(host.textContent).not.toContain('Coming soon');
+});
+
+test('locked preview renders caller-supplied Hindi status copy', () => {
+  act(() => root.render(
+    <LockedPreviewCard
+      imageSrc="/upgrade-showcase.webp"
+      label="Chaand ka Khoji"
+      lockedLabel="Band hai"
+    />
+  ));
+  expect(host.textContent).toContain('Band hai');
+  expect(host.textContent).not.toContain('Locked');
+  expect(host.querySelector('[aria-label="Band hai: Chaand ka Khoji"]')).not.toBeNull();
 });
 
 test('dialog closes on Escape and restores trigger focus', () => {

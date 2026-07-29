@@ -1,11 +1,11 @@
 import styles from './PreviewCard.module.css';
 
-export default function CreationCard({ icon, label, onActivate }) {
+export default function CreationCard({ icon, label, statusLabel, onActivate }) {
   return (
     <button type="button" className={`${styles.card} ${styles.creationCard}`} onClick={onActivate}>
       <span className={styles.creationIcon} aria-hidden="true">{icon}</span>
       <span className={styles.label}>{label}</span>
-      <small>Coming soon</small>
+      <small>{statusLabel}</small>
     </button>
   );
 }
