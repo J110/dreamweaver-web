@@ -1,91 +1,85 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import StarField from '@/components/StarField';
 import ContentCard from '@/components/ContentCard';
-import RadioLiveCard from '@/components/RadioLiveCard';
-import { isLoggedIn, getUser } from '@/utils/auth';
+import ContentShelf from '@/components/my-content/ContentShelf';
+import CreationCard from '@/components/my-content/CreationCard';
+import LockedPreviewCard from '@/components/my-content/LockedPreviewCard';
+import ComingSoonDialog from '@/components/my-content/ComingSoonDialog';
+import { isLoggedIn } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
-import { interactionApi } from '@/utils/api';
+import { interactionApi, subscriptionApi } from '@/utils/api';
 import styles from './page.module.css';
 
-const THEMES_DATA = [
-  { id: 'fantasy', en: '🧙 Fantasy', hi: '🧙 Kalpana' },
-  { id: 'adventure', en: '⚔️ Adventure', hi: '⚔️ Sahas' },
-  { id: 'animals', en: '🦁 Animals', hi: '🦁 Janwar' },
-  { id: 'space', en: '🚀 Space', hi: '🚀 Antariksh' },
-  { id: 'ocean', en: '🐚 Ocean', hi: '🐚 Samundar' },
-  { id: 'forest', en: '🌲 Forest', hi: '🌲 Jungle' },
-  { id: 'magic', en: '✨ Magic', hi: '✨ Jaadu' },
-  { id: 'friendship', en: '👫 Friendship', hi: '👫 Dosti' },
-];
+const LOCKED_PREVIEWS = {
+  characters: [
+    { id: 'character-1', label: 'Moon Explorer', image: '/upgrade-showcase.webp' },
+    { id: 'character-2', label: 'Dream Guardian', image: '/blog/covers/default.webp' },
+  ],
+  voices: [
+    { id: 'voice-1', label: 'Gentle Storyteller', image: '/og-image.png' },
+    { id: 'voice-2', label: 'Moonlight Voice', image: '/upgrade-showcase.webp' },
+  ],
+};
 
 export default function MyStoriesPage() {
   const router = useRouter();
-  const { t, lang } = useI18n();
-  const [user, setUser] = useState(null);
-  const [activeTab, setActiveTab] = useState('favorites');
+  const { t } = useI18n();
   const [favorites, setFavorites] = useState([]);
-  const [saved, setSaved] = useState([]);
-  const [saveCap, setSaveCap] = useState(null);
-  const [isPremiumUser, setIsPremiumUser] = useState(true);
   const [loading, setLoading] = useState(true);
-  const [filterType, setFilterType] = useState('all');
-  const [prefThemes, setPrefThemes] = useState([]);
-  const [prefLength, setPrefLength] = useState('medium');
-  const [prefContentType, setPrefContentType] = useState('story');
+  const [creditTotal, setCreditTotal] = useState(null);
+  const [activeDialogKind, setActiveDialogKind] = useState(null);
+  const dialogTriggerRef = useRef(null);
 
-  useEffect(() => {
-    if (isLoggedIn()) {
-      setUser(getUser());
-    } else {
-      try {
-        const username = localStorage.getItem('dreamvalley_anon_username') || '';
-        setUser({ username, anon: true });
-      } catch {
-        setUser({ username: '', anon: true });
-      }
-    }
-
-    if (typeof window !== 'undefined') {
-      const savedPrefs = localStorage.getItem('dreamvalley_preferences');
-      if (savedPrefs) {
-        try {
-          const prefs = JSON.parse(savedPrefs);
-          setPrefThemes(prefs.themes || []);
-          setPrefLength(prefs.length || 'medium');
-          setPrefContentType(prefs.contentType || 'story');
-        } catch (e) {}
-      }
-    }
-    loadUserContent();
-  }, [router]);
-
-  const loadUserContent = async ({ silent = false } = {}) => {
+  const loadUserContent = ({ silent = false } = {}) => {
     if (!silent) setLoading(true);
-    try {
-      const savesData = await interactionApi.getUserSaves().catch(() => ({ items: [] }));
-      const items = savesData.items || [];
-      setFavorites(items);
-      setSaved(items);
-      // save_cap is null when the paywall is off → no invitation shown.
-      setSaveCap(typeof savesData.save_cap === 'number' ? savesData.save_cap : null);
-      setIsPremiumUser(savesData.effective_premium !== false);
-    } catch (err) {
-      console.error('Error loading content:', err);
-    } finally {
-      if (!silent) setLoading(false);
-    }
+
+    return interactionApi.getUserSaves()
+      .then((savesData) => {
+        setFavorites(savesData.items || []);
+      })
+      .catch(() => {
+        setFavorites([]);
+      })
+      .finally(() => {
+        if (!silent) setLoading(false);
+      });
   };
 
-  // Refresh saves when the user returns to the page (tab focus / back-nav) so
-  // favorites stay current after saving/unsaving elsewhere — silent, no spinner.
+  useEffect(() => {
+    const authenticated = isLoggedIn();
+
+    loadUserContent();
+
+    if (authenticated) {
+      setCreditTotal(null);
+      subscriptionApi.getCurrent()
+        .then((subscription) => {
+          setCreditTotal(
+            typeof subscription.credits_total === 'number'
+              ? subscription.credits_total
+              : null
+          );
+        })
+        .catch(() => {
+          setCreditTotal(null);
+        });
+    } else {
+      setCreditTotal(3);
+    }
+  }, []);
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
+
     const refresh = () => {
-      if (document.visibilityState === 'visible') loadUserContent({ silent: true });
+      if (document.visibilityState === 'visible') {
+        loadUserContent({ silent: true });
+      }
     };
+
     document.addEventListener('visibilitychange', refresh);
     window.addEventListener('focus', refresh);
     return () => {
@@ -94,164 +88,93 @@ export default function MyStoriesPage() {
     };
   }, []);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('dreamvalley_preferences', JSON.stringify({
-        themes: prefThemes, length: prefLength, contentType: prefContentType,
-      }));
-    }
-  }, [prefThemes, prefLength, prefContentType]);
-
-  const toggleTheme = (themeId) => {
-    setPrefThemes((prev) => prev.includes(themeId)
-      ? prev.filter((t) => t !== themeId)
-      : [...prev, themeId]
-    );
+  const openComingSoon = (kind, event) => {
+    dialogTriggerRef.current = event.currentTarget;
+    setActiveDialogKind(kind);
   };
 
-  const getFilteredContent = (items) => {
-    if (filterType === 'all') return items;
-    return items.filter((item) => item.type?.toLowerCase() === filterType);
-  };
-
-  if (!user) return null;
-
-  const displayContent = favorites;
-  const filteredContent = getFilteredContent(displayContent);
+  const dialogCopy = activeDialogKind ? {
+    title: t({
+      content: 'myContentComingTitle',
+      character: 'myCharacterComingTitle',
+      voice: 'myVoiceComingTitle',
+    }[activeDialogKind]),
+    body: t('myComingBody'),
+    close: t('myComingSoonClose'),
+  } : null;
 
   return (
     <>
       <StarField />
-      <div className={styles.app}>
-        <div className={styles.header}>
-          <h1 className={styles.title}>{t('myStoriesTitle')}</h1>
-          <p className={styles.subtitle}>{t('myStoriesSubtitle')}</p>
-        </div>
-
-        <RadioLiveCard />
-
-        {/* Tabs */}
-        <div className={styles.tabs}>
-          <button onClick={() => setActiveTab('favorites')} className={`${styles.tab} ${activeTab === 'favorites' ? styles.tabActive : ''}`}>
-            ❤️ {t('myFavorites')}
-          </button>
-          <button onClick={() => setActiveTab('preferences')} className={`${styles.tab} ${activeTab === 'preferences' ? styles.tabActive : ''}`}>
-            ⚙️ {t('myPreferences')}
-          </button>
-        </div>
-
-        {activeTab !== 'preferences' ? (
-          <>
-            <div className={styles.filterBar}>
-              {[
-                { id: 'all', label: lang === 'hi' ? 'Sabhi' : 'All' },
-                { id: 'story', label: lang === 'hi' ? 'Kahaniyan' : 'Short Stories' },
-                { id: 'song', label: lang === 'hi' ? 'Geet' : 'Songs' },
-              ].map((type) => (
-                <button key={type.id} onClick={() => setFilterType(type.id)}
-                  className={`${styles.filterChip} ${filterType === type.id ? styles.filterChipActive : ''}`}
-                >{type.label}</button>
-              ))}
-            </div>
-
-            {saveCap != null && !isPremiumUser && (
-              <div
-                onClick={() => router.push('/pricing')}
-                style={{
-                  margin: '0 0 16px', padding: '12px 16px', cursor: 'pointer',
-                  borderRadius: 14, border: '1px solid rgba(107,76,230,0.35)',
-                  background: 'rgba(107,76,230,0.12)', color: 'var(--color-text-light, #fff)',
-                  fontFamily: "'Quicksand', sans-serif", fontSize: 14, fontWeight: 600,
-                  display: 'flex', alignItems: 'center', gap: 8,
-                }}
-              >
-                <span aria-hidden>✨</span>
-                <span>
-                  {lang === 'hi'
-                    ? `${saved.length} / ${saveCap} saved — Premium mein 20 favorites milte hain.`
-                    : `${saved.length} of ${saveCap} saved — Premium unlocks 20.`}
-                </span>
-              </div>
-            )}
-
-            {loading ? (
-              <div className={styles.loadingMessage}>{t('loading')}</div>
-            ) : filteredContent.length > 0 ? (
-              <div className={styles.grid}>
-                {filteredContent.map((item) => (
-                  <ContentCard key={item.id} content={item} />
-                ))}
-              </div>
-            ) : (
-              <div className={styles.emptyState}>
-                <div className={styles.emptyIcon}>❤️</div>
-                <h3 className={styles.emptyTitle}>
-                  {t('myEmptyFavorites')}
-                </h3>
-                <p className={styles.emptyText}>
-                  {t('myEmptyFavoritesText')}
-                </p>
-                <button onClick={() => router.push('/before-bed')} className="btn btn-primary">
-                  {t('myExplore')}
-                </button>
-              </div>
-            )}
-          </>
-        ) : (
-          <div className={styles.preferencesSection}>
-            <div className={styles.prefCard}>
-              <h2 className={styles.prefTitle}>{t('myPrefThemes')}</h2>
-              <p className={styles.prefDescription}>{t('myPrefThemesDesc')}</p>
-              <div className={styles.themeGrid}>
-                {THEMES_DATA.map((theme) => (
-                  <button key={theme.id} onClick={() => toggleTheme(theme.id)}
-                    className={`${styles.themeChip} ${prefThemes.includes(theme.id) ? styles.themeChipActive : ''}`}
-                  >{theme[lang] || theme.en}</button>
-                ))}
-              </div>
-            </div>
-
-            <div className={styles.prefCard}>
-              <h2 className={styles.prefTitle}>{t('myPrefContent')}</h2>
-              <p className={styles.prefDescription}>{t('myPrefContentDesc')}</p>
-              <div className={styles.prefOptions}>
-                {[
-                  { id: 'story', icon: '✨', en: 'Short Stories', hi: 'Kahaniyan' },
-                  { id: 'song', icon: '🎵', en: 'Songs', hi: 'Geet' },
-                ].map((type) => (
-                  <button key={type.id} onClick={() => setPrefContentType(type.id)}
-                    className={`${styles.prefOption} ${prefContentType === type.id ? styles.prefOptionActive : ''}`}
-                  >
-                    <span className={styles.prefOptionIcon}>{type.icon}</span>
-                    <span>{type[lang] || type.en}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className={styles.prefCard}>
-              <h2 className={styles.prefTitle}>{t('myPrefLength')}</h2>
-              <p className={styles.prefDescription}>{t('myPrefLengthDesc')}</p>
-              <div className={styles.prefOptions}>
-                {[
-                  { id: 'short', en: 'Short', hi: 'Chhoti', detail: '2-3 min' },
-                  { id: 'medium', en: 'Medium', hi: 'Beech ki', detail: '5-7 min' },
-                  { id: 'long', en: 'Long', hi: 'Lambi', detail: '10-15 min' },
-                ].map((len) => (
-                  <button key={len.id} onClick={() => setPrefLength(len.id)}
-                    className={`${styles.prefOption} ${prefLength === len.id ? styles.prefOptionActive : ''}`}
-                  >
-                    <span>{len[lang] || len.en}</span>
-                    <span className={styles.prefOptionDetail}>{len.detail}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className={styles.prefSaved}>{t('myPrefSaved')} ✓</div>
+      <main className={styles.app}>
+        <header className={styles.header}>
+          <div className={styles.headerRow}>
+            <h1 className={styles.title}>{t('myContentTitle')}</h1>
+            <span className={styles.creditPill}>
+              {t('myCredits')}: {creditTotal ?? '—'}
+            </span>
           </div>
-        )}
-      </div>
+          <p className={styles.subtitle}>{t('myContentSubtitle')}</p>
+        </header>
+
+        <div className={styles.shelves}>
+          <ContentShelf
+            title={t('myFavorites')}
+            emptyMessage={!loading && favorites.length === 0 ? t('myEmptyFavoritesText') : ''}
+            exploreLabel={t('myExplore')}
+            onExplore={() => router.push('/before-bed')}
+          >
+            <CreationCard
+              icon="＋"
+              label={t('myCreateContent')}
+              onActivate={(event) => openComingSoon('content', event)}
+            />
+            {loading && <div className={styles.loadingMessage}>{t('loading')}</div>}
+            {favorites.map((item) => <ContentCard key={item.id} content={item} />)}
+          </ContentShelf>
+
+          <ContentShelf title={t('myCharacters')}>
+            <CreationCard
+              icon="＋"
+              label={t('myCreateCharacter')}
+              onActivate={(event) => openComingSoon('character', event)}
+            />
+            {LOCKED_PREVIEWS.characters.map((preview) => (
+              <LockedPreviewCard
+                key={preview.id}
+                imageSrc={preview.image}
+                label={preview.label}
+                onActivate={(event) => openComingSoon('character', event)}
+              />
+            ))}
+          </ContentShelf>
+
+          <ContentShelf title={t('myVoices')}>
+            <CreationCard
+              icon="●"
+              label={t('myRecordVoice')}
+              onActivate={(event) => openComingSoon('voice', event)}
+            />
+            {LOCKED_PREVIEWS.voices.map((preview) => (
+              <LockedPreviewCard
+                key={preview.id}
+                imageSrc={preview.image}
+                label={preview.label}
+                onActivate={(event) => openComingSoon('voice', event)}
+              />
+            ))}
+          </ContentShelf>
+        </div>
+      </main>
+
+      {activeDialogKind && (
+        <ComingSoonDialog
+          kind={activeDialogKind}
+          copy={dialogCopy}
+          onClose={() => setActiveDialogKind(null)}
+          triggerRef={dialogTriggerRef}
+        />
+      )}
     </>
   );
 }
