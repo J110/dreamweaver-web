@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { Children, useId } from 'react';
 import styles from './ContentShelf.module.css';
 
 export default function ContentShelf({
@@ -13,7 +13,11 @@ export default function ContentShelf({
   return (
     <section className={styles.shelf} aria-labelledby={headingId}>
       <h2 id={headingId} className={styles.title}>{title}</h2>
-      <div className={styles.track}>{children}</div>
+      <div className={styles.track}>
+        {Children.map(children, (child) => (
+          child === null ? null : <div className={styles.item}>{child}</div>
+        ))}
+      </div>
       {emptyMessage && (
         <div className={styles.empty}>
           <span>{emptyMessage}</span>

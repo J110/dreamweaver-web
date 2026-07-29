@@ -7,6 +7,27 @@ import ContentShelf from './ContentShelf';
 import CreationCard from './CreationCard';
 import LockedPreviewCard from './LockedPreviewCard';
 import ComingSoonDialog from './ComingSoonDialog';
+import ContentCard from '../ContentCard';
+
+jest.mock('next/link', () => function Link({ children, href }) {
+  return <a href={href}>{children}</a>;
+});
+
+jest.mock('../../utils/ambientMusic', () => ({
+  getAmbientMusic: jest.fn(),
+}));
+
+jest.mock('../../utils/listeningHistory', () => ({
+  isListened: () => false,
+}));
+
+jest.mock('../../utils/analytics', () => ({
+  dvAnalytics: { track: jest.fn() },
+}));
+
+jest.mock('../../utils/i18n', () => ({
+  useI18n: () => ({ lang: 'en' }),
+}));
 
 let host;
 let root;
@@ -38,6 +59,26 @@ test('shelf associates a whitespace title with one heading ID', () => {
 
   expect(labelledBy).toBe(heading.id);
   expect(labelledBy).not.toMatch(/\s/);
+});
+
+test('shelf gives a real ContentCard the fixed shelf item contract', () => {
+  act(() => root.render(
+    <ContentShelf title="Favorites">
+      <ContentCard content={{
+        id: 'favorite-1',
+        title: 'Moon Story',
+        type: 'story',
+        category: 'bedtime',
+        age_group: '2-5',
+        duration: 5,
+      }} />
+    </ContentShelf>
+  ));
+  const card = host.querySelector('.card-interactive');
+  const shelfItem = card.parentElement;
+
+  expect(shelfItem.className).toContain('item');
+  expect(shelfItem.parentElement.className).toContain('track');
 });
 
 test('locked preview is announced as locked and activates', () => {
