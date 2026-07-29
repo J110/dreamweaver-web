@@ -139,6 +139,22 @@ test('renders credits and the three shelves without Preferences or Radio', async
   expect(document.body.textContent).not.toContain('Dream Valley Radio');
 });
 
+test('locked character and voice previews use existing story covers', async () => {
+  await renderPage();
+
+  const sources = Array.from(
+    host.querySelectorAll('button[aria-label^="Locked:"] img'),
+    (image) => image.getAttribute('src')
+  );
+
+  expect(sources).toEqual(expect.arrayContaining([
+    '/covers/gen-40f8fecefbfe.svg',
+    '/covers/gen-1ba62b9e17cc.svg',
+    '/covers/warning-6-8-59f6.svg',
+    '/covers/gen-8c9859bb56c2.svg',
+  ]));
+});
+
 test('credit failure does not hide shelves', async () => {
   interactionApi.getUserSaves.mockResolvedValue({ items: [] });
   subscriptionApi.getCurrent.mockRejectedValue(new Error('offline'));

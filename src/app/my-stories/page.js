@@ -24,12 +24,12 @@ import styles from './page.module.css';
 
 const LOCKED_PREVIEWS = {
   characters: [
-    { id: 'character-1', labelKey: 'myMoonExplorer', image: '/upgrade-showcase.webp' },
-    { id: 'character-2', labelKey: 'myDreamGuardian', image: '/blog/covers/default.webp' },
+    { id: 'character-1', labelKey: 'myMoonExplorer', image: '/covers/gen-40f8fecefbfe.svg' },
+    { id: 'character-2', labelKey: 'myDreamGuardian', image: '/covers/gen-1ba62b9e17cc.svg' },
   ],
   voices: [
-    { id: 'voice-1', labelKey: 'myGentleStoryteller', image: '/og-image.png' },
-    { id: 'voice-2', labelKey: 'myMoonlightVoice', image: '/upgrade-showcase.webp' },
+    { id: 'voice-1', labelKey: 'myGentleStoryteller', image: '/covers/warning-6-8-59f6.svg' },
+    { id: 'voice-2', labelKey: 'myMoonlightVoice', image: '/covers/gen-8c9859bb56c2.svg' },
   ],
 };
 
