@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import styles from './ContentShelf.module.css';
 
 export default function ContentShelf({
@@ -7,7 +8,7 @@ export default function ContentShelf({
   exploreLabel,
   onExplore,
 }) {
-  const headingId = `shelf-${title.toLowerCase()}`;
+  const headingId = useId();
 
   return (
     <section className={styles.shelf} aria-labelledby={headingId}>

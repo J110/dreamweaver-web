@@ -3,6 +3,7 @@
 import React, { createRef } from 'react';
 import { act } from 'react-dom/test-utils';
 import { createRoot } from 'react-dom/client';
+import ContentShelf from './ContentShelf';
 import CreationCard from './CreationCard';
 import LockedPreviewCard from './LockedPreviewCard';
 import ComingSoonDialog from './ComingSoonDialog';
@@ -28,6 +29,15 @@ test('creation card activates from click', () => {
   ));
   host.querySelector('button').click();
   expect(onActivate).toHaveBeenCalledTimes(1);
+});
+
+test('shelf associates a whitespace title with one heading ID', () => {
+  act(() => root.render(<ContentShelf title="My Characters" />));
+  const heading = host.querySelector('h2');
+  const labelledBy = host.querySelector('section').getAttribute('aria-labelledby');
+
+  expect(labelledBy).toBe(heading.id);
+  expect(labelledBy).not.toMatch(/\s/);
 });
 
 test('locked preview is announced as locked and activates', () => {
@@ -57,4 +67,5 @@ test('dialog closes on Escape and restores trigger focus', () => {
   ));
   act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })));
   expect(onClose).toHaveBeenCalledTimes(1);
+  expect(triggerRef.current).toBe(document.activeElement);
 });
