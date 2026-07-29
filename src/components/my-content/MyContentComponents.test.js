@@ -81,6 +81,41 @@ test('shelf gives a real ContentCard the fixed shelf item contract', () => {
   expect(shelfItem.parentElement.className).toContain('track');
 });
 
+test('compact ContentCard omits duration and mood metadata', () => {
+  act(() => root.render(
+    <ContentCard compact content={{
+      id: 'favorite-1',
+      title: 'Moon Story',
+      type: 'story',
+      category: 'bedtime',
+      age_group: '2-5',
+      duration: 5,
+      mood: 'curious',
+    }} />
+  ));
+
+  expect(host.textContent).not.toContain('5 min');
+  expect(host.textContent).not.toContain('Curious');
+  expect(host.querySelector('h3').textContent).toBe('Moon Story');
+});
+
+test('ordinary ContentCard retains duration and mood metadata', () => {
+  act(() => root.render(
+    <ContentCard content={{
+      id: 'story-1',
+      title: 'Moon Story',
+      type: 'story',
+      category: 'bedtime',
+      age_group: '2-5',
+      duration: 5,
+      mood: 'curious',
+    }} />
+  ));
+
+  expect(host.textContent).toContain('5 min');
+  expect(host.textContent).toContain('Curious');
+});
+
 test('locked preview is announced as locked and activates', () => {
   const onActivate = jest.fn();
   act(() => root.render(

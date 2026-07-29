@@ -88,8 +88,8 @@ jest.mock('../../components/StarField', () => function StarField() {
   return null;
 });
 
-jest.mock('../../components/ContentCard', () => function ContentCard({ content }) {
-  return <article>{content.title}</article>;
+jest.mock('../../components/ContentCard', () => function ContentCard({ content, compact }) {
+  return <article data-compact={compact ? 'true' : 'false'}>{content.title}</article>;
 });
 
 jest.mock('../../components/RadioLiveCard', () => function RadioLiveCard() {
@@ -134,6 +134,7 @@ test('renders credits and the three shelves without Preferences or Radio', async
   await renderPage();
   expect(document.body.textContent).toContain('Credits: 13');
   expect(headings()).toEqual(['Favorites', 'Characters', 'Voices']);
+  expect(host.querySelector('article[data-compact="true"]')).not.toBeNull();
   expect(document.body.textContent).not.toContain('Preferences');
   expect(document.body.textContent).not.toContain('Dream Valley Radio');
 });

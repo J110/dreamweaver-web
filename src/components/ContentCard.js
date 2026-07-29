@@ -24,7 +24,7 @@ const LANGUAGE_LEVEL_LABELS = {
   advanced: 'Challenge',
 };
 
-export default function ContentCard({ content, onClick }) {
+export default function ContentCard({ content, onClick, compact = false }) {
   const { lang } = useI18n();
   // Pre-unlock AudioContext on card click (before navigation to player page).
   // This is called inside the user's click gesture, so AudioContext.resume()
@@ -207,14 +207,16 @@ export default function ContentCard({ content, onClick }) {
       </div>
       <div className={styles.cardContent}>
         <h3 className={styles.cardTitle}>{content.title || 'Untitled'}</h3>
-        <div className={styles.cardFooter}>
-          <span className={styles.cardMeta}>
-            {durationLabel && <><span className={styles.clockIcon}>&#128336;</span> {durationLabel}</>}
-          </span>
-          {content.mood && MOOD_CONFIG[content.mood] && (
-            <span className={`${styles.moodBadge} ${styles[`mood_${content.mood}`]}`}>{MOOD_CONFIG[content.mood].emoji} {MOOD_CONFIG[content.mood].label[lang] || MOOD_CONFIG[content.mood].label.en}</span>
-          )}
-        </div>
+        {!compact && (
+          <div className={styles.cardFooter}>
+            <span className={styles.cardMeta}>
+              {durationLabel && <><span className={styles.clockIcon}>&#128336;</span> {durationLabel}</>}
+            </span>
+            {content.mood && MOOD_CONFIG[content.mood] && (
+              <span className={`${styles.moodBadge} ${styles[`mood_${content.mood}`]}`}>{MOOD_CONFIG[content.mood].emoji} {MOOD_CONFIG[content.mood].label[lang] || MOOD_CONFIG[content.mood].label.en}</span>
+            )}
+          </div>
+        )}
       </div>
     </>
   );

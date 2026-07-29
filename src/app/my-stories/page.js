@@ -208,7 +208,7 @@ export default function MyStoriesPage() {
                 onActivate={(event) => openComingSoon('content', event)}
               />
               {loading && <div className={styles.loadingMessage}>{t('loading')}</div>}
-              {favorites.map((item) => <ContentCard key={item.id} content={item} />)}
+              {favorites.map((item) => <ContentCard key={item.id} content={item} compact />)}
               {planCard}
             </ContentShelf>
           </section>
