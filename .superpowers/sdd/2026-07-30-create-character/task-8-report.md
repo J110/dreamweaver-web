@@ -4,7 +4,7 @@
 
 ```text
 npm test -- --runInBand --runTestsByPath src/components/characters/CharacterCard.test.js 'src/app/characters/[id]/edit/page.test.js' 'src/app/characters/[id]/page.test.js' src/app/my-stories/page.test.js src/app/characters/create/page.test.js src/utils/i18nProvider.test.js
-6 suites, 33 tests passed.
+6 suites, 34 tests passed.
 
 npm run verify:emberlight
 Passed.
@@ -30,7 +30,7 @@ Passed.
 
 ## Commits
 
-`ef17fa0`, `04eafb3`, `b2d5d7b`, `b3dc515`, `b03cc44`, `14ee03a`; pre-commit HEAD for this report update: `14ee03adad0562532f877f35a9aa9244c56f4bf4`.
+`ef17fa0`, `04eafb3`, `b2d5d7b`, `b3dc515`, `b03cc44`, `14ee03a`, `6cefb24`, `d31d97b`, `ff90e7e`, `7453f5a`, `6ea33f9`; pre-commit HEAD for this report update: `ff90e7e1fc34e95d3cca883e324c35e32380ef36`.
 
 ## Review
 
