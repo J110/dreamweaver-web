@@ -786,6 +786,8 @@ export const playlistApi = {
   },
 };
 
+const completedCharacterGenerationJobs = new Set();
+
 export const characterApi = {
   list: async ({ fresh = false } = {}) => {
     if (fresh) fetchApi.invalidate('/api/v1/characters');
@@ -814,9 +816,20 @@ export const characterApi = {
   generation: async (jobId, { fresh = true } = {}) => {
     const endpoint = `/api/v1/characters/generations/${jobId}`;
     if (fresh) fetchApi.invalidate(endpoint);
-    return (await fetchApi(endpoint)).data;
+    const job = (await fetchApi(endpoint)).data;
+    if (job?.status === 'completed' && !completedCharacterGenerationJobs.has(jobId)) {
+      completedCharacterGenerationJobs.add(jobId);
+      fetchApi.invalidate('/api/v1/characters');
+      if (job.character_id) fetchApi.invalidate(`/api/v1/characters/${job.character_id}`);
+    }
+    return job;
   },
-  remove: async (id) => fetchApi(`/api/v1/characters/${id}`, { method: 'DELETE' }),
+  remove: async (id) => {
+    const response = await fetchApi(`/api/v1/characters/${id}`, { method: 'DELETE' });
+    fetchApi.invalidate('/api/v1/characters');
+    fetchApi.invalidate(`/api/v1/characters/${id}`);
+    return response;
+  },
 };
 
 export default fetchApi;
