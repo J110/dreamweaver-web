@@ -98,6 +98,10 @@ export default function PrivacyPolicyPage() {
                 </li>
               </ul>
 
+              <p>
+                Character names, descriptions, generated profiles, and portraits are stored with your account. They are sent to contracted AI generation providers solely to provide the requested feature. Reference images are not collected. Deletion removes the active record while queued media cleanup removes its portrait.
+              </p>
+
               <div className={styles.highlightImportant}>
                 <p>
                   <span className={styles.bold}>What we do NOT collect:</span> Email addresses or

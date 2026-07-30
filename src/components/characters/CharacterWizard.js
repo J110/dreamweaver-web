@@ -51,10 +51,14 @@ const localizeErrors = (errors, t) => Object.fromEntries(Object.entries(errors).
   return [field, t(keys[error] || 'characterSubmitFailed')];
 }));
 
-export default function CharacterWizard({ uid, mode = 'create', targetCharacterId = null, onDone, onEdit }) {
+const quoteForMode = (quote, mode) => mode === 'edit'
+  ? { ...quote, credit_cost: 2, credits_after: Math.max(0, quote.credits_before - 2) }
+  : quote;
+
+export default function CharacterWizard({ uid, mode = 'create', targetCharacterId = null, initialInputs, onDone, onEdit }) {
   const { t } = useI18n();
   const [step, setStep] = useState('identity');
-  const [inputs, setInputs] = useState(INITIAL_CHARACTER_INPUTS);
+  const [inputs, setInputs] = useState(() => ({ ...INITIAL_CHARACTER_INPUTS, ...initialInputs }));
   const [quote, setQuote] = useState(null);
   const [job, setJob] = useState(null);
   const [result, setResult] = useState(null);
@@ -93,7 +97,8 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
     if (Object.keys(nextErrors).length) return;
     try {
       setReviewError('');
-      setQuote(await characterApi.quote(mode, targetCharacterId));
+      const nextQuote = await characterApi.quote(mode, targetCharacterId);
+      setQuote(quoteForMode(nextQuote, mode));
       setStep('review');
     } catch {
       setReviewError(t('characterQuoteFailed'));
@@ -133,7 +138,7 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
       if (/stale_quote/.test(message)) {
         setShowPaidDialog(false);
         try {
-          setQuote(await characterApi.quote(mode, targetCharacterId));
+          setQuote(quoteForMode(await characterApi.quote(mode, targetCharacterId), mode));
           setReviewError(knownError(message, t));
           setStep('review');
         } catch {
@@ -193,7 +198,7 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
       return;
     }
     try {
-      setQuote(await characterApi.quote(mode, targetCharacterId));
+      setQuote(quoteForMode(await characterApi.quote(mode, targetCharacterId), mode));
       setStep('review');
     } catch {
       setReviewError(t('characterQuoteFailed'));
@@ -250,11 +255,11 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
 
   return (
     <section className="characterWizard">
-      <h1>{t('characterTitle')}</h1>
+      <h1>{t(mode === 'edit' ? 'characterEditTitle' : 'characterTitle')}</h1>
       <ol aria-label={t('characterSteps')}>
         <li aria-current={step === 'identity' ? 'step' : undefined}>{t('characterIdentity')}</li>
         <li aria-current={step === 'personality' ? 'step' : undefined}>{t('characterPersonality')}</li>
-        <li aria-current={step === 'review' ? 'step' : undefined}>{t('characterReview')}</li>
+        <li aria-current={step === 'review' ? 'step' : undefined}>{t(mode === 'edit' ? 'characterEditReview' : 'characterReview')}</li>
       </ol>
       {step === 'identity' && <>
         <fieldset><legend>{t('characterIdentity')}</legend>

@@ -10,7 +10,8 @@ import LockedPreviewCard from '@/components/my-content/LockedPreviewCard';
 import ComingSoonDialog from '@/components/my-content/ComingSoonDialog';
 import { getUser, isLoggedIn } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
-import { interactionApi, subscriptionApi } from '@/utils/api';
+import { characterApi, interactionApi, subscriptionApi } from '@/utils/api';
+import CharacterCard from '@/components/characters/CharacterCard';
 import {
   getOfflineReconciliationRunner,
   loadSavedLibrary,
@@ -37,6 +38,7 @@ export default function MyStoriesPage() {
   const router = useRouter();
   const { t, lang } = useI18n();
   const [favorites, setFavorites] = useState([]);
+  const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [creditTotal, setCreditTotal] = useState(null);
   const [saveCap, setSaveCap] = useState(null);
@@ -80,6 +82,8 @@ export default function MyStoriesPage() {
   useEffect(() => {
     const authenticated = isLoggedIn();
     loadUserContent();
+
+    if (authenticated && characterApi?.list) characterApi.list().then(setCharacters).catch(() => setCharacters([]));
 
     if (authenticated && subscriptionApi?.getCurrent) {
       subscriptionApi.getCurrent()
@@ -217,9 +221,10 @@ export default function MyStoriesPage() {
             <CreationCard
               icon="＋"
               label={t('myCreateCharacter')}
-              statusLabel={t('myComingSoon')}
-              onActivate={(event) => openComingSoon('character', event)}
+              statusLabel={t('myAvailableNow')}
+              onActivate={() => router.push('/characters/create')}
             />
+            {characters.map((character) => <CharacterCard key={character.id} character={character} />)}
             {LOCKED_PREVIEWS.characters.map((preview) => (
               <LockedPreviewCard
                 key={preview.id}

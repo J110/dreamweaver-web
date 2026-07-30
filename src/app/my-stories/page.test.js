@@ -4,7 +4,7 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { createRoot } from 'react-dom/client';
 import MyStoriesPage from './page';
-import { interactionApi, subscriptionApi } from '../../utils/api';
+import { characterApi, interactionApi, subscriptionApi } from '../../utils/api';
 import { isLoggedIn } from '../../utils/auth';
 
 const mockRouter = { push: jest.fn() };
@@ -25,6 +25,9 @@ jest.mock('../../utils/api', () => ({
   },
   subscriptionApi: {
     getCurrent: jest.fn(),
+  },
+  characterApi: {
+    list: jest.fn(),
   },
 }));
 
@@ -118,6 +121,7 @@ beforeEach(() => {
   isLoggedIn.mockReturnValue(true);
   interactionApi.getUserSaves.mockResolvedValue({ items: [] });
   subscriptionApi.getCurrent.mockResolvedValue({ credits_total: 3 });
+  characterApi.list.mockResolvedValue([]);
   host = document.createElement('div');
   document.body.appendChild(host);
   root = createRoot(host);
@@ -137,6 +141,19 @@ test('renders credits and the three shelves without Preferences or Radio', async
   expect(host.querySelector('article[data-compact="true"]')).not.toBeNull();
   expect(document.body.textContent).not.toContain('Preferences');
   expect(document.body.textContent).not.toContain('Dream Valley Radio');
+});
+
+test('saved characters appear between creation and locked previews', async () => {
+  characterApi.list.mockResolvedValue([{ id: 'c1', portrait_url: '/media/lumi.webp', profile: { name: 'Lumi', character_type: 'fox', traits: ['kind'] } }]);
+  await renderPage();
+
+  const shelf = Array.from(host.querySelectorAll('section')).find((section) => section.querySelector('h2')?.textContent === 'Characters');
+  expect(Array.from(shelf.querySelectorAll('a, button')).map((item) => item.textContent)).toEqual([
+    expect.stringContaining('Create Character'),
+    expect.stringContaining('Lumi'),
+    expect.stringContaining('Moon Explorer'),
+    expect.stringContaining('Dream Guardian'),
+  ]);
 });
 
 test('locked character and voice previews use existing story covers', async () => {

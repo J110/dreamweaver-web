@@ -1,0 +1,39 @@
+.page {
+  min-height: 100vh;
+  padding: 24px 16px calc(32px + env(safe-area-inset-bottom));
+  color: var(--color-text-light);
+}
+
+.card {
+  width: min(100%, 680px);
+  margin: 0 auto;
+  padding: 24px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-card);
+}
+
+.portrait {
+  width: 100%;
+  max-width: 320px;
+  height: min(72vw, 320px);
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.dialog {
+  position: fixed;
+  inset: auto 16px calc(16px + env(safe-area-inset-bottom));
+  max-width: 480px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-card);
+}
