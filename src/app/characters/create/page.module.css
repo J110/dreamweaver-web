@@ -116,6 +116,15 @@
   text-align: center;
 }
 
+:global(.characterResult img) {
+  width: 100%;
+  max-width: 320px;
+  height: min(72vw, 320px);
+  max-height: 320px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+}
+
 @media (max-width: 520px) {
   .page { padding-inline: 12px; }
   .card { padding: 18px; }

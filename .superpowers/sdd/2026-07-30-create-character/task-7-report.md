@@ -7,7 +7,9 @@ npm test -- --runInBand src/app/characters/create/page.test.js
 Initial regressions: quote outage was not visible, completed jobs treated their payload as embedded character data, result actions were unwired, and Surprise state lacked aria-pressed.
 
 npm test -- --runInBand src/app/characters/create/page.test.js src/utils/characterWizard.test.js src/utils/i18nProvider.test.js src/components/PremiumThemeCoverage.test.js src/components/EmberlightThemeController.test.js src/utils/emberlightTheme.test.js src/utils/authThemeLogout.test.js src/app/upgrade/upgradeTheme.test.js
-8 suites, 46 tests passed.
+8 suites, 49 tests passed.
+
+Follow-up regressions covered terminal idempotency rotation, transport recovery without duplicate submission, serialized and late polling, and stale-quote revalidation.
 
 npm run verify:emberlight
 Passed.
@@ -25,13 +27,13 @@ Passed.
 
 ## Commit
 
-Task 7 follow-up commit records the approved fixes.
+Task 7 re-review follow-up commit records the recovery fixes.
 
 ## Self-Review
 
-The backend `GenerationJob` completion contract uses `character_id`, not `result_character_id`; completed polling now fetches that character before rendering the result. Terminal failures reset submission, retries re-quote before creating another job, and three consecutive polling errors transition to a recoverable failure while a successful poll resets the error budget.
+The backend `GenerationJob` completion contract uses `character_id`, not `result_character_id`; completed polling now fetches that character before rendering the result. Terminal backend failures clear pending storage and reset the idempotency key, while transport exhaustion preserves both and exposes a retry that resumes the same job without a second generation request.
 
-Quote, validation, conflict, and delete failures use localized copy. The paid dialog provides localized credit copy, initial focus, a focus trap, Escape dismissal, and focus return; result Edit and Delete use the completed character ID, with deletion confirmation and error recovery. The route styles visible steps, controls, focus states, errors, dialog, result, and progress with theme variables and safe-area spacing.
+Polling now uses serialized recursive timeouts and ignores late success or failure after terminal state or unmount. Stale quotes fetch a fresh review quote and retain their idempotency key because the backend rejects stale requests before creating a job; terminal jobs rotate that key. The result portrait is constrained for the card and mobile viewport.
 
 ## Concerns
 

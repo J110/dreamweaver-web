@@ -27,6 +27,7 @@ jest.mock('@/utils/i18n', () => ({ useI18n: () => ({ t: (key) => ({
   characterCreate: 'Create Character',
   characterConfirm: 'Confirm',
   characterPaidTitle: 'Create for 2 credits?',
+  characterPaidBody: 'This uses {cost} credits and leaves {balance} credits.',
   characterSlot: 'Slot',
   characterDone: 'Done',
   characterBack: 'Back',
@@ -37,6 +38,7 @@ jest.mock('@/utils/i18n', () => ({ useI18n: () => ({ t: (key) => ({
   characterDetails: 'Details',
   characterGenerating: 'Creating your character…',
   characterFailed: 'Could not create your character',
+  characterConnectionFailed: 'Connection interrupted. Your character is still being created.',
   characterRetry: 'Retry',
   characterQuoteFailed: 'Could not refresh your quote',
   characterErrorStaleQuote: 'Your balance or slot changed. Review the refreshed quote.',
@@ -52,7 +54,7 @@ import CreateCharacterPage from './page';
 const { useRouter: mockUseRouter } = require('next/navigation');
 const { isLoggedIn: mockIsLoggedIn, getUser: mockGetUser } = require('@/utils/auth');
 const { characterApi: mockCharacterApi } = require('@/utils/api');
-const { loadPendingJob: mockLoadPendingJob } = require('@/utils/characterWizard');
+const { loadPendingJob: mockLoadPendingJob, clearPendingJob: mockClearPendingJob } = require('@/utils/characterWizard');
 const mockReplace = jest.fn();
 const mockPush = jest.fn();
 const mockQuote = mockCharacterApi.quote;
@@ -120,6 +122,7 @@ beforeEach(() => {
   mockGetCharacter.mockReset();
   mockRemoveCharacter.mockReset().mockResolvedValue({ success: true });
   mockLoadPendingJob.mockReset().mockReturnValue(null);
+  mockClearPendingJob.mockReset();
 });
 
 test('signed-out users are redirected before the wizard renders', async () => {
@@ -184,6 +187,31 @@ test('reload resumes a pending job without submitting another', async () => {
     expect.arrayContaining(['Done', 'Edit', 'Delete'])
   );
   expect(mockCreateGeneration).not.toHaveBeenCalled();
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('a terminal backend failure clears pending state and rotates the idempotency key for a new generation', async () => {
+  mockCreateGeneration
+    .mockResolvedValueOnce({ id: 'job-1', status: 'accepted' })
+    .mockResolvedValueOnce({ id: 'job-2', status: 'accepted' });
+  mockGeneration
+    .mockResolvedValueOnce({ id: 'job-1', status: 'failed' })
+    .mockResolvedValueOnce({ id: 'job-2', status: 'accepted' });
+  const { container, root } = await renderPage();
+
+  await reachReview(container);
+  await click(container, 'Create Character');
+  await act(async () => { await Promise.resolve(); await Promise.resolve(); });
+  expect(mockClearPendingJob).toHaveBeenCalledWith('user-1');
+
+  await click(container, 'Retry');
+  await click(container, 'Create Character');
+  expect(mockCreateGeneration).toHaveBeenCalledTimes(2);
+  expect(mockCreateGeneration.mock.calls[1][0].idempotency_key).not.toBe(mockCreateGeneration.mock.calls[0][0].idempotency_key);
+  await act(async () => { await Promise.resolve(); await Promise.resolve(); });
+  expect(mockGeneration).toHaveBeenCalledTimes(2);
 
   await act(async () => root.unmount());
   container.remove();
@@ -264,9 +292,14 @@ test('known submission and delete failures show localized recoverable errors', a
   second.container.remove();
 });
 
-test('repeated polling errors stop at a recoverable failure', async () => {
+test('transport exhaustion preserves its job and resumes polling without another generation', async () => {
   jest.useFakeTimers();
-  mockGeneration.mockRejectedValue(new Error('offline'));
+  mockGeneration
+    .mockRejectedValueOnce(new Error('offline'))
+    .mockRejectedValueOnce(new Error('offline'))
+    .mockRejectedValueOnce(new Error('offline'))
+    .mockResolvedValue({ id: 'job-1', status: 'completed', character_id: 'character-1' });
+  mockGetCharacter.mockResolvedValue({ id: 'character-1', profile: { name: 'Lumi', profile_summary: 'A moon fox.' } });
   const { container, root } = await renderPage();
 
   await reachReview(container);
@@ -274,11 +307,57 @@ test('repeated polling errors stop at a recoverable failure', async () => {
   await act(async () => { await jest.advanceTimersByTimeAsync(4000); });
 
   expect(mockGeneration).toHaveBeenCalledTimes(3);
-  expect(container.textContent).toContain('Could not create your character');
+  expect(container.textContent).toContain('Connection interrupted. Your character is still being created.');
+  expect(mockClearPendingJob).not.toHaveBeenCalled();
   await click(container, 'Retry');
-  expect(container.textContent).toContain('Slot 1 of 30');
+  await act(async () => { await Promise.resolve(); await Promise.resolve(); });
+  expect(container.textContent).toContain('Lumi');
+  expect(mockCreateGeneration).toHaveBeenCalledTimes(1);
 
   await act(async () => root.unmount());
+  container.remove();
+  jest.useRealTimers();
+});
+
+test('stale quotes refresh the review and reuse the original idempotency key for retry', async () => {
+  mockQuote.mockResolvedValueOnce(FREE_QUOTE).mockResolvedValueOnce(PAID_QUOTE);
+  mockCreateGeneration
+    .mockRejectedValueOnce(new Error('stale_quote'))
+    .mockResolvedValueOnce({ id: 'job-1', status: 'accepted' });
+  const { container, root } = await renderPage();
+
+  await reachReview(container);
+  await click(container, 'Create Character');
+  expect(container.textContent).toContain('Slot 4 of 30');
+  expect(mockQuote).toHaveBeenCalledTimes(2);
+  await click(container, 'Create Character');
+  expect(container.querySelector('[role="dialog"]').textContent).toContain('This uses 2 credits and leaves 1 credits.');
+  await click(container, 'Confirm');
+
+  expect(mockCreateGeneration).toHaveBeenCalledTimes(2);
+  expect(mockCreateGeneration.mock.calls[1][0].quote_version).toBe('q2');
+  expect(mockCreateGeneration.mock.calls[1][0].idempotency_key).toBe(mockCreateGeneration.mock.calls[0][0].idempotency_key);
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('slow and late polls neither overlap nor update after unmount', async () => {
+  jest.useFakeTimers();
+  let resolvePoll;
+  mockGeneration.mockReturnValue(new Promise((resolve) => { resolvePoll = resolve; }));
+  const { container, root } = await renderPage();
+
+  await reachReview(container);
+  await click(container, 'Create Character');
+  await act(async () => { await jest.advanceTimersByTimeAsync(10000); });
+  expect(mockGeneration).toHaveBeenCalledTimes(1);
+
+  await act(async () => root.unmount());
+  resolvePoll({ id: 'job-1', status: 'completed', character_id: 'character-1' });
+  await act(async () => { await Promise.resolve(); });
+  expect(mockGetCharacter).not.toHaveBeenCalled();
+
   container.remove();
   jest.useRealTimers();
 });

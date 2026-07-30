@@ -60,6 +60,7 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
   const [result, setResult] = useState(null);
   const [resultCharacterId, setResultCharacterId] = useState(null);
   const [retryResultLoad, setRetryResultLoad] = useState(false);
+  const [connectionInterrupted, setConnectionInterrupted] = useState(false);
   const [errors, setErrors] = useState({});
   const [reviewError, setReviewError] = useState('');
   const [showPaidDialog, setShowPaidDialog] = useState(false);
@@ -129,7 +130,16 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
       setStep('generating');
     } catch (error) {
       const message = String(error?.message || '');
-      if (/stale_quote|insufficient_credits|no_slots/.test(message)) {
+      if (/stale_quote/.test(message)) {
+        setShowPaidDialog(false);
+        try {
+          setQuote(await characterApi.quote(mode, targetCharacterId));
+          setReviewError(knownError(message, t));
+          setStep('review');
+        } catch {
+          setReviewError(t('characterQuoteFailed'));
+        }
+      } else if (/insufficient_credits|no_slots/.test(message)) {
         setReviewError(knownError(message, t));
         setShowPaidDialog(false);
       } else {
@@ -139,10 +149,19 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
     }
   };
 
+  const failed = useCallback(() => {
+    clearPendingJob(uid);
+    idempotencyKey.current = null;
+    setJob(null);
+    setSubmitting(false);
+    setRetryResultLoad(false);
+    setConnectionInterrupted(false);
+    setStep('failed');
+  }, [uid]);
+
   const completed = useCallback(async (completedJob) => {
     if (!completedJob.character_id) {
-      setSubmitting(false);
-      setStep('failed');
+      failed();
       return;
     }
     try {
@@ -158,14 +177,13 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
       setRetryResultLoad(true);
       setStep('failed');
     }
-  }, [uid]);
+  }, [failed, uid]);
 
-  const failed = useCallback(() => {
-    clearPendingJob(uid);
+  const transportFailed = useCallback(() => {
     setSubmitting(false);
-    setRetryResultLoad(false);
-    setStep('failed');
-  }, [uid]);
+    setConnectionInterrupted(true);
+    setStep('connection');
+  }, []);
 
   const retry = async () => {
     setSubmitting(false);
@@ -204,7 +222,7 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
   };
 
   if (step === 'generating' && job) {
-    return <GenerationProgress job={job} onCompleted={completed} onFailed={failed} label={t('characterGenerating')} />;
+    return <GenerationProgress job={job} onCompleted={completed} onFailed={failed} onTransportError={transportFailed} label={t('characterGenerating')} />;
   }
 
   if (step === 'result' && result) {
@@ -224,6 +242,10 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
 
   if (step === 'failed') {
     return <section className="characterFailure" aria-live="polite"><p>{t('characterFailed')}</p><button type="button" onClick={retry}>{t('characterRetry')}</button></section>;
+  }
+
+  if (step === 'connection' && job && connectionInterrupted) {
+    return <section className="characterFailure" aria-live="polite"><p>{t('characterConnectionFailed')}</p><button type="button" onClick={() => { setConnectionInterrupted(false); setStep('generating'); }}>{t('characterRetry')}</button></section>;
   }
 
   return (
