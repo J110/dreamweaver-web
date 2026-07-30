@@ -26,7 +26,7 @@ Passed.
 
 ## Commit
 
-Pending Task 8 commit.
+Pre-commit HEAD for this follow-up: `b2d5d7bd15105f7d41570317f909e42d6cf2551e`.
 
 ## Self-Review
 

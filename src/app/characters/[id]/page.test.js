@@ -8,6 +8,7 @@ import CharacterDetailPage from './page';
 jest.mock('next/navigation', () => ({ useRouter: jest.fn() }));
 jest.mock('@/utils/auth', () => ({ isLoggedIn: jest.fn(), getUser: jest.fn() }));
 jest.mock('@/utils/api', () => ({ characterApi: { get: jest.fn(), remove: jest.fn() } }));
+jest.mock('@/utils/i18n', () => ({ useI18n: () => ({ t: (key) => ({ characterLoading: 'Loading character…', characterNotFound: 'Character not found.', characterLoadFailed: 'Unable to load this character.', characterDeleteCharacter: 'Delete Character', characterDeletePrompt: 'Delete {name}? This cannot be undone.', characterCancel: 'Cancel', characterDelete: 'Delete', characterDeleteFailed: 'Could not delete this character', characterTypeFox: 'Fox', characterTraitKind: 'Kind', characterTraitCurious: 'Curious', characterEdit: 'Edit' }[key] || key) }) }));
 jest.mock('./page.module.css', () => ({}));
 
 const { useRouter } = require('next/navigation');
