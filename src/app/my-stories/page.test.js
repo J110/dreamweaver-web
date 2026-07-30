@@ -59,6 +59,10 @@ jest.mock('../../utils/i18n', () => {
     myStoriesTitle: 'My Stories',
     myStoriesSubtitle: 'Your favorite stories, all in one place',
     myPreferences: 'Preferences',
+    myAvailableNow: 'Available now',
+    characterTypeFox: 'Fox',
+    characterTraitKind: 'Kind',
+    characterTraitCurious: 'Curious',
   };
   const hindiCopy = {
     ...englishCopy,
@@ -77,6 +81,10 @@ jest.mock('../../utils/i18n', () => {
     myDreamGuardian: 'Sapnon ka Rakhwala',
     myGentleStoryteller: 'Pyaara Kahanikaar',
     myMoonlightVoice: 'Chaandni ki Aawaaz',
+    myAvailableNow: 'Abhi available hai',
+    characterTypeFox: 'Lomdi',
+    characterTraitKind: 'Dayalu',
+    characterTraitCurious: 'Jigyasu',
   };
 
   return {
@@ -192,7 +200,24 @@ test('signed-out visitors see the free allowance', async () => {
 
 test('Hindi mode translates preview labels and card status copy', async () => {
   mockLang = 'hi';
+  characterApi.list.mockResolvedValue([{
+    id: 'c1',
+    portrait_url: '/media/lumi.webp',
+    profile: {
+      name: 'Lumi',
+      character_type: 'fox',
+      traits: ['kind', 'curious'],
+    },
+  }]);
   await renderPage();
+  const characterShelf = Array.from(host.querySelectorAll('section')).find((section) => section.querySelector('h2')?.textContent === 'Kirdaar');
+  expect(Array.from(characterShelf.querySelectorAll('a, button')).map((item) => item.textContent)).toEqual([
+    expect.stringContaining('Kirdaar Banayein'),
+    expect.stringContaining('Lumi'),
+    expect.stringContaining('Chaand ka Khoji'),
+    expect.stringContaining('Sapnon ka Rakhwala'),
+  ]);
+  expect(characterShelf.textContent).toContain('Lomdi · Dayalu · Jigyasu');
   expect(document.body.textContent).toContain('Jaldi aa raha hai');
   expect(document.body.textContent).toContain('Chaand ka Khoji');
   expect(document.body.textContent).toContain('Sapnon ka Rakhwala');
