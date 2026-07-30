@@ -786,4 +786,37 @@ export const playlistApi = {
   },
 };
 
+export const characterApi = {
+  list: async ({ fresh = false } = {}) => {
+    if (fresh) fetchApi.invalidate('/api/v1/characters');
+    const res = await fetchApi('/api/v1/characters');
+    return res.data || [];
+  },
+  get: async (id) => (await fetchApi(`/api/v1/characters/${id}`)).data,
+  quote: async (mode, targetCharacterId = null) => (
+    await fetchApi('/api/v1/characters/quote', {
+      method: 'POST',
+      body: JSON.stringify({ mode, target_character_id: targetCharacterId }),
+    })
+  ).data,
+  createGeneration: async (body) => (
+    await fetchApi('/api/v1/characters/generations', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    })
+  ).data,
+  editGeneration: async (id, body) => (
+    await fetchApi(`/api/v1/characters/${id}/generations`, {
+      method: 'POST',
+      body: JSON.stringify(body),
+    })
+  ).data,
+  generation: async (jobId, { fresh = true } = {}) => {
+    const endpoint = `/api/v1/characters/generations/${jobId}`;
+    if (fresh) fetchApi.invalidate(endpoint);
+    return (await fetchApi(endpoint)).data;
+  },
+  remove: async (id) => fetchApi(`/api/v1/characters/${id}`, { method: 'DELETE' }),
+};
+
 export default fetchApi;
