@@ -16,5 +16,5 @@ export default function CreateCharacterPage() {
   }, [router, signedIn]);
 
   if (!signedIn) return null;
-  return <main className={styles.page}><div className={styles.card}><CharacterWizard uid={user?.uid || user?.id} onDone={() => router.push('/my-stories')} /></div></main>;
+  return <main className={styles.page}><div className={styles.card}><CharacterWizard uid={user?.uid || user?.id} onDone={() => router.push('/my-stories')} onEdit={(id) => router.push(`/characters/${id}/edit`)} /></div></main>;
 }

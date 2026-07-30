@@ -1,12 +1,43 @@
 'use client';
 
-export default function PaidGenerationDialog({ quote, onConfirm, onCancel, confirming, title, confirmLabel, cancelLabel }) {
+import { useEffect, useRef } from 'react';
+
+export default function PaidGenerationDialog({ quote, onConfirm, onCancel, confirming, title, body, confirmLabel, cancelLabel }) {
+  const dialog = useRef(null);
+  const confirm = useRef(null);
+
+  useEffect(() => {
+    const returnFocus = document.activeElement;
+    confirm.current?.focus();
+    return () => returnFocus?.focus?.();
+  }, []);
+
+  const onKeyDown = (event) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      onCancel();
+    }
+    if (event.key === 'Tab') {
+      const controls = dialog.current?.querySelectorAll('button:not([disabled])') || [];
+      if (!controls.length) return;
+      const first = controls[0];
+      const last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  };
+
   return (
-    <div role="dialog" aria-modal="true" aria-labelledby="paid-generation-title">
+    <div ref={dialog} className="characterPaidDialog" role="dialog" aria-modal="true" aria-labelledby="paid-generation-title" onKeyDown={onKeyDown}>
       <h2 id="paid-generation-title">{title}</h2>
-      <p>{quote.credit_cost} credits. {quote.credits_after} credits remaining.</p>
+      <p>{body.replace('{cost}', quote.credit_cost).replace('{balance}', quote.credits_after)}</p>
       <button type="button" onClick={onCancel} disabled={confirming}>{cancelLabel}</button>
-      <button type="button" onClick={onConfirm} disabled={confirming}>{confirmLabel}</button>
+      <button ref={confirm} type="button" onClick={onConfirm} disabled={confirming}>{confirmLabel}</button>
     </div>
   );
 }

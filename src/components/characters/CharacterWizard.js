@@ -30,13 +30,36 @@ const INITIAL_CHARACTER_INPUTS = {
 
 const optionLabel = (value, prefix, t) => t(`${prefix}${value.split('_').map((part) => part[0].toUpperCase() + part.slice(1)).join('')}`);
 
-export default function CharacterWizard({ uid, mode = 'create', targetCharacterId = null, onDone, onEdit, onDelete }) {
+const knownError = (message, t) => {
+  if (/stale_quote/.test(message)) return t('characterErrorStaleQuote');
+  if (/insufficient_credits/.test(message)) return t('characterErrorInsufficientCredits');
+  if (/no_slots/.test(message)) return t('characterErrorNoSlots');
+  return t('characterSubmitFailed');
+};
+
+const localizeErrors = (errors, t) => Object.fromEntries(Object.entries(errors).map(([field, error]) => {
+  const keys = {
+    'Enter a valid name or choose Surprise me': 'characterValidationNameRequired',
+    'Keep names under 40 characters': 'characterValidationNameLength',
+    'Choose a valid type or Surprise me': 'characterValidationType',
+    'Choose a valid gender or Surprise me': 'characterValidationGender',
+    'Choose valid traits': 'characterValidationTraits',
+    'Choose up to 5 traits': 'characterValidationTraitsLength',
+    'Enter details as text': 'characterValidationDetails',
+    'Keep details under 300 characters': 'characterValidationDetailsLength',
+  };
+  return [field, t(keys[error] || 'characterSubmitFailed')];
+}));
+
+export default function CharacterWizard({ uid, mode = 'create', targetCharacterId = null, onDone, onEdit }) {
   const { t } = useI18n();
   const [step, setStep] = useState('identity');
   const [inputs, setInputs] = useState(INITIAL_CHARACTER_INPUTS);
   const [quote, setQuote] = useState(null);
   const [job, setJob] = useState(null);
   const [result, setResult] = useState(null);
+  const [resultCharacterId, setResultCharacterId] = useState(null);
+  const [retryResultLoad, setRetryResultLoad] = useState(false);
   const [errors, setErrors] = useState({});
   const [reviewError, setReviewError] = useState('');
   const [showPaidDialog, setShowPaidDialog] = useState(false);
@@ -59,13 +82,13 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
 
   const continueIdentity = () => {
     const nextErrors = validateIdentity(inputs);
-    setErrors(nextErrors);
+    setErrors(localizeErrors(nextErrors, t));
     if (!Object.keys(nextErrors).length) setStep('personality');
   };
 
   const continuePersonality = async () => {
     const nextErrors = validatePersonality(inputs);
-    setErrors(nextErrors);
+    setErrors(localizeErrors(nextErrors, t));
     if (Object.keys(nextErrors).length) return;
     try {
       setReviewError('');
@@ -107,7 +130,7 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
     } catch (error) {
       const message = String(error?.message || '');
       if (/stale_quote|insufficient_credits|no_slots/.test(message)) {
-        setReviewError(message);
+        setReviewError(knownError(message, t));
         setShowPaidDialog(false);
       } else {
         setReviewError(t('characterSubmitFailed'));
@@ -116,16 +139,60 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
     }
   };
 
-  const completed = useCallback((completedJob) => {
-    clearPendingJob(uid);
-    setResult(completedJob.character || completedJob.result || completedJob);
-    setStep('result');
+  const completed = useCallback(async (completedJob) => {
+    if (!completedJob.character_id) {
+      setSubmitting(false);
+      setStep('failed');
+      return;
+    }
+    try {
+      setJob(completedJob);
+      const character = await characterApi.get(completedJob.character_id);
+      clearPendingJob(uid);
+      setResultCharacterId(completedJob.character_id);
+      setRetryResultLoad(false);
+      setResult(character);
+      setStep('result');
+    } catch {
+      setSubmitting(false);
+      setRetryResultLoad(true);
+      setStep('failed');
+    }
   }, [uid]);
 
   const failed = useCallback(() => {
     clearPendingJob(uid);
+    setSubmitting(false);
+    setRetryResultLoad(false);
     setStep('failed');
   }, [uid]);
+
+  const retry = async () => {
+    setSubmitting(false);
+    setReviewError('');
+    if (retryResultLoad && job?.status === 'completed') {
+      setStep('generating');
+      return;
+    }
+    try {
+      setQuote(await characterApi.quote(mode, targetCharacterId));
+      setStep('review');
+    } catch {
+      setReviewError(t('characterQuoteFailed'));
+      setStep('personality');
+    }
+  };
+
+  const deleteResult = async () => {
+    const characterId = resultCharacterId || result?.id;
+    if (!characterId || !window.confirm(t('characterDeleteConfirm'))) return;
+    try {
+      await characterApi.remove(characterId);
+      onDone?.();
+    } catch {
+      setReviewError(t('characterDeleteFailed'));
+    }
+  };
 
   const toggleTrait = (trait) => {
     setInputs((current) => ({
@@ -143,23 +210,24 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
   if (step === 'result' && result) {
     const profile = result.profile || result;
     return (
-      <section>
+      <section className="characterResult">
         {result.portrait_url && <img src={result.portrait_url} alt="" />}
         <h1>{profile.name}</h1>
         <p>{profile.profile_summary}</p>
+        {reviewError && <p role="alert">{reviewError}</p>}
         <button type="button" onClick={onDone}>{t('characterDone')}</button>
-        <button type="button" onClick={onEdit}>{t('characterEdit')}</button>
-        <button type="button" onClick={onDelete}>{t('characterDelete')}</button>
+        <button type="button" onClick={() => onEdit?.(resultCharacterId || result.id)}>{t('characterEdit')}</button>
+        <button type="button" onClick={deleteResult}>{t('characterDelete')}</button>
       </section>
     );
   }
 
   if (step === 'failed') {
-    return <section aria-live="polite"><p>{t('characterFailed')}</p><button type="button" onClick={() => setStep('review')}>{t('characterRetry')}</button></section>;
+    return <section className="characterFailure" aria-live="polite"><p>{t('characterFailed')}</p><button type="button" onClick={retry}>{t('characterRetry')}</button></section>;
   }
 
   return (
-    <section>
+    <section className="characterWizard">
       <h1>{t('characterTitle')}</h1>
       <ol aria-label={t('characterSteps')}>
         <li aria-current={step === 'identity' ? 'step' : undefined}>{t('characterIdentity')}</li>
@@ -169,11 +237,11 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
       {step === 'identity' && <>
         <fieldset><legend>{t('characterIdentity')}</legend>
           <label>{t('characterName')}<input value={inputs.name} onChange={(event) => setInputs((current) => ({ ...current, name: event.target.value, surpriseName: false }))} /></label>
-          <button type="button" onClick={() => surprise('name', 'surpriseName')}>{t('characterSurpriseName')}</button>
+          <button type="button" aria-pressed={inputs.surpriseName} onClick={() => surprise('name', 'surpriseName')}>{t('characterSurpriseName')}</button>
           <label>{t('characterType')}<select value={inputs.characterType} onChange={(event) => setInputs((current) => ({ ...current, characterType: event.target.value, surpriseType: false }))}><option value="">{t('characterChoose')}</option>{CHARACTER_TYPES.map((type) => <option key={type} value={type}>{optionLabel(type, 'characterType', t)}</option>)}</select></label>
-          <button type="button" onClick={() => surprise('characterType', 'surpriseType')}>{t('characterSurpriseType')}</button>
+          <button type="button" aria-pressed={inputs.surpriseType} onClick={() => surprise('characterType', 'surpriseType')}>{t('characterSurpriseType')}</button>
           <label>{t('characterGender')}<select value={inputs.gender} onChange={(event) => setInputs((current) => ({ ...current, gender: event.target.value, surpriseGender: false }))}>{CHARACTER_GENDERS.map((gender) => <option key={gender} value={gender}>{optionLabel(gender, 'characterGender', t)}</option>)}</select></label>
-          <button type="button" onClick={() => surprise('gender', 'surpriseGender')}>{t('characterSurpriseGender')}</button>
+          <button type="button" aria-pressed={inputs.surpriseGender} onClick={() => surprise('gender', 'surpriseGender')}>{t('characterSurpriseGender')}</button>
         </fieldset>
         {Object.values(errors).map((error) => <p key={error} role="alert">{error}</p>)}
         <button type="button" onClick={continueIdentity}>{t('characterContinue')}</button>
@@ -182,6 +250,7 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
         <fieldset><legend>{t('characterTraits')}</legend>{CHARACTER_TRAITS.map((trait) => <button type="button" key={trait} aria-pressed={inputs.traits.includes(trait)} onClick={() => toggleTrait(trait)}>{optionLabel(trait, 'characterTrait', t)}</button>)}</fieldset>
         <label>{t('characterDetails')}<textarea value={inputs.customDescription} onChange={(event) => updateInput('customDescription', event.target.value)} /></label>
         {Object.values(errors).map((error) => <p key={error} role="alert">{error}</p>)}
+        {reviewError && <p className="characterError" role="alert">{reviewError}</p>}
         <button type="button" onClick={() => setStep('identity')}>{t('characterBack')}</button>
         <button type="button" onClick={continuePersonality}>{t('characterContinue')}</button>
       </>}
@@ -192,7 +261,7 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
         {reviewError && <p role="alert">{reviewError}</p>}
         <button type="button" onClick={() => setStep('personality')} disabled={submitting}>{t('characterBack')}</button>
         <button type="button" onClick={() => quote.credit_cost > 0 ? setShowPaidDialog(true) : submit()} disabled={submitting}>{t('characterCreate')}</button>
-        {showPaidDialog && <PaidGenerationDialog quote={quote} onConfirm={submit} onCancel={() => setShowPaidDialog(false)} confirming={submitting} title={t('characterPaidTitle')} confirmLabel={t('characterConfirm')} cancelLabel={t('characterCancel')} />}
+        {showPaidDialog && <PaidGenerationDialog quote={quote} onConfirm={submit} onCancel={() => setShowPaidDialog(false)} confirming={submitting} title={t('characterPaidTitle')} body={t('characterPaidBody')} confirmLabel={t('characterConfirm')} cancelLabel={t('characterCancel')} />}
       </>}
     </section>
   );

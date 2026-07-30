@@ -14,6 +14,108 @@
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.22);
 }
 
+:global(.characterWizard),
+:global(.characterResult),
+:global(.characterFailure),
+:global(.characterProgress) {
+  display: grid;
+  gap: 16px;
+}
+
+:global(.characterWizard ol) {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+:global(.characterWizard li) {
+  color: var(--color-text-muted);
+}
+
+:global(.characterWizard li[aria-current='step']) {
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+:global(.characterWizard fieldset) {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+:global(.characterWizard label) {
+  display: grid;
+  gap: 6px;
+}
+
+:global(.characterWizard input),
+:global(.characterWizard select),
+:global(.characterWizard textarea) {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-card);
+  color: var(--color-text-light);
+  padding: 10px;
+}
+
+:global(.characterWizard button),
+:global(.characterResult button),
+:global(.characterFailure button),
+:global(.characterPaidDialog button) {
+  min-height: 44px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-card);
+  color: var(--color-text-light);
+  padding: 8px 12px;
+}
+
+:global(.characterWizard button[aria-pressed='true']) {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 20%, var(--color-bg-card));
+}
+
+:global(.characterWizard button:focus-visible),
+:global(.characterResult button:focus-visible),
+:global(.characterFailure button:focus-visible),
+:global(.characterPaidDialog button:focus-visible),
+:global(.characterWizard input:focus-visible),
+:global(.characterWizard select:focus-visible),
+:global(.characterWizard textarea:focus-visible) {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+:global(.characterError),
+:global(.characterWizard [role='alert']) {
+  margin: 0;
+  color: var(--color-error, #ff9d9d);
+  font-weight: 600;
+}
+
+:global(.characterPaidDialog) {
+  position: fixed;
+  z-index: 10;
+  inset: auto 16px calc(16px + env(safe-area-inset-bottom));
+  max-width: 480px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-card);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
+}
+
+:global(.characterProgress) {
+  min-height: 120px;
+  place-content: center;
+  text-align: center;
+}
+
 @media (max-width: 520px) {
   .page { padding-inline: 12px; }
   .card { padding: 18px; }
