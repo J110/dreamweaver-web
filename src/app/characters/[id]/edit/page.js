@@ -6,6 +6,7 @@ import { getUser, isLoggedIn } from '@/utils/auth';
 import { characterApi } from '@/utils/api';
 import CharacterWizard from '@/components/characters/CharacterWizard';
 import styles from '../../create/page.module.css';
+import { useI18n } from '@/utils/i18n';
 
 const inputsFor = (character) => {
   const profile = character.profile || character;
@@ -20,6 +21,7 @@ const inputsFor = (character) => {
 
 export default function EditCharacterPage({ params }) {
   const router = useRouter();
+  const { t } = useI18n();
   const [user, setUser] = useState(null);
   const [character, setCharacter] = useState(null);
   const [error, setError] = useState('');
@@ -31,11 +33,11 @@ export default function EditCharacterPage({ params }) {
       return;
     }
     setUser(getUser());
-    characterApi.get(params.id).then(setCharacter).catch(() => setError('Unable to load this character.'));
+    characterApi.get(params.id).then(setCharacter).catch(() => setError(t('characterLoadFailed')));
   }, [params.id, router]);
 
   if (error) return <main><p role="alert">{error}</p></main>;
-  if (!user || !character) return <main aria-live="polite"><p>Loading character…</p></main>;
+  if (!user || !character) return <main aria-live="polite"><p>{t('characterLoading')}</p></main>;
   const profile = character.profile || character;
-  return <main className={styles.page}><div className={styles.card}>{character.portrait_url && <img src={character.portrait_url} alt="" />}<h1>{profile.name}</h1><p>{profile.profile_summary}</p><CharacterWizard key={wizardVersion} uid={user.uid || user.id} mode="edit" targetCharacterId={params.id} initialInputs={inputsFor(character)} onDone={() => router.replace(`/characters/${params.id}`)} onEdit={() => setWizardVersion((version) => version + 1)} onDelete={() => router.replace('/my-stories')} /></div></main>;
+  return <main className={styles.page}><div className={styles.card}>{character.portrait_url && <img className={styles.editPortrait} src={character.portrait_url} alt="" />}<h1>{profile.name}</h1><p>{profile.profile_summary}</p><CharacterWizard key={wizardVersion} uid={user.uid || user.id} mode="edit" targetCharacterId={params.id} initialInputs={inputsFor(character)} onResult={setCharacter} onDone={() => router.replace(`/characters/${params.id}`)} onEdit={() => setWizardVersion((version) => version + 1)} onDelete={() => router.replace('/my-stories')} /></div></main>;
 }

@@ -125,6 +125,8 @@
   object-fit: cover;
 }
 
+.editPortrait { width: 100%; max-width: 320px; height: min(72vw, 320px); object-fit: cover; border-radius: var(--radius-md); }
+
 @media (max-width: 520px) {
   .page { padding-inline: 12px; }
   .card { padding: 18px; }

@@ -24,7 +24,7 @@ export default function CharacterDetailPage({ params }) {
     if (!confirming) return undefined;
     (deleting ? dialog.current : cancel.current)?.focus();
     return () => trigger.current?.focus();
-  }, [confirming]);
+  }, [confirming, deleting]);
 
   useEffect(() => {
     if (!isLoggedIn()) {

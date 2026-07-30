@@ -55,7 +55,7 @@ const quoteForMode = (quote, mode) => mode === 'edit'
   ? { ...quote, credit_cost: 2, credits_after: Math.max(0, quote.credits_before - 2) }
   : quote;
 
-export default function CharacterWizard({ uid, mode = 'create', targetCharacterId = null, initialInputs, onDone, onEdit, onDelete }) {
+export default function CharacterWizard({ uid, mode = 'create', targetCharacterId = null, initialInputs, onDone, onEdit, onDelete, onResult }) {
   const { t } = useI18n();
   const [step, setStep] = useState('identity');
   const [inputs, setInputs] = useState(() => ({ ...INITIAL_CHARACTER_INPUTS, ...initialInputs }));
@@ -174,6 +174,7 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
       const character = await characterApi.get(completedJob.character_id);
       clearPendingJob(uid);
       setResultCharacterId(completedJob.character_id);
+      onResult?.(character);
       setRetryResultLoad(false);
       setResult(character);
       setStep('result');
@@ -182,7 +183,7 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
       setRetryResultLoad(true);
       setStep('failed');
     }
-  }, [failed, uid]);
+  }, [failed, onResult, uid]);
 
   const transportFailed = useCallback(() => {
     setSubmitting(false);
