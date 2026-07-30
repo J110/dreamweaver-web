@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { getUser, isLoggedIn } from '@/utils/auth';
 import { characterApi } from '@/utils/api';
 import CharacterWizard from '@/components/characters/CharacterWizard';
+import styles from '../../create/page.module.css';
 
 const inputsFor = (character) => {
   const profile = character.profile || character;
@@ -34,5 +35,5 @@ export default function EditCharacterPage({ params }) {
 
   if (error) return <main><p role="alert">{error}</p></main>;
   if (!user || !character) return <main aria-live="polite"><p>Loading character…</p></main>;
-  return <CharacterWizard uid={user.uid || user.id} mode="edit" targetCharacterId={params.id} initialInputs={inputsFor(character)} onDone={() => router.replace(`/characters/${params.id}`)} />;
+  return <main className={styles.page}><div className={styles.card}><CharacterWizard uid={user.uid || user.id} mode="edit" targetCharacterId={params.id} initialInputs={inputsFor(character)} onDone={() => router.replace(`/characters/${params.id}`)} onEdit={() => router.replace(`/characters/${params.id}/edit`)} onDelete={() => router.replace('/my-stories')} /></div></main>;
 }

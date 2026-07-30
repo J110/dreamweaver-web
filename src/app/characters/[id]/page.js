@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getUser, isLoggedIn } from '@/utils/auth';
@@ -13,6 +13,16 @@ export default function CharacterDetailPage({ params }) {
   const [error, setError] = useState('');
   const [confirming, setConfirming] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
+  const trigger = useRef(null);
+  const dialog = useRef(null);
+  const cancel = useRef(null);
+
+  useEffect(() => {
+    if (!confirming) return undefined;
+    cancel.current?.focus();
+    return () => trigger.current?.focus();
+  }, [confirming]);
 
   useEffect(() => {
     if (!isLoggedIn()) {
@@ -31,7 +41,7 @@ export default function CharacterDetailPage({ params }) {
       await characterApi.remove(params.id);
       router.replace('/my-stories');
     } catch {
-      setError('Unable to delete this character.');
+      setDeleteError('Unable to delete this character.');
       setConfirming(false);
     } finally {
       setDeleting(false);
@@ -49,11 +59,15 @@ export default function CharacterDetailPage({ params }) {
     <p>{profile.character_type} · {(profile.traits || []).join(' · ')}</p>
     <div className={styles.actions}>
       <Link href={`/characters/${params.id}/edit`}>Edit</Link>
-      <button type="button" onClick={() => setConfirming(true)}>Delete Character</button>
+      <button ref={trigger} type="button" onClick={() => setConfirming(true)}>Delete Character</button>
     </div>
-    {confirming && <div className={styles.dialog} role="dialog" aria-modal="true" aria-label="Delete character">
+    {deleteError && <p role="alert">{deleteError}</p>}
+    {confirming && <div ref={dialog} className={styles.dialog} role="dialog" aria-modal="true" aria-label="Delete character" onKeyDown={(event) => {
+      if (event.key === 'Escape' && !deleting) { event.preventDefault(); setConfirming(false); }
+      if (event.key === 'Tab') { const buttons = dialog.current?.querySelectorAll('button:not([disabled])') || []; if (!buttons.length) { event.preventDefault(); return; } const first = buttons[0]; const last = buttons[buttons.length - 1]; if ((!event.shiftKey && document.activeElement === last) || (event.shiftKey && document.activeElement === first)) { event.preventDefault(); (event.shiftKey ? last : first).focus(); } }
+    }}>
       <p>Delete {profile.name}? This cannot be undone.</p>
-      <button type="button" onClick={() => setConfirming(false)} disabled={deleting}>Cancel</button>
+      <button ref={cancel} type="button" onClick={() => setConfirming(false)} disabled={deleting}>Cancel</button>
       <button type="button" onClick={remove} disabled={deleting}>Delete</button>
     </div>}
   </article></main>;

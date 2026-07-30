@@ -55,7 +55,7 @@ const quoteForMode = (quote, mode) => mode === 'edit'
   ? { ...quote, credit_cost: 2, credits_after: Math.max(0, quote.credits_before - 2) }
   : quote;
 
-export default function CharacterWizard({ uid, mode = 'create', targetCharacterId = null, initialInputs, onDone, onEdit }) {
+export default function CharacterWizard({ uid, mode = 'create', targetCharacterId = null, initialInputs, onDone, onEdit, onDelete }) {
   const { t } = useI18n();
   const [step, setStep] = useState('identity');
   const [inputs, setInputs] = useState(() => ({ ...INITIAL_CHARACTER_INPUTS, ...initialInputs }));
@@ -211,7 +211,7 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
     if (!characterId || !window.confirm(t('characterDeleteConfirm'))) return;
     try {
       await characterApi.remove(characterId);
-      onDone?.();
+      (onDelete || onDone)?.();
     } catch {
       setReviewError(t('characterDeleteFailed'));
     }
