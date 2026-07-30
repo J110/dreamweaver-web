@@ -35,7 +35,7 @@ export default async function Image({ params }) {
       .then((res) => res.arrayBuffer()),
     fetch('https://fonts.gstatic.com/s/quicksand/v37/6xK-dSZaM9iE8KbpRA_LJ3z8mH9BOJvgkP8o18E.ttf')
       .then((res) => res.arrayBuffer()),
-    fetch(new URL('/public/logo-og.png', import.meta.url))
+    fetch(new URL('../../../../public/logo-og.png', import.meta.url))
       .then((res) => res.arrayBuffer()),
   ]);
 
