@@ -2,7 +2,12 @@
 
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { createRoot } from 'react-dom/client';
+import { createRoot, hydrateRoot } from 'react-dom/client';
+
+const { TextEncoder, TextDecoder } = require('util');
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
+const { renderToString } = require('react-dom/server');
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
@@ -133,6 +138,31 @@ test('signed-out users are redirected before the wizard renders', async () => {
   expect(container.textContent).toBe('');
 
   await act(async () => root.unmount());
+  container.remove();
+});
+
+test('server markup hydrates from an unresolved auth state before reading the user', async () => {
+  const serverMarkup = renderToString(<CreateCharacterPage />);
+  expect(serverMarkup).toBe('');
+  expect(mockGetUser).not.toHaveBeenCalled();
+  const container = document.createElement('div');
+  container.innerHTML = serverMarkup;
+  document.body.appendChild(container);
+  const error = jest.spyOn(console, 'error').mockImplementation(() => {});
+  let root;
+
+  await act(async () => {
+    root = hydrateRoot(container, <CreateCharacterPage />);
+    await Promise.resolve();
+    await Promise.resolve();
+  });
+
+  expect(mockGetUser).toHaveBeenCalledTimes(1);
+  expect(container.textContent).toContain('Create Character');
+  expect(error.mock.calls.join(' ')).not.toContain('Hydration failed');
+
+  await act(async () => root.unmount());
+  error.mockRestore();
   container.remove();
 });
 
@@ -389,6 +419,28 @@ test('surprise state is announced and the paid dialog closes on Escape', async (
 
   expect(container.querySelector('[role="dialog"]')).toBeNull();
   expect(document.activeElement).toBe(opener);
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('paid confirmation keeps its focus boundary and ignores Escape while in flight', async () => {
+  mockQuote.mockResolvedValue(PAID_QUOTE);
+  mockCreateGeneration.mockImplementation(() => new Promise(() => {}));
+  const { container, root } = await renderPage();
+
+  await reachReview(container);
+  await click(container, 'Create Character');
+  await click(container, 'Confirm');
+  const dialog = container.querySelector('[role="dialog"]');
+  expect(Array.from(dialog.querySelectorAll('button')).every((button) => button.disabled)).toBe(true);
+  expect(document.activeElement).toBe(dialog);
+  await act(async () => {
+    dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await Promise.resolve();
+  });
+
+  expect(container.querySelector('[role="dialog"]')).toBe(dialog);
+  expect(document.activeElement).toBe(dialog);
   await act(async () => root.unmount());
   container.remove();
 });
