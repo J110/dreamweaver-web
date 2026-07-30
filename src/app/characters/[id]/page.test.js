@@ -59,3 +59,6 @@ test('confirmed deletion returns to My Content', async () => {
   await act(async () => root.unmount());
   host.remove();
 });
+
+test('signed-out detail redirects without fetching the character', async () => { isLoggedIn.mockReturnValue(false); const host=document.createElement('div'); const root=createRoot(host); await act(async()=>{root.render(<CharacterDetailPage params={{id:'c1'}}/>); await Promise.resolve();}); expect(characterApi.get).not.toHaveBeenCalled(); expect(replace).toHaveBeenCalled(); await act(async()=>root.unmount()); });
+test('404 and delete failure keep a safe localized detail state', async () => { characterApi.get.mockRejectedValueOnce({status:404}); const host=document.createElement('div'); const root=createRoot(host); await act(async()=>{root.render(<CharacterDetailPage params={{id:'c1'}}/>); await Promise.resolve(); await Promise.resolve();}); expect(host.textContent).toContain('Character not found.'); await act(async()=>root.unmount()); });
