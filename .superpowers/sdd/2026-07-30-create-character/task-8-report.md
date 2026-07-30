@@ -4,7 +4,7 @@
 
 ```text
 npm test -- --runInBand --runTestsByPath src/components/characters/CharacterCard.test.js 'src/app/characters/[id]/edit/page.test.js' 'src/app/characters/[id]/page.test.js' src/app/my-stories/page.test.js src/app/characters/create/page.test.js src/utils/i18nProvider.test.js
-6 suites, 29 tests passed.
+6 suites, 33 tests passed.
 
 npm run verify:emberlight
 Passed.

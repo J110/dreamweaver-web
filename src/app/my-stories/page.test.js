@@ -156,6 +156,9 @@ test('saved characters appear between creation and locked previews', async () =>
   ]);
 });
 
+test('signed-out visitors do not load saved characters', async () => { isLoggedIn.mockReturnValue(false); await renderPage(); expect(characterApi.list).not.toHaveBeenCalled(); });
+test('character-list failure leaves Favorites and Voices usable', async () => { characterApi.list.mockRejectedValue(new Error('offline')); await renderPage(); expect(headings()).toEqual(['Favorites', 'Characters', 'Voices']); });
+
 test('locked character and voice previews use existing story covers', async () => {
   await renderPage();
 
