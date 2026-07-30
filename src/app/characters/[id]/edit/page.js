@@ -23,6 +23,7 @@ export default function EditCharacterPage({ params }) {
   const [user, setUser] = useState(null);
   const [character, setCharacter] = useState(null);
   const [error, setError] = useState('');
+  const [wizardVersion, setWizardVersion] = useState(0);
 
   useEffect(() => {
     if (!isLoggedIn()) {
@@ -35,5 +36,6 @@ export default function EditCharacterPage({ params }) {
 
   if (error) return <main><p role="alert">{error}</p></main>;
   if (!user || !character) return <main aria-live="polite"><p>Loading character…</p></main>;
-  return <main className={styles.page}><div className={styles.card}><CharacterWizard uid={user.uid || user.id} mode="edit" targetCharacterId={params.id} initialInputs={inputsFor(character)} onDone={() => router.replace(`/characters/${params.id}`)} onEdit={() => router.replace(`/characters/${params.id}/edit`)} onDelete={() => router.replace('/my-stories')} /></div></main>;
+  const profile = character.profile || character;
+  return <main className={styles.page}><div className={styles.card}>{character.portrait_url && <img src={character.portrait_url} alt="" />}<h1>{profile.name}</h1><p>{profile.profile_summary}</p><CharacterWizard key={wizardVersion} uid={user.uid || user.id} mode="edit" targetCharacterId={params.id} initialInputs={inputsFor(character)} onDone={() => router.replace(`/characters/${params.id}`)} onEdit={() => setWizardVersion((version) => version + 1)} onDelete={() => router.replace('/my-stories')} /></div></main>;
 }

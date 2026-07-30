@@ -20,7 +20,7 @@ export default function CharacterDetailPage({ params }) {
 
   useEffect(() => {
     if (!confirming) return undefined;
-    cancel.current?.focus();
+    (deleting ? dialog.current : cancel.current)?.focus();
     return () => trigger.current?.focus();
   }, [confirming]);
 
@@ -64,8 +64,8 @@ export default function CharacterDetailPage({ params }) {
     {deleteError && <p role="alert">{deleteError}</p>}
     {confirming && <div ref={dialog} className={styles.dialog} role="dialog" aria-modal="true" aria-label="Delete character" onKeyDown={(event) => {
       if (event.key === 'Escape' && !deleting) { event.preventDefault(); setConfirming(false); }
-      if (event.key === 'Tab') { const buttons = dialog.current?.querySelectorAll('button:not([disabled])') || []; if (!buttons.length) { event.preventDefault(); return; } const first = buttons[0]; const last = buttons[buttons.length - 1]; if ((!event.shiftKey && document.activeElement === last) || (event.shiftKey && document.activeElement === first)) { event.preventDefault(); (event.shiftKey ? last : first).focus(); } }
-    }}>
+      if (event.key === 'Tab') { const buttons = dialog.current?.querySelectorAll('button:not([disabled])') || []; if (!buttons.length) { event.preventDefault(); dialog.current?.focus(); return; } const first = buttons[0]; const last = buttons[buttons.length - 1]; if ((!event.shiftKey && document.activeElement === last) || (event.shiftKey && document.activeElement === first)) { event.preventDefault(); (event.shiftKey ? last : first).focus(); } }
+    }} tabIndex={-1}>
       <p>Delete {profile.name}? This cannot be undone.</p>
       <button ref={cancel} type="button" onClick={() => setConfirming(false)} disabled={deleting}>Cancel</button>
       <button type="button" onClick={remove} disabled={deleting}>Delete</button>
