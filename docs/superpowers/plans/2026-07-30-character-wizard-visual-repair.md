@@ -51,16 +51,6 @@ test('character wizard only consumes theme variables defined by globals', () => 
 
   expect(Array.from(consumed).filter((name) => !defined.has(name))).toEqual([]);
 });
-
-test('character wizard preserves compact accessible controls', () => {
-  const wizard = read('src/app/characters/create/page.module.css');
-
-  expect(wizard).toContain('min-height: 44px');
-  expect(wizard).toContain('@media (max-width: 520px)');
-  expect(wizard).toContain('var(--dv-hairline)');
-  expect(wizard).toContain('var(--dv-accent)');
-  expect(wizard).toContain('var(--dv-focus)');
-});
 ```
 
 - [ ] **Step 2: Run the focused test and verify the undefined tokens fail**
@@ -374,7 +364,7 @@ dreamweaver-web → online
 dreamweaver-character-worker → online with zero restarts
 ```
 
-Use the in-app browser at a mobile viewport to verify visible borders, filled fields, secondary surprise buttons, a clear primary action, compact spacing, and correct free/premium theme tokens.
+Use the in-app browser at a mobile viewport and inspect computed styles to verify visible borders, filled fields, minimum 44-pixel touch targets, secondary surprise buttons, a clear primary action, compact spacing, and correct free/premium theme tokens.
 
 - [ ] **Step 6: Run post-deploy Guard**
 
