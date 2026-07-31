@@ -268,8 +268,9 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
     return (
       <section className="characterFailure" aria-live="polite">
         <p>{unsafeInput ? t('characterErrorUnsafeInput') : t('characterFailed')}</p>
-        {unsafeInput && <button type="button" onClick={() => { setFailureCode(null); setStep('identity'); }}>{t('characterEditDetails')}</button>}
-        <button type="button" onClick={retry}>{t('characterRetry')}</button>
+        {unsafeInput
+          ? <button type="button" onClick={() => { setFailureCode(null); setStep('identity'); }}>{t('characterEditDetails')}</button>
+          : <button type="button" onClick={retry}>{t('characterRetry')}</button>}
       </section>
     );
   }
@@ -347,7 +348,7 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
           <section className="characterReviewSection">
             <h2>{t('characterGeneration')}</h2>
             <dl>
-              <dt>{t('characterSlot')} </dt><dd>{quote.slot_number} {t('characterOf')} 30</dd>
+              <dt>{t('characterSlot')}</dt>{' '}<dd>{lang === 'hi' ? <>30 {t('characterOf')} {quote.slot_number}</> : <>{quote.slot_number} {t('characterOf')} 30</>}</dd>
               <dt>{t('characterCost')}</dt><dd>{quote.credit_cost === 0 ? t('characterFree') : `${quote.credit_cost} ${t('characterCredits')}`}</dd>
               <dt>{t('characterCurrentCredits')}</dt><dd>{quote.credits_before}</dd>
               <dt>{t('characterCreditsAfter')}</dt><dd>{quote.credits_after}</dd>

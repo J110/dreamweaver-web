@@ -20,6 +20,8 @@ jest.mock('@/utils/characterWizard', () => {
   const actual = jest.requireActual('@/utils/characterWizard');
   return { ...actual, loadPendingJob: jest.fn(), savePendingJob: jest.fn(), clearPendingJob: jest.fn() };
 });
+let mockTestLang = 'en';
+
 jest.mock('@/utils/i18n', () => ({ useI18n: () => ({ t: (key) => ({
   characterTitle: 'Create Character',
   characterIdentity: 'Identity',
@@ -34,7 +36,7 @@ jest.mock('@/utils/i18n', () => ({ useI18n: () => ({ t: (key) => ({
   characterPaidTitle: 'Create for 2 credits?',
   characterPaidBody: 'This uses {cost} credits and leaves {balance} credits.',
   characterSlot: 'Slot',
-  characterOf: 'of',
+  characterOf: mockTestLang === 'hi' ? 'mein se' : 'of',
   characterFree: 'Free',
   characterCredits: 'credits',
   characterDone: 'Done',
@@ -65,7 +67,7 @@ jest.mock('@/utils/i18n', () => ({ useI18n: () => ({ t: (key) => ({
   characterCancel: 'Cancel',
   characterEdit: 'Edit',
   characterDelete: 'Delete',
-}[key] || key), lang: 'en' }) }));
+}[key] || key), lang: mockTestLang }) }));
 jest.mock('./page.module.css', () => ({}));
 
 import CreateCharacterPage from './page';
@@ -141,6 +143,7 @@ const reachReview = async (container) => {
 };
 
 beforeEach(() => {
+  mockTestLang = 'en';
   mockReplace.mockReset();
   mockPush.mockReset();
   mockUseRouter.mockReturnValue({ replace: mockReplace, push: mockPush });
@@ -302,6 +305,11 @@ test('review summarizes identity personality and labeled generation details', as
   expect(container.textContent).toContain('Current credits');
   expect(container.textContent).toContain('3');
   expect(container.textContent).toContain('Credits after');
+  expect(container.textContent).toContain('3');
+  const generationDetails = Array.from(container.querySelectorAll('.characterReviewSection')).find((section) => section.textContent.includes('Generation'));
+  expect(Array.from(generationDetails.querySelectorAll('dt, dd')).map((item) => item.textContent)).toEqual([
+    'Slot', '1 of 30', 'Cost', 'Free', 'Current credits', '3', 'Credits after', '3',
+  ]);
 
   await act(async () => root.unmount());
   container.remove();
@@ -321,10 +329,23 @@ test('unsafe input failure offers actionable editing without discarding values',
   await act(async () => { await Promise.resolve(); await Promise.resolve(); });
 
   expect(container.textContent).toContain('Some details cannot be used to create a character. Edit your details and try again.');
+  expect(Array.from(container.querySelectorAll('button')).map((item) => item.textContent)).not.toContain('Retry');
   await click(container, 'Edit details');
   expect(container.querySelector('input').value).toBe('Lumi');
   expect(container.querySelectorAll('select')[0].value).toBe('fox');
   expect(container.querySelectorAll('select')[1].value).toBe('girl');
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('Hindi review renders the slot count before its mein se label', async () => {
+  mockTestLang = 'hi';
+  const { container, root } = await renderPage();
+
+  await reachReview(container);
+
+  expect(container.textContent).toContain('Slot 30 mein se 1');
 
   await act(async () => root.unmount());
   container.remove();
