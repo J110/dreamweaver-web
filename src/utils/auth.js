@@ -260,6 +260,8 @@ export const logout = () => {
   const serverRevoke = import('./api')
     .then(({ authApi }) => authApi.serverLogout())
     .catch(() => { /* ignore */ });
+  try { window.DreamValleyAuth?.clearToken?.(); } catch { /* ignore */ }
+  try { window.DreamValleyPurchase?.logout?.(); } catch { /* ignore */ }
   removeToken();
   removeUser();
   clearEffectivePremium(window.localStorage, window);

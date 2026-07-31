@@ -7,7 +7,7 @@ test('native upgrade renders StoreKit plans inside the Emberlight page', () => {
 
   expect(source).toContain('getNativeOfferings');
   expect(source).toContain('purchaseNative');
-  expect(source).toContain('<NativePaywall router={router} />');
+  expect(source).toContain("restoreRequested={searchParams.get('restore') === '1'}");
   expect(source).toContain('returnToIntent(router)');
   expect(source).toContain('Start my 7-day free trial');
   expect(source).toContain('isAmbiguousPurchaseResult(result)');

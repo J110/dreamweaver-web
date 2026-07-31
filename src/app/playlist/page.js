@@ -306,7 +306,7 @@ export default function PlaylistPage() {
           // eslint-disable-next-line @next/next/no-img-element
           <img src={cover} alt={current?.title || ''} style={coverImgStyle} />
         ) : (
-          <div style={{ ...coverImgStyle, background: '#312e81', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 64 }}>
+          <div style={{ ...coverImgStyle, background: 'var(--dv-surface-raised)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 64 }}>
             🌙
           </div>
         )}
@@ -375,20 +375,20 @@ export default function PlaylistPage() {
 
 function Centered({ children }) {
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', background: '#08061e', padding: 24, textAlign: 'center' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--dv-text)', background: 'var(--dv-bg)', padding: 24, textAlign: 'center' }}>
       {children}
     </div>
   );
 }
 
 const pageStyle = {
-  minHeight: '100vh', background: 'linear-gradient(180deg, #08061e 0%, #1e1b4b 100%)',
-  color: '#fff', padding: '16px 16px 80px', display: 'flex', flexDirection: 'column', alignItems: 'center',
+  minHeight: '100vh', background: 'linear-gradient(180deg, var(--dv-bg) 0%, var(--dv-bg-raised) 100%)',
+  color: 'var(--dv-text)', padding: '16px 16px 80px', display: 'flex', flexDirection: 'column', alignItems: 'center',
 };
 const headerStyle = { width: '100%', maxWidth: 480, display: 'flex', alignItems: 'center', gap: 8 };
 const closeBtnStyle = {
   width: 32, height: 32, borderRadius: 16, border: 'none',
-  background: 'rgba(255,255,255,0.1)', color: '#fff', fontSize: 20, cursor: 'pointer',
+  background: 'var(--dv-soft-accent)', color: 'var(--dv-text)', fontSize: 20, cursor: 'pointer',
 };
 const coverWrapStyle = { width: '100%', maxWidth: 320, marginTop: 16, aspectRatio: '1 / 1' };
 const coverImgStyle = { width: '100%', height: '100%', borderRadius: 24, objectFit: 'cover', boxShadow: '0 16px 48px rgba(0,0,0,0.5)' };
@@ -396,31 +396,31 @@ const titleStyle = { fontSize: 20, fontWeight: 700, marginTop: 24, textAlign: 'c
 const slotStyle = { fontSize: 13, opacity: 0.75, marginTop: 6, display: 'flex', alignItems: 'center', gap: 8 };
 const badgeStyle = {
   fontSize: 11, padding: '2px 8px', borderRadius: 10,
-  background: 'rgba(245,158,11,0.2)', color: '#fbbf24',
+  background: 'var(--dv-soft-accent)', color: 'var(--dv-accent)',
 };
 const controlsStyle = { display: 'flex', alignItems: 'center', gap: 24, marginTop: 24 };
 const ctrlBtnStyle = {
   width: 56, height: 56, borderRadius: 28, border: 'none',
-  background: 'rgba(255,255,255,0.1)', color: '#fff', fontSize: 22, cursor: 'pointer',
+  background: 'var(--dv-soft-accent)', color: 'var(--dv-text)', fontSize: 22, cursor: 'pointer',
 };
 const playPauseStyle = {
   width: 72, height: 72, borderRadius: 36, border: 'none',
-  background: 'linear-gradient(135deg, #f59e0b, #ef4444)', color: '#fff',
+  background: 'linear-gradient(135deg, var(--dv-accent), var(--dv-accent-pressed))', color: 'var(--dv-bg)',
   fontSize: 30, cursor: 'pointer',
 };
 const queueStyle = {
-  marginTop: 32, width: '100%', maxWidth: 480, background: 'rgba(255,255,255,0.04)',
+  marginTop: 32, width: '100%', maxWidth: 480, background: 'var(--dv-soft-accent)',
   borderRadius: 16, padding: 12, display: 'flex', flexDirection: 'column', gap: 4,
 };
 const queueItemStyle = {
   display: 'flex', alignItems: 'center', gap: 8, padding: '10px 8px',
   borderRadius: 8, fontSize: 14, cursor: 'pointer',
 };
-const miniBadgeStyle = { color: '#fbbf24', fontSize: 16 };
+const miniBadgeStyle = { color: 'var(--dv-accent)', fontSize: 16 };
 const noteStyle = { marginTop: 16, fontSize: 12, opacity: 0.6, textAlign: 'center', maxWidth: 480 };
 const safetyBannerStyle = {
   marginTop: 12, width: '100%', maxWidth: 480, padding: '10px 14px',
-  borderRadius: 12, background: 'rgba(99,102,241,0.14)', color: '#c7d2fe',
+  borderRadius: 12, background: 'var(--dv-soft-accent)', color: 'var(--dv-text-dim)',
   fontSize: 12, textAlign: 'center', lineHeight: 1.45,
 };
 const skipMessageStyle = {
@@ -429,15 +429,15 @@ const skipMessageStyle = {
   fontSize: 12, textAlign: 'center',
 };
 const resumeOverlayStyle = {
-  position: 'fixed', inset: 0, background: 'rgba(8,6,30,0.85)',
+  position: 'fixed', inset: 0, background: 'color-mix(in srgb, var(--dv-bg) 85%, transparent)',
   backdropFilter: 'blur(4px)', zIndex: 1000,
   display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24,
   cursor: 'pointer',
 };
 const resumeBtnStyle = {
   width: '100%', maxWidth: 360, padding: '28px 24px', borderRadius: 20,
-  border: 'none', cursor: 'pointer', color: '#fff',
-  background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+  border: 'none', cursor: 'pointer', color: 'var(--dv-bg)',
+  background: 'linear-gradient(135deg, var(--dv-accent), var(--dv-accent-pressed))',
   boxShadow: '0 16px 48px rgba(0,0,0,0.5)',
 };
 const resumePrimaryStyle = { fontSize: 22, fontWeight: 700, lineHeight: 1.2 };
