@@ -55,13 +55,15 @@ function PlanOption({ pkg, label, selected, best, onSelect, disabled }) {
   );
 }
 
-function NativePaywall({ router }) {
+function NativePaywall({ router, restoreRequested }) {
   const [offerings, setOfferings] = useState(undefined);
   const [plan, setPlan] = useState('annual');
   const [phase, setPhase] = useState('idle');
   const [error, setError] = useState(null);
   const [showEmailRestore, setShowEmailRestore] = useState(false);
   const abortRef = useRef(null);
+  const routeTimerRef = useRef(null);
+  const autoRestoreStartedRef = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -71,10 +73,11 @@ function NativePaywall({ router }) {
     return () => {
       cancelled = true;
       abortRef.current?.abort();
+      if (routeTimerRef.current) clearTimeout(routeTimerRef.current);
     };
   }, []);
 
-  async function confirmAndRoute(controller, { ambiguous = false } = {}) {
+  async function confirmAndRoute(controller, { ambiguous = false, restored = false } = {}) {
     setPhase('confirming');
     let status = 'failed';
     try {
@@ -107,12 +110,19 @@ function NativePaywall({ router }) {
     }
 
     if (controller.signal.aborted) return;
-    setPhase('idle');
     if (status === 'premium') {
-      returnToIntent(router);
+      if (restored) {
+        setPhase('restored');
+        routeTimerRef.current = setTimeout(() => returnToIntent(router), 1600);
+      } else {
+        setPhase('idle');
+        returnToIntent(router);
+      }
     } else if (status === 'failed') {
+      setPhase('idle');
       setError('We couldn’t confirm your subscription. Please try again.');
     } else {
+      setPhase('idle');
       setError('Payment received — your subscription is activating and will unlock automatically in a moment.');
     }
   }
@@ -163,6 +173,22 @@ function NativePaywall({ router }) {
     abortRef.current = null;
   }
 
+  useEffect(() => {
+    if (!restoreRequested || autoRestoreStartedRef.current || offerings === undefined) return;
+    autoRestoreStartedRef.current = true;
+    handleRestore();
+  }, [offerings, restoreRequested]);
+
+  if (phase === 'restored') {
+    return (
+      <div className={styles.restoreSuccess} role="status">
+        <div className={styles.restoreCheckmark} aria-hidden>✓</div>
+        <h2 className={styles.restoreTitle}>Subscription restored</h2>
+        <p className={styles.restoreCopy}>Welcome to Dream Valley Premium.</p>
+      </div>
+    );
+  }
+
   async function handleRestore() {
     setError(null);
     setShowEmailRestore(false);
@@ -194,7 +220,7 @@ function NativePaywall({ router }) {
 
     const controller = new AbortController();
     abortRef.current = controller;
-    await confirmAndRoute(controller);
+    await confirmAndRoute(controller, { restored: true });
     abortRef.current = null;
   }
 
@@ -208,8 +234,12 @@ function NativePaywall({ router }) {
         <p className={styles.nativeText}>
           Subscription plans are temporarily unavailable. Please try again shortly.
         </p>
-        <button className={styles.restoreBtn} onClick={handleRestore}>
-          Restore subscription
+        <button
+          className={styles.restoreBtn}
+          onClick={() => router.push('/restore?iap=1')}
+          disabled={phase !== 'idle'}
+        >
+          {phase === 'restoring' ? 'Restoring…' : 'Restore subscription'}
         </button>
         {error && <p className={styles.errorMsg}>{error}</p>}
       </div>
@@ -263,7 +293,7 @@ function NativePaywall({ router }) {
       {error && <p className={styles.errorMsg}>{error}</p>}
 
       <p className={styles.nativeText}>Already subscribed?</p>
-      <button className={styles.restoreBtn} onClick={handleRestore} disabled={busy}>
+      <button className={styles.restoreBtn} onClick={() => router.push('/restore?iap=1')} disabled={busy}>
         {phase === 'restoring' ? 'Restoring…' : 'Restore subscription'}
       </button>
       {showEmailRestore && (
@@ -382,7 +412,10 @@ function UpgradeInner() {
 
         <div className={styles.ctaGroup}>
           {native ? (
-            <NativePaywall router={router} />
+            <NativePaywall
+              router={router}
+              restoreRequested={searchParams.get('restore') === '1'}
+            />
           ) : (
             <>
               <button

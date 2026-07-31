@@ -260,6 +260,41 @@
   border-radius: 14px;
 }
 
+.restoreSuccess {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 28px 20px;
+  border: 1px solid var(--ember-border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--ember) 10%, var(--surface));
+}
+
+.restoreCheckmark {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--ember);
+  color: var(--ink);
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.restoreTitle {
+  margin: 0;
+  color: var(--cream);
+  font-size: 1.35rem;
+}
+
+.restoreCopy {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
 .planList {
   display: flex;
   flex-direction: column;

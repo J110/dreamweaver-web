@@ -164,7 +164,10 @@ export default function RestorePage() {
   async function goSuccess() {
     setStage('success');
     try { await subscriptionApi.getCurrent(); } catch { /* best-effort entitlement refresh */ }
-    redirectTimer.current = setTimeout(() => { window.location.assign('/'); }, 1600);
+    const continueIapRestore = new URLSearchParams(window.location.search).get('iap') === '1';
+    redirectTimer.current = setTimeout(() => {
+      window.location.assign(continueIapRestore ? '/upgrade?restore=1' : '/');
+    }, 1600);
   }
 
   return (
