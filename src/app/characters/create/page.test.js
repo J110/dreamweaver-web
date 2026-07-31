@@ -166,6 +166,43 @@ test('server markup hydrates from an unresolved auth state before reading the us
   container.remove();
 });
 
+test('numbered stepper fills completed steps and highlights the current step', async () => {
+  const { container, root } = await renderPage();
+  const stepStates = () => Array.from(container.querySelectorAll('ol > li')).map((item) => ({
+    number: item.querySelector('.characterStepNumber')?.textContent,
+    state: item.getAttribute('data-step-state'),
+    current: item.getAttribute('aria-current'),
+  }));
+
+  expect(stepStates()).toEqual([
+    { number: '1', state: 'current', current: 'step' },
+    { number: '2', state: 'upcoming', current: null },
+    { number: '3', state: 'upcoming', current: null },
+  ]);
+
+  await click(container, 'Surprise name');
+  await click(container, 'Surprise type');
+  await click(container, 'Surprise gender');
+  await click(container, 'Continue');
+
+  expect(stepStates()).toEqual([
+    { number: '1', state: 'completed', current: null },
+    { number: '2', state: 'current', current: 'step' },
+    { number: '3', state: 'upcoming', current: null },
+  ]);
+
+  await click(container, 'Continue');
+
+  expect(stepStates()).toEqual([
+    { number: '1', state: 'completed', current: null },
+    { number: '2', state: 'completed', current: null },
+    { number: '3', state: 'current', current: 'step' },
+  ]);
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
 test('identity and personality advance to a free review quote', async () => {
   const { container, root } = await renderPage();
 

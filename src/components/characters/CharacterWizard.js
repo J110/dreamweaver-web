@@ -254,13 +254,34 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
     return <section className="characterFailure" aria-live="polite"><p>{t('characterConnectionFailed')}</p><button type="button" onClick={() => { setConnectionInterrupted(false); setStep('generating'); }}>{t('characterRetry')}</button></section>;
   }
 
+  const wizardSteps = [
+    { id: 'identity', label: t('characterIdentity') },
+    { id: 'personality', label: t('characterPersonality') },
+    { id: 'review', label: t(mode === 'edit' ? 'characterEditReview' : 'characterReview') },
+  ];
+  const currentStepIndex = wizardSteps.findIndex((item) => item.id === step);
+
   return (
     <section className="characterWizard">
       <h1>{t(mode === 'edit' ? 'characterEditTitle' : 'characterTitle')}</h1>
       <ol aria-label={t('characterSteps')}>
-        <li aria-current={step === 'identity' ? 'step' : undefined}>{t('characterIdentity')}</li>
-        <li aria-current={step === 'personality' ? 'step' : undefined}>{t('characterPersonality')}</li>
-        <li aria-current={step === 'review' ? 'step' : undefined}>{t(mode === 'edit' ? 'characterEditReview' : 'characterReview')}</li>
+        {wizardSteps.map((item, index) => {
+          const stepState = index < currentStepIndex
+            ? 'completed'
+            : index === currentStepIndex
+              ? 'current'
+              : 'upcoming';
+          return (
+            <li
+              key={item.id}
+              data-step-state={stepState}
+              aria-current={stepState === 'current' ? 'step' : undefined}
+            >
+              <span className="characterStepNumber">{index + 1}</span>
+              <span>{item.label}</span>
+            </li>
+          );
+        })}
       </ol>
       {step === 'identity' && <>
         <fieldset><legend>{t('characterIdentity')}</legend>

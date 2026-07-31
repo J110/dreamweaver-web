@@ -29,20 +29,64 @@
 }
 
 .card :global(.characterWizard ol) {
-  display: flex;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
   margin: 4px 0 0;
   padding: 0;
   list-style: none;
 }
 
 .card :global(.characterWizard li) {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  min-width: 0;
   color: var(--dv-text-dim);
+  text-align: center;
 }
 
-.card :global(.characterWizard li[aria-current='step']) {
+.card :global(.characterWizard li:not(:last-child)::after) {
+  position: absolute;
+  z-index: 0;
+  top: 16px;
+  left: calc(50% + 20px);
+  width: calc(100% - 32px);
+  height: 1px;
+  background: var(--dv-hairline);
+  content: '';
+}
+
+.card :global(.characterStepNumber) {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 2px solid var(--dv-control-border);
+  border-radius: 50%;
+  background: var(--dv-surface);
+  color: var(--dv-text-dim);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.card :global(.characterWizard li[data-step-state='completed'] .characterStepNumber),
+.card :global(.characterWizard li[data-step-state='current'] .characterStepNumber) {
+  border-color: var(--dv-accent);
+  background: var(--dv-accent);
+  color: var(--dv-on-accent);
+}
+
+.card :global(.characterWizard li[data-step-state='current']) {
   color: var(--dv-accent);
   font-weight: 700;
+}
+
+.card :global(.characterWizard li[data-step-state='current'] .characterStepNumber) {
+  box-shadow: 0 0 0 4px var(--dv-soft-accent);
 }
 
 .card :global(.characterWizard fieldset) {
