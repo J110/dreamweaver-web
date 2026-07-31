@@ -34,6 +34,9 @@ jest.mock('@/utils/i18n', () => ({ useI18n: () => ({ t: (key) => ({
   characterPaidTitle: 'Create for 2 credits?',
   characterPaidBody: 'This uses {cost} credits and leaves {balance} credits.',
   characterSlot: 'Slot',
+  characterOf: 'of',
+  characterFree: 'Free',
+  characterCredits: 'credits',
   characterDone: 'Done',
   characterBack: 'Back',
   characterName: 'Name',
@@ -41,6 +44,17 @@ jest.mock('@/utils/i18n', () => ({ useI18n: () => ({ t: (key) => ({
   characterGender: 'Gender',
   characterTraits: 'Traits',
   characterDetails: 'Details',
+  characterGeneration: 'Generation',
+  characterCost: 'Cost',
+  characterCurrentCredits: 'Current credits',
+  characterCreditsAfter: 'Credits after',
+  characterNone: 'None',
+  characterErrorUnsafeInput: 'Some details cannot be used to create a character. Edit your details and try again.',
+  characterEditDetails: 'Edit details',
+  characterTypeFox: 'Fox',
+  characterGenderGirl: 'Girl',
+  characterTraitBrave: 'Brave',
+  characterTraitKind: 'Kind',
   characterGenerating: 'Creating your character…',
   characterFailed: 'Could not create your character',
   characterConnectionFailed: 'Connection interrupted. Your character is still being created.',
@@ -90,6 +104,17 @@ const click = async (container, label) => {
   const button = Array.from(container.querySelectorAll('button')).find((item) => item.textContent === label);
   await act(async () => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await Promise.resolve();
+    await Promise.resolve();
+  });
+};
+
+const changeValue = async (element, value) => {
+  const setter = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(element), 'value').set;
+  await act(async () => {
+    setter.call(element, value);
+    element.dispatchEvent(new Event('input', { bubbles: true }));
+    element.dispatchEvent(new Event('change', { bubbles: true }));
     await Promise.resolve();
     await Promise.resolve();
   });
@@ -210,6 +235,96 @@ test('identity and personality advance to a free review quote', async () => {
 
   expect(container.textContent).toContain('Slot 1 of 30');
   expect(Array.from(container.querySelectorAll('button')).find((item) => item.textContent === 'Create Character').disabled).toBe(false);
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('surprise actions display concrete values and submit them explicitly', async () => {
+  const { container, root } = await renderPage();
+
+  await click(container, 'Surprise name');
+  await click(container, 'Surprise type');
+  await click(container, 'Surprise gender');
+  const [characterType, gender] = container.querySelectorAll('select');
+  const name = container.querySelector('input');
+  expect(name.value).not.toBe('');
+  expect(['human_child', 'cat', 'dog', 'fox', 'rabbit', 'bear', 'bird', 'dragon', 'unicorn', 'robot', 'mermaid', 'fairy', 'nature_spirit']).toContain(characterType.value);
+  expect(['girl', 'boy', 'non_binary', 'not_specified']).toContain(gender.value);
+
+  await click(container, 'Continue');
+  await click(container, 'Continue');
+  await click(container, 'Create Character');
+
+  expect(mockCreateGeneration.mock.calls[0][0].inputs).toMatchObject({
+    name: name.value,
+    character_type: characterType.value,
+    gender: gender.value,
+    surprise_name: false,
+    surprise_type: false,
+    surprise_gender: false,
+  });
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('review summarizes identity personality and labeled generation details', async () => {
+  const { container, root } = await renderPage();
+
+  await changeValue(container.querySelector('input'), 'Lumi');
+  const [characterType, gender] = container.querySelectorAll('select');
+  await changeValue(characterType, 'fox');
+  await changeValue(gender, 'girl');
+  await click(container, 'Continue');
+  await click(container, 'Brave');
+  await click(container, 'Kind');
+  await changeValue(container.querySelector('textarea'), 'A moonlit forest guide.');
+  await click(container, 'Continue');
+
+  expect(container.textContent).toContain('Identity');
+  expect(container.textContent).toContain('Name');
+  expect(container.textContent).toContain('Lumi');
+  expect(container.textContent).toContain('Type');
+  expect(container.textContent).toContain('Fox');
+  expect(container.textContent).toContain('Gender');
+  expect(container.textContent).toContain('Girl');
+  expect(container.textContent).toContain('Personality');
+  expect(container.textContent).toContain('Traits');
+  expect(container.textContent).toContain('Brave, Kind');
+  expect(container.textContent).toContain('Details');
+  expect(container.textContent).toContain('A moonlit forest guide.');
+  expect(container.textContent).toContain('Generation');
+  expect(container.textContent).toContain('Slot');
+  expect(container.textContent).toContain('1 of 30');
+  expect(container.textContent).toContain('Cost');
+  expect(container.textContent).toContain('Free');
+  expect(container.textContent).toContain('Current credits');
+  expect(container.textContent).toContain('3');
+  expect(container.textContent).toContain('Credits after');
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('unsafe input failure offers actionable editing without discarding values', async () => {
+  mockGeneration.mockResolvedValue({ id: 'job-1', status: 'failed', error_code: 'unsafe_input' });
+  const { container, root } = await renderPage();
+
+  await changeValue(container.querySelector('input'), 'Lumi');
+  const [characterType, gender] = container.querySelectorAll('select');
+  await changeValue(characterType, 'fox');
+  await changeValue(gender, 'girl');
+  await click(container, 'Continue');
+  await click(container, 'Continue');
+  await click(container, 'Create Character');
+  await act(async () => { await Promise.resolve(); await Promise.resolve(); });
+
+  expect(container.textContent).toContain('Some details cannot be used to create a character. Edit your details and try again.');
+  await click(container, 'Edit details');
+  expect(container.querySelector('input').value).toBe('Lumi');
+  expect(container.querySelectorAll('select')[0].value).toBe('fox');
+  expect(container.querySelectorAll('select')[1].value).toBe('girl');
 
   await act(async () => root.unmount());
   container.remove();
@@ -429,12 +544,12 @@ test('slow and late polls neither overlap nor update after unmount', async () =>
   jest.useRealTimers();
 });
 
-test('surprise state is announced and the paid dialog closes on Escape', async () => {
+test('surprise values are not toggle actions and the paid dialog closes on Escape', async () => {
   mockQuote.mockResolvedValue(PAID_QUOTE);
   const { container, root } = await renderPage();
 
   await click(container, 'Surprise name');
-  expect(Array.from(container.querySelectorAll('button')).find((item) => item.textContent === 'Surprise name').getAttribute('aria-pressed')).toBe('true');
+  expect(Array.from(container.querySelectorAll('button')).find((item) => item.textContent === 'Surprise name').hasAttribute('aria-pressed')).toBe(false);
   await click(container, 'Surprise type');
   await click(container, 'Surprise gender');
   await click(container, 'Continue');
