@@ -73,7 +73,7 @@
 .card :global(.characterWizard textarea) {
   width: 100%;
   min-height: 48px;
-  border: 1px solid var(--dv-hairline);
+  border: 1px solid var(--dv-control-border);
   border-radius: var(--radius-sm);
   background: var(--dv-surface);
   color: var(--dv-text);
@@ -90,7 +90,7 @@
 .card :global(.characterFailure button),
 .card :global(.characterPaidDialog button) {
   min-height: 44px;
-  border: 1px solid var(--dv-hairline);
+  border: 1px solid var(--dv-control-border);
   border-radius: var(--radius-sm);
   background: var(--dv-surface-raised);
   color: var(--dv-text);
@@ -107,7 +107,7 @@
 .card :global(.characterFailure > button:first-of-type) {
   border-color: var(--dv-accent);
   background: var(--dv-accent);
-  color: var(--dv-text);
+  color: var(--dv-on-accent);
 }
 
 .card :global(.characterWizard button[aria-pressed='true']) {

@@ -33,7 +33,9 @@
   --dv-surface: var(--color-card-dark);
   --dv-surface-raised: #2D2364;
   --dv-accent: var(--color-primary-purple);
+  --dv-on-accent: #F8F6FF;
   --dv-accent-pressed: #5137BE;
+  --dv-control-border: #8D7FE0;
   --dv-text: var(--color-text-light);
   --dv-text-dim: var(--color-text-muted);
   --dv-text-faint: rgba(248, 246, 255, 0.52);
@@ -60,7 +62,9 @@
   --dv-surface: #2C1D20;
   --dv-surface-raised: #3A262A;
   --dv-accent: #D9A05F;
+  --dv-on-accent: #201418;
   --dv-accent-pressed: #A8743F;
+  --dv-control-border: #B88451;
   --dv-text: #F2E6D8;
   --dv-text-dim: #B39A86;
   --dv-text-faint: #8D7568;
