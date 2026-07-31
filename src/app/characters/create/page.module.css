@@ -1,17 +1,17 @@
 .page {
   min-height: 100vh;
-  padding: 24px 16px calc(32px + env(safe-area-inset-bottom));
-  color: var(--color-text-light);
+  padding: 20px 16px calc(104px + env(safe-area-inset-bottom));
+  color: var(--dv-text);
 }
 
 .card {
   width: min(100%, 680px);
   margin: 0 auto;
   padding: 24px;
-  border: 1px solid rgba(255, 220, 151, 0.28);
+  border: 1px solid var(--dv-hairline);
   border-radius: var(--radius-lg);
-  background: color-mix(in srgb, var(--color-bg-card) 92%, transparent);
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.22);
+  background: color-mix(in srgb, var(--dv-surface) 94%, transparent);
+  box-shadow: var(--shadow-lg);
 }
 
 .card :global(.characterWizard),
@@ -22,44 +22,67 @@
   gap: 16px;
 }
 
+.card :global(.characterWizard h1) {
+  margin: 0;
+  font-size: clamp(2rem, 7vw, 3rem);
+  line-height: 1.08;
+}
+
 .card :global(.characterWizard ol) {
   display: flex;
-  gap: 8px;
-  margin: 0;
+  gap: 10px;
+  margin: 4px 0 0;
   padding: 0;
   list-style: none;
 }
 
 .card :global(.characterWizard li) {
-  color: var(--color-text-muted);
+  color: var(--dv-text-dim);
 }
 
 .card :global(.characterWizard li[aria-current='step']) {
-  color: var(--color-accent);
+  color: var(--dv-accent);
   font-weight: 700;
 }
 
 .card :global(.characterWizard fieldset) {
   display: grid;
   gap: 12px;
-  border: 1px solid var(--color-border);
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--dv-hairline);
   border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--dv-surface-raised) 38%, transparent);
+}
+
+.card :global(.characterWizard legend) {
+  padding: 0 8px;
+  color: var(--dv-text);
+  font-weight: 700;
 }
 
 .card :global(.characterWizard label) {
   display: grid;
-  gap: 6px;
+  gap: 7px;
+  color: var(--dv-text-dim);
+  font-weight: 600;
 }
 
 .card :global(.characterWizard input),
 .card :global(.characterWizard select),
 .card :global(.characterWizard textarea) {
   width: 100%;
-  border: 1px solid var(--color-border);
+  min-height: 48px;
+  border: 1px solid var(--dv-hairline);
   border-radius: var(--radius-sm);
-  background: var(--color-bg-card);
-  color: var(--color-text-light);
-  padding: 10px;
+  background: var(--dv-surface);
+  color: var(--dv-text);
+  padding: 11px 12px;
+}
+
+.card :global(.characterWizard textarea) {
+  min-height: 112px;
+  resize: vertical;
 }
 
 .card :global(.characterWizard button),
@@ -67,16 +90,29 @@
 .card :global(.characterFailure button),
 .card :global(.characterPaidDialog button) {
   min-height: 44px;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--dv-hairline);
   border-radius: var(--radius-sm);
-  background: var(--color-bg-card);
-  color: var(--color-text-light);
-  padding: 8px 12px;
+  background: var(--dv-surface-raised);
+  color: var(--dv-text);
+  padding: 9px 14px;
+  font-weight: 700;
+}
+
+.card :global(.characterWizard fieldset > button) {
+  background: var(--dv-soft-accent);
+}
+
+.card :global(.characterWizard > button:last-of-type),
+.card :global(.characterResult > button:first-of-type),
+.card :global(.characterFailure > button:first-of-type) {
+  border-color: var(--dv-accent);
+  background: var(--dv-accent);
+  color: var(--dv-text);
 }
 
 .card :global(.characterWizard button[aria-pressed='true']) {
-  border-color: var(--color-accent);
-  background: color-mix(in srgb, var(--color-accent) 20%, var(--color-bg-card));
+  border-color: var(--dv-accent);
+  background: var(--dv-soft-accent);
 }
 
 .card :global(.characterWizard button:focus-visible),
@@ -86,14 +122,14 @@
 .card :global(.characterWizard input:focus-visible),
 .card :global(.characterWizard select:focus-visible),
 .card :global(.characterWizard textarea:focus-visible) {
-  outline: 3px solid var(--color-accent);
+  outline: 3px solid var(--dv-focus);
   outline-offset: 2px;
 }
 
 .card :global(.characterError),
 .card :global(.characterWizard [role='alert']) {
   margin: 0;
-  color: var(--color-error, #ff9d9d);
+  color: var(--color-error);
   font-weight: 600;
 }
 
@@ -104,10 +140,10 @@
   max-width: 480px;
   margin: auto;
   padding: 20px;
-  border: 1px solid var(--color-accent);
+  border: 1px solid var(--dv-accent);
   border-radius: var(--radius-lg);
-  background: var(--color-bg-card);
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
+  background: var(--dv-surface);
+  box-shadow: var(--shadow-lg);
 }
 
 .card :global(.characterProgress) {
@@ -125,9 +161,33 @@
   object-fit: cover;
 }
 
-.editPortrait { width: 100%; max-width: 320px; height: min(72vw, 320px); object-fit: cover; border-radius: var(--radius-md); }
+.editPortrait {
+  width: 100%;
+  max-width: 320px;
+  height: min(72vw, 320px);
+  border-radius: var(--radius-md);
+  object-fit: cover;
+}
 
 @media (max-width: 520px) {
-  .page { padding-inline: 12px; }
-  .card { padding: 18px; }
+  .page {
+    padding: 14px 12px calc(96px + env(safe-area-inset-bottom));
+  }
+
+  .card {
+    padding: 18px 16px;
+    border-radius: 20px;
+  }
+
+  .card :global(.characterWizard),
+  .card :global(.characterResult),
+  .card :global(.characterFailure),
+  .card :global(.characterProgress) {
+    gap: 13px;
+  }
+
+  .card :global(.characterWizard fieldset) {
+    gap: 10px;
+    padding: 14px 12px;
+  }
 }
