@@ -24,6 +24,9 @@ let mockTestLang = 'en';
 
 jest.mock('@/utils/i18n', () => ({ useI18n: () => ({ t: (key) => ({
   characterTitle: 'Create Character',
+  characterHeroLabel: 'Dream Valley character creator',
+  characterHeroTitle: 'Create a Dream Valley Character',
+  characterHeroSubtitle: 'Bring a new friend into your stories.',
   characterIdentity: 'Identity',
   characterPersonality: 'Personality',
   characterReview: 'Review',
@@ -45,6 +48,8 @@ jest.mock('@/utils/i18n', () => ({ useI18n: () => ({ t: (key) => ({
   characterType: 'Type',
   characterGender: 'Gender',
   characterTraits: 'Traits',
+  characterTraitsHelp: 'Choose up to 5. You can select more than one.',
+  characterTraitsSelected: '{count} of 5 selected',
   characterDetails: 'Details',
   characterGeneration: 'Generation',
   characterCost: 'Cost',
@@ -52,6 +57,10 @@ jest.mock('@/utils/i18n', () => ({ useI18n: () => ({ t: (key) => ({
   characterCreditsAfter: 'Credits after',
   characterNone: 'None',
   characterErrorUnsafeInput: 'Some details cannot be used to create a character. Edit your details and try again.',
+  characterErrorProfileFailed: 'We could not finish the character profile. No slot or credits were used. Please retry.',
+  characterErrorUnsafeProfile: 'The generated profile needs different details. Edit your choices and try again.',
+  characterErrorPortraitFailed: 'The character profile was ready, but the portrait could not be created. No slot or credits were used. Please retry.',
+  characterErrorReference: 'Reference:',
   characterEditDetails: 'Edit details',
   characterTypeFox: 'Fox',
   characterGenderGirl: 'Girl',
@@ -194,6 +203,20 @@ test('server markup hydrates from an unresolved auth state before reading the us
   container.remove();
 });
 
+test('themed character banner appears before the creation wizard', async () => {
+  const { container, root } = await renderPage();
+
+  const banner = container.querySelector('[aria-label="Dream Valley character creator"]');
+  const wizard = container.querySelector('.characterWizard');
+  expect(banner).not.toBeNull();
+  expect(banner.textContent).toContain('Create a Dream Valley Character');
+  expect(banner.textContent).toContain('Bring a new friend into your stories.');
+  expect(banner.compareDocumentPosition(wizard) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
 test('numbered stepper fills completed steps and highlights the current step', async () => {
   const { container, root } = await renderPage();
   const stepStates = () => Array.from(container.querySelectorAll('ol > li')).map((item) => ({
@@ -238,6 +261,57 @@ test('identity and personality advance to a free review quote', async () => {
 
   expect(container.textContent).toContain('Slot 1 of 30');
   expect(Array.from(container.querySelectorAll('button')).find((item) => item.textContent === 'Create Character').disabled).toBe(false);
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('personality traits are compact multi-select chips with visible selection feedback', async () => {
+  const { container, root } = await renderPage();
+
+  await click(container, 'Surprise name');
+  await click(container, 'Surprise type');
+  await click(container, 'Surprise gender');
+  await click(container, 'Continue');
+
+  expect(container.textContent).toContain('Choose up to 5. You can select more than one.');
+  expect(container.textContent).toContain('0 of 5 selected');
+  const brave = Array.from(container.querySelectorAll('button')).find((item) => item.textContent === 'Brave');
+  const kind = Array.from(container.querySelectorAll('button')).find((item) => item.textContent === 'Kind');
+  expect(brave.classList.contains('characterTraitChip')).toBe(true);
+  expect(kind.classList.contains('characterTraitChip')).toBe(true);
+
+  await click(container, 'Brave');
+  await click(container, 'Kind');
+
+  expect(brave.getAttribute('aria-pressed')).toBe('true');
+  expect(kind.getAttribute('aria-pressed')).toBe('true');
+  expect(brave.textContent).toContain('✓');
+  expect(kind.textContent).toContain('✓');
+  expect(container.textContent).toContain('2 of 5 selected');
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('unselected trait chips become disabled when five traits are selected', async () => {
+  const { container, root } = await renderPage();
+
+  await click(container, 'Surprise name');
+  await click(container, 'Surprise type');
+  await click(container, 'Surprise gender');
+  await click(container, 'Continue');
+  const chips = Array.from(container.querySelectorAll('.characterTraitChip'));
+  for (const chip of chips.slice(0, 5)) {
+    await act(async () => {
+      chip.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await Promise.resolve();
+    });
+  }
+
+  expect(chips.slice(0, 5).every((chip) => !chip.disabled)).toBe(true);
+  expect(chips.slice(5).every((chip) => chip.disabled)).toBe(true);
+  expect(container.textContent).toContain('5 of 5 selected');
 
   await act(async () => root.unmount());
   container.remove();
@@ -334,6 +408,55 @@ test('unsafe input failure offers actionable editing without discarding values',
   expect(container.querySelector('input').value).toBe('Lumi');
   expect(container.querySelectorAll('select')[0].value).toBe('fox');
   expect(container.querySelectorAll('select')[1].value).toBe('girl');
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test.each([
+  ['invalid_profile', 'We could not finish the character profile. No slot or credits were used. Please retry.', 'Retry'],
+  ['profile_failed', 'We could not finish the character profile. No slot or credits were used. Please retry.', 'Retry'],
+  ['unsafe_profile', 'The generated profile needs different details. Edit your choices and try again.', 'Edit details'],
+  ['portrait_failed', 'The character profile was ready, but the portrait could not be created. No slot or credits were used. Please retry.', 'Retry'],
+])('terminal %s failure explains its generation stage and recovery', async (errorCode, message, action) => {
+  mockGeneration.mockResolvedValue({ id: 'job-1', status: 'failed', error_code: errorCode });
+  const { container, root } = await renderPage();
+
+  await reachReview(container);
+  await click(container, 'Create Character');
+  await act(async () => { await Promise.resolve(); await Promise.resolve(); });
+
+  expect(container.textContent).toContain(message);
+  expect(Array.from(container.querySelectorAll('button')).map((item) => item.textContent)).toContain(action);
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('unknown terminal failure includes a safe support reference', async () => {
+  mockGeneration.mockResolvedValue({ id: 'job-1', status: 'failed', error_code: 'provider_timeout' });
+  const { container, root } = await renderPage();
+
+  await reachReview(container);
+  await click(container, 'Create Character');
+  await act(async () => { await Promise.resolve(); await Promise.resolve(); });
+
+  expect(container.textContent).toContain('Could not create your character');
+  expect(container.textContent).toContain('Reference: provider_timeout');
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('terminal failure without an error code uses its job id as the support reference', async () => {
+  mockGeneration.mockResolvedValue({ id: 'job-opaque-123', status: 'failed' });
+  const { container, root } = await renderPage();
+
+  await reachReview(container);
+  await click(container, 'Create Character');
+  await act(async () => { await Promise.resolve(); await Promise.resolve(); });
+
+  expect(container.textContent).toContain('Reference: job-opaque-123');
 
   await act(async () => root.unmount());
   container.remove();
