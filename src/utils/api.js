@@ -205,11 +205,15 @@ export const authApi = {
    * Revoke the current bearer token server-side.
    * Caller still needs to clear localStorage — see auth.js logout().
    */
-  serverLogout: async () => {
+  serverLogout: async (token) => {
     try {
-      await fetchApi('/api/v1/auth/logout', { method: 'POST' });
+      const response = await fetch(`${API_URL}/api/v1/auth/logout`, {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      return response.ok ? await response.json() : null;
     } catch {
-      /* best-effort; client-side clear happens regardless */
+      return null;
     }
   },
 
