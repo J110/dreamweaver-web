@@ -72,6 +72,7 @@ export default function PlayerPage() {
   const lastPlaybackPositionRef = useRef(0);
   const mediaSuspendedRef = useRef(false);
   const mediaResumeGraceUntilRef = useRef(0);
+  const wasPlayingBeforeSuspensionRef = useRef(false);
   const progressIntervalRef = useRef(null);
   const voiceSwitchAutoPlayRef = useRef(false);
   const offlineLookupPendingRef = useRef(false);
@@ -465,6 +466,10 @@ export default function PlayerPage() {
     if (change.type === 'saved-library') return;
     if (change.type === 'removed' && change.contentId !== content?.id) return;
     if (change.type === 'package' && change.contentId !== content?.id) return;
+    if (change.type === 'package' && audioRef.current?.src) return;
+    if (change.type === 'removed' && !offlineHydratedRef.current) return;
+    if (change.type === 'authority'
+      && (change.effectivePremium !== false || !offlineHydratedRef.current)) return;
 
     const cached = offlinePackageRef.current;
     if (cached) {
@@ -801,8 +806,12 @@ export default function PlayerPage() {
 
   // Media Session: Sync UI when returning from background (e.g. after phone call)
   useEffect(() => {
+    let settleTimer;
     const handleVisibility = () => {
       if (document.visibilityState === 'hidden') {
+        wasPlayingBeforeSuspensionRef.current = isPlaying || Boolean(
+          audioRef.current && !audioRef.current.paused && !audioRef.current.ended,
+        );
         mediaSuspendedRef.current = true;
         lastPlaybackPositionRef.current = Math.max(
           lastPlaybackPositionRef.current,
@@ -813,17 +822,44 @@ export default function PlayerPage() {
       mediaSuspendedRef.current = false;
       mediaResumeGraceUntilRef.current = Date.now() + 2000;
       if (lastPlaybackPositionRef.current > 0) setAudioError(null);
-      if (audioRef.current) {
-        if (audioRef.current.paused && isPlaying) {
+      const shouldResume = wasPlayingBeforeSuspensionRef.current;
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(async () => {
+        const audio = audioRef.current;
+        if (!audio || audio.ended) return;
+        if (shouldResume && audio.paused) {
+          try {
+            if (audio.currentTime < 1 && lastPlaybackPositionRef.current > 0) {
+              audio.currentTime = lastPlaybackPositionRef.current;
+            }
+            await audio.play();
+            setAudioError(null);
+            setIsPlaying(true);
+            startProgressTracking();
+            updatePlaybackState('playing');
+          } catch {
+            wasPlayingBeforeSuspensionRef.current = false;
+            setIsPlaying(false);
+            stopProgressTracking();
+            updatePlaybackState('paused');
+          }
+        } else if (!audio.paused) {
+          setIsPlaying(true);
+          startProgressTracking();
+          updatePlaybackState('playing');
+        } else {
           setIsPlaying(false);
           stopProgressTracking();
           updatePlaybackState('paused');
         }
-      }
+      }, 500);
     };
     document.addEventListener('visibilitychange', handleVisibility);
-    return () => document.removeEventListener('visibilitychange', handleVisibility);
-  }, [isPlaying, stopProgressTracking]);
+    return () => {
+      clearTimeout(settleTimer);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, [isPlaying, startProgressTracking, stopProgressTracking]);
 
   // Track play_abandon on unmount (navigation away mid-play)
   useEffect(() => {
