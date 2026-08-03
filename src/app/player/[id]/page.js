@@ -458,6 +458,7 @@ export default function PlayerPage() {
     const user = getUser();
     const userId = user?.uid || user?.family_id || user?.username;
     if (!userId || change?.userId !== userId) return;
+    if (change.type === 'saved-library') return;
     if (change.type === 'removed' && change.contentId !== content?.id) return;
     if (change.type === 'package' && change.contentId !== content?.id) return;
 

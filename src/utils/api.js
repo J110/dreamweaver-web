@@ -550,6 +550,7 @@ export const interactionApi = {
       method: 'POST',
       silent401: true,
     });
+    fetchApi.invalidate('/api/v1/interactions/me/likes');
     return res.data || {};
   },
 
@@ -558,6 +559,7 @@ export const interactionApi = {
       method: 'DELETE',
       silent401: true,
     });
+    fetchApi.invalidate('/api/v1/interactions/me/likes');
     return res.data || {};
   },
 
@@ -566,6 +568,7 @@ export const interactionApi = {
       method: 'POST',
       silent401: true,
     });
+    fetchApi.invalidate('/api/v1/interactions/me/saves');
     return res.data || {};
   },
 
@@ -574,6 +577,7 @@ export const interactionApi = {
       method: 'DELETE',
       silent401: true,
     });
+    fetchApi.invalidate('/api/v1/interactions/me/saves');
     return res.data || {};
   },
 
