@@ -14,6 +14,36 @@
   box-shadow: var(--shadow-lg);
 }
 
+.backButton {
+  min-height: 44px;
+  margin: -4px 0 14px;
+  border: 1px solid var(--dv-control-border);
+  border-radius: 999px;
+  background: var(--dv-surface-raised);
+  color: var(--dv-text);
+  padding: 8px 16px;
+  font-weight: 800;
+}
+
+.editIntro {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 20px;
+  padding: 12px;
+  border: 1px solid var(--dv-hairline);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--dv-surface-raised) 48%, transparent);
+}
+
+.editIntro p {
+  margin: 4px 0 0;
+  color: var(--dv-text-dim);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
 .hero {
   position: relative;
   display: grid;
@@ -363,10 +393,9 @@
 }
 
 .editPortrait {
-  width: 100%;
-  max-width: 320px;
-  height: min(72vw, 320px);
-  border-radius: var(--radius-md);
+  width: 76px;
+  height: 76px;
+  border-radius: 16px;
   object-fit: cover;
 }
 
