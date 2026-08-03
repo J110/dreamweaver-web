@@ -142,7 +142,7 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
           surprise_type: inputs.surpriseType,
           surprise_gender: inputs.surpriseGender,
           traits: inputs.traits,
-          custom_description: inputs.customDescription || null,
+          custom_description: inputs.customDescription || '',
         },
         quote_version: quote.quote_version,
         idempotency_key: idempotencyKey.current,
