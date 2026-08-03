@@ -69,6 +69,9 @@ export default function PlayerPage() {
   const aboutPanelRef = useRef(null);
   const audioRef = useRef(null);
   const audioDisposingRef = useRef(false);
+  const lastPlaybackPositionRef = useRef(0);
+  const mediaSuspendedRef = useRef(false);
+  const mediaResumeGraceUntilRef = useRef(0);
   const progressIntervalRef = useRef(null);
   const voiceSwitchAutoPlayRef = useRef(false);
   const offlineLookupPendingRef = useRef(false);
@@ -407,6 +410,7 @@ export default function PlayerPage() {
       if (audio && audio.duration && !isNaN(audio.duration)) {
         const now = audio.currentTime;
         const dur = audio.duration;
+        lastPlaybackPositionRef.current = now;
         setCurrentTime(now);
         setDuration(dur);
         const pct = (now / dur) * 100;
@@ -528,8 +532,13 @@ export default function PlayerPage() {
     // Collapse About panel when play is tapped
     setShowAboutPanel(false);
 
+    let resumePosition = Math.max(
+      lastPlaybackPositionRef.current,
+      Number(audioRef.current?.currentTime) || 0,
+    );
     if (audioRef.current && audioRef.current.src) {
       if (isPlaying) {
+        lastPlaybackPositionRef.current = Math.max(resumePosition, lastPlaybackPositionRef.current);
         audioRef.current.pause();
         setIsPlaying(false);
         stopProgressTracking();
@@ -540,9 +549,11 @@ export default function PlayerPage() {
           phase: musicPhaseRef.current,
         });
         return;
-      } else if (audioRef.current.currentTime > 0 && !audioRef.current.ended) {
+      } else if (resumePosition > 0 && !audioRef.current.ended) {
         try {
+          if (audioRef.current.currentTime < 1) audioRef.current.currentTime = resumePosition;
           await audioRef.current.play();
+          setAudioError(null);
           setIsPlaying(true);
           startProgressTracking();
           updatePlaybackState('playing');
@@ -552,14 +563,20 @@ export default function PlayerPage() {
           });
         } catch (e) {
           console.error('Resume failed:', e);
-          // On iOS, if resume fails (e.g. NotAllowedError after long pause),
-          // reset state so user can tap play again for a fresh start
           if (e.name === 'NotAllowedError') {
             setIsPlaying(false);
             updatePlaybackState('paused');
+            return;
           }
+          const staleAudio = audioRef.current;
+          audioDisposingRef.current = true;
+          staleAudio?.pause();
+          if (staleAudio) staleAudio.src = '';
+          audioRef.current = null;
+          window.__dvAudioElement = null;
+          audioDisposingRef.current = false;
         }
-        return;
+        if (audioRef.current) return;
       }
     }
 
@@ -568,8 +585,12 @@ export default function PlayerPage() {
 
     setAudioLoading(true);
     setAudioError(null);
-    setProgress(0);
-    setCurrentTime(0);
+    if (resumePosition > 0) {
+      setCurrentTime(resumePosition);
+    } else {
+      setProgress(0);
+      setCurrentTime(0);
+    }
 
     if (audioSource.isPregen && audioSource.duration) {
       setDuration(audioSource.duration);
@@ -584,10 +605,14 @@ export default function PlayerPage() {
       audio.addEventListener('loadedmetadata', () => {
         if (audio.duration && !isNaN(audio.duration)) {
           setDuration(audio.duration);
+          if (resumePosition > 0 && audio.currentTime < 1) {
+            audio.currentTime = Math.min(resumePosition, Math.max(0, audio.duration - 0.25));
+          }
         }
       });
 
       audio.addEventListener('ended', () => {
+        lastPlaybackPositionRef.current = 0;
         setIsPlaying(false);
         setProgress(100);
         stopProgressTracking();
@@ -619,8 +644,18 @@ export default function PlayerPage() {
       });
 
       audio.addEventListener('error', () => {
-        if (audioDisposingRef.current) return;
+        if (audioDisposingRef.current || audio !== audioRef.current) return;
+        lastPlaybackPositionRef.current = Math.max(
+          lastPlaybackPositionRef.current,
+          Number(audio.currentTime) || 0,
+        );
         setAudioLoading(false);
+        if (mediaSuspendedRef.current || Date.now() < mediaResumeGraceUntilRef.current) {
+          setIsPlaying(false);
+          stopProgressTracking();
+          updatePlaybackState('paused');
+          return;
+        }
         setAudioError(lang === 'hi' ? 'Audio load nahi ho paya. Baad mein try karein.' : 'Could not load audio. Try again later.');
         setIsPlaying(false);
         stopProgressTracking();
@@ -629,6 +664,9 @@ export default function PlayerPage() {
 
       // Set source — do NOT call audio.load() separately; play() handles loading.
       audio.src = audioSource.url;
+      if (resumePosition > 0) {
+        try { audio.currentTime = resumePosition; } catch {}
+      }
 
       // Call play() directly in user gesture context (critical for iOS/Safari).
       // Previously, play() was inside a 'canplay' callback which fires async —
@@ -709,8 +747,11 @@ export default function PlayerPage() {
   useEffect(() => {
     registerMediaSessionHandlers({
       onPlay: () => {
-        if (audioRef.current && !audioRef.current.ended && audioRef.current.currentTime > 0) {
+        const resumePosition = Math.max(lastPlaybackPositionRef.current, Number(audioRef.current?.currentTime) || 0);
+        if (audioRef.current && !audioRef.current.ended && resumePosition > 0) {
+          if (audioRef.current.currentTime < 1) audioRef.current.currentTime = resumePosition;
           audioRef.current.play().then(() => {
+            setAudioError(null);
             setIsPlaying(true);
             startProgressTracking();
             updatePlaybackState('playing');
@@ -719,6 +760,10 @@ export default function PlayerPage() {
       },
       onPause: () => {
         if (audioRef.current) {
+          lastPlaybackPositionRef.current = Math.max(
+            lastPlaybackPositionRef.current,
+            Number(audioRef.current.currentTime) || 0,
+          );
           audioRef.current.pause();
           setIsPlaying(false);
           stopProgressTracking();
@@ -757,7 +802,18 @@ export default function PlayerPage() {
   // Media Session: Sync UI when returning from background (e.g. after phone call)
   useEffect(() => {
     const handleVisibility = () => {
-      if (document.visibilityState === 'visible' && audioRef.current) {
+      if (document.visibilityState === 'hidden') {
+        mediaSuspendedRef.current = true;
+        lastPlaybackPositionRef.current = Math.max(
+          lastPlaybackPositionRef.current,
+          Number(audioRef.current?.currentTime) || 0,
+        );
+        return;
+      }
+      mediaSuspendedRef.current = false;
+      mediaResumeGraceUntilRef.current = Date.now() + 2000;
+      if (lastPlaybackPositionRef.current > 0) setAudioError(null);
+      if (audioRef.current) {
         if (audioRef.current.paused && isPlaying) {
           setIsPlaying(false);
           stopProgressTracking();
@@ -805,6 +861,7 @@ export default function PlayerPage() {
     setIsPlaying(false);
     setProgress(0);
     setCurrentTime(0);
+    lastPlaybackPositionRef.current = 0;
     setDuration(0);
     setAudioError(null);
     stopProgressTracking();
@@ -867,6 +924,7 @@ export default function PlayerPage() {
     setIsPlaying(false);
     setProgress(0);
     setCurrentTime(0);
+    lastPlaybackPositionRef.current = 0;
     setDuration(0);
     setAudioError(null);
     stopProgressTracking();
