@@ -133,6 +133,40 @@
   cursor: default;
 }
 
+.appleRestoreBtn {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+  padding: 13px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 12px;
+  background: #fff;
+  color: #111;
+  font-size: 1rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+.appleRestoreBtn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.8rem;
+}
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
 .secondaryLink {
   display: inline-block;
   margin-top: 14px;

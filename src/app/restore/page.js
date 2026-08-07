@@ -267,6 +267,12 @@ export default function RestorePage() {
                   'App Store se subscribe kiya? Apple se continue karein — email zaroori nahi hai. Web purchase ke liye payment receipt waali email use karein.',
                 )}
               </p>
+              {appleAvailable ? (
+                <button className={styles.appleRestoreBtn} type="button" onClick={onAppleRestore} disabled={busy}>
+                  {busy ? t('Restoring...', 'Restore ho raha hai...') : t('Continue with Apple', 'Apple ke saath continue karein')}
+                </button>
+              ) : null}
+              {appleAvailable ? <div className={styles.divider}>{t('or use your purchase email', 'ya purchase email use karein')}</div> : null}
               <input
                 className={styles.input}
                 type="email"
@@ -280,11 +286,6 @@ export default function RestorePage() {
               <button className={styles.primaryBtn} type="submit" disabled={!emailValid || busy}>
                 {busy ? t('Sending...', 'Bhej rahe hain...') : t('Send code', 'Code bhejein')}
               </button>
-              {appleAvailable ? (
-                <button className={styles.secondaryLink} type="button" onClick={onAppleRestore} disabled={busy}>
-                  {t('Restore with Apple', 'Apple se restore karein')}
-                </button>
-              ) : null}
               <Link href="/" className={styles.secondaryLink}>
                 {t('Back to Dream Valley', 'Dream Valley wapas')}
               </Link>

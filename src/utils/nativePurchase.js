@@ -26,14 +26,17 @@ export function parseOfferings(raw) {
 }
 
 export async function getNativeOfferings() {
-  const bridge = nativePurchaseBridge();
-  if (!bridge) return null;
-  try {
-    const raw = await bridge.getOfferings();
-    return raw ? parseOfferings(raw) : null;
-  } catch {
-    return null;
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    const bridge = nativePurchaseBridge();
+    if (bridge) {
+      try {
+        const raw = await bridge.getOfferings();
+        if (raw) return parseOfferings(raw);
+      } catch {}
+    }
+    if (attempt < 3) await new Promise((resolve) => window.setTimeout(resolve, 500));
   }
+  return null;
 }
 
 export async function identifyNative(uid) {
