@@ -10,6 +10,7 @@ import { getSelectableVoices, getSampleUrl, getVoiceLabel } from '@/utils/voiceC
 import { isLoggedIn } from '@/utils/auth';
 import { subscriptionApi, billingApi } from '@/utils/api';
 import { openExternalUrl } from '@/utils/checkoutPending';
+import { bindNativePushEvents, disableNativePush, enableNativePush, nativePushBridge } from '@/utils/nativePush';
 import styles from './page.module.css';
 
 function formatSubDate(iso, lang) {
@@ -31,6 +32,8 @@ export default function SettingsPage() {
   const [subState, setSubState] = useState(null);
   const [portalLoading, setPortalLoading] = useState(false);
   const [portalError, setPortalError] = useState(null);
+  const [pushAvailable, setPushAvailable] = useState(false);
+  const [pushState, setPushState] = useState('idle');
 
   useEffect(() => {
     // Anon users see the same settings screen without the subscription
@@ -43,6 +46,24 @@ export default function SettingsPage() {
       .catch(() => {});
     return () => { cancelled = true; };
   }, []);
+
+  useEffect(() => {
+    setPushAvailable(Boolean(nativePushBridge()) && isLoggedIn());
+    return bindNativePushEvents();
+  }, []);
+
+  async function togglePush() {
+    if (pushState === 'busy') return;
+    setPushState('busy');
+    try {
+      const result = pushState === 'registered'
+        ? await disableNativePush()
+        : await enableNativePush();
+      setPushState(result.status);
+    } catch {
+      setPushState('failed');
+    }
+  }
 
   async function openPortal() {
     setPortalError(null);
@@ -283,6 +304,23 @@ export default function SettingsPage() {
                 </>
               );
             })()}
+          </div>
+        )}
+
+        {pushAvailable && (
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>{lang === 'hi' ? 'Notifications' : 'Notifications'}</h2>
+            <p className={styles.subDescLine}>
+              {lang === 'hi' ? 'Nayi bedtime stories aur reminders paayein.' : 'Get new bedtime stories and reminders.'}
+            </p>
+            <button className={styles.subSecondaryBtn} onClick={togglePush} disabled={pushState === 'busy'}>
+              {pushState === 'registered'
+                ? (lang === 'hi' ? 'Notifications band karein' : 'Turn off notifications')
+                : pushState === 'busy'
+                  ? (lang === 'hi' ? 'Save ho raha hai...' : 'Saving...')
+                  : (lang === 'hi' ? 'Notifications chalu karein' : 'Turn on notifications')}
+            </button>
+            {pushState === 'failed' && <p className={styles.subErrorLine}>{lang === 'hi' ? 'Notifications save nahi hui.' : 'Could not save notification settings.'}</p>}
           </div>
         )}
 

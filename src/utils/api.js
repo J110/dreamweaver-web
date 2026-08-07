@@ -309,6 +309,32 @@ export const authApi = {
       body: JSON.stringify({ email, code }),
     });
   },
+
+  appleStart: async (purpose) => {
+    return await fetchApi('/api/v1/auth/apple/start', {
+      method: 'POST',
+      body: JSON.stringify({ purpose }),
+    });
+  },
+
+  appleVerify: async (sessionId, identityToken) => {
+    return await fetchApi('/api/v1/auth/apple/verify', {
+      method: 'POST',
+      body: JSON.stringify({ sessionId, identityToken }),
+    });
+  },
+};
+
+export const pushApi = {
+  register: async (target, permission = 'authorized') => fetchApi('/api/v1/push/devices', {
+    method: 'POST',
+    body: JSON.stringify({ target, platform: 'ios', permission }),
+  }),
+  unregister: async (target) => fetchApi('/api/v1/push/devices', {
+    method: 'DELETE',
+    body: JSON.stringify({ target, platform: 'ios', permission: 'denied' }),
+  }),
+  status: async () => fetchApi('/api/v1/push/devices', { method: 'GET' }),
 };
 
 // ─── Content API ────────────────────────────────────────────

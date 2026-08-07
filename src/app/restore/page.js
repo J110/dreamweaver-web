@@ -6,6 +6,7 @@ import StarField from '@/components/StarField';
 import { useI18n } from '@/utils/i18n';
 import { setToken, setUser } from '@/utils/auth';
 import { authApi, subscriptionApi } from '@/utils/api';
+import { appleAuthAvailable, authorizeWithApple } from '@/utils/appleAuth';
 import styles from './page.module.css';
 
 // Native bridge feature-detect (see dreamweaver/lib/native_auth_bridge.dart).
@@ -16,6 +17,10 @@ function nativeAuth() {
   if (typeof window === 'undefined') return null;
   const a = window.DreamValleyAuth;
   return a && a.isAvailable === true ? a : null;
+}
+
+function iapRestoreRequested() {
+  return typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('iap') === '1';
 }
 
 function ph(event, props) {
@@ -35,10 +40,14 @@ export default function RestorePage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  const [appleAvailable, setAppleAvailable] = useState(false);
   const tokenRef = useRef(null); // holds the minted token across a Keychain retry
   const redirectTimer = useRef(null);
 
-  useEffect(() => () => { if (redirectTimer.current) clearTimeout(redirectTimer.current); }, []);
+  useEffect(() => {
+    setAppleAvailable(appleAuthAvailable());
+    return () => { if (redirectTimer.current) clearTimeout(redirectTimer.current); };
+  }, []);
 
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   const codeValid = /^[0-9]{6}$/.test(code.trim());
@@ -68,6 +77,27 @@ export default function RestorePage() {
     } catch {
       setError(t('Could not send the code. Check your connection and try again.',
                  'Code nahi bhej paaye. Connection check karke try karein.'));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onAppleRestore() {
+    if (busy) return;
+    setBusy(true); setError(''); setNotice('');
+    try {
+      const res = await authorizeWithApple('restore');
+      if (res?.status === 'claimed' && res.token) {
+        tokenRef.current = res.token;
+        await persistAndFinish(res.token, res.uid, res.family_id);
+      } else if (res?.status === 'linked' && nativeAuth() && iapRestoreRequested()) {
+        ph('apple_identity_linked_for_iap_restore', { has_email: Boolean(res.email) });
+        window.location.assign('/upgrade?restore=1');
+      } else if (res?.status !== 'cancelled') {
+        setError(t('No subscription was found for this Apple account.', 'Is Apple account par subscription nahi mili.'));
+      }
+    } catch {
+      setError(t('Could not restore with Apple. Try again or use email.', 'Apple se restore nahi hua. Dobara try karein ya email use karein.'));
     } finally {
       setBusy(false);
     }
@@ -164,9 +194,8 @@ export default function RestorePage() {
   async function goSuccess() {
     setStage('success');
     try { await subscriptionApi.getCurrent(); } catch { /* best-effort entitlement refresh */ }
-    const continueIapRestore = new URLSearchParams(window.location.search).get('iap') === '1';
     redirectTimer.current = setTimeout(() => {
-      window.location.assign(continueIapRestore ? '/upgrade?restore=1' : '/');
+      window.location.assign(iapRestoreRequested() ? '/upgrade?restore=1' : '/');
     }, 1600);
   }
 
@@ -234,8 +263,8 @@ export default function RestorePage() {
               <h1 className={styles.title}>{t('Restore your subscription', 'Apna subscription restore karein')}</h1>
               <p className={styles.body}>
                 {t(
-                  'Use the exact email from your payment receipt. We will send a 6-digit code to confirm.',
-                  'Apni payment receipt waali exact email use karein. Confirm karne ke liye 6-digit code bhejenge.',
+                  'Subscribed through the App Store? Continue with Apple — no email is required. For web purchases, use the email from your payment receipt.',
+                  'App Store se subscribe kiya? Apple se continue karein — email zaroori nahi hai. Web purchase ke liye payment receipt waali email use karein.',
                 )}
               </p>
               <input
@@ -251,6 +280,11 @@ export default function RestorePage() {
               <button className={styles.primaryBtn} type="submit" disabled={!emailValid || busy}>
                 {busy ? t('Sending...', 'Bhej rahe hain...') : t('Send code', 'Code bhejein')}
               </button>
+              {appleAvailable ? (
+                <button className={styles.secondaryLink} type="button" onClick={onAppleRestore} disabled={busy}>
+                  {t('Restore with Apple', 'Apple se restore karein')}
+                </button>
+              ) : null}
               <Link href="/" className={styles.secondaryLink}>
                 {t('Back to Dream Valley', 'Dream Valley wapas')}
               </Link>
