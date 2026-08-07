@@ -13,8 +13,17 @@ export async function enableNativePush() {
   if (!bridge) return { status: 'unavailable' };
   const result = await bridge.requestPermission();
   const permission = result?.value?.permission || 'denied';
-  const target = result?.value?.token;
-  if (!result?.success || !target) return { status: permission };
+  let target = result?.value?.token;
+  if (result?.success && !target && (permission === 'authorized' || permission === 'provisional')) {
+    for (let attempt = 0; attempt < 20 && !target; attempt += 1) {
+      await new Promise((resolve) => window.setTimeout(resolve, 250));
+      const current = await bridge.getToken();
+      target = current?.value?.token;
+    }
+  }
+  if (!result?.success || !target) {
+    return { status: permission === 'authorized' || permission === 'provisional' ? 'pending' : permission };
+  }
   await pushApi.register(target, permission);
   return { status: 'registered' };
 }
@@ -29,11 +38,15 @@ export async function disableNativePush() {
   return { status: 'disabled' };
 }
 
-export function bindNativePushEvents() {
+export function bindNativePushEvents(onRegistered) {
   if (typeof window === 'undefined' || !nativePushBridge()) return () => {};
   const onToken = (event) => {
     const target = event?.detail?.token;
-    if (target) pushApi.register(target, 'authorized').catch(() => {});
+    if (target) {
+      pushApi.register(target, 'authorized')
+        .then(() => onRegistered?.())
+        .catch(() => {});
+    }
   };
   const onOpen = (event) => {
     const route = event?.detail?.route;

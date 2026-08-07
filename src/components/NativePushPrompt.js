@@ -23,7 +23,13 @@ export default function NativePushPrompt() {
     const check = () => {
       if (stopped || !isLoggedIn() || !nativePushBridge()) return;
       cleanupEvents.current();
-      cleanupEvents.current = bindNativePushEvents();
+      cleanupEvents.current = bindNativePushEvents(() => {
+        try {
+          localStorage.setItem(ENABLED_KEY, '1');
+          localStorage.removeItem(NEXT_PROMPT_KEY);
+        } catch {}
+        setVisible(false);
+      });
       let enabled = false;
       let promptAfter = 0;
       try {
@@ -65,6 +71,8 @@ export default function NativePushPrompt() {
           localStorage.removeItem(NEXT_PROMPT_KEY);
         } catch {}
         setVisible(false);
+      } else if (result.status === 'pending') {
+        setStatus('pending');
       } else {
         setStatus(result.status === 'denied' ? 'denied' : 'failed');
       }
@@ -99,6 +107,11 @@ export default function NativePushPrompt() {
         {status === 'failed' && (
           <p className={styles.error} role="status">
             {lang === 'hi' ? 'Abhi enable nahi ho paaya. Dobara try karein.' : 'Could not enable notifications. Please try again.'}
+          </p>
+        )}
+        {status === 'pending' && (
+          <p className={styles.error} role="status">
+            {lang === 'hi' ? 'Permission mil gayi. Setup poora ho raha hai…' : 'Permission granted. Finishing setup…'}
           </p>
         )}
         <button className={styles.enable} type="button" onClick={enable} disabled={busy}>
