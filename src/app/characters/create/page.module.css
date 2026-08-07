@@ -14,6 +14,116 @@
   box-shadow: var(--shadow-lg);
 }
 
+.backButton {
+  min-height: 44px;
+  margin: -4px 0 14px;
+  border: 1px solid var(--dv-control-border);
+  border-radius: 999px;
+  background: var(--dv-surface-raised);
+  color: var(--dv-text);
+  padding: 8px 16px;
+  font-weight: 800;
+}
+
+.editIntro {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 20px;
+  padding: 12px;
+  border: 1px solid var(--dv-hairline);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--dv-surface-raised) 48%, transparent);
+}
+
+.editIntro p {
+  margin: 4px 0 0;
+  color: var(--dv-text-dim);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.hero {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  grid-template-columns: 82px 1fr;
+  align-items: center;
+  gap: 18px;
+  margin: -8px -8px 24px;
+  padding: 24px;
+  border: 1px solid color-mix(in srgb, var(--dv-accent) 48%, transparent);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 82% 24%, color-mix(in srgb, var(--dv-accent) 50%, transparent) 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 72%, color-mix(in srgb, var(--dv-accent) 40%, transparent) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 92% 60%, color-mix(in srgb, var(--dv-text) 48%, transparent) 0 1px, transparent 2px),
+    linear-gradient(135deg, #171342 0%, #34204c 54%, #6f3c55 100%);
+  box-shadow: 0 16px 36px rgb(10 8 33 / 30%);
+  color: #fff8ec;
+}
+
+.hero::after {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--dv-accent) 24%, transparent);
+  content: '';
+  filter: blur(24px);
+  right: -54px;
+  top: -70px;
+}
+
+.heroMoon {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #ffe7a6, #dca45d);
+  box-shadow: 0 0 28px rgb(244 193 101 / 58%);
+}
+
+.heroMoon::after {
+  position: absolute;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #231845;
+  content: '';
+  left: 18px;
+  top: -5px;
+}
+
+.hero h2,
+.hero p {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+}
+
+.hero h2 {
+  margin-top: 3px;
+  font-family: var(--dv-font-display), serif;
+  font-size: clamp(1.45rem, 5vw, 2rem);
+  line-height: 1.08;
+}
+
+.hero .heroEyebrow {
+  color: #f0bf77;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.hero h2 + p {
+  margin-top: 7px;
+  color: rgb(255 248 236 / 76%);
+  font-size: 0.9rem;
+}
+
 .card :global(.characterWizard),
 .card :global(.characterResult),
 .card :global(.characterFailure),
@@ -142,7 +252,8 @@
   font-weight: 700;
 }
 
-.card :global(.characterWizard fieldset > button) {
+.card :global(.characterWizard fieldset > button),
+.card :global(.characterTraitChip) {
   background: var(--dv-soft-accent);
 }
 
@@ -156,7 +267,83 @@
 
 .card :global(.characterWizard button[aria-pressed='true']) {
   border-color: var(--dv-accent);
-  background: var(--dv-soft-accent);
+  background: var(--dv-accent);
+  color: var(--dv-on-accent);
+}
+
+.card :global(.characterTraitHelp) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--dv-text-dim);
+  font-size: 0.85rem;
+}
+
+.card :global(.characterTraitHelp strong) {
+  flex: 0 0 auto;
+  color: var(--dv-text);
+}
+
+.card :global(.characterTraitGrid) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.card :global(.characterWizard .characterTraitChip) {
+  min-height: 36px;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+}
+
+.card :global(.characterTraitChip span) {
+  margin-right: 6px;
+}
+
+.card :global(.characterTraitChip:disabled) {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.card :global(.characterReview) {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.card :global(.characterReviewSection) {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--dv-hairline);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--dv-surface-raised) 38%, transparent);
+}
+
+.card :global(.characterReviewSection h2) {
+  margin: 0 0 10px;
+  color: var(--dv-text);
+  font-size: 1rem;
+}
+
+.card :global(.characterReviewSection dl) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  gap: 7px 10px;
+  margin: 0;
+}
+
+.card :global(.characterReviewSection dt) {
+  color: var(--dv-text-dim);
+  font-weight: 700;
+}
+
+.card :global(.characterReviewSection dd) {
+  min-width: 0;
+  margin: 0;
+  color: var(--dv-text);
+  overflow-wrap: anywhere;
 }
 
 .card :global(.characterWizard button:focus-visible),
@@ -206,10 +393,9 @@
 }
 
 .editPortrait {
-  width: 100%;
-  max-width: 320px;
-  height: min(72vw, 320px);
-  border-radius: var(--radius-md);
+  width: 76px;
+  height: 76px;
+  border-radius: 16px;
   object-fit: cover;
 }
 
@@ -223,6 +409,24 @@
     border-radius: 20px;
   }
 
+  .hero {
+    grid-template-columns: 56px 1fr;
+    gap: 14px;
+    margin: -6px -4px 20px;
+    padding: 20px 16px;
+  }
+
+  .heroMoon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .heroMoon::after {
+    width: 46px;
+    height: 46px;
+    left: 14px;
+  }
+
   .card :global(.characterWizard),
   .card :global(.characterResult),
   .card :global(.characterFailure),
@@ -233,5 +437,15 @@
   .card :global(.characterWizard fieldset) {
     gap: 10px;
     padding: 14px 12px;
+  }
+
+  .card :global(.characterTraitHelp) {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .card :global(.characterReview) {
+    grid-template-columns: 1fr;
   }
 }

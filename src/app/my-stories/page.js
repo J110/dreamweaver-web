@@ -34,17 +34,27 @@ const LOCKED_PREVIEWS = {
   ],
 };
 
+const savedLibraryCache = new Map();
+
+function getUserId() {
+  const user = getUser();
+  return user?.uid || user?.family_id || user?.username;
+}
+
 export default function MyStoriesPage() {
   const router = useRouter();
   const { t, lang } = useI18n();
-  const [favorites, setFavorites] = useState([]);
+  const initialUserId = getUserId();
+  const initialLibrary = initialUserId ? savedLibraryCache.get(initialUserId) : null;
+  const [favorites, setFavorites] = useState(initialLibrary?.items || []);
   const [characters, setCharacters] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialLibrary);
   const [creditTotal, setCreditTotal] = useState(null);
-  const [saveCap, setSaveCap] = useState(null);
-  const [isPremiumUser, setIsPremiumUser] = useState(true);
+  const [saveCap, setSaveCap] = useState(initialLibrary?.saveCap ?? null);
+  const [isPremiumUser, setIsPremiumUser] = useState(initialLibrary?.effectivePremium ?? true);
   const [activeDialogKind, setActiveDialogKind] = useState(null);
   const dialogTriggerRef = useRef(null);
+  const favoritesLoadedRef = useRef(Boolean(initialLibrary));
   const reconciliationRunner = getOfflineReconciliationRunner({
     getCurrentUser: getUser,
     isAuthenticated: isLoggedIn,
@@ -55,10 +65,9 @@ export default function MyStoriesPage() {
   });
 
   const loadUserContent = async ({ silent = false } = {}) => {
-    if (!silent) setLoading(true);
+    if (!silent && !favoritesLoadedRef.current) setLoading(true);
     try {
-      const currentUser = getUser();
-      const userId = currentUser?.uid || currentUser?.family_id || currentUser?.username;
+      const userId = getUserId();
       const savesData = await loadSavedLibrary({
         userId,
         reconciliationRunner,
@@ -66,14 +75,22 @@ export default function MyStoriesPage() {
         openStore: openOfflineStore,
       });
       if (savesData.stale) {
+        if (userId) savedLibraryCache.delete(userId);
         setFavorites([]);
         return;
       }
-      setFavorites(savesData.items || []);
+      const items = savesData.items || [];
+      if (userId) savedLibraryCache.set(userId, {
+        items,
+        saveCap: savesData.saveCap,
+        effectivePremium: savesData.effectivePremium,
+      });
+      favoritesLoadedRef.current = true;
+      setFavorites(items);
       setSaveCap(savesData.saveCap);
       setIsPremiumUser(savesData.effectivePremium);
     } catch {
-      setFavorites([]);
+      if (!favoritesLoadedRef.current) setFavorites([]);
     } finally {
       if (!silent) setLoading(false);
     }

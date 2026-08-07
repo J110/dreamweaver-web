@@ -9,7 +9,6 @@ import { interactionApi } from '@/utils/api';
 import { getOfflineReconciliationRunner, reconcileOfflineLibrary } from '@/utils/offlineLibrary';
 import { openOfflineStore } from '@/utils/offlineStore';
 import { isCheckoutPendingRecent, clearCheckoutPending } from '@/utils/checkoutPending';
-import useVersionCheck from '@/hooks/useVersionCheck';
 import BottomNav from './BottomNav';
 import EmberlightThemeController from '@/components/EmberlightThemeController';
 import EmberlightUpgradeWash from '@/components/EmberlightUpgradeWash';
@@ -55,7 +54,6 @@ export default function AppShell({ children }) {
 
   // Auto-reload on app open/foreground when a new deployment is detected.
   // Only checks on startup and visibility change — never mid-session.
-  useVersionCheck();
 
   const anonMintTried = useRef(false);
   useEffect(() => {

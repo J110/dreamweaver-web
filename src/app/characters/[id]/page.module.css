@@ -1,30 +1,135 @@
 .page {
   min-height: 100vh;
-  padding: 24px 16px calc(32px + env(safe-area-inset-bottom));
-  color: var(--color-text-light);
+  padding: 20px 16px calc(112px + env(safe-area-inset-bottom));
+  color: var(--dv-text);
 }
 
+.shell,
 .card {
   width: min(100%, 680px);
   margin: 0 auto;
+}
+
+.backButton {
+  min-height: 44px;
+  margin: 0 0 12px;
+  border: 1px solid var(--dv-control-border);
+  border-radius: 999px;
+  background: var(--dv-surface-raised);
+  color: var(--dv-text);
+  padding: 8px 16px;
+  font-weight: 800;
+}
+
+.card {
+  overflow: hidden;
   padding: 24px;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--dv-hairline);
   border-radius: var(--radius-lg);
-  background: var(--color-bg-card);
+  background: color-mix(in srgb, var(--dv-surface) 94%, transparent);
+  box-shadow: var(--shadow-lg);
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: -24px -24px 22px;
+  padding: 18px 24px;
+  background: linear-gradient(135deg, #171342, #6f3c55);
+  color: #fff8ec;
+}
+
+.hero span {
+  color: #f0bf77;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.hero strong {
+  font-family: var(--dv-font-display), serif;
+  font-size: 1.05rem;
+}
+
+.portraitFrame {
+  overflow: hidden;
+  max-width: 420px;
+  margin: 0 auto;
+  border: 1px solid color-mix(in srgb, var(--dv-accent) 46%, transparent);
+  border-radius: 24px;
+  background: var(--dv-surface-raised);
+  box-shadow: 0 16px 34px rgb(8 6 24 / 32%);
 }
 
 .portrait {
+  display: block;
   width: 100%;
-  max-width: 320px;
-  height: min(72vw, 320px);
+  aspect-ratio: 1 / 1;
   object-fit: cover;
-  border-radius: var(--radius-md);
+  animation: portraitDrift 8s ease-in-out infinite alternate;
+}
+
+.details h1 {
+  margin: 24px 0 10px;
+  font-family: var(--dv-font-display), serif;
+  font-size: clamp(2.35rem, 10vw, 4rem);
+  line-height: 1;
+}
+
+.summary {
+  margin: 0;
+  color: var(--dv-text-dim);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0 22px;
+}
+
+.chips span {
+  border: 1px solid var(--dv-control-border);
+  border-radius: 999px;
+  background: var(--dv-soft-accent);
+  color: var(--dv-text);
+  padding: 7px 12px;
+  font-size: 0.88rem;
+  font-weight: 700;
 }
 
 .actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
+}
+
+.editButton,
+.deleteButton {
+  display: grid;
+  min-height: 48px;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+}
+
+.editButton {
+  border: 1px solid var(--dv-accent);
+  background: var(--dv-accent);
+  color: var(--dv-on-accent);
+}
+
+.deleteButton {
+  border: 1px solid var(--dv-control-border);
+  background: var(--dv-surface-raised);
+  color: var(--dv-text);
 }
 
 .dialog {
@@ -36,4 +141,30 @@
   border: 1px solid var(--color-accent);
   border-radius: var(--radius-lg);
   background: var(--color-bg-card);
+}
+
+.dialog button {
+  min-height: 44px;
+  margin: 8px 8px 0 0;
+  border: 1px solid var(--dv-control-border);
+  border-radius: var(--radius-sm);
+  background: var(--dv-surface-raised);
+  color: var(--dv-text);
+  padding: 8px 14px;
+  font-weight: 800;
+}
+
+@keyframes portraitDrift {
+  from { transform: scale(1.01) translateY(0); }
+  to { transform: scale(1.045) translateY(-4px); }
+}
+
+@media (max-width: 480px) {
+  .card { padding: 18px; }
+  .hero { margin: -18px -18px 18px; padding: 16px 18px; }
+  .actions { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portrait { animation: none; }
 }

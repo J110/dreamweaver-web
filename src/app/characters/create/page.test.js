@@ -20,8 +20,13 @@ jest.mock('@/utils/characterWizard', () => {
   const actual = jest.requireActual('@/utils/characterWizard');
   return { ...actual, loadPendingJob: jest.fn(), savePendingJob: jest.fn(), clearPendingJob: jest.fn() };
 });
+let mockTestLang = 'en';
+
 jest.mock('@/utils/i18n', () => ({ useI18n: () => ({ t: (key) => ({
   characterTitle: 'Create Character',
+  characterHeroLabel: 'Dream Valley character creator',
+  characterHeroTitle: 'Create a Dream Valley Character',
+  characterHeroSubtitle: 'Bring a new friend into your stories.',
   characterIdentity: 'Identity',
   characterPersonality: 'Personality',
   characterReview: 'Review',
@@ -34,13 +39,33 @@ jest.mock('@/utils/i18n', () => ({ useI18n: () => ({ t: (key) => ({
   characterPaidTitle: 'Create for 2 credits?',
   characterPaidBody: 'This uses {cost} credits and leaves {balance} credits.',
   characterSlot: 'Slot',
+  characterOf: mockTestLang === 'hi' ? 'mein se' : 'of',
+  characterFree: 'Free',
+  characterCredits: 'credits',
   characterDone: 'Done',
   characterBack: 'Back',
   characterName: 'Name',
   characterType: 'Type',
   characterGender: 'Gender',
   characterTraits: 'Traits',
+  characterTraitsHelp: 'Choose up to 5. You can select more than one.',
+  characterTraitsSelected: '{count} of 5 selected',
   characterDetails: 'Details',
+  characterGeneration: 'Generation',
+  characterCost: 'Cost',
+  characterCurrentCredits: 'Current credits',
+  characterCreditsAfter: 'Credits after',
+  characterNone: 'None',
+  characterErrorUnsafeInput: 'Some details cannot be used to create a character. Edit your details and try again.',
+  characterErrorProfileFailed: 'We could not finish the character profile. No slot or credits were used. Please retry.',
+  characterErrorUnsafeProfile: 'The generated profile needs different details. Edit your choices and try again.',
+  characterErrorPortraitFailed: 'The character profile was ready, but the portrait could not be created. No slot or credits were used. Please retry.',
+  characterErrorReference: 'Reference:',
+  characterEditDetails: 'Edit details',
+  characterTypeFox: 'Fox',
+  characterGenderGirl: 'Girl',
+  characterTraitBrave: 'Brave',
+  characterTraitKind: 'Kind',
   characterGenerating: 'Creating your character…',
   characterFailed: 'Could not create your character',
   characterConnectionFailed: 'Connection interrupted. Your character is still being created.',
@@ -51,7 +76,7 @@ jest.mock('@/utils/i18n', () => ({ useI18n: () => ({ t: (key) => ({
   characterCancel: 'Cancel',
   characterEdit: 'Edit',
   characterDelete: 'Delete',
-}[key] || key), lang: 'en' }) }));
+}[key] || key), lang: mockTestLang }) }));
 jest.mock('./page.module.css', () => ({}));
 
 import CreateCharacterPage from './page';
@@ -95,6 +120,17 @@ const click = async (container, label) => {
   });
 };
 
+const changeValue = async (element, value) => {
+  const setter = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(element), 'value').set;
+  await act(async () => {
+    setter.call(element, value);
+    element.dispatchEvent(new Event('input', { bubbles: true }));
+    element.dispatchEvent(new Event('change', { bubbles: true }));
+    await Promise.resolve();
+    await Promise.resolve();
+  });
+};
+
 const renderPage = async () => {
   const container = document.createElement('div');
   const root = createRoot(container);
@@ -116,6 +152,7 @@ const reachReview = async (container) => {
 };
 
 beforeEach(() => {
+  mockTestLang = 'en';
   mockReplace.mockReset();
   mockPush.mockReset();
   mockUseRouter.mockReturnValue({ replace: mockReplace, push: mockPush });
@@ -166,6 +203,20 @@ test('server markup hydrates from an unresolved auth state before reading the us
   container.remove();
 });
 
+test('themed character banner appears before the creation wizard', async () => {
+  const { container, root } = await renderPage();
+
+  const banner = container.querySelector('[aria-label="Dream Valley character creator"]');
+  const wizard = container.querySelector('.characterWizard');
+  expect(banner).not.toBeNull();
+  expect(banner.textContent).toContain('Create a Dream Valley Character');
+  expect(banner.textContent).toContain('Bring a new friend into your stories.');
+  expect(banner.compareDocumentPosition(wizard) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
 test('numbered stepper fills completed steps and highlights the current step', async () => {
   const { container, root } = await renderPage();
   const stepStates = () => Array.from(container.querySelectorAll('ol > li')).map((item) => ({
@@ -210,6 +261,214 @@ test('identity and personality advance to a free review quote', async () => {
 
   expect(container.textContent).toContain('Slot 1 of 30');
   expect(Array.from(container.querySelectorAll('button')).find((item) => item.textContent === 'Create Character').disabled).toBe(false);
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('personality traits are compact multi-select chips with visible selection feedback', async () => {
+  const { container, root } = await renderPage();
+
+  await click(container, 'Surprise name');
+  await click(container, 'Surprise type');
+  await click(container, 'Surprise gender');
+  await click(container, 'Continue');
+
+  expect(container.textContent).toContain('Choose up to 5. You can select more than one.');
+  expect(container.textContent).toContain('0 of 5 selected');
+  const brave = Array.from(container.querySelectorAll('button')).find((item) => item.textContent === 'Brave');
+  const kind = Array.from(container.querySelectorAll('button')).find((item) => item.textContent === 'Kind');
+  expect(brave.classList.contains('characterTraitChip')).toBe(true);
+  expect(kind.classList.contains('characterTraitChip')).toBe(true);
+
+  await click(container, 'Brave');
+  await click(container, 'Kind');
+
+  expect(brave.getAttribute('aria-pressed')).toBe('true');
+  expect(kind.getAttribute('aria-pressed')).toBe('true');
+  expect(brave.textContent).toContain('✓');
+  expect(kind.textContent).toContain('✓');
+  expect(container.textContent).toContain('2 of 5 selected');
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('unselected trait chips become disabled when five traits are selected', async () => {
+  const { container, root } = await renderPage();
+
+  await click(container, 'Surprise name');
+  await click(container, 'Surprise type');
+  await click(container, 'Surprise gender');
+  await click(container, 'Continue');
+  const chips = Array.from(container.querySelectorAll('.characterTraitChip'));
+  for (const chip of chips.slice(0, 5)) {
+    await act(async () => {
+      chip.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      await Promise.resolve();
+    });
+  }
+
+  expect(chips.slice(0, 5).every((chip) => !chip.disabled)).toBe(true);
+  expect(chips.slice(5).every((chip) => chip.disabled)).toBe(true);
+  expect(container.textContent).toContain('5 of 5 selected');
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('surprise actions display concrete values and submit them explicitly', async () => {
+  const { container, root } = await renderPage();
+
+  await click(container, 'Surprise name');
+  await click(container, 'Surprise type');
+  await click(container, 'Surprise gender');
+  const [characterType, gender] = container.querySelectorAll('select');
+  const name = container.querySelector('input');
+  expect(name.value).not.toBe('');
+  expect(['human_child', 'cat', 'dog', 'fox', 'rabbit', 'bear', 'bird', 'dragon', 'unicorn', 'robot', 'mermaid', 'fairy', 'nature_spirit']).toContain(characterType.value);
+  expect(['girl', 'boy', 'non_binary', 'not_specified']).toContain(gender.value);
+
+  await click(container, 'Continue');
+  await click(container, 'Continue');
+  await click(container, 'Create Character');
+
+  expect(mockCreateGeneration.mock.calls[0][0].inputs).toMatchObject({
+    name: name.value,
+    character_type: characterType.value,
+    gender: gender.value,
+    surprise_name: false,
+    surprise_type: false,
+    surprise_gender: false,
+  });
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('review summarizes identity personality and labeled generation details', async () => {
+  const { container, root } = await renderPage();
+
+  await changeValue(container.querySelector('input'), 'Lumi');
+  const [characterType, gender] = container.querySelectorAll('select');
+  await changeValue(characterType, 'fox');
+  await changeValue(gender, 'girl');
+  await click(container, 'Continue');
+  await click(container, 'Brave');
+  await click(container, 'Kind');
+  await changeValue(container.querySelector('textarea'), 'A moonlit forest guide.');
+  await click(container, 'Continue');
+
+  expect(container.textContent).toContain('Identity');
+  expect(container.textContent).toContain('Name');
+  expect(container.textContent).toContain('Lumi');
+  expect(container.textContent).toContain('Type');
+  expect(container.textContent).toContain('Fox');
+  expect(container.textContent).toContain('Gender');
+  expect(container.textContent).toContain('Girl');
+  expect(container.textContent).toContain('Personality');
+  expect(container.textContent).toContain('Traits');
+  expect(container.textContent).toContain('Brave, Kind');
+  expect(container.textContent).toContain('Details');
+  expect(container.textContent).toContain('A moonlit forest guide.');
+  expect(container.textContent).toContain('Generation');
+  expect(container.textContent).toContain('Slot');
+  expect(container.textContent).toContain('1 of 30');
+  expect(container.textContent).toContain('Cost');
+  expect(container.textContent).toContain('Free');
+  expect(container.textContent).toContain('Current credits');
+  expect(container.textContent).toContain('3');
+  expect(container.textContent).toContain('Credits after');
+  expect(container.textContent).toContain('3');
+  const generationDetails = Array.from(container.querySelectorAll('.characterReviewSection')).find((section) => section.textContent.includes('Generation'));
+  expect(Array.from(generationDetails.querySelectorAll('dt, dd')).map((item) => item.textContent)).toEqual([
+    'Slot', '1 of 30', 'Cost', 'Free', 'Current credits', '3', 'Credits after', '3',
+  ]);
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('unsafe input failure offers actionable editing without discarding values', async () => {
+  mockGeneration.mockResolvedValue({ id: 'job-1', status: 'failed', error_code: 'unsafe_input' });
+  const { container, root } = await renderPage();
+
+  await changeValue(container.querySelector('input'), 'Lumi');
+  const [characterType, gender] = container.querySelectorAll('select');
+  await changeValue(characterType, 'fox');
+  await changeValue(gender, 'girl');
+  await click(container, 'Continue');
+  await click(container, 'Continue');
+  await click(container, 'Create Character');
+  await act(async () => { await Promise.resolve(); await Promise.resolve(); });
+
+  expect(container.textContent).toContain('Some details cannot be used to create a character. Edit your details and try again.');
+  expect(Array.from(container.querySelectorAll('button')).map((item) => item.textContent)).not.toContain('Retry');
+  await click(container, 'Edit details');
+  expect(container.querySelector('input').value).toBe('Lumi');
+  expect(container.querySelectorAll('select')[0].value).toBe('fox');
+  expect(container.querySelectorAll('select')[1].value).toBe('girl');
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test.each([
+  ['invalid_profile', 'We could not finish the character profile. No slot or credits were used. Please retry.', 'Retry'],
+  ['profile_failed', 'We could not finish the character profile. No slot or credits were used. Please retry.', 'Retry'],
+  ['unsafe_profile', 'The generated profile needs different details. Edit your choices and try again.', 'Edit details'],
+  ['portrait_failed', 'The character profile was ready, but the portrait could not be created. No slot or credits were used. Please retry.', 'Retry'],
+])('terminal %s failure explains its generation stage and recovery', async (errorCode, message, action) => {
+  mockGeneration.mockResolvedValue({ id: 'job-1', status: 'failed', error_code: errorCode });
+  const { container, root } = await renderPage();
+
+  await reachReview(container);
+  await click(container, 'Create Character');
+  await act(async () => { await Promise.resolve(); await Promise.resolve(); });
+
+  expect(container.textContent).toContain(message);
+  expect(Array.from(container.querySelectorAll('button')).map((item) => item.textContent)).toContain(action);
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('unknown terminal failure includes a safe support reference', async () => {
+  mockGeneration.mockResolvedValue({ id: 'job-1', status: 'failed', error_code: 'provider_timeout' });
+  const { container, root } = await renderPage();
+
+  await reachReview(container);
+  await click(container, 'Create Character');
+  await act(async () => { await Promise.resolve(); await Promise.resolve(); });
+
+  expect(container.textContent).toContain('Could not create your character');
+  expect(container.textContent).toContain('Reference: provider_timeout');
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('terminal failure without an error code uses its job id as the support reference', async () => {
+  mockGeneration.mockResolvedValue({ id: 'job-opaque-123', status: 'failed' });
+  const { container, root } = await renderPage();
+
+  await reachReview(container);
+  await click(container, 'Create Character');
+  await act(async () => { await Promise.resolve(); await Promise.resolve(); });
+
+  expect(container.textContent).toContain('Reference: job-opaque-123');
+
+  await act(async () => root.unmount());
+  container.remove();
+});
+
+test('Hindi review renders the slot count before its mein se label', async () => {
+  mockTestLang = 'hi';
+  const { container, root } = await renderPage();
+
+  await reachReview(container);
+
+  expect(container.textContent).toContain('Slot 30 mein se 1');
 
   await act(async () => root.unmount());
   container.remove();
@@ -429,12 +688,12 @@ test('slow and late polls neither overlap nor update after unmount', async () =>
   jest.useRealTimers();
 });
 
-test('surprise state is announced and the paid dialog closes on Escape', async () => {
+test('surprise values are not toggle actions and the paid dialog closes on Escape', async () => {
   mockQuote.mockResolvedValue(PAID_QUOTE);
   const { container, root } = await renderPage();
 
   await click(container, 'Surprise name');
-  expect(Array.from(container.querySelectorAll('button')).find((item) => item.textContent === 'Surprise name').getAttribute('aria-pressed')).toBe('true');
+  expect(Array.from(container.querySelectorAll('button')).find((item) => item.textContent === 'Surprise name').hasAttribute('aria-pressed')).toBe(false);
   await click(container, 'Surprise type');
   await click(container, 'Surprise gender');
   await click(container, 'Continue');

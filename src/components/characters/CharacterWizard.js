@@ -28,6 +28,11 @@ const INITIAL_CHARACTER_INPUTS = {
   customDescription: '',
 };
 
+const SURPRISE_NAMES = {
+  en: ['Lumi', 'Nova', 'Milo', 'Willow'],
+  hi: ['चंदा', 'तारा', 'मिट्ठू', 'गुल'],
+};
+
 const optionLabel = (value, prefix, t) => t(`${prefix}${value.split('_').map((part) => part[0].toUpperCase() + part.slice(1)).join('')}`);
 
 const knownError = (message, t) => {
@@ -55,8 +60,20 @@ const quoteForMode = (quote, mode) => mode === 'edit'
   ? { ...quote, credit_cost: 2, credits_after: Math.max(0, quote.credits_before - 2) }
   : quote;
 
+const differentValue = (values, current) => values.find((value) => value !== current) || values[0];
+
+const generationFailure = (code, fallbackReference, t) => {
+  if (code === 'unsafe_input') return { message: t('characterErrorUnsafeInput'), edit: true };
+  if (code === 'unsafe_profile') return { message: t('characterErrorUnsafeProfile'), edit: true };
+  if (code === 'invalid_profile' || code === 'profile_failed') return { message: t('characterErrorProfileFailed'), edit: false };
+  if (code === 'portrait_failed') return { message: t('characterErrorPortraitFailed'), edit: false };
+  const referenceCandidate = /^[a-z0-9_-]{1,40}$/i.test(code || '') ? code : fallbackReference;
+  const reference = /^[a-z0-9_-]{1,80}$/i.test(referenceCandidate || '') ? referenceCandidate : null;
+  return { message: t('characterFailed'), edit: false, reference };
+};
+
 export default function CharacterWizard({ uid, mode = 'create', targetCharacterId = null, initialInputs, onDone, onEdit, onDelete, onResult }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [step, setStep] = useState('identity');
   const [inputs, setInputs] = useState(() => ({ ...INITIAL_CHARACTER_INPUTS, ...initialInputs }));
   const [quote, setQuote] = useState(null);
@@ -65,6 +82,8 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
   const [resultCharacterId, setResultCharacterId] = useState(null);
   const [retryResultLoad, setRetryResultLoad] = useState(false);
   const [connectionInterrupted, setConnectionInterrupted] = useState(false);
+  const [failureCode, setFailureCode] = useState(null);
+  const [failureReference, setFailureReference] = useState(null);
   const [errors, setErrors] = useState({});
   const [reviewError, setReviewError] = useState('');
   const [showPaidDialog, setShowPaidDialog] = useState(false);
@@ -81,8 +100,12 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
 
   const updateInput = (field, value) => setInputs((current) => ({ ...current, [field]: value }));
 
-  const surprise = (valueField, surpriseField) => {
-    setInputs((current) => ({ ...current, [valueField]: '', [surpriseField]: true }));
+  const surprise = (valueField, surpriseField, values) => {
+    setInputs((current) => ({
+      ...current,
+      [valueField]: differentValue(values, current[valueField]),
+      [surpriseField]: false,
+    }));
   };
 
   const continueIdentity = () => {
@@ -112,11 +135,14 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
       idempotencyKey.current = createIdempotencyKey(idempotencyKey.current);
       const body = {
         inputs: {
-          name: inputs.surpriseName ? null : inputs.name,
-          character_type: inputs.surpriseType ? null : inputs.characterType,
-          gender: inputs.surpriseGender ? null : inputs.gender,
+          name: inputs.name,
+          character_type: inputs.characterType,
+          gender: inputs.gender,
+          surprise_name: inputs.surpriseName,
+          surprise_type: inputs.surpriseType,
+          surprise_gender: inputs.surpriseGender,
           traits: inputs.traits,
-          custom_description: inputs.customDescription || null,
+          custom_description: inputs.customDescription || '',
         },
         quote_version: quote.quote_version,
         idempotency_key: idempotencyKey.current,
@@ -154,19 +180,21 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
     }
   };
 
-  const failed = useCallback(() => {
+  const failed = useCallback((currentJob) => {
     clearPendingJob(uid);
     idempotencyKey.current = null;
     setJob(null);
     setSubmitting(false);
     setRetryResultLoad(false);
     setConnectionInterrupted(false);
+    setFailureCode(currentJob?.error_code || null);
+    setFailureReference(currentJob?.id || null);
     setStep('failed');
   }, [uid]);
 
   const completed = useCallback(async (completedJob) => {
     if (!completedJob.character_id) {
-      failed();
+      failed(completedJob);
       return;
     }
     try {
@@ -181,6 +209,7 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
     } catch {
       setSubmitting(false);
       setRetryResultLoad(true);
+      setFailureReference(completedJob?.id || null);
       setStep('failed');
     }
   }, [failed, onResult, uid]);
@@ -194,6 +223,8 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
   const retry = async () => {
     setSubmitting(false);
     setReviewError('');
+    setFailureCode(null);
+    setFailureReference(null);
     if (retryResultLoad && job?.status === 'completed') {
       setStep('generating');
       return;
@@ -247,7 +278,16 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
   }
 
   if (step === 'failed') {
-    return <section className="characterFailure" aria-live="polite"><p>{t('characterFailed')}</p><button type="button" onClick={retry}>{t('characterRetry')}</button></section>;
+    const failure = generationFailure(failureCode, failureReference, t);
+    return (
+      <section className="characterFailure" aria-live="polite">
+        <p>{failure.message}</p>
+        {failure.reference && <p className="characterFailureReference">{t('characterErrorReference')} {failure.reference}</p>}
+        {failure.edit
+          ? <button type="button" onClick={() => { setFailureCode(null); setStep('identity'); }}>{t('characterEditDetails')}</button>
+          : <button type="button" onClick={retry}>{t('characterRetry')}</button>}
+      </section>
+    );
   }
 
   if (step === 'connection' && job && connectionInterrupted) {
@@ -286,17 +326,29 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
       {step === 'identity' && <>
         <fieldset><legend>{t('characterIdentity')}</legend>
           <label>{t('characterName')}<input value={inputs.name} onChange={(event) => setInputs((current) => ({ ...current, name: event.target.value, surpriseName: false }))} /></label>
-          <button type="button" aria-pressed={inputs.surpriseName} onClick={() => surprise('name', 'surpriseName')}>{t('characterSurpriseName')}</button>
+          <button type="button" onClick={() => surprise('name', 'surpriseName', SURPRISE_NAMES[lang] || SURPRISE_NAMES.en)}>{t('characterSurpriseName')}</button>
           <label>{t('characterType')}<select value={inputs.characterType} onChange={(event) => setInputs((current) => ({ ...current, characterType: event.target.value, surpriseType: false }))}><option value="">{t('characterChoose')}</option>{CHARACTER_TYPES.map((type) => <option key={type} value={type}>{optionLabel(type, 'characterType', t)}</option>)}</select></label>
-          <button type="button" aria-pressed={inputs.surpriseType} onClick={() => surprise('characterType', 'surpriseType')}>{t('characterSurpriseType')}</button>
+          <button type="button" onClick={() => surprise('characterType', 'surpriseType', CHARACTER_TYPES)}>{t('characterSurpriseType')}</button>
           <label>{t('characterGender')}<select value={inputs.gender} onChange={(event) => setInputs((current) => ({ ...current, gender: event.target.value, surpriseGender: false }))}>{CHARACTER_GENDERS.map((gender) => <option key={gender} value={gender}>{optionLabel(gender, 'characterGender', t)}</option>)}</select></label>
-          <button type="button" aria-pressed={inputs.surpriseGender} onClick={() => surprise('gender', 'surpriseGender')}>{t('characterSurpriseGender')}</button>
+          <button type="button" onClick={() => surprise('gender', 'surpriseGender', CHARACTER_GENDERS)}>{t('characterSurpriseGender')}</button>
         </fieldset>
         {Object.values(errors).map((error) => <p key={error} role="alert">{error}</p>)}
         <button type="button" onClick={continueIdentity}>{t('characterContinue')}</button>
       </>}
       {step === 'personality' && <>
-        <fieldset><legend>{t('characterTraits')}</legend>{CHARACTER_TRAITS.map((trait) => <button type="button" key={trait} aria-pressed={inputs.traits.includes(trait)} onClick={() => toggleTrait(trait)}>{optionLabel(trait, 'characterTrait', t)}</button>)}</fieldset>
+        <fieldset className="characterTraitsFieldset">
+          <legend>{t('characterTraits')}</legend>
+          <div className="characterTraitHelp">
+            <span>{t('characterTraitsHelp')}</span>
+            <strong aria-live="polite">{t('characterTraitsSelected').replace('{count}', inputs.traits.length)}</strong>
+          </div>
+          <div className="characterTraitGrid">
+            {CHARACTER_TRAITS.map((trait) => {
+              const selected = inputs.traits.includes(trait);
+              return <button className="characterTraitChip" type="button" key={trait} aria-pressed={selected} disabled={!selected && inputs.traits.length >= 5} onClick={() => toggleTrait(trait)}>{selected && <span aria-hidden="true">✓</span>}{optionLabel(trait, 'characterTrait', t)}</button>;
+            })}
+          </div>
+        </fieldset>
         <label>{t('characterDetails')}<textarea value={inputs.customDescription} onChange={(event) => updateInput('customDescription', event.target.value)} /></label>
         {Object.values(errors).map((error) => <p key={error} role="alert">{error}</p>)}
         {reviewError && <p className="characterError" role="alert">{reviewError}</p>}
@@ -304,9 +356,32 @@ export default function CharacterWizard({ uid, mode = 'create', targetCharacterI
         <button type="button" onClick={continuePersonality}>{t('characterContinue')}</button>
       </>}
       {step === 'review' && quote && <>
-        <p>{t('characterSlot')} {quote.slot_number} of 30</p>
-        <p>{quote.credit_cost === 0 ? t('characterFree') : `${quote.credit_cost} ${t('characterCredits')}`}</p>
-        <p>{quote.credits_before} → {quote.credits_after}</p>
+        <div className="characterReview">
+          <section className="characterReviewSection">
+            <h2>{t('characterIdentity')}</h2>
+            <dl>
+              <dt>{t('characterName')}</dt><dd>{inputs.name || t('characterNone')}</dd>
+              <dt>{t('characterType')}</dt><dd>{inputs.characterType ? optionLabel(inputs.characterType, 'characterType', t) : t('characterNone')}</dd>
+              <dt>{t('characterGender')}</dt><dd>{inputs.gender ? optionLabel(inputs.gender, 'characterGender', t) : t('characterNone')}</dd>
+            </dl>
+          </section>
+          <section className="characterReviewSection">
+            <h2>{t('characterPersonality')}</h2>
+            <dl>
+              <dt>{t('characterTraits')}</dt><dd>{inputs.traits.length ? inputs.traits.map((trait) => optionLabel(trait, 'characterTrait', t)).join(', ') : t('characterNone')}</dd>
+              <dt>{t('characterDetails')}</dt><dd>{inputs.customDescription || t('characterNone')}</dd>
+            </dl>
+          </section>
+          <section className="characterReviewSection">
+            <h2>{t('characterGeneration')}</h2>
+            <dl>
+              <dt>{t('characterSlot')}</dt>{' '}<dd>{lang === 'hi' ? <>30 {t('characterOf')} {quote.slot_number}</> : <>{quote.slot_number} {t('characterOf')} 30</>}</dd>
+              <dt>{t('characterCost')}</dt><dd>{quote.credit_cost === 0 ? t('characterFree') : `${quote.credit_cost} ${t('characterCredits')}`}</dd>
+              <dt>{t('characterCurrentCredits')}</dt><dd>{quote.credits_before}</dd>
+              <dt>{t('characterCreditsAfter')}</dt><dd>{quote.credits_after}</dd>
+            </dl>
+          </section>
+        </div>
         {reviewError && <p role="alert">{reviewError}</p>}
         <button type="button" onClick={() => setStep('personality')} disabled={submitting}>{t('characterBack')}</button>
         <button type="button" onClick={() => quote.credit_cost > 0 ? setShowPaidDialog(true) : submit()} disabled={submitting}>{t('characterCreate')}</button>

@@ -8,13 +8,19 @@ const labelFor = (value, prefix, t) => t(`${prefix}${String(value || '').split('
 export default function CharacterCard({ character }) {
   const profile = character.profile || character;
   const { t } = useI18n();
-  const traits = (profile.traits || []).slice(0, 2).map((trait) => labelFor(trait, 'characterTrait', t)).join(' · ');
+  const traits = (profile.traits || []).slice(0, 2).map((trait) => labelFor(trait, 'characterTrait', t));
+  const type = labelFor(profile.character_type, 'characterType', t);
 
   return (
-    <Link href={`/characters/${character.id}`} className={styles.card} aria-label={profile.name}>
-      {character.portrait_url && <Image src={character.portrait_url} alt="" fill sizes="148px" className={styles.image} />}
-      <span className={styles.overlay} aria-hidden="true" />
-      <span className={styles.label}>{profile.name}<br /><small>{labelFor(profile.character_type, 'characterType', t)}{traits ? ` · ${traits}` : ''}</small></span>
+    <Link href={`/characters/${character.id}`} className={`${styles.card} ${styles.characterCard}`} aria-label={profile.name}>
+      <span className={styles.characterArt}>
+        {character.portrait_url && <Image src={character.portrait_url} alt="" fill sizes="148px" className={`${styles.image} ${styles.characterImage}`} />}
+      </span>
+      <span className={styles.characterMeta}>
+        <strong className={styles.characterName}>{profile.name}</strong>
+        <span className={styles.characterType}>{type}</span>
+        {traits.length > 0 && <span className={styles.characterTraits}>{traits.map((trait) => <small key={trait}>{trait}</small>)}</span>}
+      </span>
     </Link>
   );
 }

@@ -79,6 +79,28 @@ export async function signin(email, context = 'login_existing', lang = 'en') {
 // into their REAL family instead of auto-minting a fresh anon account.
 
 const _API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const ACCOUNT_HANDOFF_KEY = 'dv_account_handoff';
+
+async function claimPendingAccountHandoff(token) {
+  if (typeof window === 'undefined' || !token) return;
+  const handoffToken = localStorage.getItem(ACCOUNT_HANDOFF_KEY);
+  if (!handoffToken) return;
+  try {
+    const response = await fetch(`${_API_URL}/api/v1/auth/claim-handoff`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ handoff_token: handoffToken }),
+    });
+    if (response.ok || response.status === 404 || response.status === 410) {
+      localStorage.removeItem(ACCOUNT_HANDOFF_KEY);
+    }
+  } catch {
+    /* retry on the next authenticated session */
+  }
+}
 
 function _nativeAuthBridge() {
   if (typeof window === 'undefined') return null;
@@ -185,6 +207,7 @@ export const getToken = () => {
 export const setToken = (token) => {
   if (typeof window === 'undefined') return;
   localStorage.setItem('dreamweaver_token', token);
+  void claimPendingAccountHandoff(token);
 };
 
 export const removeToken = () => {
@@ -250,6 +273,7 @@ export const isLoggedIn = () => {
 
 export const logout = () => {
   const u = getUser();
+  const token = getToken();
   const userId = u?.uid || u?.family_id || u?.username || null;
   const offlinePurge = userId
     ? Promise.resolve(purgeOfflineUser(userId)).catch(() => {})
@@ -258,7 +282,15 @@ export const logout = () => {
     localStorage.removeItem(`dv_alias_done:${u.username}`);
   }
   const serverRevoke = import('./api')
-    .then(({ authApi }) => authApi.serverLogout())
+    .then(({ authApi }) => authApi.serverLogout(token))
+    .then((result) => {
+      if (!result?.handoff_token) return;
+      localStorage.setItem(ACCOUNT_HANDOFF_KEY, result.handoff_token);
+      const currentToken = getToken();
+      if (currentToken && currentToken !== token) {
+        void claimPendingAccountHandoff(currentToken);
+      }
+    })
     .catch(() => { /* ignore */ });
   try { window.DreamValleyAuth?.clearToken?.(); } catch { /* ignore */ }
   try { window.DreamValleyPurchase?.logout?.(); } catch { /* ignore */ }
