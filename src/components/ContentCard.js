@@ -81,6 +81,10 @@ export default function ContentCard({ content, onClick, compact = false }) {
   const durationLabel = getDuration();
   const ageLabel = getAgeLabel();
   const listened = isListened(content.id);
+  const playerPath = `/player/${content.id}?autoplay=1`;
+  const cardHref = content.premium_locked
+    ? `/upgrade?intent=${encodeURIComponent(playerPath)}`
+    : playerPath;
 
   // "NEW" badge: only for content added today
   const isAddedToday = (() => {
@@ -237,7 +241,7 @@ export default function ContentCard({ content, onClick, compact = false }) {
       {onClick ? (
         cardContent
       ) : (
-        <Link href={`/player/${content.id}?autoplay=1`}>
+        <Link href={cardHref}>
           {cardContent}
         </Link>
       )}
