@@ -46,6 +46,16 @@ export async function identifyNative(uid) {
   }
 }
 
+export async function setNativeSubscriberEmail(email) {
+  const bridge = nativePurchaseBridge();
+  if (!bridge || !email) return false;
+  try {
+    return (await bridge.setEmail(email)) === true;
+  } catch {
+    return false;
+  }
+}
+
 export async function purchaseNative(packageId) {
   const bridge = nativePurchaseBridge();
   if (!bridge) return { success: false, error: 'bridge_unavailable' };

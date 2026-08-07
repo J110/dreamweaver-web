@@ -15,8 +15,10 @@ import {
   purchaseNative,
   recoverActivePurchase,
   restoreNativeForUser,
+  setNativeSubscriberEmail,
 } from '@/utils/nativePurchase';
 import { getUser } from '@/utils/auth';
+import { authorizeWithApple, nativeAppleAuthBridge } from '@/utils/appleAuth';
 import StarField from '@/components/StarField';
 import UpgradeShowcase from '@/components/UpgradeShowcase';
 import styles from './page.module.css';
@@ -138,6 +140,25 @@ function NativePaywall({ router, restoreRequested }) {
 
     const user = getUser();
     if (user?.uid) await identifyNative(user.uid);
+    if (nativeAppleAuthBridge()) {
+      try {
+        const linked = await authorizeWithApple('purchase');
+        if (linked?.status === 'cancelled') {
+          setPhase('idle');
+          return;
+        }
+        if (linked?.status !== 'linked') {
+          setPhase('idle');
+          setError('Confirm your Apple account before purchasing.');
+          return;
+        }
+        if (linked.email) await setNativeSubscriberEmail(linked.email);
+      } catch {
+        setPhase('idle');
+        setError('Couldn’t confirm your Apple account. Please try again.');
+        return;
+      }
+    }
     let result = await purchaseNative(pkg.id);
 
     if (!result.success && result.error === 'not_identified' && user?.uid) {
