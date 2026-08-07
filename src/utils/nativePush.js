@@ -8,23 +8,39 @@ export function nativePushBridge() {
   return bridge?.isAvailable === true ? bridge : null;
 }
 
+async function waitForNativePushToken(bridge, initialToken) {
+  let target = initialToken;
+  for (let attempt = 0; attempt < 20 && !target; attempt += 1) {
+    await new Promise((resolve) => window.setTimeout(resolve, 250));
+    const current = await bridge.getToken();
+    target = current?.value?.token;
+  }
+  return target;
+}
+
+export async function syncExistingNativePush() {
+  const bridge = nativePushBridge();
+  if (!bridge) return { status: 'unavailable' };
+  const current = await bridge.getToken();
+  const target = current?.value?.token;
+  if (!target) return { status: 'missing' };
+  await pushApi.register(target, 'authorized');
+  return { status: 'registered' };
+}
+
 export async function enableNativePush() {
   const bridge = nativePushBridge();
   if (!bridge) return { status: 'unavailable' };
   const result = await bridge.requestPermission();
   const permission = result?.value?.permission || 'denied';
-  let target = result?.value?.token;
-  if (result?.success && !target && (permission === 'authorized' || permission === 'provisional')) {
-    for (let attempt = 0; attempt < 20 && !target; attempt += 1) {
-      await new Promise((resolve) => window.setTimeout(resolve, 250));
-      const current = await bridge.getToken();
-      target = current?.value?.token;
-    }
-  }
-  if (!result?.success || !target) {
+  const target = await waitForNativePushToken(bridge, result?.value?.token);
+  if (!target) {
     return { status: permission === 'authorized' || permission === 'provisional' ? 'pending' : permission };
   }
-  await pushApi.register(target, permission);
+  const registeredPermission = permission === 'authorized' || permission === 'provisional'
+    ? permission
+    : 'authorized';
+  await pushApi.register(target, registeredPermission);
   return { status: 'registered' };
 }
 

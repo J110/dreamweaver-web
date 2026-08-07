@@ -3,7 +3,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { isLoggedIn } from '@/utils/auth';
 import { useI18n } from '@/utils/i18n';
-import { bindNativePushEvents, enableNativePush, nativePushBridge } from '@/utils/nativePush';
+import {
+  bindNativePushEvents,
+  enableNativePush,
+  nativePushBridge,
+  syncExistingNativePush,
+} from '@/utils/nativePush';
 import styles from './NativePushPrompt.module.css';
 
 const ENABLED_KEY = 'dreamvalley_push_enabled';
@@ -20,26 +25,42 @@ export default function NativePushPrompt() {
   useEffect(() => {
     let stopped = false;
     let attempts = 0;
-    const check = () => {
+    let checking = false;
+    const markEnabled = () => {
+      try {
+        localStorage.setItem(ENABLED_KEY, '1');
+        localStorage.removeItem(NEXT_PROMPT_KEY);
+      } catch {}
+      setVisible(false);
+    };
+    const check = async () => {
+      if (checking) return;
       if (stopped || !isLoggedIn() || !nativePushBridge()) return;
+      checking = true;
       cleanupEvents.current();
-      cleanupEvents.current = bindNativePushEvents(() => {
-        try {
-          localStorage.setItem(ENABLED_KEY, '1');
-          localStorage.removeItem(NEXT_PROMPT_KEY);
-        } catch {}
-        setVisible(false);
-      });
+      cleanupEvents.current = bindNativePushEvents(markEnabled);
       let enabled = false;
       let promptAfter = 0;
       try {
         enabled = localStorage.getItem(ENABLED_KEY) === '1';
         promptAfter = Number(localStorage.getItem(NEXT_PROMPT_KEY) || 0);
       } catch {}
-      if (!enabled && Date.now() >= promptAfter) {
-        window.setTimeout(() => { if (!stopped) setVisible(true); }, 1200);
+      if (!enabled) {
+        try {
+          const current = await syncExistingNativePush();
+          if (current.status === 'registered') {
+            markEnabled();
+            window.clearInterval(interval);
+            checking = false;
+            return;
+          }
+        } catch {}
+        if (Date.now() >= promptAfter) {
+          window.setTimeout(() => { if (!stopped) setVisible(true); }, 1200);
+        }
       }
       window.clearInterval(interval);
+      checking = false;
     };
     const interval = window.setInterval(() => {
       attempts += 1;
