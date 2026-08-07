@@ -116,6 +116,14 @@ export default function ProfilePage() {
         </div>
 
         <div className={styles.settings}>
+          <div className={styles.voiceSettingsCard}>
+            <Link href="/settings" className={styles.voiceSettingsHeader} style={{ textDecoration: 'none' }}>
+              <div className={styles.settingLabel}>
+                ⚙️ {lang === 'hi' ? 'App Settings' : 'App Settings'}
+              </div>
+              <span>›</span>
+            </Link>
+          </div>
           {/* Content Language — Hindi is opt-in */}
           <div className={styles.voiceSettingsCard}>
             <div className={styles.voiceSettingsHeader} style={{ cursor: 'default' }}>
