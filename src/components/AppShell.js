@@ -16,6 +16,7 @@ import InstallPrompt from './InstallPrompt';
 import { isNativeApp } from '@/utils/platformDetect';
 import { isAppUser, isLandingHome } from '@/utils/nativeGate';
 import BedtimePopup from './BedtimePopup';
+import NativePushPrompt from './NativePushPrompt';
 import { dvAnalytics } from '@/utils/analytics';
 
 const NO_NAV_ROUTES = ['/onboarding', '/login', '/restore', '/support', '/privacy', '/how-it-works', '/about', '/blog', '/analytics', '/lullabies', '/pricing', '/upgrade', '/upgrade/success', '/upgrade/cancelled', '/auth/verify', '/auth/claim', '/welcome'];
@@ -331,6 +332,7 @@ export default function AppShell({ children }) {
         </div>
         {showNav && <BottomNav />}
         <InstallPrompt />
+        {checked && <NativePushPrompt />}
         {checked && !pathname.startsWith('/player/') && !pathname.startsWith('/playlist') && !NO_NAV_ROUTES.includes(pathname) && <BedtimePopup />}
       </VoicePreferencesProvider>
     </I18nProvider>
